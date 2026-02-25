@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigger Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F7F4;
+  --surface:#FFFFFF;
+  --surface2:#EAF4F0;
+  --ink:#1C3A2F;
+  --ink2:#4A6B5E;
+  --muted:#8AA89F;
+  --accent:#2ECC87;
+  --accent-d:#1FA869;
+  --amber:#FF8C42;
+  --amber-d:#E6732A;
+  --teal:#4ECDC4;
+  --rose:#FF6B8A;
+  --sky:#4BA3C3;
+  --sage:#52B788;
+  --yellow:#FFD166;
+  --border:#D0E8DF;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 2px 12px rgba(30,80,60,0.10);
+  --shadow-lg:0 6px 32px rgba(30,80,60,0.13);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);
+  min-height:100vh;padding-bottom:80px;
+  background-image:
+    radial-gradient(ellipse at 0% 0%,rgba(46,204,135,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 100% 100%,rgba(78,205,196,0.08) 0%,transparent 50%);
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+input,textarea,select{font-family:'Nunito',sans-serif}
+*:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* HEADER */
+.header{padding:24px 20px 16px;max-width:720px;margin:0 auto;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.header-left h1{font-family:'Baloo 2',cursive;font-size:clamp(1.6rem,4vw,2.2rem);
+  font-weight:900;color:var(--ink);line-height:1.1}
+.header-left h1 span{color:var(--accent)}
+.header-left p{color:var(--ink2);font-size:0.85rem;margin-top:5px;font-weight:600;max-width:360px;line-height:1.5}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:4px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:100px;
+  font-size:0.83rem;font-weight:700;transition:all 0.15s var(--ease);white-space:nowrap}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{background:var(--accent-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,0.4)}
+.btn-ghost{background:var(--surface);color:var(--ink2);border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--surface2);color:var(--ink)}
+.btn-sm{padding:6px 12px;font-size:0.78rem}
+.btn-danger{background:#FEE2E2;color:#B91C1C;border:1px solid #FECACA}
+.btn-danger:hover{background:#FECACA}
+
+/* NAV */
+.nav{display:flex;gap:2px;max-width:720px;margin:0 auto 20px;padding:0 20px;
+  border-bottom:2px solid var(--border)}
+.nav-tab{padding:10px 18px;font-size:0.88rem;font-weight:700;color:var(--muted);
+  border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.15s var(--ease)}
+.nav-tab:hover{color:var(--ink2)}
+.nav-tab.active{color:var(--accent-d);border-bottom-color:var(--accent)}
+
+/* MAIN */
+.main{max-width:720px;margin:0 auto;padding:0 20px}
+.view{display:none}
+.view.active{display:block;animation:fadeUp 0.22s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* FORM */
+.form-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:24px;box-shadow:var(--shadow)}
+.form-section{margin-bottom:20px}
+.form-section:last-child{margin-bottom:0}
+.form-label{display:block;font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.8px;color:var(--muted);margin-bottom:8px}
+.form-label span{color:var(--rose);margin-left:2px}
+.form-input{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--ink);font-size:0.92rem;transition:border-color 0.15s}
+.form-input:focus{border-color:var(--accent);outline:none;background:white}
+.form-input::placeholder{color:var(--muted)}
+textarea.form-input{resize:vertical;min-height:70px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:7px}
+.chip-toggle{padding:6px 13px;border-radius:100px;font-size:0.82rem;font-weight:700;
+  background:var(--bg);border:1.5px solid var(--border);color:var(--ink2);
+  cursor:pointer;transition:all 0.13s var(--ease);user-select:none}
+.chip-toggle:hover{border-color:var(--muted);color:var(--ink)}
+.chip-toggle.on{background:var(--accent);color:white;border-color:var(--accent)}
+.chip-toggle.on-amber{background:var(--amber);color:white;border-color:var(--amber)}
+.chip-toggle.on-teal{background:var(--teal);color:white;border-color:var(--teal)}
+.chip-toggle.on-rose{background:var(--rose);color:white;border-color:var(--rose)}
+.chip-toggle.on-sky{background:var(--sky);color:white;border-color:var(--sky)}
+.chip-toggle.on-sage{background:var(--sage);color:white;border-color:var(--sage)}
+.chip-toggle.on-yellow{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
+
+/* INTENSITY */
+.intensity-row{display:flex;align-items:center;gap:12px}
+.intensity-row input[type=range]{flex:1;-webkit-appearance:none;height:8px;border-radius:100px;
+  border:none;background:linear-gradient(to right,var(--sage),var(--yellow),var(--amber),var(--rose));cursor:pointer}
+.intensity-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
+  border-radius:50%;background:white;border:3px solid var(--ink);cursor:pointer;
+  box-shadow:var(--shadow);transition:transform 0.1s}
+.intensity-row input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.intensity-badge{font-size:0.82rem;font-weight:800;padding:4px 12px;border-radius:100px;
+  min-width:52px;text-align:center;background:var(--bg);color:var(--ink2);
+  border:1.5px solid var(--border);transition:all 0.2s}
+
+/* SCALE CHIPS */
+.scale-group{display:flex;gap:6px}
+.scale-chip{flex:1;padding:8px 4px;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:700;
+  background:var(--bg);border:1.5px solid var(--border);color:var(--muted);
+  cursor:pointer;text-align:center;transition:all 0.13s}
+.scale-chip:hover{border-color:var(--muted);color:var(--ink2)}
+.scale-chip.sel{background:var(--amber);color:white;border-color:var(--amber)}
+
+.form-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+
+/* HISTORY */
+.log-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.log-controls select{padding:7px 14px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:100px;color:var(--ink2);font-size:0.82rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700}
+.log-empty{text-align:center;padding:56px 20px;color:var(--muted)}
+.log-empty .le-icon{font-size:2.5rem;margin-bottom:12px}
+.log-empty p{font-size:1rem;font-weight:700;color:var(--ink2)}
+.log-empty small{font-size:0.82rem}
+
+.incident-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;margin-bottom:10px;box-shadow:var(--shadow);
+  transition:all 0.15s var(--ease);animation:fadeUp 0.2s var(--ease) both}
+.incident-card:hover{border-color:var(--accent);box-shadow:var(--shadow-lg)}
+.ic-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ic-intensity{width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:800}
+.ic-meta{flex:1;min-width:0}
+.ic-datetime{font-size:0.78rem;color:var(--muted);font-weight:700}
+.ic-title{font-size:0.95rem;font-weight:700;color:var(--ink);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic-delete{opacity:0;transition:opacity 0.15s;flex-shrink:0}
+.incident-card:hover .ic-delete{opacity:1}
+.ic-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.ic-chip{font-size:0.73rem;font-weight:700;padding:3px 9px;border-radius:100px;
+  background:var(--surface2);color:var(--ink2);border:1px solid var(--border)}
+.ic-notes{font-size:0.82rem;color:var(--ink2);line-height:1.5;
+  border-top:1.5px solid var(--border);padding-top:8px;margin-top:2px}
+
+/* PATTERNS */
+.patterns-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:480px){.patterns-grid{grid-template-columns:1fr}}
+.stat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:18px 20px;box-shadow:var(--shadow)}
+.stat-card h3{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;
+  color:var(--muted);margin-bottom:14px}
+.big-num{font-family:'Baloo 2',cursive;font-size:3rem;color:var(--accent-d);line-height:1;font-weight:800}
+.big-num span{font-size:1rem;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:600}
+.stat-card.full{grid-column:1/-1}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-label{font-size:0.78rem;color:var(--ink2);width:100px;flex-shrink:0;
+  font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:9px;background:var(--surface2);border-radius:100px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:100px;background:var(--accent);transition:width 0.5s var(--ease)}
+.bar-count{font-size:0.75rem;color:var(--muted);font-weight:800;width:20px;text-align:right;flex-shrink:0}
+.insight{background:var(--surface2);border:1.5px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:var(--radius-sm);padding:11px 14px;margin-bottom:8px;
+  font-size:0.85rem;color:var(--ink2);line-height:1.5;font-weight:600}
+.insight strong{color:var(--accent-d)}
+.time-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:6px}
+.time-cell{aspect-ratio:1;border-radius:6px;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.58rem;color:var(--muted);font-weight:700;
+  transition:background 0.3s;position:relative;cursor:default;border:1px solid var(--border)}
+.time-cell:hover .tc-tip{display:block}
+.tc-tip{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;
+  transform:translateX(-50%);background:var(--ink);color:white;
+  border-radius:6px;padding:3px 8px;font-size:0.7rem;white-space:nowrap;z-index:10;pointer-events:none}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--ink);color:white;padding:10px 22px;border-radius:100px;
+  font-size:0.85rem;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;
+  box-shadow:var(--shadow-lg);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* PRINT: hide everything except the report modal content */
+@media print{
+  body > *:not(#printModal){display:none!important}
+  #printModal{display:block!important;position:static!important;background:white!important;
+    padding:0!important;overflow:visible!important}
+  #printModal .pm-overlay{display:none!important}
+  #printModal .pm-box{box-shadow:none!important;border:none!important;max-width:100%!important;
+    padding:10pt!important;border-radius:0!important}
+  #printModal .pm-actions{display:none!important}
+  .pm-report h1{font-size:18pt;margin-bottom:4pt}
+  .pm-report .sub{font-size:10pt;color:#666;margin-bottom:12pt}
+  .pm-report .pstats{display:flex;gap:12pt;margin-bottom:12pt}
+  .pm-report .pstat{text-align:center;background:#f5f5f5;padding:8pt 12pt;border-radius:6pt;flex:1;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pm-report .pstat-n{font-size:18pt;font-weight:bold}
+  .pm-report .pstat-l{font-size:9pt;color:#666}
+  .pm-report h2{font-size:11pt;margin:12pt 0 6pt;border-bottom:1pt solid #ccc;padding-bottom:3pt}
+  .pm-report table{width:100%;border-collapse:collapse;font-size:9pt}
+  .pm-report th{background:#f0f0f0;padding:4pt 6pt;text-align:left;font-size:8.5pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pm-report td{padding:4pt 6pt;border-bottom:0.5pt solid #eee;vertical-align:top}
+  .pm-report .ptrig{font-size:10pt;margin-bottom:3pt}
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+@media(max-width:480px){
+  .form-row{grid-template-columns:1fr}
+  .header{padding:16px 14px 12px}
+  .nav,.main{padding-left:12px;padding-right:12px}
+  .header-actions .btn span{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Trigger <span>Tracker</span></h1>
+    <p>Private &amp; judgement-free. Everything stays on your device — nothing is sent anywhere.</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" id="exportBtn">📤 <span>Export CSV</span></button>
+    <button class="btn btn-ghost btn-sm" id="printBtn">🖨️ <span>Print</span></button>
+  </div>
+</div>
+
+<nav class="nav" role="tablist">
+  <button class="nav-tab active" data-tab="log" role="tab">Log Incident</button>
+  <button class="nav-tab" data-tab="history" role="tab">History</button>
+  <button class="nav-tab" data-tab="patterns" role="tab">Patterns</button>
+</nav>
+
+<main class="main">
+
+  <!-- LOG -->
+  <div class="view active" id="view-log">
+    <div class="form-card">
+      <div class="form-row" style="margin-bottom:20px">
+        <div><label class="form-label" for="inc-date">Date</label>
+          <input type="date" id="inc-date" class="form-input"></div>
+        <div><label class="form-label" for="inc-time">Time</label>
+          <input type="time" id="inc-time" class="form-input"></div>
+      </div>
+      <div class="form-section">
+        <label class="form-label" for="inc-context">What was happening?<span>*</span></label>
+        <textarea id="inc-context" class="form-input" placeholder="e.g. Transition from screen time, crowded supermarket, unexpected change of plan…"></textarea>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Intensity</label>
+        <div class="intensity-row">
+          <span style="font-size:1.1rem">😌</span>
+          <input type="range" id="inc-intensity" min="1" max="10" value="5">
+          <span style="font-size:1.1rem">🌋</span>
+          <div class="intensity-badge" id="intensityBadge">5</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Possible triggers</label>
+        <div class="chip-group">
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Transition">🔄 Transition</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Unexpected change">⚡ Unexpected change</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Loud noise">🔊 Loud noise</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Crowds">👥 Crowds</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Screen time ending">📱 Screen time ending</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Demand / request">📋 Demand / request</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Waiting">⏳ Waiting</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Sensory overload">🌀 Sensory overload</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Bright lights">💡 Bright lights</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Clothing / texture">👕 Clothing / texture</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Social situation">🤝 Social situation</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Overwhelm">🧠 Overwhelm</div>
+          <div class="chip-toggle" data-group="trigger" data-color="on-amber" data-val="Other">➕ Other</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">State before</label>
+        <div class="chip-group">
+          <div class="chip-toggle" data-group="state" data-color="on-rose" data-val="Hungry">😋 Hungry</div>
+          <div class="chip-toggle" data-group="state" data-color="on-sky" data-val="Tired">😴 Tired</div>
+          <div class="chip-toggle" data-group="state" data-color="on-rose" data-val="Unwell">🤒 Unwell</div>
+          <div class="chip-toggle" data-group="state" data-color="on-sky" data-val="Anxious">😰 Anxious</div>
+          <div class="chip-toggle" data-group="state" data-color="on-amber" data-val="Overstimulated">🌊 Overstimulated</div>
+          <div class="chip-toggle" data-group="state" data-color="on-teal" data-val="Post-school">🎒 Post-school</div>
+          <div class="chip-toggle" data-group="state" data-color="on-sage" data-val="Seemed fine">✅ Seemed fine</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Where?</label>
+        <div class="chip-group">
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="Home">🏠 Home</div>
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="School">🏫 School</div>
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="Shop / errand">🛒 Shop / errand</div>
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="Car">🚗 Car</div>
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="Friend / family">👨‍👩‍👧 Friend / family</div>
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="Public place">🏙️ Public place</div>
+          <div class="chip-toggle" data-group="where" data-color="on-teal" data-val="Other">📍 Other</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">Duration</label>
+        <div class="scale-group">
+          <div class="scale-chip" data-val="Under 5m">Under 5m</div>
+          <div class="scale-chip" data-val="5–15m">5–15m</div>
+          <div class="scale-chip" data-val="15–30m">15–30m</div>
+          <div class="scale-chip" data-val="30m+">30m+</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label">What helped calm things?</label>
+        <div class="chip-group">
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Quiet space">🤫 Quiet space</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Time alone">🚶 Time alone</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Physical comfort">🤗 Physical comfort</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Snack / drink">🍎 Snack / drink</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Screen time">📱 Screen time</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Movement">🏃 Movement</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-sage" data-val="Waited it out">⏱️ Waited it out</div>
+          <div class="chip-toggle" data-group="helped" data-color="on-rose" data-val="Nothing helped">❓ Nothing helped</div>
+        </div>
+      </div>
+      <div class="form-section">
+        <label class="form-label" for="inc-notes">Additional notes</label>
+        <textarea id="inc-notes" class="form-input" placeholder="Anything else worth remembering…"></textarea>
+      </div>
+      <div class="form-footer">
+        <button class="btn btn-ghost" id="clearFormBtn">Clear</button>
+        <button class="btn btn-primary" id="saveIncidentBtn">💾 Save Log</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="view" id="view-history">
+    <div class="log-controls">
+      <select id="historyFilter">
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="all">All time</option>
+      </select>
+      <select id="historySort">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="intensity">Highest intensity</option>
+      </select>
+      <span id="historyCount" style="font-size:0.82rem;color:var(--muted);font-weight:700;margin-left:auto"></span>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- PATTERNS -->
+  <div class="view" id="view-patterns">
+    <div style="margin-bottom:16px">
+      <select id="patternPeriod" style="padding:7px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;color:var(--ink2);font-size:0.82rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700">
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="all">All time</option>
+      </select>
+    </div>
+    <div id="patternsContent"></div>
+  </div>
+
+</main>
+
+<!-- Print modal injected by JS -->
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ── STORAGE ──
+const STORE='meltdown_tracker_v1';
+function load(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch{return[]}}
+function save(d){try{localStorage.setItem(STORE,JSON.stringify(d))}catch{}}
+let incidents=load();
+
+// ── TABS ──
+document.querySelectorAll('.nav-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    const t=tab.dataset.tab;
+    document.querySelectorAll('.nav-tab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
+    tab.classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+t).classList.add('active');
+    if(t==='history')renderHistory();
+    if(t==='patterns')renderPatterns();
+  });
+});
+
+// ── FORM ──
+function setNow(){
+  const now=new Date();
+  document.getElementById('inc-date').value=now.toISOString().slice(0,10);
+  document.getElementById('inc-time').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+}
+setNow();
+
+const intSlider=document.getElementById('inc-intensity');
+const intBadge=document.getElementById('intensityBadge');
+const iColors=['','#52B788','#52B788','#52B788','#7BC67E','#FFD166','#FFA94D','#FF8C42','#FF6B6B','#FF4D6D','#FF6B8A'];
+function updateBadge(){
+  const v=intSlider.value;
+  intBadge.textContent=v;
+  intBadge.style.background=iColors[v]+'33';
+  intBadge.style.color=iColors[v];
+  intBadge.style.borderColor=iColors[v]+'88';
+}
+intSlider.addEventListener('input',updateBadge);
+updateBadge();
+
+document.querySelectorAll('.chip-toggle').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const color=chip.dataset.color||'on';
+    const isOn=[...chip.classList].some(c=>c.startsWith('on'));
+    // Remove any on-* class
+    chip.classList.forEach(c=>{if(c.startsWith('on'))chip.classList.remove(c)});
+    if(!isOn)chip.classList.add(color);
+  });
+});
+
+document.querySelectorAll('.scale-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    document.querySelectorAll('.scale-chip').forEach(c=>c.classList.remove('sel'));
+    chip.classList.add('sel');
+  });
+});
+
+function getChips(group){
+  return [...document.querySelectorAll(`.chip-toggle[data-group="${group}"]`)]
+    .filter(c=>[...c.classList].some(cl=>cl.startsWith('on')))
+    .map(c=>c.dataset.val);
+}
+function getDuration(){const s=document.querySelector('.scale-chip.sel');return s?s.dataset.val:''}
+
+function clearForm(){
+  document.getElementById('inc-context').value='';
+  document.getElementById('inc-notes').value='';
+  intSlider.value=5;updateBadge();
+  document.querySelectorAll('.chip-toggle').forEach(c=>{c.classList.forEach(cl=>{if(cl.startsWith('on'))c.classList.remove(cl)})});
+  document.querySelectorAll('.scale-chip').forEach(c=>c.classList.remove('sel'));
+  setNow();
+}
+document.getElementById('clearFormBtn').addEventListener('click',clearForm);
+
+document.getElementById('saveIncidentBtn').addEventListener('click',()=>{
+  const context=document.getElementById('inc-context').value.trim();
+  if(!context){document.getElementById('inc-context').focus();showToast('⚠️ Please describe what was happening');return}
+  const date=document.getElementById('inc-date').value;
+  const time=document.getElementById('inc-time').value;
+  const inc={
+    id:uid(),
+    datetime:date&&time?`${date}T${time}`:new Date().toISOString(),
+    intensity:parseInt(intSlider.value),
+    context,
+    triggers:getChips('trigger'),
+    state:getChips('state'),
+    where:getChips('where'),
+    duration:getDuration(),
+    helped:getChips('helped'),
+    notes:document.getElementById('inc-notes').value.trim(),
+  };
+  incidents.unshift(inc);
+  save(incidents);
+  clearForm();
+  showToast("✅ Logged. You're doing great.");
+});
+
+// ── HISTORY ──
+function filterByDays(list,days){
+  if(days==='all')return list;
+  const cutoff=Date.now()-parseInt(days)*86400000;
+  return list.filter(i=>new Date(i.datetime).getTime()>=cutoff);
+}
+document.getElementById('historyFilter').addEventListener('change',renderHistory);
+document.getElementById('historySort').addEventListener('change',renderHistory);
+
+function renderHistory(){
+  const days=document.getElementById('historyFilter').value;
+  const sort=document.getElementById('historySort').value;
+  let list=filterByDays([...incidents],days);
+  if(sort==='oldest')list.sort((a,b)=>new Date(a.datetime)-new Date(b.datetime));
+  else if(sort==='intensity')list.sort((a,b)=>b.intensity-a.intensity);
+  else list.sort((a,b)=>new Date(b.datetime)-new Date(a.datetime));
+  const el=document.getElementById('historyList');
+  document.getElementById('historyCount').textContent=`${list.length} incident${list.length!==1?'s':''}`;
+  if(list.length===0){
+    el.innerHTML=`<div class="log-empty"><div class="le-icon">🌿</div><p>No incidents in this period</p><small>Entries will appear here once you start logging</small></div>`;
+    return;
+  }
+  el.innerHTML=list.map(inc=>{
+    const dt=new Date(inc.datetime);
+    const dateStr=dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    const timeStr=dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const iColor=iColors[Math.min(inc.intensity,10)];
+    const allChips=[...(inc.triggers||[]),...(inc.state||[]),...(inc.where||[])];
+    const chips=allChips.slice(0,5).map(t=>`<span class="ic-chip">${t}</span>`).join('');
+    const more=allChips.length>5?`<span class="ic-chip">+${allChips.length-5}</span>`:'';
+    const dur=inc.duration?`<span class="ic-chip">⏱ ${inc.duration}</span>`:'';
+    const notes=inc.notes?`<div class="ic-notes">${escHtml(inc.notes)}</div>`:'';
+    return `<div class="incident-card">
+      <div class="ic-top">
+        <div class="ic-intensity" style="background:${iColor}22;color:${iColor};border:2px solid ${iColor}44">${inc.intensity}</div>
+        <div class="ic-meta">
+          <div class="ic-datetime">${dateStr} · ${timeStr}</div>
+          <div class="ic-title">${escHtml(inc.context)}</div>
+        </div>
+        <button class="btn btn-danger btn-sm ic-delete" onclick="deleteIncident('${inc.id}')" aria-label="Delete">✕</button>
+      </div>
+      ${allChips.length||inc.duration?`<div class="ic-chips">${dur}${chips}${more}</div>`:''}
+      ${notes}
+    </div>`;
+  }).join('');
+}
+
+function deleteIncident(id){
+  if(!confirm('Delete this log entry?'))return;
+  incidents=incidents.filter(i=>i.id!==id);
+  save(incidents);renderHistory();showToast('🗑️ Entry deleted');
+}
+
+// ── PATTERNS ──
+const HOUR_LABELS=['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
+const TIME_BANDS=[{label:'Night',hours:[0,1,2,3,4,5]},{label:'Morning',hours:[6,7,8,9,10,11]},{label:'Afternoon',hours:[12,13,14,15,16,17]},{label:'Evening',hours:[18,19,20,21,22,23]}];
+const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+document.getElementById('patternPeriod').addEventListener('change',renderPatterns);
+
+function renderPatterns(){
+  const days=document.getElementById('patternPeriod').value;
+  const list=filterByDays([...incidents],days);
+  const el=document.getElementById('patternsContent');
+  if(list.length===0){
+    el.innerHTML=`<div class="log-empty"><div class="le-icon">📊</div><p>No data yet for this period</p><small>Log some incidents to see patterns appear</small></div>`;
+    return;
+  }
+  const total=list.length;
+  const avgInt=(list.reduce((s,i)=>s+i.intensity,0)/total).toFixed(1);
+  const daysLabel=days==='all'?'all time':`last ${days} days`;
+
+  const count=(arr,key)=>{const m={};arr.forEach(inc=>(inc[key]||[]).forEach(v=>{m[v]=(m[v]||0)+1}));return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+  const topTrig=count(list,'triggers').slice(0,6);
+  const topState=count(list,'state').slice(0,5);
+  const topHelped=count(list,'helped').slice(0,5);
+  const topWhere=count(list,'where').slice(0,5);
+
+  const hourCount=new Array(24).fill(0);
+  list.forEach(inc=>{hourCount[new Date(inc.datetime).getHours()]++});
+  const maxHour=Math.max(...hourCount,1);
+  const bandCounts=TIME_BANDS.map(b=>({label:b.label,count:b.hours.reduce((s,h)=>s+hourCount[h],0)}));
+  const peakBand=bandCounts.reduce((a,b)=>b.count>a.count?b:a,bandCounts[0]);
+
+  const dowCount=new Array(7).fill(0);
+  list.forEach(inc=>{dowCount[new Date(inc.datetime).getDay()]++});
+  const maxDow=Math.max(...dowCount,1);
+  const peakDow=DOW[dowCount.indexOf(Math.max(...dowCount))];
+
+  const insights=[];
+  if(peakBand.count>0)insights.push(`Most incidents happen in the <strong>${peakBand.label}</strong> (${peakBand.count} of ${total}).`);
+  if(topTrig[0])insights.push(`<strong>${topTrig[0][0]}</strong> is the most common trigger (${topTrig[0][1]} time${topTrig[0][1]>1?'s':''}).`);
+  if(topState[0])insights.push(`Before incidents, <strong>${topState[0][0]}</strong> is noted most often.`);
+  if(topHelped[0]&&topHelped[0][0]!=='Nothing helped')insights.push(`<strong>${topHelped[0][0]}</strong> tends to help the most.`);
+  if(dowCount.filter(x=>x>0).length>1)insights.push(`<strong>${peakDow}</strong> has the highest frequency this period.`);
+
+  const barRows=(arr,max,color='var(--accent)')=>arr.map(([label,count])=>`
+    <div class="bar-row">
+      <div class="bar-label" title="${label}">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/max*100)}%;background:${color}"></div></div>
+      <div class="bar-count">${count}</div>
+    </div>`).join('');
+
+  const heatCells=hourCount.map((c,h)=>{
+    const pct=c/maxHour;
+    const bg=pct===0?'var(--surface2)':`rgba(46,204,135,${0.15+pct*0.75})`;
+    const tc=pct>0.5?'white':'var(--muted)';
+    return `<div class="time-cell" style="background:${bg};color:${tc}">${HOUR_LABELS[h]}<div class="tc-tip">${HOUR_LABELS[h]}: ${c} incident${c!==1?'s':''}</div></div>`;
+  }).join('');
+
+  el.innerHTML=`
+  <div class="patterns-grid">
+    <div class="stat-card"><h3>Total · ${daysLabel}</h3><div class="big-num">${total}</div></div>
+    <div class="stat-card"><h3>Avg intensity</h3><div class="big-num">${avgInt} <span>/ 10</span></div></div>
+    ${insights.length?`<div class="stat-card full"><h3>✦ Insights</h3>${insights.map(i=>`<div class="insight">${i}</div>`).join('')}</div>`:''}
+    ${topTrig.length?`<div class="stat-card full"><h3>Top triggers</h3>${barRows(topTrig,topTrig[0][1],'var(--amber)')}</div>`:''}
+    <div class="stat-card full"><h3>Time of day</h3><div class="time-grid">${heatCells}</div>
+      <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap">
+        ${bandCounts.map(b=>`<span style="font-size:0.78rem;color:var(--ink2);font-weight:700">${b.label}: <span style="color:var(--accent-d)">${b.count}</span></span>`).join('')}
+      </div></div>
+    ${topState.length?`<div class="stat-card"><h3>State before</h3>${barRows(topState,topState[0][1],'var(--sky)')}</div>`:''}
+    ${topWhere.length?`<div class="stat-card"><h3>Where</h3>${barRows(topWhere,topWhere[0][1],'var(--teal)')}</div>`:''}
+    ${topHelped.length?`<div class="stat-card full"><h3>What helped</h3>${barRows(topHelped,topHelped[0][1],'var(--sage)')}</div>`:''}
+    ${dowCount.some(x=>x>0)?`<div class="stat-card full"><h3>Day of week</h3>
+      <div style="display:flex;gap:6px;align-items:flex-end;height:64px">
+        ${dowCount.map((c,i)=>{const pct=c/maxDow;return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%">
+          <div style="width:100%;border-radius:5px 5px 0 0;background:${pct>0?`rgba(46,204,135,${0.2+pct*0.75})`:'var(--surface2)'};height:${Math.max(pct*100,pct>0?8:0)}%;border:1px solid var(--border)"></div>
+          <span style="font-size:0.65rem;color:var(--muted);font-weight:800">${DOW[i]}</span></div>`;}).join('')}
+      </div></div>`:''}
+  </div>`;
+}
+
+// ── EXPORT ──
+// Strip emojis/non-ASCII so data URIs don't break atob in sandboxed environments
+function stripNonASCII(s){ return String(s).replace(/[^\x09\x0A\x0D\x20-\x7E]/g,''); }
+function csvField(s){ return '"'+stripNonASCII(s).replace(/"/g,'""')+'"'; }
+
+document.getElementById('exportBtn').addEventListener('click',()=>{
+  if(incidents.length===0){showToast('\u26a0\ufe0f Nothing to export yet');return}
+  const lines=[
+    'Date,Time,Intensity,Context,Triggers,State,Where,Duration,Helped,Notes',
+    ...incidents.map(i=>{
+      const dt=new Date(i.datetime);
+      return [
+        stripNonASCII(dt.toLocaleDateString('en-GB')),
+        stripNonASCII(dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})),
+        i.intensity,
+        csvField(i.context||''),
+        csvField((i.triggers||[]).join('; ')),
+        csvField((i.state||[]).join('; ')),
+        csvField((i.where||[]).join('; ')),
+        stripNonASCII(i.duration||''),
+        csvField((i.helped||[]).join('; ')),
+        csvField(i.notes||''),
+      ].join(',');
+    })
+  ];
+  const csv=lines.join('\r\n');
+  // Show copy modal — most reliable cross-environment method
+  showExportModal(csv);
+});
+
+function showExportModal(csv){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(28,58,47,0.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';
+  overlay.innerHTML=`
+    <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:24px;max-width:540px;width:100%;box-shadow:var(--shadow-lg)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h3 style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--ink)">📤 Export CSV</h3>
+        <button id="closeExport" style="font-size:1.2rem;color:var(--muted);cursor:pointer;background:none;border:none;padding:4px 8px">✕</button>
+      </div>
+      <p style="font-size:0.83rem;color:var(--ink2);font-weight:600;margin-bottom:10px">
+        Select all and copy, or use the button below:
+      </p>
+      <textarea id="csvOutput" readonly style="width:100%;height:160px;font-family:monospace;font-size:0.75rem;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;color:var(--ink2);resize:none;line-height:1.4"></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button id="copyCSV" class="btn btn-primary">📋 Copy to clipboard</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  const ta=overlay.querySelector('#csvOutput');
+  ta.value=csv;
+  setTimeout(()=>{ta.focus();ta.select();},50);
+  overlay.querySelector('#closeExport').addEventListener('click',()=>overlay.remove());
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
+  overlay.querySelector('#copyCSV').addEventListener('click',()=>{
+    ta.select();
+    try{
+      navigator.clipboard.writeText(csv).then(()=>{showToast('\u2705 Copied to clipboard!');overlay.remove();});
+    } catch(e){
+      document.execCommand('copy');
+      showToast('\u2705 Copied!');overlay.remove();
+    }
+  });
+}
+
+// ── PRINT (inject into #printArea, call window.print()) ──
+document.getElementById('printBtn').addEventListener('click',()=>{
+  if(incidents.length===0){showToast('\u26a0\ufe0f Nothing to print yet');return}
+  showPrintModal();
+});
+
+function showPrintModal(){
+  const list=filterByDays([...incidents],30).sort((a,b)=>new Date(b.datetime)-new Date(a.datetime));
+  const trigCount={};
+  list.forEach(inc=>(inc.triggers||[]).forEach(t=>{trigCount[t]=(trigCount[t]||0)+1}));
+  const topT=Object.entries(trigCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const avgInt=list.length?(list.reduce((s,i)=>s+i.intensity,0)/list.length).toFixed(1):'-';
+
+  const tableRows=list.slice(0,50).map(inc=>{
+    const dt=new Date(inc.datetime);
+    const tags=[...(inc.triggers||[]),...(inc.state||[])].slice(0,4)
+      .map(s=>s.replace(/[^\x20-\x7E]/g,'')).join(', ');
+    return '<tr>'
+      +'<td>'+dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</td>'
+      +'<td>'+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</td>'
+      +'<td style="text-align:center;font-weight:bold">'+inc.intensity+'</td>'
+      +'<td>'+escHtml(inc.context||'')+'</td>'
+      +'<td style="font-size:8.5pt;color:#555">'+escHtml(tags)+'</td>'
+      +'</tr>';
+  }).join('');
+
+  const trigHtml=topT.map(([t,c])=>'<div class="ptrig">'+t.replace(/[^\x20-\x7E]/g,'')+': <strong>'+c+'</strong></div>').join('');
+
+  // Remove any existing modal
+  const old=document.getElementById('printModal');
+  if(old)old.remove();
+
+  const modal=document.createElement('div');
+  modal.id='printModal';
+  modal.style.cssText='position:fixed;inset:0;z-index:600;display:block';
+  modal.innerHTML=
+    '<div class="pm-overlay" style="position:fixed;inset:0;background:rgba(28,58,47,0.55);backdrop-filter:blur(3px)"></div>'
+    +'<div class="pm-box" style="position:fixed;inset:0;overflow-y:auto;padding:24px;display:flex;align-items:flex-start;justify-content:center">'
+    +'<div style="background:white;border-radius:16px;max-width:640px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.2);padding:28px;margin:auto">'
+    +'<div class="pm-actions" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+    +'<span style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#1C3A2F">🖨️ Print Report</span>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button id="doPrint" style="padding:8px 18px;background:#2ECC87;color:white;border:none;border-radius:100px;font-weight:700;font-size:0.85rem;cursor:pointer">Print this</button>'
+    +'<button id="closeModal" style="padding:8px 14px;background:#EAF4F0;color:#4A6B5E;border:1.5px solid #D0E8DF;border-radius:100px;font-weight:700;font-size:0.85rem;cursor:pointer">Close</button>'
+    +'</div></div>'
+    +'<div class="pm-report" style="font-family:Georgia,serif;color:#111;font-size:11pt">'
+    +'<h1 style="font-size:18pt;margin-bottom:4pt">Trigger Tracker Report</h1>'
+    +'<div class="sub" style="font-size:10pt;color:#666;margin-bottom:12pt">Last 30 days &middot; Private &amp; confidential &middot; '+new Date().toLocaleDateString('en-GB')+'</div>'
+    +'<div class="pstats" style="display:flex;gap:12pt;margin-bottom:12pt">'
+    +'<div class="pstat" style="text-align:center;background:#f5f5f5;padding:8pt 12pt;border-radius:6pt;flex:1"><div class="pstat-n" style="font-size:18pt;font-weight:bold">'+list.length+'</div><div class="pstat-l" style="font-size:9pt;color:#666">Incidents</div></div>'
+    +'<div class="pstat" style="text-align:center;background:#f5f5f5;padding:8pt 12pt;border-radius:6pt;flex:1"><div class="pstat-n" style="font-size:18pt;font-weight:bold">'+avgInt+'</div><div class="pstat-l" style="font-size:9pt;color:#666">Avg Intensity</div></div>'
+    +'<div class="pstat" style="text-align:center;background:#f5f5f5;padding:8pt 12pt;border-radius:6pt;flex:1"><div class="pstat-n" style="font-size:14pt;font-weight:bold">'+(topT[0]?topT[0][0].replace(/[^\x20-\x7E]/g,'').trim():'–')+'</div><div class="pstat-l" style="font-size:9pt;color:#666">Top Trigger</div></div>'
+    +'</div>'
+    +(topT.length?'<h2 style="font-size:11pt;margin:12pt 0 6pt;border-bottom:1pt solid #ccc;padding-bottom:3pt">Top Triggers</h2>'+trigHtml:'')
+    +'<h2 style="font-size:11pt;margin:12pt 0 6pt;border-bottom:1pt solid #ccc;padding-bottom:3pt">Incident Log (last 30 days)</h2>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:9pt">'
+    +'<thead><tr style="background:#f0f0f0"><th style="padding:4pt 6pt;text-align:left">Date</th><th style="padding:4pt 6pt;text-align:left">Time</th><th style="padding:4pt 6pt;text-align:left">Int.</th><th style="padding:4pt 6pt;text-align:left">What happened</th><th style="padding:4pt 6pt;text-align:left">Tags</th></tr></thead>'
+    +'<tbody>'+tableRows+'</tbody></table>'
+    +'</div>'
+    +'</div></div>';
+
+  document.body.appendChild(modal);
+  document.getElementById('closeModal').addEventListener('click',()=>modal.remove());
+  document.getElementById('doPrint').addEventListener('click',()=>window.print());
+}
+
+// ── UTILS ──
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>

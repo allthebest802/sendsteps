@@ -1,0 +1,2 @@
+[build]
+  functions = "task-helper-netlify/netlify/functions"

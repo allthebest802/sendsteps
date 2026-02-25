@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SendSteps – Simple tools for SEND families</title>
+
+  <style>
+    :root{
+      --bg:#f4f8ff;
+      --panel:#ffffff;
+      --panel2:#f8fbff;
+      --text:#1b2a4a;
+      --muted:#5f6f95;
+      --line:rgba(120,170,255,.35);
+      --accent:#78aaff;
+      --radius:18px;
+      --shadow:0 12px 30px rgba(0,0,0,.12);
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(120,170,255,.25), transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, rgba(120,220,180,.22), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    header{
+      max-width:1100px;
+      margin:32px auto 0;
+      padding:0 20px;
+    }
+
+    h1{
+      font-size:clamp(28px, 3vw, 38px);
+      margin:0 0 10px;
+    }
+
+    .tagline{
+      color:var(--muted);
+      max-width:70ch;
+      font-size:16px;
+    }
+
+    main{
+      max-width:1100px;
+      margin:32px auto 80px;
+      padding:0 20px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, var(--panel), var(--panel2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 16px 36px rgba(0,0,0,.16);
+    }
+
+    .card h2{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+
+    .card p{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .card a{
+      align-self:flex-start;
+      text-decoration:none;
+      color:#0b1a3a;
+      border:1px solid var(--line);
+      padding:10px 16px;
+      border-radius:12px;
+      background:rgba(120,170,255,.18);
+      transition:background .15s ease, border-color .15s ease;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .card a:hover{
+      background:rgba(120,170,255,.28);
+      border-color:rgba(120,170,255,.55);
+    }
+
+    .coming{
+      opacity:.7;
+    }
+
+    .info{
+      margin-top:40px;
+      max-width:80ch;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      margin-top:60px;
+      padding:20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    footer a{
+      color:var(--muted);
+      text-decoration:none;
+    }
+
+    footer a:hover{
+      text-decoration:underline;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>SendSteps</h1>
+    <p class="tagline">
+      Simple, practical tools to help SEND children and families break tasks,
+      routines, homework, and difficult feelings into manageable steps.
+      No logins. No judgement. Just support.
+    </p>
+  </header>
+
+  <main>
+    <div class="grid">
+
+      <div class="card">
+        <div>
+          <h2>Visual Routine Builder</h2>
+          <p>
+            Create clear, printable daily routines using simple steps and visual structure.
+            Helpful for transitions, mornings, and reducing anxiety.
+          </p>
+        </div>
+        <a href="/routine/">Open tool</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h2>Meltdown Trigger Tracker</h2>
+          <p>
+            Gently track patterns to understand triggers, intensity,
+            and what helps — without blame or judgement.
+          </p>
+        </div>
+        <a href="/tracker/">Open tool</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h2>Chore & Task Breakdown</h2>
+          <p>
+            Turn overwhelming tasks into tiny, literal steps using SEND-friendly
+            techniques like first/then and micro-steps.
+          </p>
+        </div>
+        <a href="/chores/">Open tool</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h2>Homework Helper</h2>
+          <p>
+            Break homework into calm, manageable steps with reduced pressure,
+            clear starts, and built-in stopping points.
+          </p>
+        </div>
+        <a href="/homework/">Open tool</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <h2>Feelings & Emotion Tools</h2>
+          <p>
+            Help children communicate how they feel using visual scales,
+            emotion words, and simple “what helps” prompts.
+          </p>
+        </div>
+        <a href="/feelings/">Open tool</a>
+      </div>
+
+ <div class="card">
+        <div>
+          <h2>Sensory-Friendly Home Checklist</h2>
+          <p>
+            Parents want to make small home changes but don’t know where to start
+	    This tool can help.
+          </p>
+        </div>
+        <a href="/sensory/">Open tool</a>
+      </div>
+
+<div class="card">
+        <div>
+          <h2>Safe Food List Builder</h2>
+          <p>
+            Add foods, tick the ones that are safe, and sort them into Always, Sometimes, or Not yet.
+          </p>
+        </div>
+        <a href="/safefood/">Open tool</a>
+      </div>
+
+
+      <div class="card coming">
+        <div>
+          <h2>More tools coming</h2>
+          <p>
+            Additional tools for planning, regulation, independence,
+            and reducing daily pressure are being added over time.
+          </p>
+        </div>
+        <a href="#" onclick="return false;">Coming soon</a>
+      </div>
+
+    </div>
+
+    <div class="info">
+      <p>
+        SendSteps is designed for parents, carers, and SEND young people.
+        Everything runs directly in your browser — nothing is uploaded,
+        tracked, or stored on a server.
+      </p>
+      <p>
+        These tools are not medical advice. They are practical aids based on
+        lived experience and common SEND strategies.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      © SendSteps · Built for SEND families<br>
+      <a href="#">Privacy</a> · <a href="#">Contact</a>
+    </p>
+  </footer>
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="reaffaffF" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+</body>
+</html>

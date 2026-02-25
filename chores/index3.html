@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chore Breakdown Generator (SEND-friendly)</title>
+  <style>
+    :root{
+      --bg:#f4f8ff;
+
+      --panel:rgba(255,255,255,.85);
+      --panel2:rgba(255,255,255,.95);
+
+      --text:#1b2a4a;
+      --muted:#5f6f95;
+
+      --line:rgba(120,170,255,.35);
+      --shadow: 0 10px 30px rgba(0,0,0,.12);
+
+      --radius:18px;
+      --radius2:14px;
+
+      --focus: 0 0 0 3px rgba(120,170,255,.45);
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(800px 500px at 10% 10%, rgba(120,170,255,.25), transparent 60%),
+        radial-gradient(700px 500px at 90% 20%, rgba(120,220,180,.25), transparent 60%),
+        radial-gradient(600px 500px at 50% 100%, rgba(255,210,120,.18), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+
+header{
+      max-width: 1180px;
+      margin: 22px auto 0;
+      padding: 0 16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    h1{ margin:0; font-size: clamp(22px, 2.2vw, 30px); }
+    .sub{ margin:6px 0 0; color:var(--muted); max-width: 90ch; font-size:14px; }
+    .wrap{
+      max-width: 1180px;
+      margin: 16px auto 60px;
+      padding: 0 16px;
+      display:grid;
+      grid-template-columns: 440px 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 1020px){ .wrap{ grid-template-columns: 1fr; } }
+
+    .panel{
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHead{ padding: 14px 14px 0; }
+    .panelBody{ padding: 14px; }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    button{
+      font-family:inherit;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor:pointer;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      font-size: 14px;
+      line-height:1;
+    }
+    button:hover{ background: rgba(255,255,255,.07); }
+    button:active{ transform: translateY(1px); }
+    button:focus-visible{ outline:none; box-shadow: var(--focus); }
+    .primary{
+      background: linear-gradient(180deg, rgba(120,170,255,.22), rgba(120,170,255,.10));
+      border-color: rgba(120,170,255,.30);
+    }
+    .ok{
+      background: linear-gradient(180deg, rgba(60,220,170,.18), rgba(60,220,170,.08));
+      border-color: rgba(60,220,170,.28);
+    }
+    .danger{
+      background: linear-gradient(180deg, rgba(255,80,110,.16), rgba(255,80,110,.08));
+      border-color: rgba(255,80,110,.25);
+    }
+    .ghost{ background: transparent; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .grid .full{ grid-column: 1 / -1; }
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    .field label{ font-size: 13px; color: var(--muted); }
+    input[type="text"], textarea, select{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.10);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline:none;
+    }
+    textarea{ min-height: 66px; resize: vertical; }
+    input:focus, textarea:focus, select:focus{ box-shadow: var(--focus); border-color: rgba(120,170,255,.35); }
+
+    .hint{ font-size: 12px; color: var(--muted); margin-top:6px; }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 9px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      user-select:none;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chip[aria-pressed="true"]{
+      color: var(--text);
+      border-color: rgba(120,170,255,.30);
+      background: rgba(120,170,255,.14);
+    }
+
+    .status{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Steps list */
+    .stepsHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 14px;
+      border-bottom:1px solid var(--line);
+    }
+    .stepsHead h2{ margin:0; font-size:16px; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+    }
+    .list{
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .empty{
+      padding: 18px;
+      border: 1px dashed rgba(255,255,255,.22);
+      border-radius: var(--radius2);
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .step{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.04);
+      padding: 10px;
+      display:grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 10px;
+      align-items:flex-start;
+      box-shadow: 0 10px 26px rgba(0,0,0,.18);
+    }
+    .step input[type="checkbox"]{
+      width:18px;height:18px;
+      margin-top:4px;
+      accent-color: rgba(60,220,170,.8);
+    }
+    .stepTitle{
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .stepMeta{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top:4px;
+    }
+    .stepActions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .mini{ padding: 9px 10px; font-size: 13px; }
+    .stepDone{
+      opacity:.72;
+      background: linear-gradient(180deg, var(--ok), rgba(255,255,255,.03));
+      border-color: rgba(60,220,170,.26);
+    }
+
+    /* modal-ish edit row */
+    .editBox{
+      margin-top:10px;
+      padding: 10px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      display:none;
+    }
+    .editBox.open{ display:block; }
+
+    /* Print */
+    @media print{
+      header .noPrint, .noPrint, .leftPanel{ display:none !important; }
+      body{ background:#fff !important; color:#111 !important; }
+      .panel{ border:none !important; box-shadow:none !important; background:#fff !important; }
+      .wrap{ grid-template-columns: 1fr !important; max-width:none !important; margin:0 !important; padding:0 !important; }
+      .step{ box-shadow:none !important; border-color:#ddd !important; background:#fff !important; break-inside: avoid; }
+      .pill{ color:#111 !important; border-color:#ddd !important; }
+      .stepMeta{ color:#444 !important; }
+      @page{ size:A4; margin: 12mm; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Chore Breakdown Generator</h1>
+      <p class="sub">
+        Turn a big task into tiny literal steps. Designed for SEND / executive-function support.
+        No login. Runs locally. You can edit, reorder, print, and save on this device.
+      </p>
+    </div>
+    <div class="row noPrint">
+      <button id="printBtn" class="primary" type="button">Print</button>
+      <button id="exportBtn" type="button">Copy text</button>
+      <button id="clearBtn" class="danger" type="button">Clear</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LEFT -->
+    <section class="panel leftPanel">
+      <div class="panelHead">
+        <h2 style="margin:0 0 6px;font-size:16px;">Generate steps</h2>
+        <div class="hint">Tip: use concrete tasks (“clear desk”, “pack school bag”), not vague ones (“be tidy”).</div>
+      </div>
+      <div class="panelBody">
+        <div class="grid">
+          <div class="field full">
+            <label for="taskInput">Task</label>
+            <input id="taskInput" type="text" maxlength="80" placeholder="e.g., Clean bedroom" />
+          </div>
+
+          <div class="field full">
+            <label for="presetSelect">Start from preset (recommended)</label>
+            <select id="presetSelect"></select>
+            <div class="hint" style="margin-top:6px;">Pick a preset, then edit steps if needed. Custom presets save on this device.</div>
+          </div>
+
+          <div class="field">
+            <label for="styleSelect">Style</label>
+            <select id="styleSelect">
+              <option value="gentle" selected>Gentle (supportive)</option>
+              <option value="direct">Direct (no fluff)</option>
+              <option value="micro">Micro-steps (very small)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="chunkSelect">Chunk size</label>
+            <select id="chunkSelect">
+              <option value="short" selected>Short list (6–10)</option>
+              <option value="medium">Medium (10–16)</option>
+              <option value="long">Long (16–24)</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label>Supports (tap to include)</label>
+            <div class="chips" id="supportChips"></div>
+            <div class="hint">These add steps like timers, “first/then”, sensory tweaks, and breaks.</div>
+          </div>
+
+          <div class="field full">
+            <label for="kidPrefs">Anything to note? (optional)</label>
+            <textarea id="kidPrefs" maxlength="180" placeholder="e.g., hates loud vacuum, needs warning before transitions, likes checklists, prefers 5-min bursts"></textarea>
+          </div>
+        </div>
+
+        <div class="row" style="justify-content:flex-start;margin-top:12px;"><button id="addCustomBtn" class="ok" type="button">Add custom step</button>
+        </div>
+<div class="row" style="justify-content:flex-start;"></div>
+          <div class="hint">Presets replace the current list.</div>
+        </div>
+
+        <div id="customBox" class="editBox">
+          <div style="font-weight:800;margin-bottom:8px;">Add a custom step</div>
+          <div class="field">
+            <label for="customStep">Step text</label>
+            <input id="customStep" type="text" maxlength="120" placeholder="e.g., Put dirty clothes into the laundry basket" />
+          </div>
+          <div class="row" style="justify-content:flex-start;margin-top:10px;">
+            <button id="saveCustomBtn" class="ok" type="button">Add</button>
+            <button id="cancelCustomBtn" class="ghost" type="button">Cancel</button>
+          </div>
+        </div>
+
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="panel">
+      <div class="stepsHead">
+        <div>
+          <h2>Your step list</h2>
+          <div class="pill" id="countPill">0 steps</div>
+        </div>
+        <div class="noPrint" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="resetChecksBtn" type="button">Reset ticks</button>
+        </div>
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="noPrint" style="margin-top:12px;border-top:1px solid rgba(120,170,255,.25);padding-top:12px;">
+        <div style="font-weight:900;margin-bottom:6px;">Edit steps (optional)</div>
+        <div class="hint" style="margin-bottom:8px;">One step per line. This lets you tweak a preset for your child. Nothing is uploaded.</div>
+        <div class="field">
+          <textarea id="stepsEditor" style="width:100%;min-height:140px;"></textarea>
+        </div>
+        <div class="noPrint" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <button id="applyEditsBtn" type="button" class="primary">Apply edits</button>
+          <button id="saveMyPresetBtn" type="button">Save as “My preset”</button>
+        </div>
+        <div class="status" id="presetStatus" aria-live="polite"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const STORAGE_KEY = "send_chore_breakdown_v1";
+      const MY_PRESETS_KEY = "send_chore_breakdown_my_presets_v1";
+
+      const SUPPORTS = [
+        { key:"timer", label:"Use a timer", hint:"Work in short bursts" },
+        { key:"firstThen", label:"First / Then", hint:"Two-step momentum" },
+        { key:"bodyDouble", label:"Body double", hint:"Do it together" },
+        { key:"choice", label:"Give a choice", hint:"Pick between two options" },
+        { key:"sensory", label:"Sensory tweaks", hint:"Lights, noise, clothing" },
+        { key:"breaks", label:"Planned breaks", hint:"Breaks are part of the plan" },
+        { key:"reward", label:"Small reward", hint:"Clear finish line" }
+      ];
+
+      /** @type {{task:string, style:"gentle"|"direct"|"micro", chunk:"short"|"medium"|"long", supports:string[], prefs:string, steps:Array<{id:string,text:string,done:boolean}>}} */
+      let state = {
+        task: "",
+        style: "gentle",
+        chunk: "short",
+        supports: [],
+        prefs: "",
+        steps: []
+      };
+
+      // DOM
+      const $ = (s)=> document.querySelector(s);
+      const taskInput = $("#taskInput");
+      const styleSelect = $("#styleSelect");
+      const chunkSelect = $("#chunkSelect");
+      const kidPrefs = $("#kidPrefs");
+      const supportChips = $("#supportChips");
+      const presetBtn = $("#presetBtn");
+      const addCustomBtn = $("#addCustomBtn");
+
+      const presetBox = $("#presetBox");
+      const customBox = $("#customBox");
+      const customStep = $("#customStep");
+      const saveCustomBtn = $("#saveCustomBtn");
+      const cancelCustomBtn = $("#cancelCustomBtn");
+
+      const printBtn = $("#printBtn");
+      const exportBtn = $("#exportBtn");
+      const clearBtn = $("#clearBtn");
+      const resetChecksBtn = $("#resetChecksBtn");
+
+      const listEl = $("#list");
+      const countPill = $("#countPill");
+      const status = $("#status");
+
+      const presetSelect = $("#presetSelect");
+      const stepsEditor = $("#stepsEditor");
+      const applyEditsBtn = $("#applyEditsBtn");
+      const saveMyPresetBtn = $("#saveMyPresetBtn");
+      const presetStatus = $("#presetStatus");
+
+      function uid(){
+        return (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+      }
+
+      function announce(msg){
+        status.textContent = msg;
+        clearTimeout(announce._t);
+        announce._t = setTimeout(()=> status.textContent="", 2200);
+      }
+
+      function save(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        announce("Saved on this device.");
+      }
+
+      function load(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw){
+            const parsed = JSON.parse(raw);
+            if(parsed && typeof parsed === "object"){
+              state = {...state, ...parsed};
+            }
+          }
+        }catch(e){ /* ignore */ }
+      }
+
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+      function presetAnnounce(msg){
+        presetStatus.textContent = msg;
+        clearTimeout(presetAnnounce._t);
+        presetAnnounce._t = setTimeout(()=> presetStatus.textContent="", 2400);
+      }
+
+      function loadMyPresets(){
+        try{
+          const raw = localStorage.getItem(MY_PRESETS_KEY);
+          if(!raw) return [];
+          const parsed = JSON.parse(raw);
+          if(Array.isArray(parsed)) return parsed.filter(p=>p && typeof p === "object" && typeof p.name === "string" && Array.isArray(p.steps));
+        }catch(e){}
+        return [];
+      }
+
+      function saveMyPresets(arr){
+        localStorage.setItem(MY_PRESETS_KEY, JSON.stringify(arr));
+      }
+
+      function builtInPresetsList(){
+        // map PRESETS object to array
+        const arr = [];
+        Object.keys(PRESETS).forEach(key=>{
+          const p = PRESETS[key];
+          arr.push({
+            id: "builtin:" + key,
+            name: p.task,
+            key,
+            kind: "builtin",
+            task: p.task,
+            style: p.style,
+            chunk: p.chunk,
+            supports: p.supports || [],
+            prefs: p.prefs || ""
+          });
+        });
+        return arr;
+      }
+
+      function renderPresetSelect(){
+        if(!presetSelect) return;
+
+        const builtins = builtInPresetsList();
+        const mine = loadMyPresets().map((p, idx)=>({
+          id: "mine:" + idx,
+          kind: "mine",
+          name: p.name,
+          task: p.task || p.name,
+          style: p.style || "gentle",
+          chunk: p.chunk || "short",
+          supports: Array.isArray(p.supports) ? p.supports : [],
+          prefs: p.prefs || "",
+          steps: p.steps
+        }));
+
+        // Preserve current selection if possible
+        const current = presetSelect.value || "";
+
+        presetSelect.innerHTML = "";
+        const opt0 = document.createElement("option");
+        opt0.value = "";
+        opt0.textContent = "— Choose a preset —";
+        presetSelect.appendChild(opt0);
+
+        const g1 = document.createElement("optgroup");
+        g1.label = "Built-in presets";
+        builtins.forEach(p=>{
+          const o = document.createElement("option");
+          o.value = p.id;
+          o.textContent = p.name;
+          g1.appendChild(o);
+        });
+        presetSelect.appendChild(g1);
+
+        const g2 = document.createElement("optgroup");
+        g2.label = "My presets (this device)";
+        if(mine.length === 0){
+          const o = document.createElement("option");
+          o.value = "mine:none";
+          o.textContent = "No saved presets yet";
+          o.disabled = true;
+          g2.appendChild(o);
+        }else{
+          mine.forEach(p=>{
+            const o = document.createElement("option");
+            o.value = p.id;
+            o.textContent = p.name;
+            g2.appendChild(o);
+          });
+        }
+        presetSelect.appendChild(g2);
+
+        // restore selection if still exists
+        if(current){
+          const exists = Array.from(presetSelect.options).some(o=>o.value === current);
+          if(exists) presetSelect.value = current;
+        }
+      }
+
+      function getPresetById(id){
+        if(!id) return null;
+        if(id.startsWith("builtin:")){
+          const key = id.replace("builtin:","");
+          const p = PRESETS[key];
+          if(!p) return null;
+          return { kind:"builtin", name:p.task, task:p.task, style:p.style, chunk:p.chunk, supports:p.supports||[], prefs:p.prefs||"" };
+        }
+        if(id.startsWith("mine:")){
+          const idx = Number(id.replace("mine:",""));
+          const mine = loadMyPresets();
+          if(!Number.isInteger(idx) || idx < 0 || idx >= mine.length) return null;
+          const p = mine[idx];
+          return { kind:"mine", name:p.name, task:p.task||p.name, style:p.style||"gentle", chunk:p.chunk||"short", supports:p.supports||[], prefs:p.prefs||"", steps:p.steps||[] };
+        }
+        return null;
+      }
+
+      function setSupportsFromPreset(arr){
+        // supports are stored in state.supports and rendered as chips
+        state.supports = Array.isArray(arr) ? [...arr] : [];
+        renderSupports();
+      }
+
+      function setEditorFromSteps(){
+        if(!stepsEditor) return;
+        const lines = (state.steps || []).map(s=>s.text);
+        stepsEditor.value = lines.join("\n");
+      }
+
+      function applyEditsFromEditor(){
+        const raw = (stepsEditor.value || "").split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+        if(raw.length === 0){
+          presetAnnounce("Nothing to apply (editor is empty).");
+          return;
+        }
+        state.steps = raw.map(txt=>({ id: uid(), text: txt, done:false }));
+        save();
+        renderList();
+        presetAnnounce("Edits applied.");
+      }
+
+      function saveCurrentAsMyPreset(){
+        const name = prompt("Name this preset (e.g., Brush teeth – gentle):");
+        if(!name) return;
+        const steps = (state.steps||[]).map(s=>s.text).filter(Boolean);
+        if(steps.length === 0){
+          presetAnnounce("No steps to save yet.");
+          return;
+        }
+
+        const mine = loadMyPresets();
+        mine.unshift({
+          name: name.trim().slice(0,60),
+          task: state.task,
+          style: state.style,
+          chunk: state.chunk,
+          supports: state.supports,
+          prefs: state.prefs,
+          steps
+        });
+
+        // keep it small
+        if(mine.length > 30) mine.length = 30;
+
+        saveMyPresets(mine);
+        renderPresetSelect();
+        presetSelect.value = "mine:0";
+        presetAnnounce("Saved to My presets.");
+      }
+
+
+      function renderSupports(){
+        supportChips.innerHTML = "";
+        SUPPORTS.forEach(s=>{
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "chip";
+          b.textContent = s.label;
+          b.title = s.hint;
+          const on = state.supports.includes(s.key);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+          b.addEventListener("click", ()=>{
+            const isOn = state.supports.includes(s.key);
+            if(isOn) state.supports = state.supports.filter(x => x !== s.key);
+            else state.supports = [...state.supports, s.key];
+            b.setAttribute("aria-pressed", (!isOn) ? "true" : "false");
+            save();
+            autoGenerate();
+          });
+          supportChips.appendChild(b);
+        });
+      }
+
+      function applyInputsToState(){
+        state.task = (taskInput.value || "").trim();
+        state.style = styleSelect.value;
+        state.chunk = chunkSelect.value;
+        state.prefs = (kidPrefs.value || "").trim();
+      }
+
+      
+
+      // Auto-generate steps whenever inputs/supports change (no Generate button)
+      let _autoT = null;
+      function autoGenerate(){
+        clearTimeout(_autoT);
+        _autoT = setTimeout(()=>{
+          applyInputsToState();
+          if(!state.task){
+            save();
+            render();
+            return;
+          }
+          const gen = generateSteps(state.task, state.style, state.chunk, state.supports, state.prefs);
+          state.steps = gen.map(txt=>({ id: uid(), text: txt, done:false }));
+          save();
+          render();
+          if(typeof setEditorFromSteps === "function") setEditorFromSteps();
+        }, 120);
+      }
+
+// ---- Generator logic (no AI, but decent rule-based templates) ----
+      // The key is: small, concrete, single-action steps with clear finish lines.
+            function generateSteps(task, style, chunk, supports, prefs){
+        const t = (task || "").toLowerCase().trim();
+
+        // Determine list size target
+        const target = chunk === "short" ? 9 : (chunk === "medium" ? 14 : 20);
+
+        const toneMap = {
+          gentle: {
+            pre: "Take it one tiny step at a time.",
+            breakLine: "Take a short break (30–60 seconds).",
+            doneLine: "Done. Nice one."
+          },
+          direct: {
+            pre: "Follow the steps. One job each.",
+            breakLine: "Break: 60 seconds.",
+            doneLine: "Finished."
+          },
+          micro: {
+            pre: "We’re going ultra-small. Just do the next tiny step.",
+            breakLine: "Micro-break: 20 seconds.",
+            doneLine: "All steps done."
+          }
+        };
+        const tone = toneMap[style] || toneMap.gentle;
+
+        // Generic supports steps
+        const supportSteps = [];
+
+        if(supports.includes("sensory")){
+          supportSteps.push("Make the space comfy: lights OK, comfy clothes, reduce noise if possible.");
+          supportSteps.push("Choose one sensory helper (headphones / music / fan / hoodie).");
+        }
+
+        if(supports.includes("choice")){
+          if(/teeth|brush\s*teeth|toothbrush|toothpaste/.test(t)){
+            supportSteps.push("Pick ONE to start: (A) get toothbrush, or (B) put toothpaste on.");
+          }else if(/tidy|clean\s+my\s+room|clean\s+room|declutter|organis(e|z)|organizing|organize/.test(t)){
+            supportSteps.push("Pick ONE to start: (A) quick rubbish, or (B) clothes into basket.");
+          }else if(/shower|wash|bath/.test(t)){
+            supportSteps.push("Pick ONE to start: (A) towel + clothes ready, or (B) turn shower on.");
+          }else if(/get\s*dressed|getting\s*dressed|\bdress\b|clothes|uniform/.test(t)){
+            supportSteps.push("Pick ONE to start: (A) choose top, or (B) choose bottoms.");
+          }else if(/homework|revision|study/.test(t)){
+            supportSteps.push("Pick ONE to start: (A) open the book, or (B) write the first tiny goal.");
+          }else{
+            supportSteps.push("Pick ONE to start: the easiest tiny step (or set a 5-minute timer).");
+          }
+        }
+
+        if(supports.includes("bodyDouble")){
+          supportSteps.push("If helpful: ask someone to sit nearby (body double) while you start.");
+        }
+        if(supports.includes("timer")){
+          supportSteps.push(style === "micro" ? "Set a 3-minute timer. We stop when it ends." : "Set a 5-minute timer. We stop when it ends.");
+        }
+        if(supports.includes("firstThen")){
+          supportSteps.push("First/Then: FIRST do the next step. THEN you can do a preferred thing for 2 minutes.");
+        }
+        if(supports.includes("breaks")){
+          supportSteps.push(style === "micro" ? "Plan 3 micro-breaks today. Breaks are part of the plan." : "Plan 2 short breaks. Breaks are part of the plan.");
+        }
+        if(supports.includes("reward")){
+          supportSteps.push("Pick a small finish reward (drink / snack / 10 mins game) and put it on the table.");
+        }
+        if(prefs){
+          supportSteps.push("Note: " + prefs);
+        }
+
+        // Task-specific templates
+        let base = [];
+
+        if(/bedroom|room|tidy|clean my room|clean room/.test(t)){
+          base = [
+            "Put a bin bag (or small bag) in the room.",
+            "Collect obvious rubbish from the floor and surfaces.",
+            "Put dirty clothes into the laundry basket (or make one pile).",
+            "Put clean clothes into one pile (don’t fold yet).",
+            "Clear the bed: put items into a ‘sort later’ pile.",
+            "Put books/papers into one stack.",
+            "Put cups/plates by the door to take out.",
+            "Choose ONE surface (desk or bedside table) and clear it.",
+            "Wipe that one surface with a cloth/tissue.",
+            "Make the bed (even just pull the duvet up).",
+            "Put shoes in one place.",
+            "Put chargers in one place.",
+            "Take the bag of rubbish out of the room.",
+            "Take laundry out of the room.",
+            "Do a 2-minute floor tidy: pick up 10 things only."
+          ];
+        }else if(/homework|revision|study/.test(t)){
+          base = [
+            "Get your homework materials in one place (book / laptop / pen).",
+            "Clear a small space to work (move 3 items only).",
+            "Get water nearby.",
+            "Open the homework and read the first instruction only.",
+            "Write down the first tiny goal (e.g., ‘do question 1’).",
+            "Do question 1 only.",
+            "Check it off.",
+            "Do question 2 only.",
+            "If stuck: write what’s confusing in one sentence.",
+            "Ask for help OR search one example.",
+            "Do one more question.",
+            "Pack away: put items back into the bag."
+          ];
+        }else if(/teeth|brush\s*teeth|toothbrush|toothpaste/.test(t)){
+          base = [
+            "Go to the sink (or bathroom).",
+            "If the light/noise is too much, adjust it first (lamp on, fan off, door partly closed).",
+            "Get toothbrush.",
+            "Put a tiny amount of toothpaste on the brush (pea-sized).",
+            "Turn the tap on briefly and wet the bristles (or skip if you hate that feeling).",
+            "Brush the front teeth (top) for 10 seconds.",
+            "Brush the front teeth (bottom) for 10 seconds.",
+            "Brush the back teeth (one side) for 10 seconds.",
+            "Brush the back teeth (other side) for 10 seconds.",
+            "Brush the chewing surfaces for 10 seconds.",
+            "Spit out toothpaste (no need to rinse if that’s easier).",
+            "Rinse mouth once OR wipe lips/face with a wet cloth (your choice).",
+            "Rinse toothbrush and put it back.",
+            "Done. Nice one."
+          ];
+        }else if(/shower|wash|bath|hygiene/.test(t)){
+          base = [
+            "Get towel + clean clothes ready (place them where you’ll see them).",
+            "Turn on bathroom light / set preferred lighting.",
+            "If helpful: start music or use headphones nearby.",
+            "Turn on shower to comfortable temperature.",
+            "Step into the shower (just that).",
+            "Wet hair and body.",
+            "Use soap/body wash on arms and torso.",
+            "Rinse.",
+            "Wash underarms.",
+            "Rinse.",
+            "Wash hair with shampoo (quick).",
+            "Rinse hair.",
+            "Turn off shower.",
+            "Dry with towel.",
+            "Put on deodorant.",
+            "Get dressed.",
+            "Put dirty clothes into basket."
+          ];
+        }else if(/get\s*dressed|getting\s*dressed|\bdress\b|put\s*on\s*clothes|school\s*uniform|uniform/.test(t)){
+          const socksLast = /sock(s)?\s*last/.test((prefs || "").toLowerCase());
+          const baseSteps = [
+            "Pick where you’ll get dressed (bedroom, bathroom, or warm room).",
+            "If texture is a trigger, choose your ‘safe’ clothes first (softest options).",
+            "Get underwear (or skip if not needed).",
+            "Put on underwear.",
+            "Put on top (t-shirt/shirt).",
+            "Put on bottoms (trousers/leggings/skirt).",
+            "Put on socks.",
+            "Put on shoes (if going out).",
+            "Quick check: comfortable? tags/ seams ok?",
+            "Put dirty pyjamas in the basket.",
+            "Done. Nice one."
+          ];
+          if(socksLast){
+            const withoutSocks = baseSteps.filter(s => s !== "Put on socks.");
+            const insertAt = withoutSocks.indexOf("Put on shoes (if going out).");
+            if(insertAt >= 0) withoutSocks.splice(insertAt, 0, "Put on socks (last).");
+            else withoutSocks.push("Put on socks (last).");
+            base = withoutSocks;
+          }else{
+            base = baseSteps;
+          }
+        }else if(/bag|pack|school bag|rucksack/.test(t)){
+          base = [
+            "Put the bag on the floor/table in front of you.",
+            "Open the bag fully.",
+            "Put laptop/tablet in (if needed).",
+            "Put charger in.",
+            "Put pencil case in.",
+            "Check timetable (or tomorrow’s lessons).",
+            "Put the right book/folder for lesson 1 in.",
+            "Put the right book/folder for lesson 2 in.",
+            "Put homework in (if any).",
+            "Put water bottle in.",
+            "Put snack/lunch in.",
+            "Zip the bag.",
+            "Put the bag by the door."
+          ];
+        }else{
+          base = [
+            "Get everything you need for the task into one place.",
+            "Make the first step tiny (choose the easiest part).",
+            "Start with the quickest visible win (rubbish / obvious items).",
+            "Do one small section only (one corner / one shelf / one drawer).",
+            "Put ‘keep’ items in one pile, ‘move’ items in another.",
+            "Put away the ‘keep’ pile to its home.",
+            "Put away the ‘move’ pile to its home.",
+            "Do a 2-minute finish tidy (10 items only).",
+            "Done."
+          ];
+        }
+
+        const steps = [];
+        steps.push(tone.pre);
+        supportSteps.slice(0,4).forEach(s=> steps.push(s));
+
+        const wantBreaks = supports.includes("breaks") || supports.includes("timer");
+        const breakEvery = style === "micro" ? 3 : 5;
+
+        const expanded = [];
+        for(let i=0;i<base.length;i++){
+          expanded.push(base[i]);
+          if(wantBreaks && i>0 && (i % breakEvery === 0) && expanded.length < base.length + 3){
+            expanded.push(tone.breakLine);
+          }
+        }
+
+        const room = Math.max(6, target - steps.length - 1);
+        let chosen = expanded;
+
+        if(expanded.length > room){
+          const keep = [];
+          const stride = expanded.length / room;
+          for(let k=0;k<room;k++){
+            keep.push(expanded[Math.floor(k*stride)]);
+          }
+          chosen = keep;
+        }else if(expanded.length < room){
+          chosen = expanded.slice();
+          const fillers = [
+            "Put away 5 items only.",
+            "Wipe one surface quickly.",
+            "Take a breath. Check what’s left. Pick the smallest next step.",
+            "Put tools/items back where they belong."
+          ];
+          let fi=0;
+          while(chosen.length < room && fi < fillers.length){
+            chosen.push(fillers[fi++]);
+          }
+        }else{
+          chosen = expanded.slice(0, room);
+        }
+
+        chosen.forEach(s=> steps.push(String(s).trim()));
+        steps.push(tone.doneLine);
+
+        const cleaned = steps
+          .map(s=> String(s||"").trim())
+          .filter(Boolean)
+          .map(s=> s.replace(/\s+/g, " "));
+
+        const final = [];
+        cleaned.forEach(s=>{
+          if(style === "micro" && /\sand\s/i.test(s) && final.length < target+6){
+            const parts = s.split(/\sand\s/i).map(x=>x.trim()).filter(Boolean);
+            if(parts.length === 2 && parts[0].length < 70 && parts[1].length < 70){
+              final.push(parts[0] + ".");
+              final.push(parts[1] + ".");
+              return;
+            }
+          }
+          final.push(s);
+        });
+
+        const maxLen = chunk === "short" ? 12 : (chunk === "medium" ? 18 : 26);
+        return final.slice(0, maxLen);
+      }
+
+      // Presets that feel good out of the box
+      const PRESETS = {
+        bedroom: {
+          task: "Clean bedroom",
+          style: "gentle",
+          chunk: "medium",
+          supports: ["timer","breaks","sensory","firstThen"],
+          prefs: "Keep the lights low. Headphones OK. 5 minutes work, 1 minute break."
+        },
+        homework: {
+          task: "Homework",
+          style: "direct",
+          chunk: "short",
+          supports: ["timer","choice","breaks","firstThen"],
+          prefs: "Start with the easiest question to get momentum."
+        },
+        shower: {
+          task: "Shower",
+          style: "micro",
+          chunk: "medium",
+          supports: ["sensory","timer","firstThen"],
+          prefs: "Warm towel ready. No rushing."
+        },
+        teeth: {
+          task: "Brush teeth",
+          style: "micro",
+          chunk: "short",
+          supports: ["sensory","timer","firstThen","reward"],
+          prefs: "If mint is too strong, try a mild flavour. Keep water warm if cold water is a trigger."
+        },
+        dress: {
+          task: "Get dressed",
+          style: "micro",
+          chunk: "short",
+          supports: ["sensory","timer","firstThen","reward","choice"],
+          prefs: "Lay clothes out first. If socks are a trigger, put socks on last."
+        },
+        bag: {
+          task: "Pack school bag",
+          style: "direct",
+          chunk: "short",
+          supports: ["choice","firstThen"],
+          prefs: "Use timetable (or list) if possible."
+        }
+      };
+
+      function stepsToState(stepStrings){
+        state.steps = stepStrings.map(s => ({ id: uid(), text: s, done: false }));
+      }
+
+      function render(){
+        // inputs
+        taskInput.value = state.task || "";
+        styleSelect.value = state.style || "gentle";
+        chunkSelect.value = state.chunk || "short";
+        kidPrefs.value = state.prefs || "";
+
+        renderSupports();
+
+        // steps
+        countPill.textContent = `${state.steps.length} step${state.steps.length===1?"":"s"}`;
+        listEl.innerHTML = "";
+
+        if(state.steps.length === 0){
+          const div = document.createElement("div");
+          div.className = "empty";
+          div.innerHTML = `
+            <div style="font-weight:800;margin-bottom:6px;">No steps yet</div>
+            <div>Type a task on the left or pick a preset. Steps update automatically. Then tick off steps as you go.</div>
+          `;
+          listEl.appendChild(div);
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+
+        state.steps.forEach((st, idx)=>{
+          const item = document.createElement("div");
+          item.className = "step" + (st.done ? " stepDone" : "");
+          item.setAttribute("data-id", st.id);
+
+          item.innerHTML = `
+            <div>
+              <input type="checkbox" ${st.done ? "checked" : ""} aria-label="Mark step done">
+            </div>
+            <div>
+              <div class="stepTitle">${escapeHtml(st.text)}</div>
+              <div class="stepMeta">Step ${idx+1}</div>
+            </div>
+            <div class="stepActions noPrint">
+              <button class="mini" type="button" data-up="${st.id}" title="Move up">↑</button>
+              <button class="mini" type="button" data-down="${st.id}" title="Move down">↓</button>
+              <button class="mini" type="button" data-edit="${st.id}">Edit</button>
+              <button class="mini danger" type="button" data-del="${st.id}">Delete</button>
+            </div>
+          `;
+
+          // checkbox
+          const cb = item.querySelector('input[type="checkbox"]');
+          cb.addEventListener("change", ()=>{
+            st.done = cb.checked;
+            save();
+            render();
+          });
+
+          frag.appendChild(item);
+        });
+
+        listEl.appendChild(frag);
+
+        // actions
+        listEl.querySelectorAll("button[data-up]").forEach(b=>{
+          b.addEventListener("click", ()=> moveStep(b.dataset.up, -1));
+        });
+        listEl.querySelectorAll("button[data-down]").forEach(b=>{
+          b.addEventListener("click", ()=> moveStep(b.dataset.down, +1));
+        });
+        listEl.querySelectorAll("button[data-del]").forEach(b=>{
+          b.addEventListener("click", ()=>{
+            const id = b.dataset.del;
+            const step = state.steps.find(s=>s.id===id);
+            const ok = confirm(`Delete this step?\n\n"${step?.text || ""}"`);
+            if(!ok) return;
+            state.steps = state.steps.filter(s=>s.id!==id);
+            save();
+            render();
+            announce("Step deleted.");
+          });
+        });
+        listEl.querySelectorAll("button[data-edit]").forEach(b=>{
+          b.addEventListener("click", ()=> editStepPrompt(b.dataset.edit));
+        });
+      }
+
+      function moveStep(id, dir){
+        const idx = state.steps.findIndex(s=>s.id===id);
+        if(idx === -1) return;
+        const ni = idx + dir;
+        if(ni < 0 || ni >= state.steps.length) return;
+        const [item] = state.steps.splice(idx,1);
+        state.steps.splice(ni,0,item);
+        save();
+        render();
+      }
+
+      function editStepPrompt(id){
+        const idx = state.steps.findIndex(s=>s.id===id);
+        if(idx === -1) return;
+        const cur = state.steps[idx].text;
+        const next = prompt("Edit step text:", cur);
+        if(next === null) return;
+        const cleaned = String(next).trim();
+        if(!cleaned){ announce("Step can’t be empty."); return; }
+        state.steps[idx].text = cleaned;
+        save();
+        render();
+        announce("Step updated.");
+      }
+
+      function toggleBox(box){
+        box.classList.toggle("open");
+      }
+      function closeBox(box){ box.classList.remove("open"); }
+
+      // ---- Wire UI ----
+        closeBox(customBox);
+      });
+
+      addCustomBtn.addEventListener("click", ()=>{
+        toggleBox(customBox);customStep.value = "";
+        customStep.focus();
+      });
+
+      saveCustomBtn.addEventListener("click", ()=>{
+        const txt = (customStep.value || "").trim();
+        if(!txt){
+          announce("Type a step.");
+          customStep.focus();
+          return;
+        }
+        state.steps.push({ id: uid(), text: txt, done:false });
+        save();
+        render();
+        closeBox(customBox);
+        announce("Custom step added.");
+      });
+
+      cancelCustomBtn.addEventListener("click", ()=> closeBox(customBox));
+          stepsToState(steps);
+
+          save();
+          render();
+          announce("Preset applied.");closeBox(customBox);
+        });
+      });
+
+
+      if(presetSelect){
+        renderPresetSelect();
+        presetSelect.addEventListener("change", ()=>{
+          const p = getPresetById(presetSelect.value);
+          if(!p) return;
+
+          state.task = p.task || state.task;
+          state.style = p.style || state.style;
+          state.chunk = p.chunk || state.chunk;
+          state.prefs = p.prefs || "";
+
+          taskInput.value = state.task;
+          styleSelect.value = state.style;
+          chunkSelect.value = state.chunk;
+          kidPrefs.value = state.prefs;
+
+          state.supports = Array.isArray(p.supports) ? [...p.supports] : [];
+          renderSupports();
+
+          if(p.kind === "mine" && Array.isArray(p.steps) && p.steps.length){
+            stepsToState(p.steps);
+          }else{
+            const steps = generateSteps(state.task, state.style, state.chunk, state.supports, state.prefs);
+            stepsToState(steps);
+          }
+
+          save();
+          render();
+          if(typeof setEditorFromSteps === "function") setEditorFromSteps();
+          if(typeof presetAnnounce === "function") presetAnnounce("Preset loaded.");
+          announce("Preset loaded.");
+        });
+      }
+
+      resetChecksBtn.addEventListener("click", ()=>{
+        if(state.steps.length === 0) return;
+        state.steps = state.steps.map(s => ({...s, done:false}));
+        save();
+        render();
+        announce("Ticks reset.");
+      });
+
+      printBtn.addEventListener("click", ()=> window.print());
+
+      exportBtn.addEventListener("click", async ()=>{
+        if(state.steps.length === 0){
+          announce("Nothing to export yet.");
+          return;
+        }
+        const lines = [];
+        if(state.task) lines.push(`Task: ${state.task}`);
+        lines.push("");
+        state.steps.forEach((s,i)=>{
+          const tick = s.done ? "[x]" : "[ ]";
+          lines.push(`${tick} ${i+1}. ${s.text}`);
+        });
+        const txt = lines.join("\n");
+
+        try{
+          await navigator.clipboard.writeText(txt);
+          announce("Copied text.");
+        }catch{
+          const ta = document.createElement("textarea");
+          ta.value = txt;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          announce("Copied text.");
+        }
+      });
+
+      clearBtn.addEventListener("click", ()=>{
+        const ok = confirm("Clear task + steps? This cannot be undone.");
+        if(!ok) return;
+        state = { task:"", style:"gentle", chunk:"short", supports:[], prefs:"", steps:[] };
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+        announce("Cleared.");
+      });
+
+      // Auto-generate when inputs change
+      [taskInput, styleSelect, chunkSelect, kidPrefs].forEach(el=>{
+        el.addEventListener("input", ()=> autoGenerate());
+        el.addEventListener("change", ()=> autoGenerate());
+      });
+save();
+        });
+      });
+
+      // ---- init ----
+      // supports from state must be loaded before rendering chips
+      load();
+      renderSupports();
+      // ensure valid supports list
+      state.supports = Array.isArray(state.supports) ? state.supports : [];
+      render();
+      if(typeof renderPresetSelect === "function") renderPresetSelect();
+      announce("Loaded.");
+      if(state.task && (!state.steps || state.steps.length===0)) autoGenerate();
+function load(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw){
+            const parsed = JSON.parse(raw);
+            if(parsed && typeof parsed === "object"){
+              state = {...state, ...parsed};
+              if(!Array.isArray(state.steps)) state.steps = [];
+              if(!Array.isArray(state.supports)) state.supports = [];
+            }
+          }
+        }catch(e){ /* ignore */ }
+      }
+    })();
+  </script>
+</body>
+</html>

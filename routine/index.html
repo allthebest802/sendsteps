@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Routine Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F7F4;
+  --surface:#FFFFFF;
+  --surface2:#EAF4F0;
+  --ink:#1C3A2F;
+  --ink2:#4A6B5E;
+  --muted:#8AA89F;
+  --accent:#2ECC87;
+  --accent-d:#1FA869;
+  --accent2:#FFB347;
+  --accent3:#74C2E1;
+  --accent4:#FF7B7B;
+  --border:#D0E8DF;
+  --radius:18px;
+  --radius-sm:10px;
+  --shadow:0 2px 12px rgba(30,80,60,0.10);
+  --shadow-lg:0 6px 32px rgba(30,80,60,0.13);
+  --font-display:'Baloo 2',cursive;
+  --font-body:'Nunito',sans-serif;
+  --transition:0.18s cubic-bezier(.4,0,.2,1);
+}
+html{font-size:16px}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:60px;
+  background-image:
+    radial-gradient(ellipse at 0% 0%,rgba(46,204,135,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 100% 100%,rgba(116,194,225,0.10) 0%,transparent 50%);
+}
+button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
+input,textarea,select{font-family:var(--font-body)}
+*:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ===== LARGE TEXT MODE ===== */
+body.large-text{font-size:20px}
+body.large-text .card-title{font-size:1.5rem}
+body.large-text .card-time{font-size:1.1rem}
+body.large-text .card-emoji{font-size:2.4rem}
+
+/* ===== HEADER ===== */
+.app-header{
+  background:var(--surface);
+  border-bottom:2px solid var(--border);
+  padding:14px 20px 10px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow);
+}
+.header-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.app-logo{display:flex;align-items:center;gap:10px}
+.app-logo .logo-icon{font-size:2rem;line-height:1}
+.app-logo h1{font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:var(--ink);line-height:1}
+.app-logo h1 span{color:var(--accent)}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:100px;
+  font-size:0.85rem;font-weight:700;
+  transition:all var(--transition);
+  white-space:nowrap;
+}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{background:var(--accent-d);transform:translateY(-1px);box-shadow:0 4px 12px rgba(46,204,135,0.35)}
+.btn-ghost{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--border);color:var(--ink)}
+.btn-ghost.active{background:var(--accent);color:white;border-color:var(--accent)}
+.btn-danger{background:#FEE2E2;color:#B91C1C}
+.btn-danger:hover{background:#FCA5A5}
+.btn-sm{padding:5px 10px;font-size:0.78rem}
+.btn-icon{padding:6px;border-radius:8px;font-size:1rem;background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border)}
+.btn-icon:hover{background:var(--accent);color:white;border-color:var(--accent);transform:scale(1.05)}
+
+/* ===== TOOLBAR ===== */
+.toolbar{
+  max-width:720px;margin:16px auto 0;
+  padding:0 16px;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.toolbar-section{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toolbar-divider{width:1px;height:28px;background:var(--border);margin:0 4px}
+
+/* ===== MAIN ===== */
+.main{max-width:720px;margin:0 auto;padding:20px 16px}
+
+/* ===== SCHEDULE ===== */
+#schedule{display:flex;flex-direction:column;gap:12px;min-height:80px}
+.empty-state{
+  text-align:center;padding:48px 24px;
+  background:var(--surface);border:2px dashed var(--border);
+  border-radius:var(--radius);color:var(--muted);
+}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:12px}
+.empty-state p{font-weight:600;font-size:1rem}
+.empty-state small{font-size:0.85rem;opacity:0.7}
+
+/* ===== ROUTINE CARD ===== */
+.routine-card{
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:var(--radius);
+  display:flex;align-items:stretch;
+  box-shadow:var(--shadow);
+  transition:all var(--transition);
+  animation:cardIn 0.25s ease both;
+  overflow:hidden;
+  position:relative;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(12px) scale(0.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.routine-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.card-color-bar{width:10px;flex-shrink:0;border-radius:0}
+.card-body{flex:1;padding:14px 16px;display:flex;align-items:center;gap:14px;min-width:0}
+.card-emoji{font-size:1.9rem;line-height:1;flex-shrink:0;transition:transform 0.2s}
+.routine-card:hover .card-emoji{transform:scale(1.12)}
+.card-content{flex:1;min-width:0}
+.card-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--ink);line-height:1.2}
+.card-time{font-size:0.82rem;font-weight:700;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:4px}
+.card-time.hidden-time{display:none}
+.card-notes{font-size:0.82rem;color:var(--ink2);margin-top:4px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:360px}
+.card-actions{display:flex;flex-direction:column;gap:4px;padding:10px 10px 10px 0;flex-shrink:0}
+.card-actions-row{display:flex;gap:4px}
+.card-drag-handle{
+  display:flex;align-items:center;padding:0 8px;
+  color:var(--muted);font-size:1.1rem;cursor:grab;
+  transition:color var(--transition);
+}
+.card-drag-handle:hover{color:var(--accent)}
+.card-drag-handle:active{cursor:grabbing}
+
+/* drag-over */
+.routine-card.drag-over{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,204,135,0.25)}
+.routine-card.dragging{opacity:0.4}
+
+/* ===== ADD CARD FORM ===== */
+.add-card-section{
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-bottom:8px;
+  box-shadow:var(--shadow);
+  animation:cardIn 0.2s ease both;
+}
+.add-card-section h3{
+  font-family:var(--font-display);
+  font-weight:800;font-size:1.1rem;
+  color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.form-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:160px}
+.form-group label{font-size:0.78rem;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.5px}
+.form-input{
+  padding:9px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);
+  font-size:0.95rem;color:var(--ink);background:var(--bg);
+  transition:border-color var(--transition);width:100%;
+}
+.form-input:focus{border-color:var(--accent);background:white;outline:none}
+.form-input::placeholder{color:var(--muted)}
+
+/* ===== EMOJI PICKER ===== */
+.emoji-picker{
+  display:flex;flex-wrap:wrap;gap:6px;
+  background:var(--bg);border:2px solid var(--border);
+  border-radius:var(--radius-sm);padding:8px;
+  max-height:120px;overflow-y:auto;
+}
+.ep-btn{
+  font-size:1.4rem;padding:4px;border-radius:6px;
+  background:none;transition:background var(--transition),transform 0.1s;
+  cursor:pointer;line-height:1;border:2px solid transparent;
+}
+.ep-btn:hover{background:var(--surface2);transform:scale(1.15)}
+.ep-btn.selected{background:var(--accent2);border-color:#E8960A}
+.emoji-preview{font-size:2rem;min-width:40px;text-align:center;line-height:1;align-self:flex-end;padding-bottom:6px}
+
+/* ===== COLOR PICKER ===== */
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.color-swatch{
+  width:28px;height:28px;border-radius:50%;
+  border:3px solid transparent;cursor:pointer;
+  transition:transform 0.15s,border-color 0.15s;
+}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.selected{border-color:var(--ink);transform:scale(1.1)}
+
+/* ===== TEMPLATES ===== */
+.templates-bar{
+  display:flex;gap:8px;flex-wrap:wrap;
+  max-width:720px;margin:0 auto;padding:0 16px 4px;
+}
+.template-btn{
+  font-size:0.82rem;font-weight:700;
+  padding:6px 14px;border-radius:100px;
+  background:var(--surface);border:2px solid var(--border);
+  color:var(--ink2);
+  transition:all var(--transition);
+  display:flex;align-items:center;gap:6px;
+}
+.template-btn:hover{background:var(--accent2);border-color:#E8960A;color:var(--ink);transform:translateY(-1px)}
+
+/* ===== SECTION HEADER ===== */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.section-header h2{font-family:var(--font-display);font-weight:800;font-size:1.2rem;color:var(--ink)}
+
+/* ===== FIRST/THEN MODE ===== */
+#firstThenMode{display:none}
+#firstThenMode.active{display:block;animation:cardIn 0.3s ease}
+.ft-container{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow-lg);
+}
+.ft-container h2{font-family:var(--font-display);font-size:1.2rem;font-weight:800;margin-bottom:14px;color:var(--ink)}
+.ft-selects{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.ft-select-group{flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px}
+.ft-select-group label{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)}
+.ft-select-group select{
+  padding:9px 12px;border:2px solid var(--border);
+  border-radius:var(--radius-sm);background:var(--bg);
+  font-size:0.95rem;font-family:var(--font-body);color:var(--ink);
+}
+.ft-display{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center}
+.ft-card{
+  border-radius:var(--radius);padding:28px 20px;
+  text-align:center;border:3px solid var(--border);
+  box-shadow:var(--shadow-lg);transition:all 0.2s;
+}
+.ft-card:hover{transform:scale(1.02)}
+.ft-label{font-family:var(--font-display);font-size:0.9rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:0.6;margin-bottom:8px}
+.ft-emoji{font-size:3.5rem;line-height:1;margin-bottom:8px}
+.ft-title{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--ink)}
+.ft-arrow{font-size:2rem;color:var(--muted);text-align:center}
+.ft-empty{color:var(--muted);font-style:italic;font-size:1rem;font-weight:600}
+
+/* ===== MODAL ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(20,50,40,0.45);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  padding:16px;backdrop-filter:blur(4px);
+  animation:fadeIn 0.15s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--surface);border-radius:var(--radius);
+  padding:24px;max-width:480px;width:100%;
+  box-shadow:var(--shadow-lg);
+  animation:cardIn 0.2s ease;
+  max-height:90vh;overflow-y:auto;
+}
+.modal h3{font-family:var(--font-display);font-weight:800;font-size:1.2rem;margin-bottom:16px;color:var(--ink)}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ===== PRINT (handled via JS popup window) ===== */
+@media print{ body{ display:none } }
+
+/* ===== MOBILE ===== */
+@media(max-width:520px){
+  .app-logo h1{font-size:1.1rem}
+  .ft-display{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  .ft-arrow{transform:rotate(90deg)}
+  .form-row{flex-direction:column}
+  .header-actions{gap:4px}
+  .btn{padding:7px 10px;font-size:0.8rem}
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--ink);color:white;padding:10px 20px;border-radius:100px;
+  font-size:0.88rem;font-weight:700;z-index:999;
+  transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
+  white-space:nowrap;box-shadow:var(--shadow-lg);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header" role="banner">
+  <div class="header-top">
+    <div class="app-logo">
+      <div class="logo-icon" aria-hidden="true">🌿</div>
+      <h1>Visual <span>Routine</span> Builder</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="toggleTimes" aria-pressed="true" title="Show/hide times">🕐 Times</button>
+      <button class="btn btn-ghost btn-sm" id="toggleLargeText" aria-pressed="false" title="Large text mode">🔡 Large</button>
+      <button class="btn btn-ghost btn-sm" id="toggleFT" aria-pressed="false" title="First / Then mode">🔀 First/Then</button>
+      <button class="btn btn-ghost btn-sm" id="printBtn" title="Print schedule">🖨️ Print</button>
+    </div>
+  </div>
+</header>
+
+<!-- TEMPLATES BAR -->
+<div class="templates-bar" role="region" aria-label="Quick templates">
+  <strong style="font-size:0.8rem;color:var(--muted);align-self:center;font-weight:700;">Templates:</strong>
+  <button class="template-btn" data-template="morning">🌅 School Morning</button>
+  <button class="template-btn" data-template="afterschool">🎒 After School</button>
+  <button class="template-btn" data-template="bedtime">🌙 Bedtime</button>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar" role="toolbar" aria-label="Toolbar">
+  <div class="toolbar-section">
+    <button class="btn btn-primary" id="addCardBtn">＋ Add Step</button>
+  </div>
+  <div class="toolbar-divider" aria-hidden="true"></div>
+  <div class="toolbar-section">
+    <button class="btn btn-ghost btn-sm" id="clearAll" title="Clear all cards">🗑️ Clear All</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main" role="main">
+
+  <!-- FIRST/THEN MODE -->
+  <section id="firstThenMode" data-open="false" aria-label="First Then mode" aria-hidden="true">
+    <div class="ft-container">
+      <h2>🔀 First / Then</h2>
+      <div class="ft-selects">
+        <div class="ft-select-group">
+          <label for="ftFirst">First</label>
+          <select id="ftFirst" aria-label="First task"></select>
+        </div>
+        <div class="ft-select-group">
+          <label for="ftThen">Then</label>
+          <select id="ftThen" aria-label="Then task"></select>
+        </div>
+      </div>
+      <div class="ft-display" id="ftDisplay">
+        <div class="ft-card" id="ftFirstCard" style="background:#EDF9F0;border-color:#A7E8C4">
+          <div class="ft-label">First</div>
+          <div class="ft-emoji" id="ftFirstEmoji">—</div>
+          <div class="ft-title" id="ftFirstTitle">Select a step</div>
+        </div>
+        <div class="ft-arrow" aria-hidden="true">→</div>
+        <div class="ft-card" id="ftThenCard" style="background:#EEF4FF;border-color:#A5C3F7">
+          <div class="ft-label">Then</div>
+          <div class="ft-emoji" id="ftThenEmoji">—</div>
+          <div class="ft-title" id="ftThenTitle">Select a step</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADD FORM (hidden by default) -->
+  <div id="addCardForm" style="display:none" role="region" aria-label="Add new step form">
+    <div class="add-card-section">
+      <h3 id="formTitle">✏️ Add a Step</h3>
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label for="inp-title">Title <span aria-hidden="true" style="color:var(--accent4)">*</span></label>
+          <input type="text" id="inp-title" class="form-input" placeholder="e.g. Brush teeth" maxlength="60" required aria-required="true">
+        </div>
+        <div class="form-group" style="flex:1;min-width:120px">
+          <label for="inp-time">Time (optional)</label>
+          <input type="text" id="inp-time" class="form-input" placeholder="e.g. 7:30 AM">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex:1">
+          <label for="inp-notes">Notes (optional)</label>
+          <input type="text" id="inp-notes" class="form-input" placeholder="e.g. Use floss too!" maxlength="120">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="min-width:100%;flex-direction:row;align-items:flex-start;gap:10px">
+          <div style="flex:1">
+            <label style="display:block;font-size:0.78rem;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Choose Emoji</label>
+            <div class="emoji-picker" id="emojiPicker" role="group" aria-label="Emoji picker"></div>
+          </div>
+          <div class="emoji-preview" id="emojiPreview" aria-live="polite" aria-label="Selected emoji">🌟</div>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:6px">
+        <div class="form-group">
+          <label>Background Colour</label>
+          <div class="color-swatches" id="colorSwatches" role="group" aria-label="Background colour picker"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="cancelForm">Cancel</button>
+        <button class="btn btn-primary" id="saveCard">💾 Save Step</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="section-header">
+    <h2>📋 Today's Schedule</h2>
+    <span id="cardCount" style="font-size:0.82rem;color:var(--muted);font-weight:700"></span>
+  </div>
+  <div id="schedule" role="list" aria-label="Routine schedule"></div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ========================
+// DATA & STATE
+// ========================
+const STORAGE_KEY = 'visualRoutineBuilder_v2';
+
+const EMOJI_LIST = [
+  '🌟','⭐','🎯','🏆','✅','🚀','💡','❤️','😊','🎉',
+  '🍳','🥣','🍎','🥛','🧃','🍪','🧁','🍕',
+  '🦷','🚿','🛁','👕','👟','🎒','📚','✏️','📖','🖊️',
+  '🎨','🎮','📺','🎵','🎸','🏃','🚶','🧘','💪','🤸',
+  '🌅','🌙','⏰','💤','🛌','🛏️','🌿','🌈','☀️','🌊',
+  '🐶','🐱','🐸','🦋','🐢','🌻','🍀','🌺',
+  '🚌','🚗','🏠','🏫','🏥','🛒','🎠','🏖️'
+];
+
+const COLOR_OPTIONS = [
+  {label:'White', value:'#FFFFFF', bar:'#D0E8DF'},
+  {label:'Mint', value:'#EDF9F0', bar:'#2ECC87'},
+  {label:'Sky', value:'#EEF6FF', bar:'#74C2E1'},
+  {label:'Peach', value:'#FFF3EC', bar:'#FFB347'},
+  {label:'Rose', value:'#FFF0F0', bar:'#FF7B7B'},
+  {label:'Lavender', value:'#F3F0FF', bar:'#9B8FEF'},
+  {label:'Sun', value:'#FFFAE8', bar:'#F5C842'},
+  {label:'Sage', value:'#EFF4EE', bar:'#7DB87A'},
+];
+
+const TEMPLATES = {
+  morning: [
+    {title:'Wake Up',emoji:'⏰',time:'7:00 AM',notes:'Alarm goes off!',color:COLOR_OPTIONS[3]},
+    {title:'Get Dressed',emoji:'👕',time:'7:05 AM',notes:'Clothes ready night before',color:COLOR_OPTIONS[2]},
+    {title:'Eat Breakfast',emoji:'🥣',time:'7:15 AM',notes:'',color:COLOR_OPTIONS[1]},
+    {title:'Brush Teeth',emoji:'🦷',time:'7:30 AM',notes:'2 minutes with timer',color:COLOR_OPTIONS[0]},
+    {title:'Pack Bag',emoji:'🎒',time:'7:40 AM',notes:'Check list on door',color:COLOR_OPTIONS[4]},
+    {title:'Catch the Bus',emoji:'🚌',time:'7:50 AM',notes:'Meet at the corner',color:COLOR_OPTIONS[6]},
+  ],
+  afterschool: [
+    {title:'Arrive Home',emoji:'🏠',time:'3:30 PM',notes:'Hang up bag & coat',color:COLOR_OPTIONS[1]},
+    {title:'Snack Time',emoji:'🍎',time:'3:35 PM',notes:'Fruit or healthy snack',color:COLOR_OPTIONS[6]},
+    {title:'Free Play',emoji:'🎮',time:'3:50 PM',notes:'30 mins screen or play',color:COLOR_OPTIONS[2]},
+    {title:'Homework',emoji:'📚',time:'4:20 PM',notes:'Quiet spot, no distractions',color:COLOR_OPTIONS[0]},
+    {title:'Outside Time',emoji:'🏃',time:'5:00 PM',notes:'Fresh air & movement',color:COLOR_OPTIONS[3]},
+    {title:'Help with Dinner',emoji:'🍳',time:'5:30 PM',notes:'',color:COLOR_OPTIONS[7]},
+  ],
+  bedtime: [
+    {title:'Tidy Up',emoji:'🏠',time:'7:00 PM',notes:'Put toys away',color:COLOR_OPTIONS[1]},
+    {title:'Bath or Shower',emoji:'🛁',time:'7:15 PM',notes:'',color:COLOR_OPTIONS[2]},
+    {title:'Pyjamas On',emoji:'👕',time:'7:35 PM',notes:'',color:COLOR_OPTIONS[4]},
+    {title:'Brush Teeth',emoji:'🦷',time:'7:40 PM',notes:'2 minute timer',color:COLOR_OPTIONS[0]},
+    {title:'Story Time',emoji:'📖',time:'7:50 PM',notes:'2 books tonight',color:COLOR_OPTIONS[5]},
+    {title:'Lights Out',emoji:'🌙',time:'8:00 PM',notes:'Sleep tight! 🌟',color:COLOR_OPTIONS[6]},
+  ]
+};
+
+let state = {
+  cards: [],
+  showTimes: true,
+  largeText: false,
+  editingId: null,
+  selectedEmoji: '🌟',
+  selectedColor: COLOR_OPTIONS[0],
+};
+
+// Load from localStorage
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state.cards = parsed.cards || [];
+      state.showTimes = parsed.showTimes !== undefined ? parsed.showTimes : true;
+      state.largeText = parsed.largeText || false;
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      cards: state.cards,
+      showTimes: state.showTimes,
+      largeText: state.largeText,
+    }));
+  } catch(e) {}
+}
+
+// ========================
+// RENDER
+// ========================
+function render() {
+  renderSchedule();
+  updateToggles();
+  updateCardCount();
+  updateFTSelects();
+  renderFT();
+  saveState();
+}
+
+function renderSchedule() {
+  const el = document.getElementById('schedule');
+  if (state.cards.length === 0) {
+    el.innerHTML = `<div class="empty-state" role="listitem">
+      <div class="empty-icon">📋</div>
+      <p>No steps yet!</p>
+      <small>Click <strong>+ Add Step</strong> or choose a template above</small>
+    </div>`;
+    return;
+  }
+  el.innerHTML = '';
+  state.cards.forEach((card, i) => {
+    const div = document.createElement('div');
+    div.className = 'routine-card';
+    div.setAttribute('role','listitem');
+    div.setAttribute('draggable','true');
+    div.setAttribute('data-id', card.id);
+    div.setAttribute('aria-label', `Step ${i+1}: ${card.title}`);
+    div.style.animationDelay = `${i*0.04}s`;
+
+    const timeHtml = card.time
+      ? `<div class="card-time ${state.showTimes?'':'hidden-time'}" aria-label="Time: ${card.time}">🕐 ${card.time}</div>`
+      : '';
+    const notesHtml = card.notes
+      ? `<div class="card-notes" title="${escHtml(card.notes)}">${escHtml(card.notes)}</div>`
+      : '';
+
+    div.innerHTML = `
+      <div class="card-color-bar" style="background:${card.color.bar}" aria-hidden="true"></div>
+      <div class="card-drag-handle" aria-hidden="true" title="Drag to reorder">⣿</div>
+      <div class="card-body" style="background:${card.color.value}">
+        <div class="card-emoji" role="img" aria-label="${card.emoji}">${card.emoji}</div>
+        <div class="card-content">
+          <div class="card-title">${escHtml(card.title)}</div>
+          ${timeHtml}
+          ${notesHtml}
+        </div>
+      </div>
+      <div class="card-actions">
+        <div class="card-actions-row">
+          <button class="btn-icon" onclick="moveCard('${card.id}',-1)" title="Move up" aria-label="Move ${card.title} up" ${i===0?'disabled':''}>↑</button>
+          <button class="btn-icon" onclick="moveCard('${card.id}',1)" title="Move down" aria-label="Move ${card.title} down" ${i===state.cards.length-1?'disabled':''}>↓</button>
+        </div>
+        <div class="card-actions-row">
+          <button class="btn-icon" onclick="editCard('${card.id}')" title="Edit" aria-label="Edit ${card.title}">✏️</button>
+          <button class="btn-icon" onclick="deleteCard('${card.id}')" title="Delete" aria-label="Delete ${card.title}" style="background:#FEE2E2;color:#B91C1C;border-color:#FCA5A5">🗑️</button>
+        </div>
+      </div>
+    `;
+
+    // Drag events
+    div.addEventListener('dragstart', onDragStart);
+    div.addEventListener('dragover', onDragOver);
+    div.addEventListener('dragleave', onDragLeave);
+    div.addEventListener('drop', onDrop);
+    div.addEventListener('dragend', onDragEnd);
+
+    el.appendChild(div);
+  });
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function updateToggles() {
+  document.getElementById('toggleTimes').classList.toggle('active', state.showTimes);
+  document.getElementById('toggleLargeText').classList.toggle('active', state.largeText);
+  document.body.classList.toggle('large-text', state.largeText);
+  // Update time visibility in existing cards (avoid full re-render)
+  document.querySelectorAll('.card-time').forEach(el => {
+    el.classList.toggle('hidden-time', !state.showTimes);
+  });
+}
+
+function updateCardCount() {
+  const el = document.getElementById('cardCount');
+  const n = state.cards.length;
+  el.textContent = n === 0 ? '' : `${n} step${n>1?'s':''}`;
+}
+
+// ========================
+// FIRST / THEN
+// ========================
+function updateFTSelects() {
+  const selFirst = document.getElementById('ftFirst');
+  const selThen = document.getElementById('ftThen');
+  const prev1 = selFirst.value;
+  const prev2 = selThen.value;
+  const opts = ['<option value="">— choose —</option>',
+    ...state.cards.map(c=>`<option value="${c.id}">${c.emoji} ${c.title}</option>`)
+  ].join('');
+  selFirst.innerHTML = opts;
+  selThen.innerHTML = opts;
+  if (state.cards.find(c=>c.id===prev1)) selFirst.value = prev1;
+  if (state.cards.find(c=>c.id===prev2)) selThen.value = prev2;
+}
+
+function renderFT() {
+  const firstId = document.getElementById('ftFirst').value;
+  const thenId = document.getElementById('ftThen').value;
+  const first = state.cards.find(c=>c.id===firstId);
+  const then = state.cards.find(c=>c.id===thenId);
+
+  const fc = document.getElementById('ftFirstCard');
+  const tc = document.getElementById('ftThenCard');
+
+  if (first) {
+    fc.style.background = first.color.value;
+    fc.style.borderColor = first.color.bar;
+    document.getElementById('ftFirstEmoji').textContent = first.emoji;
+    document.getElementById('ftFirstTitle').textContent = first.title;
+  } else {
+    document.getElementById('ftFirstEmoji').textContent = '?';
+    document.getElementById('ftFirstTitle').textContent = 'Select a step';
+    fc.style.background = '#EDF9F0';
+    fc.style.borderColor = '#A7E8C4';
+  }
+  if (then) {
+    tc.style.background = then.color.value;
+    tc.style.borderColor = then.color.bar;
+    document.getElementById('ftThenEmoji').textContent = then.emoji;
+    document.getElementById('ftThenTitle').textContent = then.title;
+  } else {
+    document.getElementById('ftThenEmoji').textContent = '?';
+    document.getElementById('ftThenTitle').textContent = 'Select a step';
+    tc.style.background = '#EEF4FF';
+    tc.style.borderColor = '#A5C3F7';
+  }
+}
+
+document.getElementById('ftFirst').addEventListener('change', renderFT);
+document.getElementById('ftThen').addEventListener('change', renderFT);
+
+// ========================
+// EMOJI & COLOUR PICKERS
+// ========================
+function buildEmojiPicker() {
+  const picker = document.getElementById('emojiPicker');
+  picker.innerHTML = '';
+  EMOJI_LIST.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'ep-btn';
+    btn.textContent = e;
+    btn.setAttribute('aria-label', `Emoji ${e}`);
+    btn.setAttribute('type','button');
+    btn.addEventListener('click', () => selectEmoji(e));
+    picker.appendChild(btn);
+  });
+  selectEmoji(state.selectedEmoji);
+}
+
+function selectEmoji(e) {
+  state.selectedEmoji = e;
+  document.getElementById('emojiPreview').textContent = e;
+  document.querySelectorAll('.ep-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent === e);
+  });
+}
+
+function buildColorPicker() {
+  const el = document.getElementById('colorSwatches');
+  el.innerHTML = '';
+  COLOR_OPTIONS.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'color-swatch';
+    btn.style.background = c.value;
+    btn.style.borderColor = c.bar;
+    btn.setAttribute('aria-label', c.label);
+    btn.setAttribute('type','button');
+    btn.addEventListener('click', () => selectColor(c));
+    el.appendChild(btn);
+  });
+  selectColor(state.selectedColor);
+}
+
+function selectColor(c) {
+  state.selectedColor = c;
+  document.querySelectorAll('.color-swatch').forEach((btn, i) => {
+    btn.classList.toggle('selected', COLOR_OPTIONS[i].value === c.value);
+  });
+}
+
+// ========================
+// FORM
+// ========================
+let formVisible = false;
+
+function showForm(clear=true) {
+  formVisible = true;
+  const form = document.getElementById('addCardForm');
+  form.style.display = 'block';
+  document.getElementById('formTitle').textContent = state.editingId ? '✏️ Edit Step' : '✏️ Add a Step';
+  if (clear) {
+    document.getElementById('inp-title').value = '';
+    document.getElementById('inp-time').value = '';
+    document.getElementById('inp-notes').value = '';
+    selectEmoji('🌟');
+    selectColor(COLOR_OPTIONS[0]);
+  }
+  setTimeout(() => document.getElementById('inp-title').focus(), 50);
+  form.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function hideForm() {
+  formVisible = false;
+  state.editingId = null;
+  document.getElementById('addCardForm').style.display = 'none';
+}
+
+document.getElementById('addCardBtn').addEventListener('click', () => {
+  if (formVisible && !state.editingId) { hideForm(); return; }
+  state.editingId = null;
+  buildEmojiPicker();
+  buildColorPicker();
+  showForm(true);
+});
+
+document.getElementById('cancelForm').addEventListener('click', hideForm);
+
+document.getElementById('saveCard').addEventListener('click', () => {
+  const title = document.getElementById('inp-title').value.trim();
+  if (!title) {
+    document.getElementById('inp-title').focus();
+    showToast('⚠️ Please enter a title');
+    return;
+  }
+  const card = {
+    id: state.editingId || uid(),
+    title,
+    time: document.getElementById('inp-time').value.trim(),
+    notes: document.getElementById('inp-notes').value.trim(),
+    emoji: state.selectedEmoji,
+    color: state.selectedColor,
+  };
+  if (state.editingId) {
+    const idx = state.cards.findIndex(c=>c.id===state.editingId);
+    if (idx !== -1) state.cards[idx] = card;
+    showToast('✅ Step updated!');
+  } else {
+    state.cards.push(card);
+    showToast('✅ Step added!');
+  }
+  hideForm();
+  render();
+});
+
+// Enter key in title
+document.getElementById('inp-title').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('saveCard').click();
+});
+
+// ========================
+// CARD ACTIONS
+// ========================
+function moveCard(id, dir) {
+  const idx = state.cards.findIndex(c=>c.id===id);
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= state.cards.length) return;
+  [state.cards[idx], state.cards[newIdx]] = [state.cards[newIdx], state.cards[idx]];
+  render();
+}
+
+function editCard(id) {
+  const card = state.cards.find(c=>c.id===id);
+  if (!card) return;
+  state.editingId = id;
+  buildEmojiPicker();
+  buildColorPicker();
+  showForm(false);
+  document.getElementById('inp-title').value = card.title;
+  document.getElementById('inp-time').value = card.time||'';
+  document.getElementById('inp-notes').value = card.notes||'';
+  selectEmoji(card.emoji);
+  selectColor(card.color);
+}
+
+function deleteCard(id) {
+  const card = state.cards.find(c=>c.id===id);
+  if (!card) return;
+  if (!confirm(`Delete "${card.title}"?`)) return;
+  state.cards = state.cards.filter(c=>c.id!==id);
+  if (state.editingId === id) hideForm();
+  showToast('🗑️ Step deleted');
+  render();
+}
+
+document.getElementById('clearAll').addEventListener('click', () => {
+  if (state.cards.length === 0) return;
+  if (!confirm('Clear all steps? This cannot be undone.')) return;
+  state.cards = [];
+  hideForm();
+  showToast('🗑️ Schedule cleared');
+  render();
+});
+
+// ========================
+// TEMPLATES
+// ========================
+document.querySelectorAll('.template-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.template;
+    const tpl = TEMPLATES[key];
+    if (!tpl) return;
+    if (state.cards.length > 0 && !confirm('Replace current schedule with this template?')) return;
+    state.cards = tpl.map(t => ({...t, id: uid()}));
+    hideForm();
+    showToast(`📋 Template loaded!`);
+    render();
+  });
+});
+
+// ========================
+// TOGGLES
+// ========================
+document.getElementById('toggleTimes').addEventListener('click', function() {
+  state.showTimes = !state.showTimes;
+  this.setAttribute('aria-pressed', state.showTimes);
+  updateToggles();
+  saveState();
+});
+
+document.getElementById('toggleLargeText').addEventListener('click', function() {
+  state.largeText = !state.largeText;
+  this.setAttribute('aria-pressed', state.largeText);
+  updateToggles();
+  saveState();
+});
+
+document.getElementById('toggleFT').addEventListener('click', function() {
+  const ftMode = document.getElementById('firstThenMode');
+  const isActive = ftMode.dataset.open !== 'true';
+  ftMode.dataset.open = isActive ? 'true' : 'false';
+  ftMode.style.display = isActive ? 'block' : 'none';
+  ftMode.setAttribute('aria-hidden', !isActive);
+  this.classList.toggle('active', isActive);
+  this.setAttribute('aria-pressed', isActive);
+  if (isActive) { updateFTSelects(); renderFT(); ftMode.scrollIntoView({behavior:'smooth'}); }
+});
+
+// ========================
+// DRAG AND DROP
+// ========================
+let dragId = null;
+
+function onDragStart(e) {
+  dragId = e.currentTarget.dataset.id;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const card = e.currentTarget;
+  if (card.dataset.id !== dragId) card.classList.add('drag-over');
+}
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function onDrop(e) {
+  e.preventDefault();
+  const targetId = e.currentTarget.dataset.id;
+  e.currentTarget.classList.remove('drag-over');
+  if (!dragId || dragId === targetId) return;
+  const fromIdx = state.cards.findIndex(c=>c.id===dragId);
+  const toIdx = state.cards.findIndex(c=>c.id===targetId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [item] = state.cards.splice(fromIdx, 1);
+  state.cards.splice(toIdx, 0, item);
+  render();
+}
+function onDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.routine-card').forEach(c=>c.classList.remove('drag-over'));
+}
+
+// ========================
+// TOAST
+// ========================
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ========================
+// UTILS
+// ========================
+function uid() {
+  return Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+}
+
+// ========================
+// PRINT
+// ========================
+function printHTML(html) {
+  const old = document.getElementById('__printFrame');
+  if (old) old.remove();
+  const iframe = document.createElement('iframe');
+  iframe.id = '__printFrame';
+  iframe.setAttribute('srcdoc', html);
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none';
+  document.body.appendChild(iframe);
+  iframe.addEventListener('load', () => {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    } catch(e) {
+      const blob = new Blob([html], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.target = '_blank'; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+  });
+}
+
+document.getElementById('printBtn').addEventListener('click', () => {
+  if (state.cards.length === 0) { showToast('⚠️ Nothing to print yet!'); return; }
+
+  const isFT = document.getElementById('firstThenMode').dataset.open === 'true';
+
+  // --- Always build the schedule ---
+  const scheduleRows = state.cards.map((card, i) => {
+    const bar = card.color && card.color.bar   ? card.color.bar   : '#D0E8DF';
+    const bg  = card.color && card.color.value ? card.color.value : '#FFFFFF';
+    const timeRow  = state.showTimes && card.time ? `<div class="pt">&#128336; ${card.time}</div>` : '';
+    const notesRow = card.notes ? `<div class="pn">${card.notes}</div>` : '';
+    return `<div class="pc" style="border-left:8pt solid ${bar};background:${bg}">
+      <div class="pe">${card.emoji}</div>
+      <div class="pd"><div class="ph">${card.title}</div>${timeRow}${notesRow}</div>
+      <div class="pnum">${i + 1}</div>
+    </div>`;
+  }).join('');
+
+  // --- Optionally build the First/Then page ---
+  let ftPage = '';
+  if (isFT) {
+    const firstId = document.getElementById('ftFirst').value;
+    const thenId  = document.getElementById('ftThen').value;
+    const first   = state.cards.find(c => c.id === firstId);
+    const then    = state.cards.find(c => c.id === thenId);
+
+    const makeFTCard = (card, label, defaultBorder, defaultBg) => {
+      const bar   = card && card.color && card.color.bar   ? card.color.bar   : defaultBorder;
+      const bg    = card && card.color && card.color.value ? card.color.value : defaultBg;
+      const emoji = card ? card.emoji : '?';
+      const title = card ? card.title : 'Not selected';
+      const time  = card && state.showTimes && card.time
+        ? `<div class="fttime">&#128336; ${card.time}</div>` : '';
+      return `<div class="ftc" style="border:5pt solid ${bar};background:${bg}">
+        <div class="ftlabel">${label}</div>
+        <div class="ftemoji">${emoji}</div>
+        <div class="fttitle">${title}</div>${time}
+      </div>`;
+    };
+
+    ftPage = `
+      <div class="pagebreak"></div>
+      <div class="ftwrap">
+        <h1>First / Then</h1>
+        <div class="ftrow">
+          ${makeFTCard(first, 'First', '#A7E8C4', '#EDF9F0')}
+          <div class="ftarrow">&#8594;</div>
+          ${makeFTCard(then, 'Then', '#A5C3F7', '#EEF4FF')}
+        </div>
+      </div>`;
+  }
+
+  const html = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Routine Schedule</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Georgia,serif;background:#fff;color:#111;font-size:12pt}
+  /* --- Schedule page --- */
+  .schedwrap{padding:28pt 32pt}
+  h1{font-size:20pt;font-weight:bold;text-align:center;border-bottom:2pt solid #222;
+     padding-bottom:10pt;margin-bottom:18pt}
+  .pc{display:flex;align-items:center;gap:12pt;border:1.5pt solid #bbb;border-radius:8pt;
+      padding:11pt 13pt;margin-bottom:9pt;page-break-inside:avoid;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pe{font-size:24pt;line-height:1;flex-shrink:0;width:36pt;text-align:center}
+  .pd{flex:1}
+  .ph{font-size:14pt;font-weight:bold;color:#111;line-height:1.2}
+  .pt{font-size:10pt;color:#444;font-weight:bold;margin-top:3pt}
+  .pn{font-size:10pt;color:#555;margin-top:3pt}
+  .pnum{font-size:18pt;font-weight:bold;color:#ccc;flex-shrink:0;width:24pt;text-align:right}
+  /* --- Page break --- */
+  .pagebreak{page-break-before:always;break-before:page}
+  /* --- First/Then page --- */
+  .ftwrap{padding:24pt 32pt;display:flex;flex-direction:column;align-items:center}
+  .ftrow{display:flex;gap:20pt;justify-content:center;align-items:stretch;width:100%;margin-top:20pt}
+  .ftc{flex:1;max-width:220pt;border-radius:14pt;padding:28pt 16pt;text-align:center;
+       -webkit-print-color-adjust:exact;print-color-adjust:exact;
+       display:flex;flex-direction:column;align-items:center;gap:12pt}
+  .ftlabel{font-size:12pt;font-weight:bold;text-transform:uppercase;letter-spacing:2pt;color:#666}
+  .ftemoji{font-size:56pt;line-height:1}
+  .fttitle{font-size:20pt;font-weight:bold;color:#111;line-height:1.2}
+  .fttime{font-size:10pt;color:#555;font-weight:bold}
+  .ftarrow{font-size:40pt;color:#bbb;align-self:center;flex-shrink:0}
+</style></head><body>
+<div class="schedwrap">
+  <h1>Daily Routine Schedule</h1>
+  ${scheduleRows}
+</div>
+${ftPage}
+</body></html>`;
+
+  printHTML(html);
+});
+
+// ========================
+// INIT
+// ========================
+loadState();
+buildEmojiPicker();
+buildColorPicker();
+render();
+// restore toggles
+document.getElementById('toggleTimes').setAttribute('aria-pressed', state.showTimes);
+document.getElementById('toggleLargeText').setAttribute('aria-pressed', state.largeText);
+</script>
+</body>
+</html>

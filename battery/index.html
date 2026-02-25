@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Energy Battery Tracker (SEND)</title>
+  <style>
+    :root{
+      --bg:#f7fbff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --line:#dbeafe;
+
+      --primary:#0ea5e9;
+      --primary2:#0284c7;
+
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --low:#ef4444;
+
+      --shadow: 0 10px 24px rgba(15,23,42,.10);
+      --radius:16px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(1100px 650px at 20% 0%, #eef6ff 0%, var(--bg) 60%, #fff 100%) fixed;
+      color:var(--text);
+    }
+    .wrap{ max-width:1100px; margin:24px auto 60px; padding:0 14px; }
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:14px; flex-wrap:wrap;
+    }
+    h1{ margin:0 0 6px; font-size: clamp(22px, 2.6vw, 32px); }
+    .sub{ margin:0; color:var(--muted); font-size:14px; max-width:75ch; }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+    button{
+      border:1px solid rgba(2,132,199,.25);
+      background: linear-gradient(180deg, var(--primary), var(--primary2));
+      color:white;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(2,132,199,.18);
+      font-weight:900;
+      font-size:14px;
+    }
+    button:hover{ filter:brightness(1.03); }
+    button:active{ transform: translateY(1px); }
+    button.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+    button.danger{
+      background:#fff;
+      color:#b91c1c;
+      border:1px solid rgba(239,68,68,.35);
+      box-shadow:none;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 920px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+
+    label{ display:block; font-size:12px; color:var(--muted); margin: 0 0 6px; font-weight:800; }
+    input[type="text"], textarea, select{
+      width:100%;
+      background:#f8fafc;
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      font-family:var(--font);
+    }
+    textarea{ min-height: 80px; resize: vertical; }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(14,165,233,.55);
+      box-shadow: 0 0 0 4px rgba(14,165,233,.14);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 650px){ .row{ grid-template-columns: 1fr; } }
+
+    .adder{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      align-items:end;
+    }
+
+    .pillbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:800;
+      font-size:13px;
+      color:var(--text);
+    }
+    .pill small{ color:var(--muted); font-weight:900; }
+    .pill .x{
+      all:unset;
+      cursor:pointer;
+      font-weight:900;
+      padding:2px 6px;
+      border-radius:8px;
+      color:var(--muted);
+    }
+    .pill .x:hover{ background: rgba(15,23,42,.06); }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 650px){ .split{ grid-template-columns: 1fr; } }
+
+    /* Battery display */
+    .batteryBox{
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+    }
+    .batteryTop{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+      border-bottom:1px solid #e5e7eb;
+      padding-bottom:10px; margin-bottom:10px;
+    }
+    .batteryTop h2{ margin:0; font-size:18px; }
+    .meta{ margin:4px 0 0; color:#374151; font-size:12px; }
+
+    .battery{
+      width:100%;
+      max-width:520px;
+      height:54px;
+      border:2px solid #111827;
+      border-radius:12px;
+      position:relative;
+      overflow:hidden;
+      background:#f3f4f6;
+      margin: 10px 0 6px;
+    }
+    .battery::after{
+      content:"";
+      position:absolute;
+      right:-10px; top:16px;
+      width:16px; height:22px;
+      border:2px solid #111827;
+      border-left:none;
+      border-radius:0 8px 8px 0;
+      background:#f3f4f6;
+    }
+    .fill{
+      height:100%;
+      width: 60%;
+      background: linear-gradient(90deg, var(--good), #86efac);
+      transition: width .25s ease;
+    }
+    .fill.warn{
+      background: linear-gradient(90deg, var(--warn), #fcd34d);
+    }
+    .fill.low{
+      background: linear-gradient(90deg, var(--low), #fca5a5);
+    }
+    .batteryLabel{
+      font-weight:900;
+      font-size:13px;
+      color:#111827;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .levelRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+    .levelRow input[type="range"]{
+      width:min(520px, 100%);
+      accent-color: var(--primary);
+    }
+
+    .lists{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 650px){ .lists{ grid-template-columns: 1fr; } }
+
+    .boxTitle{
+      display:flex; align-items:center; justify-content:space-between;
+      margin:0 0 8px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.6px;
+    }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px; font-weight:900;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+    }
+    .hint{ margin:10px 0 0; color:var(--muted); font-size:12px; }
+
+    /* Print */
+    @media print{
+      header, .grid .card:first-child, .actions, .hint { display:none !important; }
+      body{ background:#fff; }
+      .wrap{ margin:0; max-width:none; padding:0; }
+      .grid{ grid-template-columns: 1fr; }
+      .card{ border:none; box-shadow:none; padding:0; }
+      .batteryBox{ border:none; padding:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Energy Battery Tracker</h1>
+        <p class="sub">
+          A simple way to explain “running low” before it becomes a meltdown.
+          Add <b>drains</b> and <b>chargers</b>, set today’s battery size, and print.
+        </p>
+      </div>
+      <div class="actions">
+        <button id="btnPrint">Print</button>
+        <button id="btnReset" class="danger">Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Builder -->
+      <section class="card" aria-label="Builder">
+        <div class="row">
+          <div>
+            <label for="childName">Name (optional)</label>
+            <input id="childName" type="text" placeholder="e.g., Andreas" />
+          </div>
+          <div>
+            <label for="batterySize">Battery size for today</label>
+            <select id="batterySize">
+              <option value="small">Small day</option>
+              <option value="medium" selected>Medium day</option>
+              <option value="big">Big day</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="schoolDay">Day type (optional)</label>
+            <select id="schoolDay">
+              <option value="">Choose…</option>
+              <option value="school">School day</option>
+              <option value="weekend">Weekend</option>
+              <option value="appointment">Appointment day</option>
+              <option value="travel">Travel day</option>
+              <option value="new">New/Change day</option>
+            </select>
+          </div>
+          <div>
+            <label for="lowPlan">When battery is low, try…</label>
+            <input id="lowPlan" type="text" placeholder="e.g., snack + quiet room + headphones" />
+          </div>
+        </div>
+
+        <div class="split">
+          <div>
+            <label for="drainInput">Add an energy drain</label>
+            <div class="adder">
+              <input id="drainInput" type="text" placeholder="e.g., PE, assembly, noisy classroom" />
+              <button id="addDrain" class="secondary">Add</button>
+            </div>
+            <div class="pillbar" id="drains"></div>
+            <p class="hint">Keep these short. They’re just cues, not a diary.</p>
+          </div>
+
+          <div>
+            <label for="chargeInput">Add an energy charger</label>
+            <div class="adder">
+              <input id="chargeInput" type="text" placeholder="e.g., alone time, music, snack, walk" />
+              <button id="addCharge" class="secondary">Add</button>
+            </div>
+            <div class="pillbar" id="charges"></div>
+            <p class="hint">Chargers are the things that help recovery.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="notes">Notes (optional)</label>
+            <textarea id="notes" placeholder="e.g., Big change today. Keep demands low after school."></textarea>
+          </div>
+          <div>
+            <label for="level">Current energy level</label>
+            <div class="levelRow">
+              <input id="level" type="range" min="0" max="100" value="65" />
+              <span class="tag" id="levelTag">65%</span>
+            </div>
+            <p class="hint">You can adjust this any time. The printout shows the current level.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Printable Preview -->
+      <aside class="card" aria-label="Printable Preview">
+        <div class="batteryBox" id="printArea">
+          <div class="batteryTop">
+            <div>
+              <h2 id="title">Energy Battery</h2>
+              <div class="meta" id="subtitle">A quick visual to help notice when energy is running low.</div>
+            </div>
+            <div class="meta" style="text-align:right;">
+              Updated: <span id="date"></span>
+            </div>
+          </div>
+
+          <div class="batteryLabel">
+            <span id="sizeLabel">Battery size: Medium day</span>
+            <span id="dayLabel"></span>
+          </div>
+
+          <div class="battery" aria-label="Battery visual">
+            <div class="fill" id="fill"></div>
+          </div>
+
+          <div class="batteryLabel">
+            <span>Current level</span>
+            <span id="levelOut">65%</span>
+          </div>
+
+          <div class="lists">
+            <div>
+              <div class="boxTitle">
+                <span>Drains</span>
+                <span class="tag">Things that use energy</span>
+              </div>
+              <ul id="drainList"></ul>
+            </div>
+            <div>
+              <div class="boxTitle">
+                <span>Chargers</span>
+                <span class="tag">Things that restore energy</span>
+              </div>
+              <ul id="chargeList"></ul>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; border:1px solid #e5e7eb; border-radius:12px; padding:10px;">
+            <div class="boxTitle" style="margin:0 0 6px;">
+              <span>When low, try…</span>
+              <span class="tag">Simple plan</span>
+            </div>
+            <div class="meta" id="lowPlanOut">Snack + quiet room + headphones</div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <div class="boxTitle" style="margin:0 0 6px;">
+              <span>Notes</span>
+              <span class="tag">Optional</span>
+            </div>
+            <div class="meta" id="notesOut">—</div>
+          </div>
+        </div>
+
+        <p class="hint">
+          Printing tip: use “Fit to page” if your printer crops the sides.
+        </p>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "sendsteps_energy_battery_v1";
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      childName: "",
+      batterySize: "medium",
+      schoolDay: "",
+      level: 65,
+      drains: [],
+      charges: [],
+      lowPlan: "Snack + quiet room + headphones",
+      notes: ""
+    };
+
+    function save(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const s = JSON.parse(raw);
+        if(!s || typeof s !== "object") return;
+
+        state.childName = s.childName || "";
+        state.batterySize = s.batterySize || "medium";
+        state.schoolDay = s.schoolDay || "";
+        state.level = Number.isFinite(+s.level) ? Math.max(0, Math.min(100, +s.level)) : 65;
+        state.drains = Array.isArray(s.drains) ? s.drains.filter(x=>typeof x==="string").slice(0,50) : [];
+        state.charges = Array.isArray(s.charges) ? s.charges.filter(x=>typeof x==="string").slice(0,50) : [];
+        state.lowPlan = s.lowPlan || "Snack + quiet room + headphones";
+        state.notes = s.notes || "";
+      }catch{}
+    }
+
+    function uniqPush(arr, value){
+      const v = value.trim();
+      if(!v) return;
+      const exists = arr.some(x => x.toLowerCase() === v.toLowerCase());
+      if(!exists) arr.push(v);
+    }
+
+    function removeItem(arr, value){
+      const idx = arr.findIndex(x => x === value);
+      if(idx >= 0) arr.splice(idx,1);
+    }
+
+    function pill(text, kind){
+      const el = document.createElement("div");
+      el.className = "pill";
+      el.innerHTML = `<span>${escapeHtml(text)}</span> <small>${kind}</small> <button class="x" title="Remove" aria-label="Remove">×</button>`;
+      el.querySelector("button").addEventListener("click", ()=>{
+        if(kind === "drain") removeItem(state.drains, text);
+        else removeItem(state.charges, text);
+        save();
+        render();
+      });
+      return el;
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    function sizeText(size){
+      if(size==="small") return "Small day";
+      if(size==="big") return "Big day";
+      return "Medium day";
+    }
+
+    function render(){
+      // inputs
+      $("childName").value = state.childName;
+      $("batterySize").value = state.batterySize;
+      $("schoolDay").value = state.schoolDay;
+      $("level").value = state.level;
+      $("levelTag").textContent = state.level + "%";
+      $("lowPlan").value = state.lowPlan;
+      $("notes").value = state.notes;
+
+      // pills
+      const drainsHost = $("drains");
+      const chargesHost = $("charges");
+      drainsHost.innerHTML = "";
+      chargesHost.innerHTML = "";
+      state.drains.slice().sort((a,b)=>a.localeCompare(b)).forEach(t=> drainsHost.appendChild(pill(t,"drain")));
+      state.charges.slice().sort((a,b)=>a.localeCompare(b)).forEach(t=> chargesHost.appendChild(pill(t,"charge")));
+
+      // print view
+      const name = state.childName.trim();
+      $("title").textContent = name ? `Energy Battery for ${name}` : "Energy Battery";
+      $("date").textContent = new Date().toLocaleDateString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+
+      $("sizeLabel").textContent = `Battery size: ${sizeText(state.batterySize)}`;
+      $("dayLabel").textContent = state.schoolDay ? `Day: ${labelDay(state.schoolDay)}` : "";
+
+      $("levelOut").textContent = state.level + "%";
+
+      const fill = $("fill");
+      fill.style.width = state.level + "%";
+      fill.classList.remove("warn","low");
+      if(state.level <= 25) fill.classList.add("low");
+      else if(state.level <= 55) fill.classList.add("warn");
+
+      // lists in print view
+      renderList($("drainList"), state.drains);
+      renderList($("chargeList"), state.charges);
+
+      $("lowPlanOut").textContent = state.lowPlan.trim() ? state.lowPlan.trim() : "—";
+      $("notesOut").textContent = state.notes.trim() ? state.notes.trim() : "—";
+    }
+
+    function renderList(ul, arr){
+      ul.innerHTML = "";
+      const items = arr.slice().sort((a,b)=>a.localeCompare(b));
+      if(items.length === 0){
+        const li = document.createElement("li");
+        li.textContent = "—";
+        li.style.color = "#6b7280";
+        ul.appendChild(li);
+        return;
+      }
+      items.forEach(t=>{
+        const li = document.createElement("li");
+        li.textContent = t;
+        ul.appendChild(li);
+      });
+    }
+
+    function labelDay(v){
+      const map = {
+        school:"School day",
+        weekend:"Weekend",
+        appointment:"Appointment day",
+        travel:"Travel day",
+        new:"New/Change day"
+      };
+      return map[v] || v;
+    }
+
+    function addDrain(){
+      const v = $("drainInput").value.trim();
+      if(!v) return;
+      uniqPush(state.drains, v);
+      $("drainInput").value = "";
+      save(); render();
+      $("drainInput").focus();
+    }
+    function addCharge(){
+      const v = $("chargeInput").value.trim();
+      if(!v) return;
+      uniqPush(state.charges, v);
+      $("chargeInput").value = "";
+      save(); render();
+      $("chargeInput").focus();
+    }
+
+    // wire events
+    $("addDrain").addEventListener("click", addDrain);
+    $("addCharge").addEventListener("click", addCharge);
+    $("drainInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addDrain(); });
+    $("chargeInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addCharge(); });
+
+    $("childName").addEventListener("input", (e)=>{ state.childName = e.target.value; save(); render(); });
+    $("batterySize").addEventListener("change", (e)=>{ state.batterySize = e.target.value; save(); render(); });
+    $("schoolDay").addEventListener("change", (e)=>{ state.schoolDay = e.target.value; save(); render(); });
+    $("level").addEventListener("input", (e)=>{ state.level = +e.target.value; save(); render(); });
+    $("lowPlan").addEventListener("input", (e)=>{ state.lowPlan = e.target.value; save(); render(); });
+    $("notes").addEventListener("input", (e)=>{ state.notes = e.target.value; save(); render(); });
+
+    $("btnPrint").addEventListener("click", ()=> window.print());
+    $("btnReset").addEventListener("click", ()=>{
+      const ok = confirm("Reset everything? This clears the data saved on this device.");
+      if(!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state.childName="";
+      state.batterySize="medium";
+      state.schoolDay="";
+      state.level=65;
+      state.drains=[];
+      state.charges=[];
+      state.lowPlan="Snack + quiet room + headphones";
+      state.notes="";
+      save(); render();
+    });
+
+    load();
+    render();
+  </script>
+</body>
+</html>

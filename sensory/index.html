@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sensory-Friendly Home Checklist (Room-by-room)</title>
+  <style>
+    :root{
+      --bg:#f4f8ff;
+      --panel:rgba(255,255,255,.86);
+      --panel2:rgba(255,255,255,.96);
+      --text:#1b2a4a;
+      --muted:#5f6f95;
+      --line:rgba(120,170,255,.35);
+      --shadow:0 10px 30px rgba(0,0,0,.12);
+      --radius:18px;
+      --focus:0 0 0 3px rgba(120,170,255,.45);
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(120,170,255,.25), transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, rgba(120,220,180,.22), transparent 60%),
+        radial-gradient(700px 500px at 50% 100%, rgba(255,210,120,.18), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+
+    header{
+      max-width:1180px;
+      margin:22px auto 0;
+      padding:0 16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    h1{ margin:0; font-size:clamp(22px, 2.2vw, 30px); }
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      max-width:92ch;
+      font-size:14px;
+    }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+
+    button{
+      font-family:inherit;
+      border:1px solid rgba(120,170,255,.45);
+      background: rgba(120,170,255,.16);
+      color: #0b1a3a;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor:pointer;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      font-size: 14px;
+      line-height:1;
+      user-select:none;
+    }
+    button:hover{ background: rgba(120,170,255,.24); border-color: rgba(120,170,255,.65); }
+    button:active{ transform: translateY(1px); }
+    button:focus-visible{ outline:none; box-shadow: var(--focus); }
+
+    .primary{
+      background: linear-gradient(180deg, #9fc2ff, #78aaff);
+      border-color:#78aaff;
+      color:#0b1a3a;
+      font-weight:700;
+    }
+    .ok{
+      background: linear-gradient(180deg, #9fe3c8, #6fd6b2);
+      border-color:#6fd6b2;
+      color:#0b2a1d;
+      font-weight:700;
+    }
+    .danger{
+      background: linear-gradient(180deg, #ffb3c1, #ff8fa3);
+      border-color:#ff8fa3;
+      color:#3a0b14;
+      font-weight:700;
+    }
+
+    .wrap{
+      max-width:1180px;
+      margin:16px auto 70px;
+      padding:0 16px;
+      display:grid;
+      grid-template-columns: 460px 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 1020px){ .wrap{ grid-template-columns: 1fr; } }
+
+    .panel{
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .panelHead{
+      padding:14px 14px 0;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .panelHead h2{ margin:0; font-size:16px; }
+    .panelHead .small{ color:var(--muted); font-size:12px; margin-top:4px; }
+
+    .panelBody{ padding:14px; }
+
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    .field label{ font-size:13px; color:var(--muted); }
+    input[type="text"], textarea, select{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid rgba(120,170,255,.35);
+      background: rgba(255,255,255,.7);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline:none;
+    }
+    textarea{ min-height: 70px; resize: vertical; }
+    input:focus, textarea:focus, select:focus{ box-shadow: var(--focus); border-color: rgba(120,170,255,.6); }
+
+    .hint{ font-size:12px; color:var(--muted); }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(120,170,255,.35);
+      background: rgba(255,255,255,.55);
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+    }
+
+    .rooms{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(120,170,255,.35);
+      background: rgba(255,255,255,.55);
+      cursor:pointer;
+      user-select:none;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .chip[aria-pressed="true"]{
+      border-color: rgba(120,170,255,.65);
+      background: rgba(120,170,255,.18);
+    }
+
+    .sectionTitle{
+      font-weight:900;
+      margin: 14px 0 8px;
+      font-size: 14px;
+    }
+
+    .checklist{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .item{
+      border:1px solid rgba(120,170,255,.25);
+      border-radius: 16px;
+      background: rgba(255,255,255,.62);
+      padding: 12px;
+      display:grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items:start;
+    }
+    .item input[type="checkbox"]{
+      width:18px; height:18px;
+      margin-top:2px;
+      accent-color: #78aaff;
+    }
+    .itemTitle{
+      font-weight:900;
+      font-size:14px;
+      margin:0;
+    }
+    .itemDesc{
+      color:var(--muted);
+      font-size:12px;
+      margin:4px 0 0;
+    }
+
+    .noteBox{
+      margin-top:12px;
+      border:1px dashed rgba(120,170,255,.35);
+      background: rgba(255,255,255,.65);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .noteBox .label{ font-weight:900; font-size:13px; margin-bottom:6px; }
+    .noteBox textarea{ min-height: 90px; }
+
+    .preview{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .planCard{
+      border:1px solid rgba(120,170,255,.35);
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+    .planCard h3{
+      margin:0;
+      font-size:15px;
+    }
+    .planCard .meta{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .todo{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .todoRow{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      margin-top:5px;
+      background: rgba(120,170,255,.55);
+      flex:0 0 auto;
+    }
+    .todoText{
+      font-size:13px;
+      color: var(--text);
+    }
+    .todoText small{
+      display:block;
+      color: var(--muted);
+      margin-top:2px;
+      font-size:12px;
+    }
+
+    .status{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    @media print{
+      header .noPrint, .noPrint{ display:none !important; }
+      body{ background:#fff !important; color:#111 !important; }
+      .panel{ border:none !important; box-shadow:none !important; background:#fff !important; }
+      .wrap{ grid-template-columns: 1fr !important; max-width:none !important; margin:0 !important; padding:0 !important; }
+      .planCard{ box-shadow:none !important; }
+      @page{ size:A4; margin: 12mm; }
+      a[href]:after{ content:""; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <h1>Sensory-Friendly Home Checklist</h1>
+      <p class="sub">
+        Make small, practical changes at home (room by room). Focus on noise, lighting, and textures.
+        Build a simple printable plan. No accounts, no backend — everything stays on this device.
+      </p>
+    </div>
+    <div class="row noPrint">
+      <button class="primary" id="printBtn" type="button">Print plan</button>
+      <button id="copyBtn" type="button">Copy plan text</button>
+      <button class="danger" id="resetBtn" type="button">Reset</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LEFT: BUILDER -->
+    <section class="panel" aria-label="Checklist builder">
+      <div class="panelHead">
+        <div>
+          <h2>Choose a room</h2>
+          <div class="small">Tick what’s worth trying. Keep it small. One change is progress.</div>
+        </div>
+        <div class="pill">Local only</div>
+      </div>
+
+      <div class="panelBody">
+        <div class="field">
+          <label for="roomSelect">Room</label>
+          <select id="roomSelect"></select>
+        </div>
+
+        <div class="sectionTitle">Quick presets</div>
+        <div class="rooms noPrint" id="presetChips"></div>
+        <div class="hint">Tip: start with the room where stress happens most (morning routine, homework, bedtime).</div>
+
+        <hr style="border:none;border-top:1px solid rgba(120,170,255,.25);margin:14px 0;" />
+
+        <div class="sectionTitle">Noise</div>
+        <div class="checklist" id="noiseList"></div>
+
+        <div class="sectionTitle">Lighting</div>
+        <div class="checklist" id="lightList"></div>
+
+        <div class="sectionTitle">Textures & touch</div>
+        <div class="checklist" id="textureList"></div>
+
+        <div class="noteBox">
+          <div class="label">Notes for this room (optional)</div>
+          <textarea id="notes" placeholder="What triggers stress here? What helps? Any quick wins?"></textarea>
+          <div class="hint" style="margin-top:6px;">Example: “Fan noise after school”, “Bright ceiling light”, “Scratchy blanket”.</div>
+        </div>
+
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: PLAN / PREVIEW -->
+    <section class="panel" aria-label="Printable plan">
+      <div class="panelHead">
+        <div>
+          <h2>Your printable plan</h2>
+          <div class="small">This updates as you tick items. Print any time.</div>
+        </div>
+        <div class="pill" id="countPill">0 selected</div>
+      </div>
+
+      <div class="panelBody">
+        <div class="preview">
+          <div class="planCard">
+            <h3 id="planTitle">Plan: Living room</h3>
+            <div class="meta" id="planMeta">Small changes to try</div>
+            <div class="todo" id="planList"></div>
+          </div>
+
+          <div class="planCard">
+            <h3>Next step (keep it tiny)</h3>
+            <div class="meta">Pick just one to try this week</div>
+            <div class="todo">
+              <div class="todoRow">
+                <div class="dot"></div>
+                <div class="todoText">
+                  Try: <strong id="nextStep">—</strong>
+                  <small id="nextStepSmall">Tick a few items on the left and one will appear here.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="planCard">
+            <h3>Safety + comfort reminder</h3>
+            <div class="meta">Not medical advice — just practical support</div>
+            <div class="todo">
+              <div class="todoRow"><div class="dot"></div><div class="todoText">Reduce demands first. Then adjust the environment.</div></div>
+              <div class="todoRow"><div class="dot"></div><div class="todoText">Test changes gradually. Too many changes at once can backfire.</div></div>
+              <div class="todoRow"><div class="dot"></div><div class="todoText">If something helps, keep it. If not, drop it. No guilt.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const STORAGE_KEY = "sendsteps_sensory_home_checklist_v1";
+
+      // Rooms + checklists
+      const DATA = {
+        "Living room": {
+          noise: [
+            { t:"Add a ‘quiet corner’", d:"A small spot with cushions/headphones/blanket to decompress." },
+            { t:"Reduce background noise", d:"Turn off TV/radio unless it’s helpful. Use subtitles if needed." },
+            { t:"Soften echo", d:"Try a rug, curtains, or a throw to reduce sharp sound." },
+            { t:"Create a signal for ‘too loud’", d:"A card/hand sign so they can ask to reduce noise without talking." }
+          ],
+          light: [
+            { t:"Avoid bright overhead light", d:"Try a lamp instead (softer, calmer)." },
+            { t:"Use consistent lighting", d:"Sudden changes can be hard. Keep similar brightness if possible." },
+            { t:"Reduce glare", d:"Close blinds slightly, move screens away from reflections." }
+          ],
+          texture: [
+            { t:"Offer a comfort texture", d:"Soft blanket, smooth fidget, favourite cushion." },
+            { t:"Watch for ‘scratchy’ fabrics", d:"Some throws/sofas feel rough and can raise stress." },
+            { t:"Provide movement options", d:"Rocking cushion, wobble stool, small footrest." }
+          ]
+        },
+
+        "Bedroom": {
+          noise: [
+            { t:"Use white noise (optional)", d:"If helpful: fan app/white noise at low volume." },
+            { t:"Block outside noise", d:"Heavy curtains, draft excluder, door seal strip (cheap)." },
+            { t:"Reduce sudden sounds", d:"Soft-close pads on drawers/doors can help." }
+          ],
+          light: [
+            { t:"Warm, dim bedside light", d:"Avoid harsh ‘blue’ light before sleep." },
+            { t:"Blackout option", d:"Blackout blind or eye mask if light sensitivity is strong." },
+            { t:"Night light choice", d:"Let them choose colour/brightness if possible." }
+          ],
+          texture: [
+            { t:"Check bedding texture", d:"Tags, seams, scratchy fabric can be a hidden trigger." },
+            { t:"Offer pressure option", d:"Heavy blanket or layered blankets (only if safe/comfortable)." },
+            { t:"Clothing comfort plan", d:"Set out soft ‘safe’ clothes for morning transitions." }
+          ]
+        },
+
+        "Kitchen / dining": {
+          noise: [
+            { t:"Reduce appliance noise exposure", d:"Kettle/blender can be intense. Warn before turning on." },
+            { t:"Ear defenders nearby", d:"Make them easy to grab without asking." },
+            { t:"Create a quiet seat", d:"A seat away from clanging dishes / extractor fan." }
+          ],
+          light: [
+            { t:"Avoid flicker", d:"Some bulbs flicker and cause stress. Swap if possible." },
+            { t:"Use under-cabinet lamp", d:"Soft local light can feel calmer than overhead." },
+            { t:"Lower brightness during meals", d:"If meals are stressful, try softer lighting." }
+          ],
+          texture: [
+            { t:"Food texture plan", d:"Offer ‘safe’ textures and one tiny ‘try’ item (no pressure)." },
+            { t:"Utensil options", d:"Some prefer certain cutlery shapes or straws." },
+            { t:"Wipe/clean sensory issues", d:"Provide preferred cloth, warm water, or wipes if messy feel is hard." }
+          ]
+        },
+
+        "Bathroom": {
+          noise: [
+            { t:"Warn before loud sounds", d:"Extractor fan / flush / hairdryer can be a shock." },
+            { t:"Alternative drying", d:"Soft towel, microfibre, or air dry if towel texture is hard." }
+          ],
+          light: [
+            { t:"Softer bulb option", d:"Harsh bathroom lights can increase stress." },
+            { t:"Mirror glare check", d:"Glare can feel overwhelming — angle light if possible." }
+          ],
+          texture: [
+            { t:"Preferred soap/shampoo", d:"Smell + feel matters. Keep one ‘safe’ option." },
+            { t:"Temperature control", d:"Sudden cold/hot can cause distress — test first." },
+            { t:"Toothbrushing alternatives", d:"Different brush head, flavour, or timed breaks." }
+          ]
+        },
+
+        "Hallway / transitions": {
+          noise: [
+            { t:"Reduce ‘rush’ noise", d:"Soft-close, move keys, avoid shouting across rooms." },
+            { t:"Transition cue", d:"A simple 5-min warning or visual timer." }
+          ],
+          light: [
+            { t:"Consistent lighting", d:"Avoid sudden darkness/brightness changes." }
+          ],
+          texture: [
+            { t:"Shoe/sock comfort plan", d:"Offer a ‘safe’ pair; avoid scratchy seams." },
+            { t:"Coat/label check", d:"Remove tags; pick softer fabrics if possible." }
+          ]
+        },
+
+        "Homework / study spot": {
+          noise: [
+            { t:"Noise plan", d:"Headphones, ear defenders, or quiet music (if helpful)." },
+            { t:"Reduce interruptions", d:"A sign or rule: ‘one instruction at a time’." }
+          ],
+          light: [
+            { t:"Desk lamp over overhead", d:"A focused soft lamp can feel calmer." },
+            { t:"Avoid screen glare", d:"Angle screen, reduce brightness, use night mode if needed." }
+          ],
+          texture: [
+            { t:"Chair comfort check", d:"Footrest, cushion, or different seat if fidgeting helps." },
+            { t:"Writing tool options", d:"Different pen/pencil grip; some hate ‘scratchy’ pens." }
+          ]
+        }
+      };
+
+      const PRESETS = [
+        { key:"quickWins", label:"Quick wins", rooms:["Hallway / transitions","Homework / study spot","Bedroom"] },
+        { key:"homework", label:"Homework focus", rooms:["Homework / study spot","Kitchen / dining","Hallway / transitions"] },
+        { key:"bedtime", label:"Bedtime focus", rooms:["Bedroom","Bathroom","Hallway / transitions"] },
+        { key:"afterSchool", label:"After school calm", rooms:["Hallway / transitions","Living room","Kitchen / dining"] }
+      ];
+
+      // DOM helpers
+      const $ = (s)=>document.querySelector(s);
+      const roomSelect = $("#roomSelect");
+      const noiseList = $("#noiseList");
+      const lightList = $("#lightList");
+      const textureList = $("#textureList");
+      const notes = $("#notes");
+      const planTitle = $("#planTitle");
+      const planMeta = $("#planMeta");
+      const planList = $("#planList");
+      const nextStep = $("#nextStep");
+      const nextStepSmall = $("#nextStepSmall");
+      const countPill = $("#countPill");
+      const presetChips = $("#presetChips");
+      const status = $("#status");
+      const printBtn = $("#printBtn");
+      const copyBtn = $("#copyBtn");
+      const resetBtn = $("#resetBtn");
+
+      let state = loadState();
+
+      function announce(msg){
+        status.textContent = msg;
+        clearTimeout(announce._t);
+        announce._t = setTimeout(()=> status.textContent="", 2200);
+      }
+
+      function saveState(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadState(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw){
+            const parsed = JSON.parse(raw);
+            if(parsed && typeof parsed === "object"){
+              return {
+                room: parsed.room || "Living room",
+                checks: parsed.checks || {}, // { roomName: { key:true } }
+                notes: parsed.notes || {}    // { roomName: "..." }
+              };
+            }
+          }
+        }catch(e){ /* ignore */ }
+
+        return { room:"Living room", checks:{}, notes:{} };
+      }
+
+      function keyFor(room, category, idx){
+        return `${category}:${idx}`;
+      }
+
+      function ensureRoomState(room){
+        if(!state.checks[room]) state.checks[room] = {};
+        if(typeof state.notes[room] !== "string") state.notes[room] = "";
+      }
+
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      function buildRoomOptions(){
+        roomSelect.innerHTML = "";
+        Object.keys(DATA).forEach(r=>{
+          const opt = document.createElement("option");
+          opt.value = r;
+          opt.textContent = r;
+          roomSelect.appendChild(opt);
+        });
+      }
+
+      function renderPresets(){
+        presetChips.innerHTML = "";
+        PRESETS.forEach(p=>{
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "chip";
+          b.textContent = p.label;
+          b.setAttribute("aria-pressed", "false");
+          b.addEventListener("click", ()=>{
+            // choose the first room in preset; user can still switch rooms manually
+            state.room = p.rooms[0];
+            ensureRoomState(state.room);
+            saveState();
+            roomSelect.value = state.room;
+            renderRoom();
+            announce("Preset applied.");
+          });
+          presetChips.appendChild(b);
+        });
+      }
+
+      function renderCategory(container, room, categoryName, items){
+        container.innerHTML = "";
+        ensureRoomState(room);
+
+        items.forEach((it, idx)=>{
+          const k = keyFor(room, categoryName, idx);
+          const checked = !!state.checks[room][k];
+
+          const row = document.createElement("label");
+          row.className = "item";
+          row.innerHTML = `
+            <input type="checkbox" ${checked ? "checked" : ""} data-room="${escapeHtml(room)}" data-cat="${escapeHtml(categoryName)}" data-idx="${idx}">
+            <div>
+              <div class="itemTitle">${escapeHtml(it.t)}</div>
+              <div class="itemDesc">${escapeHtml(it.d)}</div>
+            </div>
+          `;
+
+          container.appendChild(row);
+        });
+
+        container.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+          cb.addEventListener("change", ()=>{
+            const r = cb.getAttribute("data-room");
+            const cat = cb.getAttribute("data-cat");
+            const i = Number(cb.getAttribute("data-idx"));
+            ensureRoomState(r);
+            const k2 = keyFor(r, cat, i);
+            state.checks[r][k2] = cb.checked;
+            saveState();
+            renderPlan();
+          });
+        });
+      }
+
+      function selectedItemsForRoom(room){
+        ensureRoomState(room);
+        const roomData = DATA[room];
+        const out = [];
+
+        const add = (cat, items)=>{
+          items.forEach((it, idx)=>{
+            const k = keyFor(room, cat, idx);
+            if(state.checks[room][k]){
+              out.push({ cat, t:it.t, d:it.d });
+            }
+          });
+        };
+
+        add("noise", roomData.noise);
+        add("light", roomData.light);
+        add("texture", roomData.texture);
+
+        return out;
+      }
+
+      function totalSelectedAllRooms(){
+        let n = 0;
+        for(const room of Object.keys(state.checks)){
+          for(const k in state.checks[room]){
+            if(state.checks[room][k]) n++;
+          }
+        }
+        return n;
+      }
+
+      function renderPlan(){
+        const room = state.room;
+        ensureRoomState(room);
+
+        planTitle.textContent = "Plan: " + room;
+
+        const items = selectedItemsForRoom(room);
+        const total = totalSelectedAllRooms();
+        countPill.textContent = total + " selected";
+
+        planMeta.textContent = items.length
+          ? "Selected changes to try (small is good)"
+          : "Tick a few items on the left to build your plan";
+
+        planList.innerHTML = "";
+
+        if(!items.length){
+          const empty = document.createElement("div");
+          empty.className = "hint";
+          empty.textContent = "Nothing selected yet. Pick 1–3 ideas to try first.";
+          planList.appendChild(empty);
+          nextStep.textContent = "—";
+          nextStepSmall.textContent = "Tick a few items on the left and one will appear here.";
+          return;
+        }
+
+        // Group items by category for nicer printout
+        const order = ["noise","light","texture"];
+        const labels = { noise:"Noise", light:"Lighting", texture:"Textures & touch" };
+
+        for(const cat of order){
+          const group = items.filter(x=>x.cat === cat);
+          if(!group.length) continue;
+
+          const h = document.createElement("div");
+          h.className = "sectionTitle";
+          h.textContent = labels[cat];
+          planList.appendChild(h);
+
+          group.forEach(x=>{
+            const row = document.createElement("div");
+            row.className = "todoRow";
+            row.innerHTML = `
+              <div class="dot"></div>
+              <div class="todoText">
+                <strong>${escapeHtml(x.t)}</strong>
+                <small>${escapeHtml(x.d)}</small>
+              </div>
+            `;
+            planList.appendChild(row);
+          });
+        }
+
+        // Notes
+        const n = (state.notes[room] || "").trim();
+        if(n){
+          const h = document.createElement("div");
+          h.className = "sectionTitle";
+          h.textContent = "Notes";
+          planList.appendChild(h);
+
+          const row = document.createElement("div");
+          row.className = "todoRow";
+          row.innerHTML = `
+            <div class="dot"></div>
+            <div class="todoText"><small>${escapeHtml(n)}</small></div>
+          `;
+          planList.appendChild(row);
+        }
+
+        // Next step = first selected item
+        nextStep.textContent = items[0].t;
+        nextStepSmall.textContent = "Start here. Try one change, then review.";
+      }
+
+      function renderRoom(){
+        const room = state.room;
+        ensureRoomState(room);
+
+        roomSelect.value = room;
+
+        const d = DATA[room];
+        renderCategory(noiseList, room, "noise", d.noise);
+        renderCategory(lightList, room, "light", d.light);
+        renderCategory(textureList, room, "texture", d.texture);
+
+        notes.value = state.notes[room] || "";
+        renderPlan();
+      }
+
+      function buildCopyText(){
+        const lines = [];
+        lines.push("Sensory-Friendly Home Checklist");
+        lines.push("Room: " + state.room);
+        lines.push("");
+
+        const items = selectedItemsForRoom(state.room);
+
+        if(!items.length){
+          lines.push("(No items selected yet)");
+        }else{
+          const labels = { noise:"Noise", light:"Lighting", texture:"Textures & touch" };
+          const order = ["noise","light","texture"];
+
+          for(const cat of order){
+            const group = items.filter(x=>x.cat === cat);
+            if(!group.length) continue;
+
+            lines.push(labels[cat]);
+            group.forEach(x=>{
+              lines.push("- " + x.t + " — " + x.d);
+            });
+            lines.push("");
+          }
+
+          const n = (state.notes[state.room] || "").trim();
+          if(n){
+            lines.push("Notes");
+            lines.push(n);
+            lines.push("");
+          }
+
+          lines.push("Next step: " + (items[0]?.t || "—"));
+        }
+
+        return lines.join("\n");
+      }
+
+      // Wire up events
+      roomSelect.addEventListener("change", ()=>{
+        state.room = roomSelect.value;
+        ensureRoomState(state.room);
+        saveState();
+        renderRoom();
+      });
+
+      notes.addEventListener("input", ()=>{
+        ensureRoomState(state.room);
+        state.notes[state.room] = String(notes.value || "").slice(0, 800);
+        saveState();
+        renderPlan();
+      });
+
+      printBtn.addEventListener("click", ()=> window.print());
+
+      copyBtn.addEventListener("click", async ()=>{
+        const txt = buildCopyText();
+        try{
+          await navigator.clipboard.writeText(txt);
+          announce("Copied plan text.");
+        }catch{
+          const ta = document.createElement("textarea");
+          ta.value = txt;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          announce("Copied plan text.");
+        }
+      });
+
+      resetBtn.addEventListener("click", ()=>{
+        const ok = confirm("Reset the checklist? (Only affects this device.)");
+        if(!ok) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = { room:"Living room", checks:{}, notes:{} };
+        renderRoom();
+        announce("Reset.");
+      });
+
+      // Init
+      buildRoomOptions();
+      renderPresets();
+      ensureRoomState(state.room);
+      renderRoom();
+      announce("Loaded (local only).");
+    })();
+  </script>
+</body>
+</html>

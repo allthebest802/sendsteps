@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safe Food List Builder (Simple + Allergies + Printable)</title>
+  <style>
+    :root{
+      --bg:#f7fbff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --line:#dbeafe;
+
+      --good:#10b981;
+      --warn:#f59e0b;
+      --nope:#ef4444;
+
+      --primary:#0ea5e9;
+      --primary2:#0284c7;
+
+      --shadow: 0 10px 24px rgba(15, 23, 42, .10);
+      --radius:16px;
+      --pad:14px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(1100px 650px at 20% 0%, #eef6ff 0%, var(--bg) 60%, #fff 100%) fixed;
+      color:var(--text);
+      line-height:1.4;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin: 24px auto 60px;
+      padding: 0 14px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    h1{ margin:0 0 6px; font-size: clamp(22px, 2.8vw, 32px); }
+    .sub{ margin:0; color:var(--muted); font-size:14px; max-width:75ch; }
+
+    .top-actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    button{
+      border:1px solid rgba(2,132,199,.25);
+      background: linear-gradient(180deg, var(--primary), var(--primary2));
+      color:white;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(2,132,199,.18);
+      font-weight:900;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    button:hover{ filter: brightness(1.03); }
+    button:active{ transform: translateY(1px); }
+
+    button.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:none;
+    }
+    button.danger{
+      background:#fff;
+      color:#b91c1c;
+      border-color: rgba(239,68,68,.35);
+      box-shadow:none;
+    }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--pad);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns: 1fr; }
+      header{ flex-direction:column; }
+    }
+
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:700; }
+
+    input[type="text"], textarea{
+      width:100%;
+      background:#f8fafc;
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      font-family: var(--font);
+    }
+    textarea{ min-height: 84px; resize: vertical; }
+
+    input[type="text"]:focus, textarea:focus, select:focus{
+      border-color: rgba(14,165,233,.55);
+      box-shadow: 0 0 0 4px rgba(14,165,233,.14);
+    }
+
+    select{
+      width:100%;
+      background:#f8fafc;
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1.2fr .9fr auto;
+      gap:10px;
+      align-items:end;
+    }
+    @media (max-width: 650px){
+      .row{ grid-template-columns: 1fr; }
+      .top-actions{ justify-content:flex-start; }
+    }
+
+    .hint{ font-size:12px; color:var(--muted); margin: 10px 0 0; }
+
+    .lists{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    details{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background:#f8fafc;
+      overflow:hidden;
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      user-select:none;
+      font-weight:900;
+    }
+    summary::-webkit-details-marker{ display:none; }
+
+    .sum-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .dot{ width:10px; height:10px; border-radius:999px; display:inline-block; }
+    .count{ font-size:12px; color:var(--muted); font-weight:800; }
+
+    .panel{
+      padding: 10px 12px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .compact-list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height: 240px;
+      overflow:auto;
+      padding-right: 4px;
+    }
+
+    .item{
+      display:grid;
+      grid-template-columns: 18px 1fr auto auto;
+      gap:10px;
+      align-items:center;
+      background:#fff;
+      border:1px solid rgba(219,234,254,.95);
+      border-radius: 12px;
+      padding:10px;
+    }
+
+    .item input[type="checkbox"]{
+      width:16px; height:16px;
+      accent-color: var(--primary);
+      cursor:pointer;
+    }
+
+    .name{ font-weight:800; font-size:14px; }
+    .meta{ font-size:12px; color:var(--muted); margin-top:2px; }
+
+    .move{
+      border:1px solid var(--line);
+      background:#f8fafc;
+      border-radius: 10px;
+      padding:8px 10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .remove{
+      border:1px solid rgba(239,68,68,.25);
+      background:#fff;
+      color:#b91c1c;
+      border-radius: 10px;
+      padding:8px 10px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    /* Allergy block */
+    .allergy-card{
+      margin-top: 12px;
+      border:1px solid rgba(239,68,68,.18);
+      background: linear-gradient(180deg, rgba(239,68,68,.06), rgba(239,68,68,.02));
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+    @media (max-width: 650px){
+      .two-col{ grid-template-columns: 1fr; }
+    }
+
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(239,68,68,.22);
+      background:#fff;
+      font-size:12px;
+      font-weight:800;
+      color:#9f1239;
+    }
+    .chip button{
+      all:unset;
+      cursor:pointer;
+      font-weight:900;
+      color:#9f1239;
+      padding:2px 4px;
+      border-radius:6px;
+    }
+    .chip button:hover{ background: rgba(239,68,68,.10); }
+
+    .toggle-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight:700;
+    }
+    .toggle-row input{
+      width:16px;
+      height:16px;
+      accent-color: var(--nope);
+      cursor:pointer;
+    }
+
+    /* Printable preview */
+    .preview h2{ margin:0 0 10px; font-size:18px; }
+
+    .sheet{
+      background:#ffffff;
+      color:#111827;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 16px;
+    }
+
+    .sheet-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .sheet h3{ margin:0; font-size:18px; }
+    .sheet p{ margin:4px 0 0; color:#374151; font-size:12px; }
+
+    .sheet-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+    }
+
+    .sheet-col{
+      border:1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 170px;
+    }
+    .sheet-col h4{
+      margin:0 0 8px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.6px;
+    }
+    .sheet-col ul{ margin:0; padding-left: 18px; font-size:13px; }
+    .sheet-col li{ margin: 4px 0; }
+
+    .sheet-dot{ width:10px;height:10px;border-radius:999px;display:inline-block; }
+    .muted-note{ margin-top: 10px; font-size: 11px; color:#6b7280; }
+
+    .sheet-alert{
+      margin-top: 12px;
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .sheet-alert h4{
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color:#9f1239;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .sheet-alert p{
+      margin:0;
+      font-size:12px;
+      color:#374151;
+      white-space: pre-wrap;
+    }
+
+    /* Print */
+    @media print{
+      body{ background: #fff; }
+      .wrap{ margin:0; padding:0; max-width:none; }
+      header, .grid{ display:none !important; }
+      .print-only{ display:block !important; }
+      .print-only .sheet{ border:none; border-radius:0; padding:0; }
+      .print-only .sheet-col{ min-height: 240px; }
+      .print-only{ padding: 18mm; }
+    }
+    .print-only{ display:none; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Safe Food List Builder</h1>
+        <p class="sub">
+          Add foods, tick the ones that are safe, and sort them into <b>Always</b>, <b>Sometimes</b>, or <b>Not yet</b>.
+          Includes a quick <b>UK 14 allergens</b> picker + an <b>Emergency action</b> dropdown for school.
+        </p>
+      </div>
+      <div class="top-actions">
+        <button id="btnPrint">Print Sheet</button>
+        <button id="btnReset" class="danger">Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card" aria-label="Builder">
+
+        <div class="row">
+          <div>
+            <label for="foodInput">Add a food</label>
+            <input id="foodInput" type="text" placeholder="e.g., Toast, Apple slices, Plain pasta" />
+          </div>
+
+          <div>
+            <label for="categorySelect">Category</label>
+            <select id="categorySelect">
+              <option value="always">Always safe</option>
+              <option value="sometimes">Sometimes</option>
+              <option value="notyet">Not yet</option>
+            </select>
+          </div>
+
+          <div>
+            <button id="btnAdd" class="secondary" style="width:100%;">Add</button>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top:12px;">
+          <div>
+            <label for="childName">Child’s name (optional)</label>
+            <input id="childName" type="text" placeholder="e.g., Andreas" />
+          </div>
+          <div>
+            <label for="contextNote">Notes for school (optional)</label>
+            <input id="contextNote" type="text" placeholder="e.g., Offer choices calmly; no pressure." />
+          </div>
+        </div>
+
+        <!-- Allergies / Emergency -->
+        <div class="allergy-card">
+          <label for="allergenSelect">Add an allergen (UK 14)</label>
+          <div class="two-col" style="margin-top:6px;">
+            <div>
+              <select id="allergenSelect">
+                <option value="">Choose an allergen…</option>
+                <option>Cereals containing gluten</option>
+                <option>Crustaceans</option>
+                <option>Eggs</option>
+                <option>Fish</option>
+                <option>Milk (Cow's)</option>
+                <option>Peanuts</option>
+                <option>Tree Nuts</option>
+                <option>Soybeans</option>
+                <option>Shellfish (Molluscs)</option>
+                <option>Celery</option>
+                <option>Mustard</option>
+                <option>Sesame Seeds</option>
+                <option>Sulphur Dioxide/Sulphites</option>
+                <option>Lupin</option>
+              </select>
+            </div>
+            <div>
+              <button id="btnAddAllergen" class="secondary" style="width:100%;">Add allergen</button>
+            </div>
+          </div>
+
+          <div class="chip-row" id="allergenChips" aria-label="Selected allergens"></div>
+
+          <div class="two-col">
+            <div>
+              <label for="emergencyAction">Emergency action (prints)</label>
+              <select id="emergencyAction">
+                <option value="">Choose an action…</option>
+                <option>Call parent/carer immediately</option>
+                <option>Give antihistamine (as per plan)</option>
+                <option>Use adrenaline auto-injector (EpiPen/Jext/EmEraDe) if prescribed</option>
+                <option>Call 999 if breathing difficulty / severe reaction</option>
+                <option>Follow school healthcare plan</option>
+              </select>
+            </div>
+            <div>
+              <label for="allergyText">Extra allergy notes (optional)</label>
+              <textarea id="allergyText" placeholder="e.g., No nuts. Avoid ‘may contain’ products. Symptoms: hives + wheeze."></textarea>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <label style="margin:0; display:flex; align-items:center; gap:10px; cursor:pointer;">
+              <input type="checkbox" id="traceRisk" />
+              Risk from traces / cross-contamination (tick if relevant)
+            </label>
+          </div>
+
+          <p class="hint" style="margin:8px 0 0;">
+            This is not medical advice — just a clear summary for school. If you have a formal care plan, match the wording.
+          </p>
+        </div>
+
+        <p class="hint">
+          Tip: The lists below are collapsible + scroll, so it won’t get messy even with lots of foods.
+        </p>
+
+        <div class="lists" aria-label="Food Lists">
+          <details open id="panel-always">
+            <summary>
+              <span class="sum-left"><span class="dot" style="background:var(--good)"></span> Always safe</span>
+              <span class="count" id="count-always">0</span>
+            </summary>
+            <div class="panel">
+              <div class="compact-list" id="body-always"></div>
+            </div>
+          </details>
+
+          <details id="panel-sometimes">
+            <summary>
+              <span class="sum-left"><span class="dot" style="background:var(--warn)"></span> Sometimes</span>
+              <span class="count" id="count-sometimes">0</span>
+            </summary>
+            <div class="panel">
+              <div class="compact-list" id="body-sometimes"></div>
+            </div>
+          </details>
+
+          <details id="panel-notyet">
+            <summary>
+              <span class="sum-left"><span class="dot" style="background:var(--nope)"></span> Not yet</span>
+              <span class="count" id="count-notyet">0</span>
+            </summary>
+            <div class="panel">
+              <div class="compact-list" id="body-notyet"></div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <aside class="card preview" aria-label="Printable Preview">
+        <h2>Printable Sheet Preview</h2>
+        <div class="sheet" id="sheetPreview">
+          <div class="sheet-top">
+            <div>
+              <h3 id="sheetTitle">Safe Foods</h3>
+              <p id="sheetSubtitle">A quick list to help reduce stress around meals.</p>
+            </div>
+            <div style="text-align:right;">
+              <p style="margin:0; font-size:12px; color:#6b7280;">
+                Updated: <span id="sheetDate"></span>
+              </p>
+            </div>
+          </div>
+
+          <div class="sheet-grid">
+            <div class="sheet-col">
+              <h4><span class="sheet-dot" style="background:#10b981"></span> Always safe</h4>
+              <ul id="sheetAlways"></ul>
+            </div>
+            <div class="sheet-col">
+              <h4><span class="sheet-dot" style="background:#f59e0b"></span> Sometimes</h4>
+              <ul id="sheetSometimes"></ul>
+            </div>
+            <div class="sheet-col">
+              <h4><span class="sheet-dot" style="background:#ef4444"></span> Not yet</h4>
+              <ul id="sheetNotYet"></ul>
+            </div>
+          </div>
+
+          <div class="sheet-alert" id="sheetAllergyBox" style="display:none;">
+            <h4>Allergies / Avoid</h4>
+            <p id="sheetAllergyText"></p>
+          </div>
+
+          <div class="muted-note" id="sheetNote"></div>
+        </div>
+
+        <p class="hint" style="margin-top:10px;">
+          The printable sheet only shows foods you’ve ticked ✅
+        </p>
+      </aside>
+    </div>
+
+    <div class="print-only">
+      <div class="sheet" id="sheetPrint"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Simple Safe Food List Builder (local-only) =====
+    const STORAGE_KEY = "send_safe_food_builder_allergen_picker_v1";
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      childName:"",
+      contextNote:"",
+      allergens:[],          // array of strings
+      allergyText:"",
+      traceRisk:false,
+      emergencyAction:"",
+      foods:[]
+    };
+
+    function uid(){
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return seedDefaults();
+        const parsed = JSON.parse(raw);
+        if(!parsed || typeof parsed !== "object") return seedDefaults();
+
+        state.childName = parsed.childName || "";
+        state.contextNote = parsed.contextNote || "";
+        state.allergens = Array.isArray(parsed.allergens) ? parsed.allergens.filter(x => typeof x === "string") : [];
+        state.allergyText = parsed.allergyText || "";
+        state.traceRisk = !!parsed.traceRisk;
+        state.emergencyAction = parsed.emergencyAction || "";
+        state.foods = Array.isArray(parsed.foods) ? parsed.foods : [];
+
+        state.foods = state.foods
+          .filter(f => f && typeof f.name === "string" && ["always","sometimes","notyet"].includes(f.category))
+          .map(f => ({ id: f.id || uid(), name: f.name.trim(), category: f.category, checked: !!f.checked }))
+          .filter(f => f.name.length);
+      }catch{
+        seedDefaults();
+      }
+    }
+
+    function seedDefaults(){
+      state.childName = "";
+      state.contextNote = "";
+      state.allergens = [];
+      state.allergyText = "";
+      state.traceRisk = false;
+      state.emergencyAction = "";
+      state.foods = [
+        { id: uid(), name: "Plain toast", category: "always", checked: true },
+        { id: uid(), name: "Apple slices", category: "sometimes", checked: true },
+        { id: uid(), name: "New foods (no pressure)", category: "notyet", checked: false }
+      ];
+      save();
+    }
+
+    function save(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, (m) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    function labelForCategory(cat){
+      if(cat === "always") return "Always safe";
+      if(cat === "sometimes") return "Sometimes";
+      return "Not yet";
+    }
+
+    function setCounts(){
+      const counts = { always:0, sometimes:0, notyet:0 };
+      for(const f of state.foods) counts[f.category]++;
+
+      $("count-always").textContent = counts.always + " item" + (counts.always===1?"":"s");
+      $("count-sometimes").textContent = counts.sometimes + " item" + (counts.sometimes===1?"":"s");
+      $("count-notyet").textContent = counts.notyet + " item" + (counts.notyet===1?"":"s");
+    }
+
+    function renderLists(){
+      const bodies = {
+        always: $("body-always"),
+        sometimes: $("body-sometimes"),
+        notyet: $("body-notyet")
+      };
+      bodies.always.innerHTML = "";
+      bodies.sometimes.innerHTML = "";
+      bodies.notyet.innerHTML = "";
+
+      const sorted = [...state.foods].sort((a,b)=>a.name.localeCompare(b.name));
+
+      for(const f of sorted){
+        const el = document.createElement("div");
+        el.className = "item";
+        el.dataset.id = f.id;
+
+        el.innerHTML = `
+          <input type="checkbox" ${f.checked ? "checked" : ""} aria-label="Tick ${escapeHtml(f.name)}"/>
+          <div>
+            <div class="name">${escapeHtml(f.name)}</div>
+            <div class="meta">${labelForCategory(f.category)}</div>
+          </div>
+          <select class="move" aria-label="Move category">
+            <option value="always" ${f.category==="always"?"selected":""}>Always</option>
+            <option value="sometimes" ${f.category==="sometimes"?"selected":""}>Sometimes</option>
+            <option value="notyet" ${f.category==="notyet"?"selected":""}>Not yet</option>
+          </select>
+          <button class="remove" title="Remove">Remove</button>
+        `;
+
+        el.querySelector('input[type="checkbox"]').addEventListener("change", (e) => {
+          const item = state.foods.find(x => x.id === f.id);
+          if(item){
+            item.checked = e.target.checked;
+            save();
+            renderSheet();
+          }
+        });
+
+        el.querySelector(".move").addEventListener("change", (e) => {
+          const item = state.foods.find(x => x.id === f.id);
+          if(item){
+            item.category = e.target.value;
+            save();
+            renderAll();
+          }
+        });
+
+        el.querySelector(".remove").addEventListener("click", () => {
+          state.foods = state.foods.filter(x => x.id !== f.id);
+          save();
+          renderAll();
+        });
+
+        bodies[f.category].appendChild(el);
+      }
+
+      setCounts();
+    }
+
+    function renderAllergenChips(){
+      const host = $("allergenChips");
+      host.innerHTML = "";
+      const sorted = [...state.allergens].sort((a,b)=>a.localeCompare(b));
+      for(const a of sorted){
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerHTML = `
+          <span>${escapeHtml(a)}</span>
+          <button aria-label="Remove ${escapeHtml(a)}" title="Remove">×</button>
+        `;
+        chip.querySelector("button").addEventListener("click", () => {
+          state.allergens = state.allergens.filter(x => x !== a);
+          save();
+          renderAllergenChips();
+          renderSheet();
+        });
+        host.appendChild(chip);
+      }
+    }
+
+    function renderSheet(){
+      const name = state.childName.trim();
+      $("sheetTitle").textContent = name ? `Safe Foods for ${name}` : "Safe Foods";
+      $("sheetSubtitle").textContent = "A quick list to help reduce stress around meals.";
+      $("sheetDate").textContent = new Date().toLocaleDateString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+
+      const lists = {
+        always: $("sheetAlways"),
+        sometimes: $("sheetSometimes"),
+        notyet: $("sheetNotYet")
+      };
+      lists.always.innerHTML = "";
+      lists.sometimes.innerHTML = "";
+      lists.notyet.innerHTML = "";
+
+      // show only ticked foods on printable
+      const ticked = state.foods.filter(f => f.checked);
+      const byCat = {
+        always: ticked.filter(f => f.category==="always"),
+        sometimes: ticked.filter(f => f.category==="sometimes"),
+        notyet: ticked.filter(f => f.category==="notyet")
+      };
+
+      for(const cat of ["always","sometimes","notyet"]){
+        const items = byCat[cat].sort((a,b)=>a.name.localeCompare(b.name));
+        if(items.length === 0){
+          const li = document.createElement("li");
+          li.textContent = "—";
+          li.style.color = "#6b7280";
+          lists[cat].appendChild(li);
+          continue;
+        }
+        for(const f of items){
+          const li = document.createElement("li");
+          li.textContent = f.name;
+          lists[cat].appendChild(li);
+        }
+      }
+
+      // allergies box content
+      const chosen = state.allergens.length ? ("Allergens: " + state.allergens.join(", ")) : "";
+      const notes = (state.allergyText || "").trim();
+      const trace = state.traceRisk ? "⚠ Risk from traces / cross-contamination." : "";
+      const action = (state.emergencyAction || "").trim();
+      const actionLine = action ? ("Emergency action: " + action) : "";
+
+      const lines = [chosen, notes, trace, actionLine].filter(Boolean).join("\n\n");
+
+      if(lines){
+        $("sheetAllergyBox").style.display = "block";
+        $("sheetAllergyText").textContent = lines;
+      }else{
+        $("sheetAllergyBox").style.display = "none";
+        $("sheetAllergyText").textContent = "";
+      }
+
+      const note = state.contextNote.trim();
+      $("sheetNote").textContent = note
+        ? `Notes: ${note}`
+        : "Notes: Keep mealtimes low-pressure. Offer choices calmly. No forcing.";
+    }
+
+    function renderAll(){
+      $("childName").value = state.childName;
+      $("contextNote").value = state.contextNote;
+
+      $("allergyText").value = state.allergyText;
+      $("traceRisk").checked = state.traceRisk;
+      $("emergencyAction").value = state.emergencyAction;
+
+      renderAllergenChips();
+      renderLists();
+      renderSheet();
+    }
+
+    function addFood(){
+      const input = $("foodInput");
+      const name = input.value.trim();
+      const cat = $("categorySelect").value;
+      if(!name) return;
+
+      const exists = state.foods.some(f => f.name.toLowerCase() === name.toLowerCase());
+      if(exists){
+        input.value = "";
+        input.focus();
+        return;
+      }
+
+      state.foods.push({ id: uid(), name, category: cat, checked: true });
+      save();
+
+      input.value = "";
+      input.focus();
+
+      const panelId = cat === "always" ? "panel-always" : (cat === "sometimes" ? "panel-sometimes" : "panel-notyet");
+      $(panelId).open = true;
+
+      renderAll();
+    }
+
+    function addAllergen(){
+      const sel = $("allergenSelect");
+      const value = sel.value.trim();
+      if(!value) return;
+
+      if(!state.allergens.includes(value)){
+        state.allergens.push(value);
+        save();
+        renderAllergenChips();
+        renderSheet();
+      }
+      sel.value = "";
+    }
+
+    // Events
+    $("btnAdd").addEventListener("click", addFood);
+    $("foodInput").addEventListener("keydown", (e) => { if(e.key === "Enter") addFood(); });
+
+    $("btnAddAllergen").addEventListener("click", addAllergen);
+    $("allergenSelect").addEventListener("keydown", (e) => { if(e.key === "Enter") addAllergen(); });
+
+    $("childName").addEventListener("input", (e) => {
+      state.childName = e.target.value;
+      save();
+      renderSheet();
+    });
+
+    $("contextNote").addEventListener("input", (e) => {
+      state.contextNote = e.target.value;
+      save();
+      renderSheet();
+    });
+
+    $("allergyText").addEventListener("input", (e) => {
+      state.allergyText = e.target.value;
+      save();
+      renderSheet();
+    });
+
+    $("traceRisk").addEventListener("change", (e) => {
+      state.traceRisk = e.target.checked;
+      save();
+      renderSheet();
+    });
+
+    $("emergencyAction").addEventListener("change", (e) => {
+      state.emergencyAction = e.target.value;
+      save();
+      renderSheet();
+    });
+
+    $("btnPrint").addEventListener("click", () => {
+      const printHost = $("sheetPrint");
+      printHost.innerHTML = "";
+      printHost.appendChild($("sheetPreview").cloneNode(true));
+      window.print();
+    });
+
+    $("btnReset").addEventListener("click", () => {
+      const ok = confirm("Reset everything? This clears the list saved on this device.");
+      if(!ok) return;
+      localStorage.removeItem(STORAGE_KEY);
+      seedDefaults();
+      load();
+      renderAll();
+    });
+
+    // Init
+    load();
+    renderAll();
+  </script>
+</body>
+</html>

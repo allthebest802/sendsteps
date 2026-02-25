@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Helper</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sun:#FFD166;--sun-d:#F5B93A;--sky:#AEE2FF;--sky-d:#7DCFFF;
+  --mint:#B5EAD7;--mint-d:#7DD6B5;--peach:#FFCBA4;--rose:#FFB3C6;
+  --lavender:#C9B8FF;--ink:#2D3436;--ink2:#636E72;--muted:#B2BEC3;
+  --bg:#FFFDF7;--surface:#FFFFFF;--border:#E8EDF0;
+  --radius:20px;--radius-lg:28px;
+  --shadow:0 4px 20px rgba(45,52,54,0.08);--shadow-lg:0 8px 40px rgba(45,52,54,0.12);
+}
+html{font-size:16px}
+body{
+  font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);
+  min-height:100vh;padding:0 0 60px;
+  background-image:
+    radial-gradient(circle at 10% 20%,rgba(255,209,102,0.18) 0%,transparent 45%),
+    radial-gradient(circle at 90% 80%,rgba(174,226,255,0.22) 0%,transparent 45%),
+    radial-gradient(circle at 50% 50%,rgba(181,234,215,0.10) 0%,transparent 60%);
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+input{font-family:'Nunito',sans-serif}
+
+/* ── HEADER ── */
+.header{text-align:center;padding:40px 20px 24px}
+.header-emoji{font-size:3.5rem;display:block;margin-bottom:10px;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.header h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,5vw,3rem);color:var(--ink);letter-spacing:0.5px;line-height:1.1}
+.header h1 span{color:#E8A000}
+.header p{color:var(--ink2);font-size:1rem;font-weight:600;margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
+
+/* ── INPUT CARD ── */
+.input-wrap{max-width:620px;margin:0 auto;padding:0 20px}
+.input-card{
+  background:var(--surface);border-radius:var(--radius-lg);padding:28px;
+  box-shadow:var(--shadow-lg);border:2px solid var(--border);position:relative;overflow:hidden;
+}
+.input-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--sun),var(--peach),var(--rose),var(--lavender),var(--sky),var(--mint));
+}
+.input-label{display:block;font-family:'Fredoka One',cursive;font-size:1.15rem;color:var(--ink);margin-bottom:12px;letter-spacing:0.3px}
+.input-row{display:flex;gap:10px;align-items:stretch}
+.task-input{
+  flex:1;padding:14px 18px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;
+  border:2.5px solid var(--border);border-radius:var(--radius);color:var(--ink);
+  background:var(--bg);transition:border-color 0.2s,box-shadow 0.2s;outline:none;
+}
+.task-input:focus{border-color:var(--sun-d);box-shadow:0 0 0 4px rgba(255,209,102,0.25)}
+.task-input::placeholder{color:var(--muted);font-weight:600}
+.go-btn{
+  padding:14px 22px;background:var(--sun);border:2.5px solid var(--sun-d);
+  border-radius:var(--radius);font-family:'Fredoka One',cursive;font-size:1.1rem;
+  color:var(--ink);cursor:pointer;transition:all 0.15s;white-space:nowrap;
+  display:flex;align-items:center;gap:7px;
+}
+.go-btn:hover{background:var(--sun-d);transform:translateY(-2px);box-shadow:0 4px 14px rgba(245,185,58,0.45)}
+.go-btn:active{transform:translateY(0)}
+.go-btn:disabled{opacity:0.55;cursor:not-allowed;transform:none;box-shadow:none}
+
+.options-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.options-label{font-size:0.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.opt-chip{
+  padding:6px 14px;border-radius:100px;font-size:0.8rem;font-weight:800;
+  border:2px solid var(--border);background:var(--bg);color:var(--ink2);
+  cursor:pointer;transition:all 0.13s;user-select:none;
+}
+.opt-chip:hover{border-color:var(--muted);color:var(--ink)}
+.opt-chip.on-sun{background:var(--sun);color:var(--ink);border-color:var(--sun-d)}
+.opt-chip.on-sky{background:var(--sky);color:var(--ink);border-color:var(--sky-d)}
+.opt-chip.on-mint{background:var(--mint);color:var(--ink);border-color:var(--mint-d)}
+
+.examples{margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.examples-label{font-size:0.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.example-btn{
+  padding:4px 12px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  background:var(--surface);border:2px solid var(--border);color:var(--ink2);cursor:pointer;transition:all 0.13s;
+}
+.example-btn:hover{background:var(--sun);border-color:var(--sun-d);color:var(--ink)}
+
+/* AI badge - shows when AI was used */
+.ai-badge{
+  display:none;margin-top:10px;
+  background:var(--lavender);color:#4a2aa0;
+  border:2px solid #b8a4ff;border-radius:100px;
+  padding:4px 12px;font-size:0.75rem;font-weight:800;
+  width:fit-content;
+}
+.ai-badge.show{display:block}
+
+/* ── LOADING ── */
+.loading{max-width:620px;margin:28px auto 0;padding:0 20px;display:none}
+.loading.show{display:block}
+.loading-card{
+  background:var(--surface);border-radius:var(--radius-lg);
+  padding:32px;text-align:center;box-shadow:var(--shadow);border:2px solid var(--border);
+}
+.spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--sun-d);border-radius:50%;margin:0 auto 16px;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--ink2)}
+.loading-sub{font-size:0.85rem;color:var(--muted);font-weight:600;margin-top:6px}
+
+/* ── ERROR ── */
+.error-card{
+  background:#FFF5F5;border:2px solid #FFCDD2;border-radius:var(--radius);
+  padding:16px 20px;color:#C62828;font-weight:700;font-size:0.9rem;
+  margin-top:12px;display:none;line-height:1.5;
+}
+.error-card.show{display:block}
+
+/* ── RESULTS ── */
+.results{max-width:620px;margin:28px auto 0;padding:0 20px;display:none}
+.results.show{display:block;animation:fadeUp 0.3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.results-title{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--ink)}
+.results-title em{font-style:normal;background:var(--sun);border-radius:8px;padding:1px 8px;font-size:1.1rem}
+.results-actions{display:flex;gap:8px}
+.action-btn{
+  padding:7px 14px;border-radius:100px;font-size:0.8rem;font-weight:800;
+  border:2px solid var(--border);background:var(--surface);color:var(--ink2);cursor:pointer;transition:all 0.13s;
+  display:flex;align-items:center;gap:5px;
+}
+.action-btn:hover{background:var(--mint);border-color:var(--mint-d);color:var(--ink)}
+
+.progress-wrap{margin-bottom:16px}
+.progress-label{display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;font-weight:800;color:var(--ink2);margin-bottom:6px}
+.progress-track{height:12px;background:var(--border);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--mint-d),var(--sky-d));transition:width 0.4s ease;width:0%}
+
+.steps-list{display:flex;flex-direction:column;gap:10px}
+
+.step-card{
+  background:var(--surface);border:2.5px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;
+  transition:all 0.18s;animation:slideIn 0.25s ease both;box-shadow:var(--shadow);
+  user-select:none;position:relative;overflow:hidden;
+}
+.step-card::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--step-color,var(--sun));border-radius:4px 0 0 4px;transition:width 0.3s;
+}
+.step-card:hover{transform:translateX(4px);box-shadow:var(--shadow-lg)}
+.step-card.done{background:#F8FFF8;border-color:var(--mint-d)}
+.step-card.done::after{width:100%;opacity:0.08}
+.step-card.done .step-text{text-decoration:line-through;color:var(--muted)}
+@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+
+.step-check{
+  width:36px;height:36px;flex-shrink:0;border-radius:50%;border:3px solid var(--border);
+  background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.2s;
+}
+.step-card.done .step-check{background:var(--mint);border-color:var(--mint-d)}
+.step-card.done .step-check::before{content:'✓';font-weight:900;color:#1a7a52}
+.step-num{font-family:'Fredoka One',cursive;font-size:0.9rem;color:var(--muted);flex-shrink:0;min-width:22px;transition:opacity 0.2s}
+.step-card.done .step-num{opacity:0}
+.step-emoji{font-size:1.5rem;flex-shrink:0;line-height:1}
+.step-inner{display:flex;flex-direction:column;flex:1}
+.step-cue{
+  font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;
+  padding:2px 8px;border-radius:100px;margin-bottom:4px;
+  border:2px solid currentColor;width:fit-content;display:none;
+}
+.show-cues .step-cue{display:block}
+.step-text{font-size:0.97rem;font-weight:700;color:var(--ink);line-height:1.4;flex:1;transition:all 0.2s}
+
+.cheer-card{
+  display:none;border-radius:var(--radius);padding:14px 18px;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1.05rem;letter-spacing:0.3px;
+  border:2.5px dashed currentColor;animation:slideIn 0.25s ease both;pointer-events:none;
+}
+.show-cheers .cheer-card{display:block}
+
+.celebration{
+  display:none;text-align:center;padding:24px;background:var(--surface);
+  border-radius:var(--radius-lg);border:3px solid var(--mint-d);margin-top:12px;
+  animation:popIn 0.4s cubic-bezier(.34,1.56,.64,1) both;box-shadow:var(--shadow-lg);
+}
+.celebration.show{display:block}
+@keyframes popIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+.celebration h2{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--ink);margin-bottom:6px}
+.celebration p{color:var(--ink2);font-weight:700;font-size:0.95rem}
+.celebration-emoji{font-size:3rem;margin-bottom:8px;display:block}
+
+@media print{
+  body{background:white!important;padding:0}
+  .header,.input-wrap,.loading,.results-actions,.progress-wrap,.celebration,.cheer-card,.ai-badge{display:none!important}
+  .results{display:block!important;margin:0;padding:20pt;max-width:100%}
+  .step-card{box-shadow:none;border:1.5pt solid #ccc;break-inside:avoid;margin-bottom:6pt}
+  .step-card::after{display:none}
+  .results-title{font-size:16pt;margin-bottom:12pt}
+}
+@media(max-width:480px){
+  .input-row{flex-direction:column}
+  .go-btn{justify-content:center}
+  .header{padding:28px 16px 18px}
+  .input-wrap,.results{padding:0 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-emoji">🧹</span>
+  <h1>Task <span>Helper</span></h1>
+  <p>Type any task and get small, easy steps — one at a time, no stress. Knows hundreds of tasks — and can figure out anything else too!</p>
+</div>
+
+<div class="input-wrap">
+  <div class="input-card">
+    <label class="input-label" for="taskInput">What's the task? 👇</label>
+    <div class="input-row">
+      <input type="text" id="taskInput" class="task-input" placeholder="e.g. clean my bedroom" autocomplete="off" maxlength="120">
+      <button class="go-btn" id="goBtn"><span>✨</span> Let's go!</button>
+    </div>
+
+    <div class="options-row">
+      <span class="options-label">Age:</span>
+      <div class="opt-chip on-sun" data-group="age" data-val="young">Little one 🐣</div>
+      <div class="opt-chip" data-group="age" data-val="older">Older kid 🎒</div>
+      <div class="opt-chip" data-group="age" data-val="teen">Teen 🎧</div>
+    </div>
+    <div class="options-row">
+      <span class="options-label">Options:</span>
+      <div class="opt-chip" data-group="opt" data-val="cues" data-color="on-sky">👁️ Visual cues</div>
+      <div class="opt-chip" data-group="opt" data-val="cheers" data-color="on-mint">💪 Encouragement</div>
+      <div class="opt-chip" data-group="opt" data-val="simple" data-color="on-sun">🐢 Simpler steps</div>
+    </div>
+
+    <div class="examples">
+      <span class="examples-label">Try:</span>
+      <button class="example-btn" data-task="clean my bedroom">clean bedroom</button>
+      <button class="example-btn" data-task="get ready for school">get ready for school</button>
+      <button class="example-btn" data-task="do my homework">do homework</button>
+      <button class="example-btn" data-task="wash the dishes">wash dishes</button>
+      <button class="example-btn" data-task="brush my teeth">brush teeth</button>
+      <button class="example-btn" data-task="get ready for bed">get ready for bed</button>
+      <button class="example-btn" data-task="feed the cat">feed the cat</button>
+      <button class="example-btn" data-task="tidy the living room">tidy living room</button>
+      <button class="example-btn" data-task="pack my school bag">pack school bag</button>
+      <button class="example-btn" data-task="make a sandwich">make a sandwich</button>
+    </div>
+
+    <div class="ai-badge" id="aiBadge">✨ Steps created by AI for this task</div>
+    <div class="error-card" id="errorCard"></div>
+  </div>
+</div>
+
+<div class="loading" id="loading">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">Thinking of steps... 🤔</div>
+    <div class="loading-sub" id="loadingSub">Making tiny, easy steps just for you</div>
+  </div>
+</div>
+
+<div class="results" id="results">
+  <div class="results-header">
+    <div class="results-title">Steps for: <em id="taskLabel"></em></div>
+    <div class="results-actions">
+      <button class="action-btn" id="resetAllBtn">🔄 Reset</button>
+      <button class="action-btn" id="printBtn">🖨️ Print</button>
+      <button class="action-btn" id="newTaskBtn">✨ New task</button>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progressText">0 of 0 done</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="steps-list" id="stepsList"></div>
+  <div class="celebration" id="celebration">
+    <span class="celebration-emoji">🎉</span>
+    <h2>All done! Amazing job!</h2>
+    <p>You completed every single step. That's something to be proud of! 🌟</p>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// BUILT-IN TASK LIBRARY
+// Fast, free, works offline for common tasks
+// ═══════════════════════════════════════════════════════
+const TASKS = [
+  {
+    id:'bedroom', name:'Clean Bedroom',
+    keywords:['bedroom','room','clean room','tidy room','tidy bedroom','my room','messy room'],
+    steps:{
+      young:[
+        {emoji:'🚪',text:'Walk into your bedroom and close the door behind you.',actionType:'MOVE'},
+        {emoji:'👟',text:'Pick up any shoes on the floor and put them by the door or in the shoe rack.',actionType:'PICK UP'},
+        {emoji:'👕',text:'Pick up any clothes on the floor. Put dirty ones in the laundry basket.',actionType:'PICK UP'},
+        {emoji:'🛏️',text:'Pull your duvet up so the bed looks flat and tidy.',actionType:'MOVE'},
+        {emoji:'🧸',text:'Pick up any toys from the floor and put them in their box or on the shelf.',actionType:'PUT AWAY'},
+        {emoji:'📚',text:'Pick up any books and put them on your bookshelf.',actionType:'PUT AWAY'},
+        {emoji:'🍽️',text:'Look for any cups, plates or bowls and take them to the kitchen.',actionType:'CARRY'},
+        {emoji:'🗑️',text:'Pick up any rubbish and put it in the bin.',actionType:'PUT AWAY'},
+        {emoji:'✅',text:'Look around the room — does it look tidy? Great job!',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'👕',text:'Gather all clothes from the floor — dirty ones in the laundry basket, clean ones folded away.',actionType:'SORT'},
+        {emoji:'🛏️',text:'Make your bed: straighten the sheet, pull up the duvet, fluff your pillow.',actionType:'MOVE'},
+        {emoji:'🧸',text:'Put toys, games or hobby items back where they belong.',actionType:'PUT AWAY'},
+        {emoji:'📚',text:'Stack books and put them on the shelf.',actionType:'PUT AWAY'},
+        {emoji:'🍽️',text:'Collect any dishes or cups and take them to the kitchen.',actionType:'CARRY'},
+        {emoji:'🗑️',text:'Empty the bin if it is full.',actionType:'PUT AWAY'},
+        {emoji:'🖥️',text:'Tidy your desk — put pens, paper and chargers back in place.',actionType:'SORT'},
+        {emoji:'🧹',text:'Give the floor a quick sweep or vacuum if needed.',actionType:'WIPE'},
+        {emoji:'✅',text:'Step back and check — anything still out of place?',actionType:'CHECK'},
+      ],
+      teen:[
+        {emoji:'👕',text:'Deal with all clothes — dirty in the wash, clean folded and put away.',actionType:'SORT'},
+        {emoji:'🛏️',text:'Make your bed properly: sheet tucked in, duvet straight, pillows in place.',actionType:'MOVE'},
+        {emoji:'🖥️',text:'Clear and organise your desk — bin rubbish, put items away.',actionType:'SORT'},
+        {emoji:'📚',text:'Return books, equipment or anything borrowed to its correct place.',actionType:'PUT AWAY'},
+        {emoji:'🍽️',text:'Collect all dirty dishes and take them to the kitchen.',actionType:'CARRY'},
+        {emoji:'🗑️',text:'Empty your bin and replace the bag if needed.',actionType:'PUT AWAY'},
+        {emoji:'🧹',text:'Vacuum or sweep the floor.',actionType:'WIPE'},
+        {emoji:'✅',text:'Final check: close any open drawers or doors.',actionType:'CHECK'},
+      ]
+    }
+  },
+  {
+    id:'school_ready', name:'Get Ready for School',
+    keywords:['school','ready for school','get ready school','morning school','school morning','school ready'],
+    steps:{
+      young:[
+        {emoji:'⏰',text:'Wake up and sit up in bed. Take three big breaths.',actionType:'CHECK'},
+        {emoji:'🚽',text:'Go to the toilet.',actionType:'MOVE'},
+        {emoji:'👕',text:'Take off your pyjamas and put on your school uniform.',actionType:'MOVE'},
+        {emoji:'🧦',text:'Put on your socks and shoes.',actionType:'MOVE'},
+        {emoji:'🪥',text:'Go to the bathroom and brush your teeth for 2 minutes.',actionType:'WIPE'},
+        {emoji:'💧',text:'Wash your face with water.',actionType:'WIPE'},
+        {emoji:'🍳',text:'Go to the kitchen and have your breakfast.',actionType:'MOVE'},
+        {emoji:'🎒',text:'Pick up your school bag — check you have everything.',actionType:'CHECK'},
+        {emoji:'🧥',text:'Put on your coat if it is cold outside.',actionType:'MOVE'},
+        {emoji:'✅',text:'Wait by the door — you are ready!',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'⏰',text:'Get up straight away — do not go back to sleep.',actionType:'MOVE'},
+        {emoji:'🚿',text:'Have a quick wash or shower if needed.',actionType:'WIPE'},
+        {emoji:'👕',text:'Get dressed in your school clothes.',actionType:'MOVE'},
+        {emoji:'🪥',text:'Brush your teeth for 2 minutes.',actionType:'WIPE'},
+        {emoji:'💇',text:'Sort your hair.',actionType:'CHECK'},
+        {emoji:'🍳',text:'Eat breakfast.',actionType:'MOVE'},
+        {emoji:'🎒',text:'Pack your school bag — check you have your timetable, PE kit, homework.',actionType:'CHECK'},
+        {emoji:'🧥',text:'Grab your coat and any extra things you need.',actionType:'PICK UP'},
+        {emoji:'✅',text:'Check the time — are you on track?',actionType:'CHECK'},
+      ],
+      teen:[
+        {emoji:'⏰',text:'Get up when your alarm goes off.',actionType:'MOVE'},
+        {emoji:'🚿',text:'Shower and get washed.',actionType:'WIPE'},
+        {emoji:'👕',text:'Get dressed.',actionType:'MOVE'},
+        {emoji:'🪥',text:'Brush teeth, sort hair, any other personal care.',actionType:'WIPE'},
+        {emoji:'🍳',text:'Have breakfast — even something small.',actionType:'MOVE'},
+        {emoji:'🎒',text:'Check your bag: homework, books for today, phone charged, bus pass.',actionType:'CHECK'},
+        {emoji:'🧥',text:'Grab coat, keys, anything else needed.',actionType:'PICK UP'},
+        {emoji:'✅',text:'Leave on time.',actionType:'MOVE'},
+      ]
+    }
+  },
+  {
+    id:'homework', name:'Do Homework',
+    keywords:['homework','home work','school work','schoolwork','study','revision','reading'],
+    steps:{
+      young:[
+        {emoji:'🪑',text:'Find a quiet place to sit at a table or desk.',actionType:'MOVE'},
+        {emoji:'🎒',text:'Get your school bag and take out your homework.',actionType:'PICK UP'},
+        {emoji:'✏️',text:'Get a pencil, rubber and any other things you need.',actionType:'PICK UP'},
+        {emoji:'💧',text:'Get a drink of water to have nearby.',actionType:'PICK UP'},
+        {emoji:'👀',text:'Read the first question slowly — just one at a time.',actionType:'LOOK'},
+        {emoji:'✍️',text:'Write your answer to that question.',actionType:'MOVE'},
+        {emoji:'🔁',text:'Move to the next question when you are ready.',actionType:'CHECK'},
+        {emoji:'🎒',text:'When you are done, put your homework back in your bag.',actionType:'PUT AWAY'},
+        {emoji:'✅',text:'Tell a grown-up you have finished!',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'🪑',text:'Set up at a table or desk — away from the TV.',actionType:'MOVE'},
+        {emoji:'📱',text:'Put your phone face down or in another room.',actionType:'PUT AWAY'},
+        {emoji:'🎒',text:'Take out your homework and any books or notes you need.',actionType:'PICK UP'},
+        {emoji:'📋',text:'Look at all the questions first so you know what is coming.',actionType:'LOOK'},
+        {emoji:'✍️',text:'Start with the easiest question to build confidence.',actionType:'MOVE'},
+        {emoji:'⏱️',text:'Work through each question, one at a time.',actionType:'CHECK'},
+        {emoji:'✅',text:'Check your work when you are finished.',actionType:'CHECK'},
+        {emoji:'🎒',text:'Put homework back in your bag ready for tomorrow.',actionType:'PUT AWAY'},
+      ],
+      teen:[
+        {emoji:'📱',text:'Put your phone on silent and away from your workspace.',actionType:'PUT AWAY'},
+        {emoji:'🪑',text:'Set up a clear workspace.',actionType:'MOVE'},
+        {emoji:'📋',text:'Read through all tasks first — note any deadlines.',actionType:'LOOK'},
+        {emoji:'✍️',text:'Start with the task due soonest or that feels hardest.',actionType:'MOVE'},
+        {emoji:'⏱️',text:'Work in focused blocks — 20 minutes on, 5 minute break.',actionType:'CHECK'},
+        {emoji:'✅',text:'Proofread before you finish.',actionType:'CHECK'},
+        {emoji:'🎒',text:'Pack everything away and mark it done in your planner.',actionType:'PUT AWAY'},
+      ]
+    }
+  },
+  {
+    id:'dishes', name:'Wash the Dishes',
+    keywords:['dishes','washing up','wash up','wash dishes','dirty dishes','pots','pans','plates','cups','washing dishes'],
+    steps:{
+      young:[
+        {emoji:'🧤',text:'Put on the rubber gloves if you want to.',actionType:'MOVE'},
+        {emoji:'🚰',text:'Turn on the hot tap and fill the sink with warm water.',actionType:'OPEN'},
+        {emoji:'🧴',text:'Squeeze a little washing up liquid into the water.',actionType:'MOVE'},
+        {emoji:'🍽️',text:'Put the dirty plates into the water carefully.',actionType:'MOVE'},
+        {emoji:'🧽',text:'Use the sponge to scrub each plate until it is clean.',actionType:'WIPE'},
+        {emoji:'🚰',text:'Rinse each plate under clean water from the tap.',actionType:'WIPE'},
+        {emoji:'🏗️',text:'Put the clean plates on the drying rack.',actionType:'PUT AWAY'},
+        {emoji:'🍽️',text:'Do the same for cups, then pots and pans last.',actionType:'WIPE'},
+        {emoji:'🚰',text:'Pull out the plug and let the water drain away.',actionType:'OPEN'},
+        {emoji:'🧹',text:'Wipe down the sink and countertop with a cloth.',actionType:'WIPE'},
+      ],
+      older:[
+        {emoji:'🚰',text:'Fill the sink with hot soapy water.',actionType:'OPEN'},
+        {emoji:'🍽️',text:'Sort items: glasses first, then plates, then pots and pans.',actionType:'SORT'},
+        {emoji:'🧽',text:'Wash each item thoroughly with the sponge.',actionType:'WIPE'},
+        {emoji:'🚰',text:'Rinse under clean running water.',actionType:'WIPE'},
+        {emoji:'🏗️',text:'Stack on the drying rack, biggest items at the back.',actionType:'PUT AWAY'},
+        {emoji:'🧹',text:'When done, drain the sink and wipe around it.',actionType:'WIPE'},
+        {emoji:'🧽',text:'Rinse out the sponge and leave it to dry.',actionType:'WIPE'},
+      ],
+      teen:[
+        {emoji:'🔍',text:'Scrape any leftover food into the bin before washing.',actionType:'MOVE'},
+        {emoji:'🚰',text:'Fill the sink with hot soapy water.',actionType:'OPEN'},
+        {emoji:'🍽️',text:'Wash in order: glasses, cutlery, plates, pots.',actionType:'WIPE'},
+        {emoji:'🚰',text:'Rinse everything thoroughly.',actionType:'WIPE'},
+        {emoji:'🏗️',text:'Rack or dry and put away.',actionType:'PUT AWAY'},
+        {emoji:'🧹',text:'Clean the sink, wipe the counters, hang the cloth up.',actionType:'WIPE'},
+      ]
+    }
+  },
+  {
+    id:'teeth', name:'Brush Teeth',
+    keywords:['teeth','brush teeth','brushing teeth','tooth','toothbrush','dental'],
+    steps:{
+      young:[
+        {emoji:'🚰',text:'Go to the bathroom sink.',actionType:'MOVE'},
+        {emoji:'🪥',text:'Pick up your toothbrush.',actionType:'PICK UP'},
+        {emoji:'🧴',text:'Put a pea-sized blob of toothpaste on the brush.',actionType:'MOVE'},
+        {emoji:'💧',text:'Brush the top teeth first, going back and forth.',actionType:'WIPE'},
+        {emoji:'💧',text:'Now brush the bottom teeth the same way.',actionType:'WIPE'},
+        {emoji:'💧',text:'Brush the inside and the biting part of all your teeth too.',actionType:'WIPE'},
+        {emoji:'⏱️',text:'Keep brushing for 2 whole minutes — hum a song to help!',actionType:'CHECK'},
+        {emoji:'🚰',text:'Spit into the sink and rinse your mouth with water.',actionType:'WIPE'},
+        {emoji:'🪥',text:'Rinse your toothbrush and put it back.',actionType:'PUT AWAY'},
+      ],
+      older:[
+        {emoji:'🪥',text:'Get your toothbrush and put toothpaste on it.',actionType:'PICK UP'},
+        {emoji:'💧',text:'Brush all outer surfaces — top then bottom.',actionType:'WIPE'},
+        {emoji:'💧',text:'Brush all inner surfaces.',actionType:'WIPE'},
+        {emoji:'💧',text:'Brush the chewing surfaces.',actionType:'WIPE'},
+        {emoji:'⏱️',text:'Brush for 2 full minutes total.',actionType:'CHECK'},
+        {emoji:'🚰',text:'Spit and rinse.',actionType:'WIPE'},
+        {emoji:'🪥',text:'Rinse your brush and put it away.',actionType:'PUT AWAY'},
+      ],
+      teen:[
+        {emoji:'🪥',text:'Brush all tooth surfaces — outer, inner, chewing — for 2 minutes.',actionType:'WIPE'},
+        {emoji:'🧴',text:'Floss if you normally do.',actionType:'WIPE'},
+        {emoji:'🚰',text:'Rinse with water or mouthwash.',actionType:'WIPE'},
+        {emoji:'🪥',text:'Rinse brush and put away.',actionType:'PUT AWAY'},
+      ]
+    }
+  },
+  {
+    id:'bed_routine', name:'Get Ready for Bed',
+    keywords:['bed','bedtime','ready for bed','night routine','get ready bed','sleep','night time','bedtime routine'],
+    steps:{
+      young:[
+        {emoji:'📺',text:'Turn off the TV and any screens.',actionType:'CLOSE'},
+        {emoji:'🪥',text:'Go to the bathroom and brush your teeth.',actionType:'WIPE'},
+        {emoji:'🚽',text:'Use the toilet.',actionType:'MOVE'},
+        {emoji:'💧',text:'Wash your face and hands.',actionType:'WIPE'},
+        {emoji:'👕',text:'Take off your clothes and put on your pyjamas.',actionType:'MOVE'},
+        {emoji:'👕',text:'Put your dirty clothes in the laundry basket.',actionType:'PUT AWAY'},
+        {emoji:'🎒',text:'Check your school bag is ready for tomorrow.',actionType:'CHECK'},
+        {emoji:'🛏️',text:'Get into bed.',actionType:'MOVE'},
+        {emoji:'💡',text:'Turn off the main light.',actionType:'CLOSE'},
+        {emoji:'📖',text:'Read a book or listen to quiet music until you feel sleepy.',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'📱',text:'Put your phone on charge away from your bed.',actionType:'PUT AWAY'},
+        {emoji:'📺',text:'Turn off all screens.',actionType:'CLOSE'},
+        {emoji:'🪥',text:'Brush teeth, wash face.',actionType:'WIPE'},
+        {emoji:'🚿',text:'Shower if you do evenings.',actionType:'WIPE'},
+        {emoji:'👕',text:'Get into pyjamas, dirty clothes in the wash.',actionType:'MOVE'},
+        {emoji:'🎒',text:'Check your bag is packed for tomorrow.',actionType:'CHECK'},
+        {emoji:'⏰',text:'Set your alarm.',actionType:'CHECK'},
+        {emoji:'🛏️',text:'Get into bed and wind down.',actionType:'MOVE'},
+      ],
+      teen:[
+        {emoji:'📱',text:'Phone on Do Not Disturb and charging — ideally outside the bedroom.',actionType:'PUT AWAY'},
+        {emoji:'🪥',text:'Brush teeth, skincare routine, wash.',actionType:'WIPE'},
+        {emoji:'👕',text:'Change into sleep clothes.',actionType:'MOVE'},
+        {emoji:'🎒',text:'Bag packed, uniform ready for tomorrow.',actionType:'CHECK'},
+        {emoji:'⏰',text:'Set alarm.',actionType:'CHECK'},
+        {emoji:'🛏️',text:'Get into bed — read or listen to something calm.',actionType:'MOVE'},
+      ]
+    }
+  },
+  {
+    id:'shower', name:'Have a Shower',
+    keywords:['shower','wash','bath','washing','get washed','personal hygiene','hygiene','have a bath'],
+    steps:{
+      young:[
+        {emoji:'🧴',text:'Get a clean towel and put it somewhere easy to reach.',actionType:'PICK UP'},
+        {emoji:'👕',text:'Take off your clothes and leave them outside the bathroom.',actionType:'MOVE'},
+        {emoji:'🚿',text:'Turn on the shower and wait for the water to get warm — test it with your hand.',actionType:'OPEN'},
+        {emoji:'🚿',text:'Step in and get your whole body wet.',actionType:'WIPE'},
+        {emoji:'🧴',text:'Put shampoo on your hair and rub it all over. Rinse it out completely.',actionType:'WIPE'},
+        {emoji:'🧼',text:'Use soap or shower gel on your body — wash all over including armpits.',actionType:'WIPE'},
+        {emoji:'🚿',text:'Rinse all the soap off your body.',actionType:'WIPE'},
+        {emoji:'🚿',text:'Turn off the shower.',actionType:'CLOSE'},
+        {emoji:'🧺',text:'Step out and dry yourself all over with your towel.',actionType:'WIPE'},
+        {emoji:'👕',text:'Put on clean clothes or pyjamas.',actionType:'MOVE'},
+      ],
+      older:[
+        {emoji:'🧴',text:'Get a clean towel ready.',actionType:'PICK UP'},
+        {emoji:'🚿',text:'Turn shower on, wait for it to warm up.',actionType:'OPEN'},
+        {emoji:'🚿',text:'Get in and wet your hair and body.',actionType:'WIPE'},
+        {emoji:'🧴',text:'Shampoo your hair and rinse thoroughly.',actionType:'WIPE'},
+        {emoji:'🧼',text:'Wash your whole body with soap or shower gel.',actionType:'WIPE'},
+        {emoji:'🚿',text:'Rinse everything off.',actionType:'WIPE'},
+        {emoji:'🚿',text:'Turn off the shower and step out.',actionType:'CLOSE'},
+        {emoji:'🧺',text:'Dry off properly.',actionType:'WIPE'},
+        {emoji:'👕',text:'Get dressed.',actionType:'MOVE'},
+        {emoji:'🧴',text:'Apply deodorant and anything else you need.',actionType:'MOVE'},
+      ],
+      teen:[
+        {emoji:'🚿',text:'Shower — wash hair and body thoroughly.',actionType:'WIPE'},
+        {emoji:'🚿',text:'Turn off water.',actionType:'CLOSE'},
+        {emoji:'🧺',text:'Dry off.',actionType:'WIPE'},
+        {emoji:'🧴',text:'Deodorant, skincare, any other personal care.',actionType:'MOVE'},
+        {emoji:'👕',text:'Get dressed.',actionType:'MOVE'},
+        {emoji:'🧺',text:'Put wet towel somewhere to dry.',actionType:'PUT AWAY'},
+      ]
+    }
+  },
+  {
+    id:'school_bag', name:'Pack School Bag',
+    keywords:['school bag','bag','pack bag','pack my bag','schoolbag','backpack','rucksack'],
+    steps:{
+      young:[
+        {emoji:'🎒',text:'Get your school bag and open it up.',actionType:'OPEN'},
+        {emoji:'📋',text:'Ask a grown-up to help you check your school timetable.',actionType:'CHECK'},
+        {emoji:'📚',text:'Put in any books or reading folders you need.',actionType:'PUT AWAY'},
+        {emoji:'✏️',text:'Make sure your pencil case is in your bag.',actionType:'CHECK'},
+        {emoji:'📝',text:'Put in any homework that is finished.',actionType:'PUT AWAY'},
+        {emoji:'💧',text:'Put your water bottle in the side pocket.',actionType:'PUT AWAY'},
+        {emoji:'🧥',text:'Check if you need your PE kit — put it in if yes.',actionType:'CHECK'},
+        {emoji:'🎒',text:'Zip your bag up and put it by the door.',actionType:'CLOSE'},
+      ],
+      older:[
+        {emoji:'📋',text:'Check your timetable for tomorrow.',actionType:'CHECK'},
+        {emoji:'📚',text:'Pack the right books and folders for each subject.',actionType:'PUT AWAY'},
+        {emoji:'📝',text:'Put in all completed homework.',actionType:'PUT AWAY'},
+        {emoji:'✏️',text:'Check your pencil case has everything you need.',actionType:'CHECK'},
+        {emoji:'💧',text:'Fill and pack your water bottle.',actionType:'PUT AWAY'},
+        {emoji:'🏃',text:'Check if you need PE kit or any sports equipment.',actionType:'CHECK'},
+        {emoji:'💰',text:'Check you have your bus pass or dinner money.',actionType:'CHECK'},
+        {emoji:'🎒',text:'Zip up and put the bag by the door for the morning.',actionType:'CLOSE'},
+      ],
+      teen:[
+        {emoji:'📋',text:'Check tomorrow\'s timetable — lessons, trips, anything extra.',actionType:'CHECK'},
+        {emoji:'📚',text:'Pack books, folders, and any equipment needed.',actionType:'PUT AWAY'},
+        {emoji:'📝',text:'All homework in — double check due dates.',actionType:'CHECK'},
+        {emoji:'💰',text:'Oyster/bus pass, dinner money or card.',actionType:'CHECK'},
+        {emoji:'🔋',text:'Charge your phone and pack your charger.',actionType:'CHECK'},
+        {emoji:'🎒',text:'Zip up and leave by the door.',actionType:'CLOSE'},
+      ]
+    }
+  },
+  {
+    id:'living_room', name:'Tidy Living Room',
+    keywords:['living room','lounge','sitting room','front room','tidy living room','tidy lounge'],
+    steps:{
+      young:[
+        {emoji:'🧸',text:'Pick up any toys from the floor and put them in the toy box.',actionType:'PICK UP'},
+        {emoji:'📚',text:'Pick up any books and put them on the shelf.',actionType:'PUT AWAY'},
+        {emoji:'🍽️',text:'Pick up any cups, plates or snack bowls and take them to the kitchen.',actionType:'CARRY'},
+        {emoji:'🛋️',text:'Straighten the sofa cushions so they look neat.',actionType:'MOVE'},
+        {emoji:'🧺',text:'Fold any blankets and put them on the sofa or in the blanket box.',actionType:'FOLD'},
+        {emoji:'🗑️',text:'Pick up any rubbish like wrappers or tissues and put them in the bin.',actionType:'PUT AWAY'},
+        {emoji:'📺',text:'Tidy up any remotes or controllers — put them in their place.',actionType:'PUT AWAY'},
+        {emoji:'✅',text:'Step back and look — does the room look tidy? Well done!',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'🍽️',text:'Collect all dishes and glasses and take to the kitchen.',actionType:'CARRY'},
+        {emoji:'🧸',text:'Put away toys, games or anything that does not belong here.',actionType:'PUT AWAY'},
+        {emoji:'📚',text:'Stack books and magazines neatly.',actionType:'SORT'},
+        {emoji:'🛋️',text:'Plump and straighten all the cushions.',actionType:'MOVE'},
+        {emoji:'🧺',text:'Fold any throws or blankets.',actionType:'FOLD'},
+        {emoji:'🗑️',text:'Check for rubbish and bin anything that needs it.',actionType:'PUT AWAY'},
+        {emoji:'🧹',text:'Give the floor a quick vacuum or sweep if needed.',actionType:'WIPE'},
+        {emoji:'✅',text:'Final look around — anything missed?',actionType:'CHECK'},
+      ],
+      teen:[
+        {emoji:'🍽️',text:'Clear all food and drink items to the kitchen.',actionType:'CARRY'},
+        {emoji:'📦',text:'Return everything to its home — remote, chargers, books, games.',actionType:'PUT AWAY'},
+        {emoji:'🛋️',text:'Straighten cushions, fold blankets.',actionType:'MOVE'},
+        {emoji:'🗑️',text:'Empty the bin if it needs it.',actionType:'PUT AWAY'},
+        {emoji:'🧹',text:'Vacuum the floor.',actionType:'WIPE'},
+        {emoji:'✅',text:'Check it looks good — you are done.',actionType:'CHECK'},
+      ]
+    }
+  },
+  {
+    id:'lunch', name:'Make Lunch',
+    keywords:['lunch','make lunch','packed lunch','sandwich','make a sandwich','lunchbox','make food','make snack'],
+    steps:{
+      young:[
+        {emoji:'🙌',text:'Wash your hands with soap and dry them.',actionType:'WIPE'},
+        {emoji:'🍞',text:'Get two slices of bread from the bag.',actionType:'PICK UP'},
+        {emoji:'🍽️',text:'Put the bread on a plate on the table.',actionType:'PUT AWAY'},
+        {emoji:'🧈',text:'Use a knife to spread butter or spread on both slices.',actionType:'MOVE'},
+        {emoji:'🥪',text:'Put your filling on one slice — cheese, ham, or whatever you like.',actionType:'MOVE'},
+        {emoji:'🥪',text:'Put the other piece of bread on top to make a sandwich.',actionType:'MOVE'},
+        {emoji:'🔪',text:'Ask a grown-up to cut it if you need help.',actionType:'CHECK'},
+        {emoji:'🍎',text:'Add a piece of fruit or a snack to your plate.',actionType:'PICK UP'},
+        {emoji:'💧',text:'Pour yourself a drink.',actionType:'MOVE'},
+        {emoji:'🧹',text:'Put the butter and filling back in the fridge.',actionType:'PUT AWAY'},
+      ],
+      older:[
+        {emoji:'🙌',text:'Wash your hands.',actionType:'WIPE'},
+        {emoji:'🥪',text:'Get your bread and filling from the fridge or cupboard.',actionType:'PICK UP'},
+        {emoji:'🧈',text:'Butter the bread.',actionType:'MOVE'},
+        {emoji:'🥪',text:'Add your fillings and put the sandwich together.',actionType:'MOVE'},
+        {emoji:'🔪',text:'Cut the sandwich if you want.',actionType:'MOVE'},
+        {emoji:'🍎',text:'Add something on the side — fruit, crisps, yoghurt.',actionType:'PICK UP'},
+        {emoji:'💧',text:'Pour a drink.',actionType:'MOVE'},
+        {emoji:'🧹',text:'Put everything back in the fridge and wipe the counter.',actionType:'PUT AWAY'},
+      ],
+      teen:[
+        {emoji:'🙌',text:'Wash hands.',actionType:'WIPE'},
+        {emoji:'🥪',text:'Make your sandwich or chosen food.',actionType:'MOVE'},
+        {emoji:'🍎',text:'Add fruit, snack or side.',actionType:'PICK UP'},
+        {emoji:'💧',text:'Pour a drink.',actionType:'MOVE'},
+        {emoji:'🧹',text:'Clear up — put food away, wipe surfaces.',actionType:'WIPE'},
+      ]
+    }
+  },
+  {
+    id:'laundry', name:'Put Away Laundry',
+    keywords:['laundry','washing','clothes','put away clothes','fold clothes','put away washing','wardrobe','drawers','folding'],
+    steps:{
+      young:[
+        {emoji:'🧺',text:'Bring the basket of clean clothes to your bedroom.',actionType:'CARRY'},
+        {emoji:'👕',text:'Take one piece of clothing out at a time.',actionType:'PICK UP'},
+        {emoji:'👕',text:'Shake it out so it is not all crumpled.',actionType:'MOVE'},
+        {emoji:'👔',text:'Fold t-shirts and jumpers and put them in your drawer.',actionType:'FOLD'},
+        {emoji:'👖',text:'Fold trousers and jeans and put them in your drawer.',actionType:'FOLD'},
+        {emoji:'🧦',text:'Match your socks into pairs and roll them up.',actionType:'SORT'},
+        {emoji:'👗',text:'Anything on a hanger — ask a grown-up if you need help.',actionType:'PUT AWAY'},
+        {emoji:'🧺',text:'When the basket is empty, put it away.',actionType:'PUT AWAY'},
+      ],
+      older:[
+        {emoji:'🧺',text:'Take clean laundry to your bedroom.',actionType:'CARRY'},
+        {emoji:'👔',text:'Hang up shirts, dresses and anything that creases easily.',actionType:'PUT AWAY'},
+        {emoji:'👕',text:'Fold t-shirts and jumpers and put in drawer.',actionType:'FOLD'},
+        {emoji:'👖',text:'Fold trousers and put away.',actionType:'FOLD'},
+        {emoji:'🧦',text:'Pair and roll socks.',actionType:'SORT'},
+        {emoji:'🩲',text:'Put underwear in the right drawer.',actionType:'PUT AWAY'},
+        {emoji:'🧺',text:'Put the empty basket back.',actionType:'PUT AWAY'},
+      ],
+      teen:[
+        {emoji:'👔',text:'Hang anything that needs hanging.',actionType:'PUT AWAY'},
+        {emoji:'👕',text:'Fold and put away everything else by type.',actionType:'FOLD'},
+        {emoji:'🧦',text:'Pair socks.',actionType:'SORT'},
+        {emoji:'🧺',text:'Return empty basket.',actionType:'PUT AWAY'},
+      ]
+    }
+  },
+  {
+    id:'cat', name:'Feed the Cat',
+    keywords:['cat','feed cat','cat food','feed the cat','cats','kitten'],
+    steps:{
+      young:[
+        {emoji:'🙌',text:'Wash your hands before you start.',actionType:'WIPE'},
+        {emoji:'🥣',text:'Pick up the cat bowl from its spot.',actionType:'PICK UP'},
+        {emoji:'🚰',text:'Tip out any old food and rinse the bowl in the sink.',actionType:'WIPE'},
+        {emoji:'🥫',text:'Open the cat food tin or pouch.',actionType:'OPEN'},
+        {emoji:'🥣',text:'Put the right amount of food into the clean bowl.',actionType:'MOVE'},
+        {emoji:'🐱',text:'Put the bowl back in the cat\'s usual spot.',actionType:'PUT AWAY'},
+        {emoji:'💧',text:'Check the water bowl is full — top it up if needed.',actionType:'CHECK'},
+        {emoji:'🗑️',text:'Put the empty tin or pouch in the bin.',actionType:'PUT AWAY'},
+        {emoji:'🙌',text:'Wash your hands again.',actionType:'WIPE'},
+      ],
+      older:[
+        {emoji:'🙌',text:'Wash your hands.',actionType:'WIPE'},
+        {emoji:'🥣',text:'Empty, rinse and refill the food bowl with the right portion.',actionType:'MOVE'},
+        {emoji:'💧',text:'Check and refill the water bowl.',actionType:'CHECK'},
+        {emoji:'🗑️',text:'Bin the empty packaging.',actionType:'PUT AWAY'},
+        {emoji:'🙌',text:'Wash your hands.',actionType:'WIPE'},
+      ],
+      teen:[
+        {emoji:'🙌',text:'Wash hands.',actionType:'WIPE'},
+        {emoji:'🥣',text:'Rinse food bowl, add correct portion of food.',actionType:'MOVE'},
+        {emoji:'💧',text:'Refill water bowl.',actionType:'CHECK'},
+        {emoji:'🗑️',text:'Bin packaging, wash hands.',actionType:'PUT AWAY'},
+      ]
+    }
+  },
+  {
+    id:'dog', name:'Feed the Dog',
+    keywords:['dog','feed dog','dog food','feed the dog','dogs','puppy','walk dog'],
+    steps:{
+      young:[
+        {emoji:'🙌',text:'Wash your hands before you start.',actionType:'WIPE'},
+        {emoji:'🥣',text:'Pick up the dog bowl from its spot.',actionType:'PICK UP'},
+        {emoji:'🐕',text:'Check the bowl — rinse it out if it looks dirty.',actionType:'CHECK'},
+        {emoji:'🥫',text:'Get the dog food — tin, pouch or dry food.',actionType:'PICK UP'},
+        {emoji:'🥣',text:'Put the right amount of food in the bowl.',actionType:'MOVE'},
+        {emoji:'🐶',text:'Put the bowl back in the dog\'s usual spot.',actionType:'PUT AWAY'},
+        {emoji:'💧',text:'Check the water bowl — top it up if needed.',actionType:'CHECK'},
+        {emoji:'🗑️',text:'Put any packaging in the bin.',actionType:'PUT AWAY'},
+        {emoji:'🙌',text:'Wash your hands again.',actionType:'WIPE'},
+      ],
+      older:[
+        {emoji:'🙌',text:'Wash your hands.',actionType:'WIPE'},
+        {emoji:'🥣',text:'Rinse the bowl and add the right portion of food.',actionType:'MOVE'},
+        {emoji:'💧',text:'Refill the water bowl.',actionType:'CHECK'},
+        {emoji:'🗑️',text:'Bin the packaging.',actionType:'PUT AWAY'},
+        {emoji:'🙌',text:'Wash hands.',actionType:'WIPE'},
+      ],
+      teen:[
+        {emoji:'🙌',text:'Wash hands.',actionType:'WIPE'},
+        {emoji:'🥣',text:'Rinse bowl, add correct food portion.',actionType:'MOVE'},
+        {emoji:'💧',text:'Refill water.',actionType:'CHECK'},
+        {emoji:'🗑️',text:'Bin packaging, wash hands.',actionType:'PUT AWAY'},
+      ]
+    }
+  },
+  {
+    id:'table', name:'Set the Table',
+    keywords:['set table','table','lay the table','set the table','dinner table','lunch table'],
+    steps:{
+      young:[
+        {emoji:'🙌',text:'Wash your hands first.',actionType:'WIPE'},
+        {emoji:'🍽️',text:'Count how many people are eating — get that many plates.',actionType:'CHECK'},
+        {emoji:'🍽️',text:'Put one plate at each person\'s seat.',actionType:'PUT AWAY'},
+        {emoji:'🥄',text:'Put a fork on the left side of each plate.',actionType:'PUT AWAY'},
+        {emoji:'🔪',text:'Put a knife on the right side of each plate.',actionType:'PUT AWAY'},
+        {emoji:'🥄',text:'Put a spoon next to the knife.',actionType:'PUT AWAY'},
+        {emoji:'🥛',text:'Put a glass or cup at the top right of each plate.',actionType:'PUT AWAY'},
+        {emoji:'✅',text:'Step back and check — does each place look the same? Great job!',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'🙌',text:'Wash your hands.',actionType:'WIPE'},
+        {emoji:'🍽️',text:'Set out a plate for each person.',actionType:'PUT AWAY'},
+        {emoji:'🍴',text:'Add fork left, knife and spoon right of each plate.',actionType:'PUT AWAY'},
+        {emoji:'🥛',text:'Place a glass above each setting.',actionType:'PUT AWAY'},
+        {emoji:'🧂',text:'Put salt and pepper in the middle of the table.',actionType:'PUT AWAY'},
+        {emoji:'✅',text:'Check everything looks even and neat.',actionType:'CHECK'},
+      ],
+      teen:[
+        {emoji:'🍽️',text:'Place settings for everyone — plate, cutlery, glass.',actionType:'PUT AWAY'},
+        {emoji:'🧂',text:'Condiments and serving dishes in the centre.',actionType:'PUT AWAY'},
+        {emoji:'✅',text:'Check it looks right and everything is within reach.',actionType:'CHECK'},
+      ]
+    }
+  },
+  {
+    id:'tidy_desk', name:'Tidy Desk',
+    keywords:['desk','tidy desk','work space','workspace','study area','tidy my desk'],
+    steps:{
+      young:[
+        {emoji:'🗑️',text:'Pick up any rubbish — wrappers, old tissues — and put them in the bin.',actionType:'PUT AWAY'},
+        {emoji:'📚',text:'Stack any books and put them on the shelf.',actionType:'PUT AWAY'},
+        {emoji:'✏️',text:'Put all pens, pencils and rubbers back in your pencil case.',actionType:'PUT AWAY'},
+        {emoji:'📝',text:'Pile up any papers into a neat stack.',actionType:'SORT'},
+        {emoji:'🍽️',text:'Take any cups or plates to the kitchen.',actionType:'CARRY'},
+        {emoji:'✅',text:'Look at your desk — is there space to work? Great!',actionType:'CHECK'},
+      ],
+      older:[
+        {emoji:'🗑️',text:'Clear all rubbish into the bin.',actionType:'PUT AWAY'},
+        {emoji:'📚',text:'Return books and folders to the right place.',actionType:'PUT AWAY'},
+        {emoji:'✏️',text:'Organise your stationery in the pencil case or pot.',actionType:'SORT'},
+        {emoji:'📝',text:'Sort papers — file what you need, recycle what you do not.',actionType:'SORT'},
+        {emoji:'🍽️',text:'Remove any dishes or drinks.',actionType:'CARRY'},
+        {emoji:'🧹',text:'Wipe the desk surface with a cloth.',actionType:'WIPE'},
+      ],
+      teen:[
+        {emoji:'🗑️',text:'Bin all rubbish.',actionType:'PUT AWAY'},
+        {emoji:'📂',text:'File or sort all papers.',actionType:'SORT'},
+        {emoji:'📚',text:'Books and folders away.',actionType:'PUT AWAY'},
+        {emoji:'🧹',text:'Wipe the surface.',actionType:'WIPE'},
+        {emoji:'✅',text:'Clear desk, clear mind — good to go.',actionType:'CHECK'},
+      ]
+    }
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+// KEYWORD MATCHING
+// Strict matching: requires a whole keyword phrase to appear
+// in the query, or the query to closely match a keyword.
+// Single generic words like "clean" or "make" do NOT match.
+// ═══════════════════════════════════════════════════════
+
+// Words that are too generic to count as a match on their own
+const STOP_WORDS = new Set(['clean','tidy','do','make','get','my','the','a','an','i','up','put','go','have','wash','set']);
+
+function findTask(input) {
+  const q = input.toLowerCase().trim();
+  let best = null;
+  let bestScore = 0;
+
+  for (const task of TASKS) {
+    let taskScore = 0;
+
+    for (const kw of task.keywords) {
+      // Exact match — instant win
+      if (q === kw) return task;
+
+      // Query contains the full keyword phrase (e.g. "please wash the dishes tonight" contains "wash the dishes")
+      if (q.includes(kw)) {
+        const score = kw.length * 3;
+        if (score > taskScore) taskScore = score;
+        continue;
+      }
+
+      // Keyword contains the full query (e.g. query "tidy bedroom" is inside keyword "tidy my bedroom")
+      if (kw.includes(q) && q.length > 4) {
+        const score = q.length * 2;
+        if (score > taskScore) taskScore = score;
+        continue;
+      }
+
+      // Count how many MEANINGFUL words from the query appear in this keyword
+      const qWords = q.split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
+      const kwWords = kw.split(/\s+/);
+      let hits = 0;
+      for (const w of qWords) {
+        if (kwWords.some(kw2 => kw2.includes(w) || w.includes(kw2))) hits++;
+      }
+      // Only count if ALL meaningful words matched (not just one generic overlap)
+      if (hits > 0 && qWords.length > 0 && hits >= qWords.length) {
+        const score = hits * 8;
+        if (score > taskScore) taskScore = score;
+      }
+    }
+
+    if (taskScore > bestScore) {
+      bestScore = taskScore;
+      best = task;
+    }
+  }
+
+  // Require a meaningful score — single-word generic overlaps score 0 or very low
+  return bestScore >= 8 ? best : null;
+}
+
+// ═══════════════════════════════════════════════════════
+// CUE COLOURS & CHEERS
+// ═══════════════════════════════════════════════════════
+const CUE_STYLES = {
+  'LOOK':    {bg:'#AEE2FF',color:'#1a6fa8'},
+  'PICK UP': {bg:'#FFD166',color:'#8a5a00'},
+  'PUT AWAY':{bg:'#B5EAD7',color:'#1a6b4a'},
+  'MOVE':    {bg:'#FFCBA4',color:'#8a4000'},
+  'OPEN':    {bg:'#C9B8FF',color:'#4a2aa0'},
+  'CLOSE':   {bg:'#C9B8FF',color:'#4a2aa0'},
+  'SORT':    {bg:'#FFB3C6',color:'#8a1a38'},
+  'WIPE':    {bg:'#B5EAD7',color:'#1a6b4a'},
+  'CHECK':   {bg:'#AEE2FF',color:'#1a6fa8'},
+  'CARRY':   {bg:'#FFD166',color:'#8a5a00'},
+  'FOLD':    {bg:'#FFCBA4',color:'#8a4000'},
+};
+const STEP_COLORS = ['#FFD166','#AEE2FF','#B5EAD7','#FFCBA4','#FFB3C6','#C9B8FF','#AEE2FF','#B5EAD7','#FFD166','#FFCBA4'];
+const CHEERS = [
+  {msg:"You're doing great! 🌟", bg:'#FFD166', color:'#8a5a00'},
+  {msg:"Keep going — you've got this! 💪", bg:'#AEE2FF', color:'#1a6fa8'},
+  {msg:"Amazing work so far! ⭐", bg:'#B5EAD7', color:'#1a6b4a'},
+  {msg:"You're nearly there! 🚀", bg:'#FFB3C6', color:'#8a1a38'},
+  {msg:"One step at a time — brilliant! 🎉", bg:'#C9B8FF', color:'#4a2aa0'},
+];
+
+// ═══════════════════════════════════════════════════════
+// OPTION CHIPS
+// ═══════════════════════════════════════════════════════
+document.querySelectorAll('.opt-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const group = chip.dataset.group;
+    const color = chip.dataset.color || 'on-sun';
+    if (group === 'age') {
+      document.querySelectorAll('.opt-chip[data-group="age"]').forEach(c => c.className = 'opt-chip');
+      chip.classList.add('on-sun');
+    } else {
+      const isOn = [...chip.classList].some(c => c.startsWith('on-'));
+      chip.classList.forEach(c => { if (c.startsWith('on-')) chip.classList.remove(c); });
+      if (!isOn) chip.classList.add(color);
+    }
+  });
+});
+
+function getAge() {
+  return document.querySelector('.opt-chip[data-group="age"].on-sun')?.dataset.val || 'young';
+}
+function hasOpt(val) {
+  return !![...document.querySelectorAll('.opt-chip[data-group="opt"]')]
+    .find(c => c.dataset.val === val && [...c.classList].some(cl => cl.startsWith('on-')));
+}
+
+// ═══════════════════════════════════════════════════════
+// EXAMPLE BUTTONS
+// ═══════════════════════════════════════════════════════
+document.querySelectorAll('.example-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('taskInput').value = btn.dataset.task;
+    document.getElementById('goBtn').click();
+  });
+});
+
+document.getElementById('taskInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('goBtn').click();
+});
+
+// ═══════════════════════════════════════════════════════
+// MAIN GO BUTTON
+// ═══════════════════════════════════════════════════════
+document.getElementById('goBtn').addEventListener('click', async () => {
+  const input = document.getElementById('taskInput').value.trim();
+  if (!input) { document.getElementById('taskInput').focus(); return; }
+
+  setError('');
+  document.getElementById('aiBadge').classList.remove('show');
+
+  // Try built-in library first
+  const builtIn = findTask(input);
+  if (builtIn) {
+    const age = getAge();
+    let steps = builtIn.steps[age] || builtIn.steps.young;
+    if (hasOpt('simple')) steps = steps.map(s => ({...s, text: s.text.split('.')[0] + '.'}));
+    renderSteps(input, steps, false);
+    return;
+  }
+
+  // Not in library — call AI
+  setLoading(true, input);
+  try {
+    const steps = await fetchAISteps(input);
+    renderSteps(input, steps, true);
+  } catch(e) {
+    setError(e.message || 'Something went wrong. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// AI FETCH via Netlify function
+// ═══════════════════════════════════════════════════════
+async function fetchAISteps(task) {
+  const age = getAge();
+  const ageLabel = age === 'young' ? 'young child (age 5-8)' : age === 'older' ? 'older child (age 9-13)' : 'teenager (age 14+)';
+  const simple = hasOpt('simple');
+  const visualCues = hasOpt('cues');
+
+  const prompt = `You are a SEND (Special Educational Needs and Disabilities) specialist breaking tasks into tiny, literal steps for a ${ageLabel}.
+
+Task: "${task}"
+
+Rules:
+- 6 to 10 steps maximum
+- Each step is ONE simple, concrete physical action — not two actions combined
+- Use very simple, literal language a ${ageLabel} can understand immediately
+- Be specific — say exactly WHAT to pick up and WHERE to put it
+- Steps must be in the exact order they would happen${simple ? '\n- Keep each step to one very short sentence — maximum 10 words' : ''}${visualCues ? '\n- Include an "actionType" for each step — choose from: LOOK, PICK UP, PUT AWAY, MOVE, OPEN, CLOSE, SORT, WIPE, CHECK, CARRY, FOLD' : ''}
+
+Respond ONLY with a JSON array, no explanation, no markdown. Example format:
+[{"emoji":"🧹","text":"Pick up the broom from the cupboard under the stairs.","actionType":"PICK UP"}]`;
+
+  const response = await fetch('/.netlify/functions/breakdown', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    const msg = err.error?.message || '';
+    if (msg.includes('API key not configured')) {
+      throw new Error('API key not set up yet. Please add ANTHROPIC_API_KEY to your Netlify environment variables.');
+    }
+    throw new Error('Could not reach AI (' + response.status + '). Please try again.');
+  }
+
+  const data = await response.json();
+  const raw = data.content?.find(b => b.type === 'text')?.text || '';
+  const cleaned = raw.replace(/```json|```/g, '').trim();
+
+  let steps;
+  try {
+    steps = JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\[[\s\S]*\]/);
+    if (match) steps = JSON.parse(match[0]);
+    else throw new Error('AI returned an unexpected format. Please try again.');
+  }
+
+  if (!Array.isArray(steps) || steps.length === 0) {
+    throw new Error('No steps returned. Please try a different task description.');
+  }
+
+  return steps;
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER STEPS
+// ═══════════════════════════════════════════════════════
+let stepsDone = [];
+
+function renderSteps(label, steps, usedAI) {
+  const showCues = hasOpt('cues');
+  const showCheers = hasOpt('cheers');
+  stepsDone = new Array(steps.length).fill(false);
+
+  document.getElementById('taskLabel').textContent = label;
+  document.getElementById('celebration').classList.remove('show');
+  document.getElementById('aiBadge').classList.toggle('show', usedAI);
+
+  const list = document.getElementById('stepsList');
+  list.innerHTML = '';
+  list.classList.toggle('show-cues', showCues);
+  list.classList.toggle('show-cheers', showCheers);
+
+  steps.forEach((s, i) => {
+    if (showCheers && i > 0 && i % 3 === 0) {
+      const cheer = CHEERS[Math.floor(i / 3 - 1) % CHEERS.length];
+      const el = document.createElement('div');
+      el.className = 'cheer-card';
+      el.style.cssText = `background:${cheer.bg}44;color:${cheer.color};border-color:${cheer.color}66;animation-delay:${i*0.06-0.03}s`;
+      el.textContent = cheer.msg;
+      list.appendChild(el);
+    }
+
+    const actionType = (s.actionType || '').toUpperCase().trim();
+    const cStyle = CUE_STYLES[actionType] || {bg:'#E8EDF0', color:'#4a5568'};
+
+    const card = document.createElement('div');
+    card.className = 'step-card';
+    card.style.setProperty('--step-color', STEP_COLORS[i % STEP_COLORS.length]);
+    card.style.animationDelay = `${i * 0.06}s`;
+    card.innerHTML = `
+      <div class="step-num">${i+1}</div>
+      <div class="step-check"></div>
+      <div class="step-emoji">${s.emoji || '⭐'}</div>
+      <div class="step-inner">
+        <div class="step-cue" style="background:${cStyle.bg};color:${cStyle.color};border-color:${cStyle.color}">${actionType || 'DO'}</div>
+        <div class="step-text">${escHtml(s.text)}</div>
+      </div>`;
+    card.addEventListener('click', () => {
+      stepsDone[i] = !stepsDone[i];
+      card.classList.toggle('done', stepsDone[i]);
+      updateProgress(steps.length);
+    });
+    list.appendChild(card);
+  });
+
+  updateProgress(steps.length);
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ═══════════════════════════════════════════════════════
+// PROGRESS & CONFETTI
+// ═══════════════════════════════════════════════════════
+function updateProgress(total) {
+  const done = stepsDone.filter(Boolean).length;
+  const pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('progressText').textContent = `${done} of ${total} done`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (done === total && total > 0) {
+    document.getElementById('celebration').classList.add('show');
+    confetti();
+  } else {
+    document.getElementById('celebration').classList.remove('show');
+  }
+}
+
+function confetti() {
+  const colors = ['#FFD166','#AEE2FF','#B5EAD7','#FFB3C6','#C9B8FF','#FFCBA4'];
+  for (let i = 0; i < 60; i++) {
+    const dot = document.createElement('div');
+    dot.style.cssText = `position:fixed;pointer-events:none;z-index:9999;
+      width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>.5?'50%':'3px'};
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}vw;top:-10px;
+      animation:fall ${1.5+Math.random()*2}s ease-in ${Math.random()*0.8}s forwards`;
+    document.body.appendChild(dot);
+    setTimeout(() => dot.remove(), 3500);
+  }
+  if (!document.getElementById('confettiStyle')) {
+    const s = document.createElement('style');
+    s.id = 'confettiStyle';
+    s.textContent = '@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}';
+    document.head.appendChild(s);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// BUTTONS
+// ═══════════════════════════════════════════════════════
+document.getElementById('resetAllBtn').addEventListener('click', () => {
+  stepsDone.fill(false);
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('done'));
+  updateProgress(stepsDone.length);
+  document.getElementById('celebration').classList.remove('show');
+});
+document.getElementById('newTaskBtn').addEventListener('click', () => {
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('aiBadge').classList.remove('show');
+  document.getElementById('taskInput').value = '';
+  document.getElementById('taskInput').focus();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+// ═══════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════
+function setLoading(on, task) {
+  document.getElementById('loading').classList.toggle('show', on);
+  document.getElementById('goBtn').disabled = on;
+  if (on && task) {
+    document.getElementById('loadingText').textContent = `Working out steps for "${task}"... 🤔`;
+    document.getElementById('loadingSub').textContent = 'Asking AI to break it into tiny steps — just a moment!';
+  }
+}
+function setError(msg) {
+  const el = document.getElementById('errorCard');
+  el.textContent = msg;
+  el.classList.toggle('show', !!msg);
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

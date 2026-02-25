@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Visual Routine Builder</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a2f;
+      --panel2:#121f39;
+      --text:#e8eefc;
+      --muted:#b9c4df;
+      --line:rgba(255,255,255,.12);
+      --btn:#1b2c52;
+      --btn2:#223a6b;
+      --danger:#7c1f2d;
+      --ok:#1f6f52;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:14px;
+      --focus: 0 0 0 3px rgba(120,170,255,.35);
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+    }
+
+    body{
+      margin:0;
+      font-family:var(--font);
+      background: radial-gradient(900px 600px at 15% 10%, rgba(90,140,255,.15), transparent 60%),
+                  radial-gradient(900px 600px at 90% 10%, rgba(60,220,170,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.35;
+    }
+
+    .wrap{
+      max-width: 1020px;
+      margin: 24px auto 60px;
+      padding: 0 16px;
+      display:grid;
+      grid-template-columns: 380px 1fr;
+      gap: 16px;
+    }
+
+    header{
+      max-width: 1020px;
+      margin: 22px auto 0;
+      padding: 0 16px;
+    }
+    .titleRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(22px, 2.2vw, 30px);
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      max-width: 72ch;
+      font-size: 14px;
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHead{
+      padding: 14px 14px 0;
+    }
+    .panelBody{
+      padding: 14px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(255,255,255,.04);
+    }
+    .chip label{
+      font-size: 13px;
+      color: var(--muted);
+      user-select:none;
+      cursor:pointer;
+    }
+    .switch{
+      position:relative;
+      width:44px;height:24px;
+      border-radius:999px;
+      background: rgba(255,255,255,.12);
+      border:1px solid var(--line);
+      flex:0 0 auto;
+    }
+    .switch::after{
+      content:"";
+      position:absolute;
+      width:18px;height:18px;
+      top:50%;
+      left:3px;
+      transform: translateY(-50%);
+      border-radius:999px;
+      background: rgba(255,255,255,.85);
+      transition: left .18s ease, background .18s ease;
+    }
+    input[type="checkbox"].toggle{
+      position:absolute;
+      opacity:0;
+      width:0;height:0;
+    }
+    input[type="checkbox"].toggle:checked + .switch{
+      background: rgba(60,220,170,.22);
+      border-color: rgba(60,220,170,.35);
+    }
+    input[type="checkbox"].toggle:checked + .switch::after{
+      left: 22px;
+      background: rgba(220,255,245,.95);
+    }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+
+    button{
+      font-family:inherit;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor:pointer;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      font-size: 14px;
+      line-height:1;
+    }
+    button:hover{ background: rgba(255,255,255,.07); }
+    button:active{ transform: translateY(1px); }
+    button:focus-visible{ outline:none; box-shadow: var(--focus); }
+    .primary{
+      background: linear-gradient(180deg, rgba(120,170,255,.22), rgba(120,170,255,.10));
+      border-color: rgba(120,170,255,.30);
+    }
+    .primary:hover{ background: linear-gradient(180deg, rgba(120,170,255,.28), rgba(120,170,255,.12)); }
+    .danger{
+      background: linear-gradient(180deg, rgba(255,80,110,.16), rgba(255,80,110,.08));
+      border-color: rgba(255,80,110,.25);
+    }
+    .ghost{
+      background: transparent;
+    }
+
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .formGrid .full{ grid-column: 1 / -1; }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .field label{
+      font-size: 13px;
+      color: var(--muted);
+    }
+    input[type="text"], input[type="time"], textarea, select{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.10);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline:none;
+    }
+    textarea{
+      min-height: 74px;
+      resize: vertical;
+    }
+    input:focus, textarea:focus, select:focus{
+      box-shadow: var(--focus);
+      border-color: rgba(120,170,255,.35);
+    }
+
+    .emojiPicker{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .emojiBtn{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:44px;height:44px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      font-size: 20px;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .emojiGrid{
+      display:none;
+      margin-top:10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+    .emojiGrid.open{ display:grid; }
+    .emojiGrid button{
+      padding:8px 0;
+      border-radius: 12px;
+      font-size: 18px;
+    }
+
+    .colorRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .swatch{
+      width:26px;height:26px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      cursor:pointer;
+      box-shadow: 0 0 0 2px rgba(0,0,0,.14) inset;
+    }
+    .swatch[aria-checked="true"]{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(120,170,255,.40);
+    }
+
+    .status{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Right panel: schedule */
+    .scheduleHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .scheduleHead h2{
+      margin:0;
+      font-size: 16px;
+      letter-spacing: .2px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .list{
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .empty{
+      padding: 18px;
+      border: 1px dashed rgba(255,255,255,.22);
+      border-radius: var(--radius2);
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+
+    .card{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 76px 1fr auto;
+      gap: 0;
+      align-items:stretch;
+      box-shadow: 0 8px 22px rgba(0,0,0,.20);
+    }
+    .card .icon{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 30px;
+      background: rgba(255,255,255,.10);
+      border-right:1px solid rgba(255,255,255,.12);
+    }
+    .card .main{
+      padding: 10px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .row1{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .title{
+      font-weight: 700;
+      letter-spacing:.2px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .time{
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,.85);
+      font-size: 13px;
+      white-space:nowrap;
+    }
+    .notes{
+      color: var(--muted);
+      font-size: 13px;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .actions{
+      display:flex;
+      gap:6px;
+      padding: 10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .actions button{
+      padding: 9px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    .mini{
+      padding:8px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* First/Then view */
+    .ftWrap{
+      padding: 14px;
+      display:none;
+    }
+    .ftWrap.open{ display:block; }
+    .ftGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .ftBox{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    }
+    .ftLabel{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .ftContent{
+      padding: 14px 12px 16px;
+      min-height: 150px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      text-align:center;
+    }
+    .ftIcon{ font-size: 46px; }
+    .ftTitle{ font-size: 22px; font-weight: 800; }
+    .ftNotes{ color: var(--muted); font-size: 14px; max-width: 32ch; }
+
+    /* Large text mode */
+    body.largeText .title{ font-size: 18px; }
+    body.largeText .notes{ font-size: 15px; }
+    body.largeText .time{ font-size: 14px; }
+    body.largeText .card .icon{ font-size: 34px; }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
+
+    /* Print styles */
+    @media print{
+      :root{
+        --bg:#fff;
+        --text:#111;
+        --muted:#333;
+      }
+      body{
+        background:#fff !important;
+        color:#111 !important;
+      }
+      header, .leftPanel, .noPrint, .hint, .status{
+        display:none !important;
+      }
+      .wrap{
+        margin:0 !important;
+        padding:0 !important;
+        max-width: none !important;
+        grid-template-columns: 1fr !important;
+      }
+      .panel{
+        border:none !important;
+        box-shadow:none !important;
+        background:#fff !important;
+      }
+      .scheduleHead{
+        border-bottom: 1px solid #ddd !important;
+      }
+      .card{
+        box-shadow:none !important;
+        break-inside: avoid;
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+      }
+      .card .icon{
+        background: #f3f3f3 !important;
+        border-right: 1px solid #ddd !important;
+      }
+      .actions{ display:none !important; }
+      .time{ color:#111 !important; }
+      .ftWrap{ display:block !important; }
+      .list{ display:block !important; }
+      .ftWrap.open{ display:block !important; }
+      /* If First/Then is open, we’ll hide the list to keep print clean */
+      body.printFirstThen .list{ display:none !important; }
+      body.printFirstThen .ftWrap{ display:block !important; }
+      @page{ size: A4; margin: 12mm; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="noPrint">
+    <div class="titleRow">
+      <div>
+        <h1>Visual Routine Builder</h1>
+        <p class="sub">
+          Build a simple visual schedule you can print. No login, no backend — everything stays on your device.
+        </p>
+      </div>
+      <div class="controls" aria-label="Display options">
+        <div class="chip" role="group" aria-label="Toggle show times">
+          <label for="toggleTimes">Show times</label>
+          <input id="toggleTimes" class="toggle" type="checkbox" checked />
+          <span class="switch" aria-hidden="true"></span>
+        </div>
+        <div class="chip" role="group" aria-label="Toggle large text mode">
+          <label for="toggleLarge">Large text</label>
+          <input id="toggleLarge" class="toggle" type="checkbox" />
+          <span class="switch" aria-hidden="true"></span>
+        </div>
+        <button id="printBtn" class="primary" type="button" title="Print your schedule">Print schedule</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LEFT -->
+    <section class="panel leftPanel">
+      <div class="panelHead">
+        <h2 style="margin:0 0 6px;font-size:16px;">Add / Edit a card</h2>
+        <div class="hint">Tip: keep titles short and literal (e.g., “Brush teeth”, “Shoes on”).</div>
+      </div>
+      <div class="panelBody">
+        <form id="cardForm" autocomplete="off" aria-label="Routine card form">
+          <input type="hidden" id="editId" value="" />
+          <div class="formGrid">
+            <div class="field full">
+              <label for="titleInput">Card title <span style="color:#ffb3c0;">(required)</span></label>
+              <input id="titleInput" type="text" maxlength="60" placeholder="e.g., Breakfast" required />
+            </div>
+
+            <div class="field">
+              <label for="timeInput">Time (optional)</label>
+              <input id="timeInput" type="time" />
+            </div>
+
+            <div class="field">
+              <label>Icon (emoji)</label>
+              <div class="emojiPicker">
+                <button id="emojiBtn" class="emojiBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Choose an icon">🧩</button>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <div style="font-size:13px;color:var(--muted);">Click to pick</div>
+                  <div id="emojiHelp" style="font-size:12px;color:var(--muted);">Keep it consistent if you can.</div>
+                </div>
+              </div>
+              <div id="emojiGrid" class="emojiGrid" role="listbox" aria-label="Emoji picker">
+                <!-- filled by JS -->
+              </div>
+            </div>
+
+            <div class="field full">
+              <label>Background colour</label>
+              <div id="colorRow" class="colorRow" role="radiogroup" aria-label="Choose card colour">
+                <!-- filled by JS -->
+              </div>
+            </div>
+
+            <div class="field full">
+              <label for="notesInput">Notes (optional)</label>
+              <textarea id="notesInput" maxlength="140" placeholder="e.g., ‘2 minutes’ / ‘Use the blue toothpaste’ / ‘Headphones OK’"></textarea>
+            </div>
+          </div>
+
+          <div class="btnRow">
+            <button id="saveBtn" class="primary" type="submit">Add card</button>
+            <button id="cancelEditBtn" class="ghost" type="button" style="display:none;">Cancel edit</button>
+            <button id="clearAllBtn" class="danger" type="button" title="Clear all cards">Clear all</button>
+          </div>
+
+          <div class="status" id="saveStatus" aria-live="polite"></div>
+        </form>
+
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0;" />
+
+        <div class="field">
+          <label style="margin-bottom:6px;">Quick templates</label>
+          <div class="btnRow">
+            <button class="mini" type="button" data-template="school">School morning</button>
+            <button class="mini" type="button" data-template="after">After school</button>
+            <button class="mini" type="button" data-template="bed">Bedtime</button>
+          </div>
+          <div class="hint">Templates replace your current list (you can undo by refreshing only if you haven’t printed/saved elsewhere).</div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid var(--line);margin:14px 0;" />
+
+        <div class="field">
+          <label style="margin-bottom:6px;">First / Then mode</label>
+          <div class="formGrid">
+            <div class="field">
+              <label for="firstSelect">First</label>
+              <select id="firstSelect" aria-label="Choose the First card"></select>
+            </div>
+            <div class="field">
+              <label for="thenSelect">Then</label>
+              <select id="thenSelect" aria-label="Choose the Then card"></select>
+            </div>
+          </div>
+          <div class="btnRow">
+            <button id="toggleFTBtn" type="button" class="primary">Open First/Then view</button>
+            <button id="closeFTBtn" type="button" class="ghost" style="display:none;">Close First/Then view</button>
+          </div>
+          <div class="hint">Great for getting unstuck: keep it to just two steps.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="panel">
+      <div class="scheduleHead">
+        <div>
+          <h2>Your schedule</h2>
+          <div class="pill" id="countPill" aria-live="polite">0 cards</div>
+        </div>
+        <div class="noPrint" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="exportBtn" type="button" title="Copy schedule text for sharing">Copy text</button>
+        </div>
+      </div>
+
+      <div id="firstThenWrap" class="ftWrap" aria-label="First Then view">
+        <div class="ftGrid">
+          <div class="ftBox" id="ftFirstBox">
+            <div class="ftLabel">First</div>
+            <div class="ftContent" id="ftFirstContent"></div>
+          </div>
+          <div class="ftBox" id="ftThenBox">
+            <div class="ftLabel">Then</div>
+            <div class="ftContent" id="ftThenContent"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="list" id="list"></div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      "use strict";
+
+      // ---------- Config ----------
+      const STORAGE_KEY = "visual_routine_builder_v1";
+      const UI_KEY = "visual_routine_builder_ui_v1";
+
+      const EMOJIS = [
+        "🧩","⏰","🛏️","☀️","🪥","🚿","🧦","👕","👟","🍳",
+        "🥣","🍌","🧃","🎒","🚌","🚗","🏫","📚","✏️","🧠",
+        "🎧","🧸","🧘","🧻","🧼","🚽","🧹","🧺","🍽️","🧽",
+        "🧴","🪮","🧢","🎮","⚽","🛝","🧱","🎨","🎵","📺",
+        "🍎","🥪","🥛","🍝","🫖","🧊","🚶","🌳","🏠","🌙"
+      ];
+
+      const COLORS = [
+        {name:"Sky", value:"#5aa8ff"},
+        {name:"Mint", value:"#39d9b7"},
+        {name:"Lavender", value:"#a68cff"},
+        {name:"Sun", value:"#ffd166"},
+        {name:"Peach", value:"#ff8fab"},
+        {name:"Lime", value:"#9bff6a"},
+        {name:"Sand", value:"#e3c98b"},
+        {name:"Ice", value:"#7be0ff"},
+        {name:"Grape", value:"#7c59ff"},
+        {name:"Slate", value:"#9fb2d9"}
+      ];
+
+      // ---------- State ----------
+      /** @type {{id:string,title:string,time:string|null,notes:string|null,emoji:string,color:string}[]} */
+      let cards = [];
+
+      let uiState = {
+        showTimes: true,
+        largeText: false,
+        firstThenOpen: false,
+        firstId: "",
+        thenId: ""
+      };
+
+      // ---------- DOM ----------
+      const $ = (sel) => document.querySelector(sel);
+
+      const listEl = $("#list");
+      const countPill = $("#countPill");
+
+      const form = $("#cardForm");
+      const editIdEl = $("#editId");
+      const titleInput = $("#titleInput");
+      const timeInput = $("#timeInput");
+      const notesInput = $("#notesInput");
+      const saveBtn = $("#saveBtn");
+      const cancelEditBtn = $("#cancelEditBtn");
+      const clearAllBtn = $("#clearAllBtn");
+      const saveStatus = $("#saveStatus");
+
+      const emojiBtn = $("#emojiBtn");
+      const emojiGrid = $("#emojiGrid");
+
+      const colorRow = $("#colorRow");
+
+      const toggleTimes = $("#toggleTimes");
+      const toggleLarge = $("#toggleLarge");
+      const printBtn = $("#printBtn");
+      const exportBtn = $("#exportBtn");
+
+      const templateBtns = document.querySelectorAll("button[data-template]");
+
+      const firstSelect = $("#firstSelect");
+      const thenSelect = $("#thenSelect");
+      const toggleFTBtn = $("#toggleFTBtn");
+      const closeFTBtn = $("#closeFTBtn");
+      const firstThenWrap = $("#firstThenWrap");
+      const ftFirstContent = $("#ftFirstContent");
+      const ftThenContent = $("#ftThenContent");
+
+      // ---------- Helpers ----------
+      const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+
+      function clampStr(s){ return (s || "").trim(); }
+
+      function formatTime(t){
+        if(!t) return "";
+        // t is "HH:MM"
+        const [hh, mm] = t.split(":").map(Number);
+        if(Number.isNaN(hh) || Number.isNaN(mm)) return t;
+        const d = new Date();
+        d.setHours(hh, mm, 0, 0);
+        // 24h is fine for UK; keep simple:
+        return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+      }
+
+      function announce(msg){
+        saveStatus.textContent = msg;
+        window.clearTimeout(announce._t);
+        announce._t = window.setTimeout(() => saveStatus.textContent = "", 2200);
+      }
+
+      function saveAll(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+        localStorage.setItem(UI_KEY, JSON.stringify(uiState));
+        // subtle status
+        announce("Saved on this device.");
+      }
+
+      function loadAll(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw){
+            const parsed = JSON.parse(raw);
+            if(Array.isArray(parsed)) cards = parsed;
+          }
+        }catch(e){ /* ignore */ }
+
+        try{
+          const rawUi = localStorage.getItem(UI_KEY);
+          if(rawUi){
+            const parsedUi = JSON.parse(rawUi);
+            if(parsedUi && typeof parsedUi === "object") uiState = {...uiState, ...parsedUi};
+          }
+        }catch(e){ /* ignore */ }
+      }
+
+      function clearForm(){
+        editIdEl.value = "";
+        titleInput.value = "";
+        timeInput.value = "";
+        notesInput.value = "";
+        setEmoji("🧩", false);
+        setColor(COLORS[0].value, false);
+        saveBtn.textContent = "Add card";
+        cancelEditBtn.style.display = "none";
+        titleInput.focus();
+      }
+
+      function setEmoji(emoji, shouldSave=true){
+        emojiBtn.textContent = emoji;
+        emojiBtn.dataset.emoji = emoji;
+        emojiBtn.setAttribute("aria-label", "Selected icon " + emoji);
+        if(shouldSave) saveAll();
+      }
+
+      function setColor(color, shouldSave=true){
+        colorRow.querySelectorAll(".swatch").forEach(sw => {
+          sw.setAttribute("aria-checked", sw.dataset.color === color ? "true" : "false");
+        });
+        colorRow.dataset.selected = color;
+        if(shouldSave) saveAll();
+      }
+
+      function getSelectedColor(){
+        return colorRow.dataset.selected || COLORS[0].value;
+      }
+
+      function getSelectedEmoji(){
+        return emojiBtn.dataset.emoji || "🧩";
+      }
+
+      function updateUIFromState(){
+        toggleTimes.checked = !!uiState.showTimes;
+        toggleLarge.checked = !!uiState.largeText;
+        document.body.classList.toggle("largeText", !!uiState.largeText);
+
+        // First/Then open state
+        setFirstThenOpen(!!uiState.firstThenOpen, false);
+      }
+
+      function setFirstThenOpen(open, shouldSave=true){
+        uiState.firstThenOpen = open;
+        firstThenWrap.classList.toggle("open", open);
+        toggleFTBtn.style.display = open ? "none" : "inline-flex";
+        closeFTBtn.style.display = open ? "inline-flex" : "none";
+
+        // When printing, if FT open, we hide list in print to keep it simple
+        document.body.classList.toggle("printFirstThen", open);
+
+        if(shouldSave) saveAll();
+        renderFirstThen();
+      }
+
+      function renderFirstThen(){
+        if(!uiState.firstThenOpen){
+          return;
+        }
+
+        const firstCard = cards.find(c => c.id === uiState.firstId) || cards[0] || null;
+        const thenCard  = cards.find(c => c.id === uiState.thenId)  || cards[1] || cards[0] || null;
+
+        ftFirstContent.innerHTML = firstCard ? ftCardHTML(firstCard) : `<div class="ftNotes">Add cards, then choose one here.</div>`;
+        ftThenContent.innerHTML  = thenCard  ? ftCardHTML(thenCard)  : `<div class="ftNotes">Add cards, then choose one here.</div>`;
+      }
+
+      function ftCardHTML(card){
+        const notes = clampStr(card.notes);
+        return `
+          <div class="ftIcon" aria-hidden="true">${escapeHtml(card.emoji || "🧩")}</div>
+          <div class="ftTitle">${escapeHtml(card.title)}</div>
+          ${uiState.showTimes && card.time ? `<div class="ftNotes">${escapeHtml(formatTime(card.time))}</div>` : ``}
+          ${notes ? `<div class="ftNotes">${escapeHtml(notes)}</div>` : ``}
+        `;
+      }
+
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function moveCard(id, dir){
+        const idx = cards.findIndex(c => c.id === id);
+        if(idx === -1) return;
+        const newIdx = idx + dir;
+        if(newIdx < 0 || newIdx >= cards.length) return;
+        const [item] = cards.splice(idx, 1);
+        cards.splice(newIdx, 0, item);
+        saveAll();
+        render();
+      }
+
+      function deleteCard(id){
+        const idx = cards.findIndex(c => c.id === id);
+        if(idx === -1) return;
+        const title = cards[idx].title;
+        cards.splice(idx, 1);
+
+        // keep FT selections valid
+        if(uiState.firstId === id) uiState.firstId = cards[0]?.id || "";
+        if(uiState.thenId === id) uiState.thenId = cards[1]?.id || cards[0]?.id || "";
+
+        saveAll();
+        render();
+        announce(`Deleted: ${title}`);
+      }
+
+      function startEdit(id){
+        const c = cards.find(x => x.id === id);
+        if(!c) return;
+        editIdEl.value = c.id;
+        titleInput.value = c.title || "";
+        timeInput.value = c.time || "";
+        notesInput.value = c.notes || "";
+        setEmoji(c.emoji || "🧩", false);
+        setColor(c.color || COLORS[0].value, false);
+        saveBtn.textContent = "Save changes";
+        cancelEditBtn.style.display = "inline-flex";
+        titleInput.focus();
+        announce("Editing card…");
+      }
+
+      function populateEmojiGrid(){
+        const frag = document.createDocumentFragment();
+        EMOJIS.forEach(em => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = em;
+          b.setAttribute("role","option");
+          b.setAttribute("aria-label", "Choose " + em);
+          b.addEventListener("click", () => {
+            setEmoji(em, false);
+            emojiGrid.classList.remove("open");
+            emojiBtn.setAttribute("aria-expanded", "false");
+            emojiBtn.focus();
+          });
+          frag.appendChild(b);
+        });
+        emojiGrid.appendChild(frag);
+      }
+
+      function populateColors(){
+        const frag = document.createDocumentFragment();
+        COLORS.forEach((c, i) => {
+          const sw = document.createElement("button");
+          sw.type = "button";
+          sw.className = "swatch";
+          sw.dataset.color = c.value;
+          sw.style.background = c.value;
+          sw.setAttribute("role","radio");
+          sw.setAttribute("aria-label", c.name);
+          sw.setAttribute("aria-checked", i === 0 ? "true" : "false");
+          sw.addEventListener("click", () => setColor(c.value, false));
+          frag.appendChild(sw);
+        });
+        colorRow.appendChild(frag);
+        colorRow.dataset.selected = COLORS[0].value;
+      }
+
+      function updateCount(){
+        countPill.textContent = `${cards.length} card${cards.length === 1 ? "" : "s"}`;
+      }
+
+      function renderSelects(){
+        const makeOption = (c) => {
+          const o = document.createElement("option");
+          o.value = c.id;
+          o.textContent = (uiState.showTimes && c.time ? `${formatTime(c.time)} — ` : "") + c.title;
+          return o;
+        };
+
+        // keep selections stable
+        const ensureValid = () => {
+          if(cards.length === 0){
+            uiState.firstId = "";
+            uiState.thenId = "";
+            return;
+          }
+          if(!cards.some(c => c.id === uiState.firstId)) uiState.firstId = cards[0]?.id || "";
+          if(!cards.some(c => c.id === uiState.thenId)) uiState.thenId = cards[1]?.id || cards[0]?.id || "";
+        };
+
+        ensureValid();
+
+        firstSelect.innerHTML = "";
+        thenSelect.innerHTML = "";
+
+        if(cards.length === 0){
+          const o1 = document.createElement("option");
+          o1.value = "";
+          o1.textContent = "Add cards first…";
+          firstSelect.appendChild(o1);
+
+          const o2 = document.createElement("option");
+          o2.value = "";
+          o2.textContent = "Add cards first…";
+          thenSelect.appendChild(o2);
+
+          firstSelect.disabled = true;
+          thenSelect.disabled = true;
+          toggleFTBtn.disabled = true;
+          return;
+        }
+
+        firstSelect.disabled = false;
+        thenSelect.disabled = false;
+        toggleFTBtn.disabled = false;
+
+        cards.forEach(c => {
+          firstSelect.appendChild(makeOption(c));
+          thenSelect.appendChild(makeOption(c));
+        });
+
+        firstSelect.value = uiState.firstId;
+        thenSelect.value = uiState.thenId;
+      }
+
+      function renderList(){
+        listEl.innerHTML = "";
+
+        if(cards.length === 0){
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.innerHTML = `
+            <div style="font-weight:700;margin-bottom:6px;">No cards yet</div>
+            <div>Add a few routine steps on the left. Then you can print a clean schedule.</div>
+          `;
+          listEl.appendChild(empty);
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+
+        cards.forEach((c, idx) => {
+          const card = document.createElement("article");
+          card.className = "card";
+          card.style.borderColor = "rgba(255,255,255,.14)";
+          card.style.background = `linear-gradient(180deg, ${c.color}22, rgba(255,255,255,.03))`;
+          card.setAttribute("aria-label", `Routine card: ${c.title}`);
+
+          const icon = document.createElement("div");
+          icon.className = "icon";
+          icon.textContent = c.emoji || "🧩";
+          icon.style.background = `${c.color}2a`;
+
+          const main = document.createElement("div");
+          main.className = "main";
+
+          const row1 = document.createElement("div");
+          row1.className = "row1";
+
+          const title = document.createElement("div");
+          title.className = "title";
+          title.textContent = c.title;
+
+          const time = document.createElement("div");
+          time.className = "time";
+          time.textContent = uiState.showTimes && c.time ? formatTime(c.time) : "";
+
+          row1.appendChild(title);
+          row1.appendChild(time);
+
+          const notes = document.createElement("div");
+          notes.className = "notes";
+          notes.textContent = clampStr(c.notes) || "";
+
+          main.appendChild(row1);
+          if(notes.textContent) main.appendChild(notes);
+
+          const actions = document.createElement("div");
+          actions.className = "actions noPrint";
+
+          const upBtn = document.createElement("button");
+          upBtn.type = "button";
+          upBtn.textContent = "↑";
+          upBtn.title = "Move up";
+          upBtn.disabled = idx === 0;
+          upBtn.addEventListener("click", () => moveCard(c.id, -1));
+
+          const downBtn = document.createElement("button");
+          downBtn.type = "button";
+          downBtn.textContent = "↓";
+          downBtn.title = "Move down";
+          downBtn.disabled = idx === cards.length - 1;
+          downBtn.addEventListener("click", () => moveCard(c.id, +1));
+
+          const editBtn = document.createElement("button");
+          editBtn.type = "button";
+          editBtn.textContent = "Edit";
+          editBtn.addEventListener("click", () => startEdit(c.id));
+
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.textContent = "Delete";
+          delBtn.className = "danger";
+          delBtn.addEventListener("click", () => {
+            const ok = confirm(`Delete "${c.title}"?`);
+            if(ok) deleteCard(c.id);
+          });
+
+          actions.appendChild(upBtn);
+          actions.appendChild(downBtn);
+          actions.appendChild(editBtn);
+          actions.appendChild(delBtn);
+
+          card.appendChild(icon);
+          card.appendChild(main);
+          card.appendChild(actions);
+
+          frag.appendChild(card);
+        });
+
+        listEl.appendChild(frag);
+      }
+
+      function render(){
+        updateCount();
+        renderSelects();
+        renderFirstThen();
+        renderList();
+      }
+
+      // ---------- Templates ----------
+      function applyTemplate(which){
+        const templates = {
+          school: [
+            {title:"Wake up", time:"07:00", emoji:"⏰", color: COLORS[0].value, notes:"Gentle start"},
+            {title:"Get dressed", time:"07:10", emoji:"👕", color: COLORS[2].value, notes:"Clothes laid out"},
+            {title:"Breakfast", time:"07:25", emoji:"🍳", color: COLORS[3].value, notes:"Same bowl if possible"},
+            {title:"Brush teeth", time:"07:40", emoji:"🪥", color: COLORS[7].value, notes:"Timer 2 minutes"},
+            {title:"Shoes & coat", time:"07:50", emoji:"👟", color: COLORS[1].value, notes:"Headphones OK"},
+            {title:"School / travel", time:"08:00", emoji:"🚌", color: COLORS[9].value, notes:"Small snack packed"}
+          ],
+          after: [
+            {title:"Arrive home", time:"15:30", emoji:"🏠", color: COLORS[0].value, notes:"Quiet time"},
+            {title:"Snack & drink", time:"15:40", emoji:"🥪", color: COLORS[3].value, notes:"Low demand"},
+            {title:"Decompress", time:"16:00", emoji:"🎧", color: COLORS[1].value, notes:"15–30 minutes"},
+            {title:"Homework (small chunk)", time:"16:30", emoji:"📚", color: COLORS[2].value, notes:"5–10 min + break"},
+            {title:"Play / movement", time:"17:00", emoji:"⚽", color: COLORS[5].value, notes:"Choice-led"},
+            {title:"Dinner", time:"18:00", emoji:"🍝", color: COLORS[6].value, notes:"Same seat helps"}
+          ],
+          bed: [
+            {title:"Dinner finished", time:"18:30", emoji:"🍽️", color: COLORS[6].value, notes:"Low lights"},
+            {title:"Shower / wash", time:"19:00", emoji:"🚿", color: COLORS[7].value, notes:"Warm towel ready"},
+            {title:"PJs on", time:"19:20", emoji:"🛏️", color: COLORS[2].value, notes:"Comfort item"},
+            {title:"Teeth", time:"19:30", emoji:"🪥", color: COLORS[0].value, notes:"Timer + praise"},
+            {title:"Story / calm activity", time:"19:40", emoji:"📖", color: COLORS[1].value, notes:"Same story OK"},
+            {title:"Lights out", time:"20:00", emoji:"🌙", color: COLORS[9].value, notes:"White noise if helpful"}
+          ]
+        };
+
+        const chosen = templates[which];
+        if(!chosen) return;
+
+        const ok = confirm("This will replace your current schedule. Continue?");
+        if(!ok) return;
+
+        cards = chosen.map(x => ({
+          id: uid(),
+          title: x.title,
+          time: x.time || "",
+          notes: x.notes || "",
+          emoji: x.emoji || "🧩",
+          color: x.color || COLORS[0].value
+        }));
+
+        // default FT picks
+        uiState.firstId = cards[0]?.id || "";
+        uiState.thenId = cards[1]?.id || cards[0]?.id || "";
+
+        saveAll();
+        render();
+        announce("Template added.");
+      }
+
+      // ---------- Events ----------
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const title = clampStr(titleInput.value);
+        if(!title){
+          titleInput.focus();
+          announce("Title is required.");
+          return;
+        }
+
+        const time = timeInput.value || "";
+        const notes = clampStr(notesInput.value);
+        const emoji = getSelectedEmoji();
+        const color = getSelectedColor();
+
+        const editing = clampStr(editIdEl.value);
+
+        if(editing){
+          const idx = cards.findIndex(c => c.id === editing);
+          if(idx !== -1){
+            cards[idx] = {...cards[idx], title, time, notes, emoji, color};
+            announce("Updated card.");
+          }
+        }else{
+          cards.push({ id: uid(), title, time, notes, emoji, color });
+          announce("Added card.");
+        }
+
+        // keep FT selections sensible
+        if(cards.length === 1){
+          uiState.firstId = cards[0].id;
+          uiState.thenId = cards[0].id;
+        }else if(cards.length === 2 && !uiState.thenId){
+          uiState.thenId = cards[1].id;
+        }
+
+        saveAll();
+        render();
+        clearForm();
+      });
+
+      cancelEditBtn.addEventListener("click", () => {
+        clearForm();
+        announce("Edit cancelled.");
+      });
+
+      clearAllBtn.addEventListener("click", () => {
+        if(cards.length === 0) return;
+        const ok = confirm("Clear ALL cards? This cannot be undone.");
+        if(!ok) return;
+        cards = [];
+        uiState.firstId = "";
+        uiState.thenId = "";
+        saveAll();
+        render();
+        clearForm();
+        announce("Cleared.");
+      });
+
+      // Emoji picker
+      emojiBtn.addEventListener("click", () => {
+        const isOpen = emojiGrid.classList.toggle("open");
+        emojiBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+
+      // Close emoji picker on outside click / Escape
+      document.addEventListener("click", (e) => {
+        if(!emojiGrid.classList.contains("open")) return;
+        const inPicker = emojiGrid.contains(e.target) || emojiBtn.contains(e.target);
+        if(!inPicker){
+          emojiGrid.classList.remove("open");
+          emojiBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", (e) => {
+        if(e.key === "Escape" && emojiGrid.classList.contains("open")){
+          emojiGrid.classList.remove("open");
+          emojiBtn.setAttribute("aria-expanded", "false");
+          emojiBtn.focus();
+        }
+      });
+
+      // Toggles
+      toggleTimes.addEventListener("change", () => {
+        uiState.showTimes = !!toggleTimes.checked;
+        saveAll();
+        render();
+      });
+
+      toggleLarge.addEventListener("change", () => {
+        uiState.largeText = !!toggleLarge.checked;
+        document.body.classList.toggle("largeText", uiState.largeText);
+        saveAll();
+        render();
+      });
+
+      // Print
+      printBtn.addEventListener("click", () => {
+        // If First/Then is open, print will focus on that (see CSS).
+        window.print();
+      });
+
+      // Copy text export
+      exportBtn.addEventListener("click", async () => {
+        const lines = cards.map((c, i) => {
+          const t = (uiState.showTimes && c.time) ? `${formatTime(c.time)} — ` : "";
+          const n = clampStr(c.notes) ? ` (${clampStr(c.notes)})` : "";
+          return `${i+1}. ${t}${c.title}${n}`;
+        });
+        const text = lines.length ? lines.join("\n") : "No cards yet.";
+        try{
+          await navigator.clipboard.writeText(text);
+          announce("Copied schedule text.");
+        }catch{
+          // fallback
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          announce("Copied schedule text.");
+        }
+      });
+
+      // Templates
+      templateBtns.forEach(btn => {
+        btn.addEventListener("click", () => applyTemplate(btn.dataset.template));
+      });
+
+      // First/Then selects + open/close
+      firstSelect.addEventListener("change", () => {
+        uiState.firstId = firstSelect.value;
+        saveAll();
+        renderFirstThen();
+      });
+      thenSelect.addEventListener("change", () => {
+        uiState.thenId = thenSelect.value;
+        saveAll();
+        renderFirstThen();
+      });
+      toggleFTBtn.addEventListener("click", () => {
+        setFirstThenOpen(true);
+      });
+      closeFTBtn.addEventListener("click", () => {
+        setFirstThenOpen(false);
+      });
+
+      // ---------- Init ----------
+      populateEmojiGrid();
+      populateColors();
+      loadAll();
+
+      // ensure defaults
+      if(!uiState.firstId && cards[0]) uiState.firstId = cards[0].id;
+      if(!uiState.thenId && cards[1]) uiState.thenId = cards[1].id;
+      if(!uiState.thenId && cards[0]) uiState.thenId = cards[0].id;
+
+      updateUIFromState();
+
+      // set current form defaults
+      setEmoji("🧩", false);
+      setColor(COLORS[0].value, false);
+
+      render();
+
+      // accessibility: keyboard shortcut Ctrl/Cmd+P also works naturally.
+    })();
+  </script>
+</body>
+</html>

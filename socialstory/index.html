@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Story Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFBF4;
+  --cream2:#FFF5E6;
+  --paper:#FFFFFF;
+  --ink:#2C1F0E;
+  --ink2:#5C4A2E;
+  --muted:#9A8468;
+  --border:#E8D9C0;
+  --border2:#D4C0A0;
+  --teal:#2D9B8A;
+  --teal-l:#E6F5F3;
+  --teal-d:#1F7A6C;
+  --sun:#F5A623;
+  --sun-l:#FEF4E4;
+  --sun-d:#C87D0E;
+  --rose:#D9534F;
+  --rose-l:#FBEAEA;
+  --sky:#4A90C4;
+  --sky-l:#EAF3FB;
+  --mint:#4CAF82;
+  --mint-l:#E8F5EE;
+  --lavender:#8B6DB5;
+  --lavender-l:#F0EBF8;
+  --radius:18px;
+  --radius-lg:26px;
+  --shadow:0 2px 18px rgba(44,31,14,0.08);
+  --shadow-lg:0 8px 36px rgba(44,31,14,0.14);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:80px;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 5% 5%,rgba(45,155,138,0.07) 0%,transparent 100%),
+    radial-gradient(ellipse 50% 50% at 95% 95%,rgba(245,166,35,0.07) 0%,transparent 100%);
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+input,textarea{font-family:'Nunito',sans-serif}
+
+.rainbow-stripe{height:6px;background:linear-gradient(90deg,#2D9B8A 0%,#2D9B8A 16.6%,#F5A623 16.6%,#F5A623 33.2%,#D9534F 33.2%,#D9534F 50%,#4CAF82 50%,#4CAF82 66.6%,#8B6DB5 66.6%,#8B6DB5 83.2%,#4A90C4 83.2%,#4A90C4 100%)}
+
+.site-header{background:var(--paper);border-bottom:2px solid var(--border);text-align:center;padding:40px 20px 32px}
+.header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-l);color:var(--teal-d);border:2px solid var(--teal);border-radius:100px;padding:4px 14px;font-size:0.72rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px}
+.site-header h1{font-family:'Lora',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:var(--ink);line-height:1.1;letter-spacing:-0.5px;margin-bottom:10px}
+.site-header h1 em{font-style:italic;color:var(--teal-d)}
+.site-header p{color:var(--ink2);font-size:0.95rem;font-weight:600;max-width:500px;margin:0 auto;line-height:1.65}
+
+.wizard-wrap{max-width:680px;margin:0 auto;padding:0 20px}
+.wizard-nav{display:flex;align-items:flex-start;gap:0;margin:28px 0 0;padding:22px 28px;background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.wstep{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.wstep:not(:last-child)::after{content:'';position:absolute;top:15px;left:calc(50% + 16px);width:calc(100% - 32px);height:2px;background:var(--border2)}
+.wstep.done:not(:last-child)::after{background:var(--teal)}
+.wstep-dot{width:30px;height:30px;border-radius:50%;background:var(--cream2);border:2.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:900;color:var(--muted);z-index:1;transition:all 0.3s;position:relative}
+.wstep.active .wstep-dot{background:var(--teal);border-color:var(--teal-d);color:#fff;box-shadow:0 0 0 4px rgba(45,155,138,0.2)}
+.wstep.done .wstep-dot{background:var(--mint);border-color:#3a8f60;color:#fff;font-size:0}
+.wstep.done .wstep-dot::after{content:'✓';font-size:0.78rem}
+.wstep-label{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);text-align:center}
+.wstep.active .wstep-label{color:var(--teal-d)}
+.wstep.done .wstep-label{color:var(--mint)}
+
+.main{max-width:680px;margin:24px auto 0;padding:0 20px}
+
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp 0.28s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.panel-title{font-family:'Lora',serif;font-size:1.45rem;font-weight:700;color:var(--ink);margin-bottom:4px;margin-top:24px}
+.panel-sub{color:var(--ink2);font-size:0.88rem;font-weight:600;margin-bottom:20px;line-height:1.6}
+
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.sc-card{background:var(--paper);border:2.5px solid var(--border);border-radius:var(--radius);padding:20px 12px 16px;text-align:center;cursor:pointer;transition:all 0.18s;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.sc-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--sc-accent,var(--teal));transform:scaleX(0);transform-origin:left;transition:transform 0.22s}
+.sc-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.sc-card.sel{border-color:var(--sc-accent,var(--teal));background:var(--sc-bg,var(--teal-l))}
+.sc-card.sel::after{transform:scaleX(1)}
+.sc-emoji{font-size:2.6rem;display:block;margin-bottom:10px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1))}
+.sc-name{font-size:0.82rem;font-weight:800;color:var(--ink);line-height:1.2}
+.sc-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;font-weight:600}
+
+.form-card{background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);padding:24px 26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.form-card h3{font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field-label{display:block;font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:6px}
+.opt-label{font-weight:600;color:var(--border2);text-transform:none;letter-spacing:0;font-size:0.68rem}
+.field-input{width:100%;padding:11px 15px;background:var(--cream);border:2px solid var(--border);border-radius:12px;color:var(--ink);font-size:0.92rem;font-weight:700;outline:none;transition:border-color 0.15s,box-shadow 0.15s}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(45,155,138,0.15);background:#fff}
+.field-input::placeholder{color:var(--muted);font-weight:600}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+.chip{padding:6px 15px;border-radius:100px;font-size:0.8rem;font-weight:800;border:2px solid var(--border);background:var(--cream);color:var(--ink2);cursor:pointer;user-select:none;transition:all 0.13s}
+.chip:hover{border-color:var(--border2);color:var(--ink)}
+.chip.sel-teal{background:var(--teal);color:#fff;border-color:var(--teal-d)}
+.chip.sel-sun{background:var(--sun);color:#fff;border-color:var(--sun-d)}
+
+.custom-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.custom-row{display:flex;gap:8px;align-items:center}
+.custom-row .field-input{flex:1}
+.rm-btn{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--rose-l);color:var(--rose);border:2px solid var(--rose);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all 0.13s}
+.rm-btn:hover{background:var(--rose);color:#fff}
+.add-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;background:var(--teal-l);color:var(--teal-d);border:2px solid var(--teal);font-size:0.82rem;font-weight:800;cursor:pointer;transition:all 0.13s}
+.add-btn:hover{background:var(--teal);color:#fff}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 24px;border-radius:100px;font-size:0.9rem;font-weight:800;transition:all 0.16s;white-space:nowrap}
+.btn-primary{background:var(--teal);color:#fff;border:2px solid var(--teal-d)}
+.btn-primary:hover{background:var(--teal-d);transform:translateY(-1px);box-shadow:0 4px 18px rgba(45,155,138,0.38)}
+.btn-ghost{background:var(--paper);color:var(--ink2);border:2px solid var(--border)}
+.btn-ghost:hover{background:var(--cream2);border-color:var(--border2)}
+.btn-sun{background:var(--sun);color:#fff;border:2px solid var(--sun-d)}
+.btn-sun:hover{background:var(--sun-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,0.4)}
+.btn-sm{padding:8px 18px;font-size:0.82rem}
+
+.preview-shell{background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden}
+.preview-toolbar{background:var(--cream2);border-bottom:2px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.preview-toolbar-title{font-family:'Lora',serif;font-size:0.95rem;font-weight:600;color:var(--ink2);font-style:italic}
+.toolbar-btns{display:flex;gap:8px}
+
+/* STORY */
+.story-body{padding:32px 28px}
+.story-cover{text-align:center;padding:40px 24px 48px;border-bottom:2px dashed var(--border2);margin-bottom:36px}
+.cover-emoji{font-size:5rem;display:block;margin-bottom:18px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.12));animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.cover-title{font-family:'Lora',serif;font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:8px}
+.cover-title em{font-style:italic;color:var(--teal-d)}
+.cover-sub{font-size:0.85rem;color:var(--muted);font-weight:700}
+.cover-dots{display:flex;justify-content:center;gap:6px;margin-top:18px}
+.cover-dot{width:8px;height:8px;border-radius:50%}
+
+.story-pages-list{display:flex;flex-direction:column;gap:28px}
+.story-page{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:center;padding-bottom:28px;border-bottom:1.5px dashed var(--border)}
+.story-page:last-child{border-bottom:none;padding-bottom:0}
+.story-page.rev{grid-template-columns:1fr 170px}
+.story-page.rev .illus-box{order:2}
+.story-page.rev .text-col{order:1}
+
+.illus-box{background:var(--sc-bg,var(--teal-l));border:2.5px solid var(--sc-accent,var(--teal));border-radius:var(--radius-lg);aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;flex-shrink:0}
+.illus-box::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.25) 10px,rgba(255,255,255,0.25) 11px)}
+.illus-emoji{font-size:3.8rem;line-height:1;position:relative;z-index:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.12))}
+.illus-label{font-size:0.6rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;color:var(--sc-accent,var(--teal));background:#fff;padding:2px 8px;border-radius:100px;position:relative;z-index:1;opacity:0.75}
+
+.text-col{}
+.page-num{font-size:0.65rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:7px}
+.page-text{font-family:'Lora',serif;font-size:1.05rem;line-height:1.85;color:var(--ink)}
+.page-text strong{color:var(--teal-d)}
+.page-text em{color:var(--ink2)}
+.custom-badge{display:inline-block;background:var(--sun-l);color:var(--sun-d);font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;padding:1px 8px;border-radius:100px;border:1.5px solid var(--sun-d);margin-left:6px;vertical-align:middle;font-style:normal}
+
+.print-tip{background:var(--sun-l);border:2px solid var(--sun);border-radius:12px;padding:11px 16px;font-size:0.82rem;font-weight:700;color:var(--sun-d);margin-bottom:16px;display:flex;align-items:center;gap:8px;line-height:1.4}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 24px;border-radius:100px;font-size:0.85rem;font-weight:700;z-index:999;pointer-events:none;box-shadow:var(--shadow-lg);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body,html{background:white!important}
+  .rainbow-stripe,.site-header,.wizard-wrap,.panel-title,.panel-sub,.form-card,.nav-row,.preview-toolbar,.print-tip{display:none!important}
+  .panel{display:block!important}
+  .preview-shell{box-shadow:none!important;border:none!important}
+  .story-body{padding:8mm 10mm}
+  .story-cover{page-break-after:always}
+  .story-page{page-break-inside:avoid;margin-bottom:8mm;padding-bottom:8mm}
+  .cover-emoji{animation:none!important}
+  .page-text{font-size:12pt;line-height:1.9}
+  .cover-title{font-size:22pt}
+}
+@media(max-width:540px){
+  .scenario-grid{grid-template-columns:repeat(2,1fr)}
+  .field-row{grid-template-columns:1fr}
+  .story-page,.story-page.rev{grid-template-columns:1fr}
+  .story-page .illus-box,.story-page.rev .illus-box{width:100%;aspect-ratio:2/1;order:0}
+  .story-page.rev .text-col{order:1}
+  .wizard-nav{padding:16px}
+  .story-body{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="rainbow-stripe"></div>
+
+<header class="site-header">
+  <div class="header-badge">✨ Free to use &middot; No account needed</div>
+  <h1>Social Story <em>Mini-Builder</em></h1>
+  <p>Choose a scenario, add your child's name, and get a beautifully formatted social story — ready to read and print together.</p>
+</header>
+
+<div class="wizard-wrap">
+  <div class="wizard-nav">
+    <div class="wstep active" id="ws1">
+      <div class="wstep-dot">1</div>
+      <div class="wstep-label">Pick scenario</div>
+    </div>
+    <div class="wstep" id="ws2">
+      <div class="wstep-dot">2</div>
+      <div class="wstep-label">Personalise</div>
+    </div>
+    <div class="wstep" id="ws3">
+      <div class="wstep-dot">3</div>
+      <div class="wstep-label">Read &amp; Print</div>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- STEP 1 -->
+  <div class="panel active" id="panel1">
+    <div class="panel-title">Choose a scenario</div>
+    <div class="panel-sub">Pick the situation your child is preparing for. Each one comes with a carefully written social story you can personalise.</div>
+    <div class="scenario-grid" id="scenarioGrid"></div>
+    <div class="nav-row">
+      <div></div>
+      <button class="btn btn-primary" id="step1Next">Next: Personalise &rarr;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="panel" id="panel2">
+    <div class="panel-title">Personalise the story</div>
+    <div class="panel-sub">Fill in the details below. Fields marked optional can be left blank — a sensible default will be used.</div>
+
+    <div class="form-card">
+      <h3>&#128106; About your child</h3>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" for="childName">Child's name <span style="color:var(--rose)">*</span></label>
+          <input type="text" id="childName" class="field-input" placeholder="e.g. Jamie" maxlength="40" autocomplete="off">
+        </div>
+        <div class="field">
+          <label class="field-label">Pronouns</label>
+          <div class="chip-row" id="pronounChips">
+            <div class="chip sel-teal" data-val="he">He / Him</div>
+            <div class="chip" data-val="she">She / Her</div>
+            <div class="chip" data-val="they">They / Them</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card" id="dynamicFields">
+      <!-- injected per scenario -->
+    </div>
+
+    <div class="form-card">
+      <h3>&#9998; Your own sentences <span style="font-size:0.75rem;font-weight:600;color:var(--muted)">(optional)</span></h3>
+      <p style="font-size:0.82rem;color:var(--ink2);font-weight:600;margin-bottom:14px;line-height:1.55">Add anything specific to your child — a comfort object, someone who will be there, or a phrase that helps them feel calm.</p>
+      <div class="custom-list" id="customList"></div>
+      <button class="add-btn" id="addSentenceBtn">&#＋; Add a sentence</button>
+      <div class="field" style="margin-top:16px">
+        <label class="field-label">Where to place your sentences</label>
+        <div class="chip-row" id="placementChips">
+          <div class="chip sel-sun" data-val="end">At the end</div>
+          <div class="chip" data-val="middle">In the middle</div>
+          <div class="chip" data-val="start">Near the start</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="step2Back">&larr; Back</button>
+      <button class="btn btn-primary" id="step2Next">Build the story &rarr;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="panel" id="panel3">
+    <div class="panel-title">Your social story</div>
+    <div class="panel-sub">Read through the story with your child. Tip: print it, cut into pages, and laminate them so you can use them again and again!</div>
+    <div class="print-tip">&#128424; <span><strong>Printing tip:</strong> Enable "Print background colours" in your browser settings for the best result. Or save as PDF to share digitally.</span></div>
+    <div class="preview-shell">
+      <div class="preview-toolbar">
+        <div class="preview-toolbar-title" id="previewTitle">Your story</div>
+        <div class="toolbar-btns">
+          <button class="btn btn-ghost btn-sm" id="step3Back">&larr; Edit</button>
+          <button class="btn btn-sun btn-sm" id="printBtn">&#128424; Print</button>
+        </div>
+      </div>
+      <div class="story-body" id="storyBody"></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// SCENARIO LIBRARY
+// ═══════════════════════════════════════════════════
+const SCENARIOS = [
+  {
+    id:'doctor', name:'Visiting the Doctor', emoji:'🩺',
+    accent:'var(--teal)', bg:'var(--teal-l)', sub:'Check-ups, feeling unwell',
+    fields:[
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'doctorName', label:"Doctor's name", ph:'e.g. Dr Smith', opt:true},
+      {id:'reason', label:'Why are they going?', ph:'e.g. a check-up, a sore throat', opt:true},
+    ],
+    pages: d => [
+      {e:'🏥', t:`Sometimes ${d.n} needs to visit the doctor. Going to the doctor is a normal part of staying healthy.`},
+      {e:'🚗', t:`${d.n} will go with ${d.companion}. ${C(d.p.s)} will not leave ${d.n} alone.`},
+      {e:'🪑', t:`When they arrive, ${d.n} will wait in the waiting room. There might be chairs, magazines, and perhaps some toys.`},
+      {e:'🩺', t:`${d.doctorName || 'A doctor or nurse'} will call ${d.n}'s name when it is time. Then ${d.p.s} will go into a room.`},
+      {e:'💬', t:`The doctor might ask ${d.n} some questions about how ${d.p.s} is feeling${d.reason ? ' — today the visit is because of ' + d.reason : ''}. It is okay to let ${d.companion} help answer.`},
+      {e:'🤗', t:`The doctor's job is to help ${d.n} feel well. They will be kind and careful.`},
+      {e:'⭐', t:`When the visit is finished, ${d.n} will leave with ${d.companion}. ${C(d.p.s)} did a really brave thing today!`},
+    ]
+  },
+  {
+    id:'haircut', name:'Getting a Haircut', emoji:'✂️',
+    accent:'var(--rose)', bg:'var(--rose-l)', sub:'Barber, salon, or at home',
+    fields:[
+      {id:'companion', label:'Who will be with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'location', label:'Where does the haircut happen?', ph:'e.g. the barber, at home', def:'the hairdresser'},
+      {id:'cutterName', label:"Hairdresser's name", ph:'e.g. Maria', opt:true},
+    ],
+    pages: d => [
+      {e:'💈', t:`Today ${d.n} is going to get a haircut at ${d.location}. A haircut means having some hair trimmed to look neat and tidy.`},
+      {e:'🚗', t:`${d.n} will go with ${d.companion}. ${C(d.p.s)} will stay close the whole time.`},
+      {e:'🪑', t:`${d.n} will sit in a special chair. There will be a mirror to look in. A cape might be put over ${d.p.poss} shoulders to keep ${d.p.poss} clothes clean.`},
+      {e:'✂️', t:`${d.cutterName || 'The hairdresser'} will use scissors or clippers near ${d.n}'s head. This will not hurt. The sound or feeling might be a little strange at first — that is normal.`},
+      {e:'💧', t:`If anything feels uncomfortable, ${d.n} can say so. ${C(d.companion)} is right there to help.`},
+      {e:'🌟', t:`When the haircut is done, ${d.n} will look in the mirror and see ${d.p.poss} new hair. What a great job — all done!`},
+    ]
+  },
+  {
+    id:'party', name:'Going to a Party', emoji:'🎉',
+    accent:'var(--lavender)', bg:'var(--lavender-l)', sub:'Birthday parties, celebrations',
+    fields:[
+      {id:'partyPerson', label:"Whose party is it?", ph:"e.g. Ella's, a classmate's", def:"a friend's"},
+      {id:'location', label:'Where is the party?', ph:"e.g. a soft play centre, Ella's house", def:'the party venue'},
+      {id:'companion', label:'Who will be with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'comfortThing', label:'Comfort item they might bring', ph:'e.g. their fidget toy', opt:true},
+    ],
+    pages: d => [
+      {e:'🎂', t:`${d.n} has been invited to ${d.partyPerson} party! A party is when people come together to celebrate something special.`},
+      {e:'🚗', t:`${d.n} will go to ${d.location} with ${d.companion}. Feeling excited or a little nervous is completely normal.`},
+      {e:'👋', t:`When ${d.n} arrives, there might be lots of people and some noise. ${C(d.p.s)} can take ${d.p.poss} time walking in and does not have to join in with everything at once.`},
+      {e:'🎈', t:`At the party there might be games, music, and food. ${d.n} can join in with what ${d.p.s} wants to, or watch first if ${d.p.s} prefers.`},
+      {e:'🤫', t:`If things feel too loud or busy, ${d.n} can tell ${d.companion} straight away${d.comfortThing ? '. ' + C(d.n) + ' can also use ' + d.p.poss + ' ' + d.comfortThing : ''}. They will find a quieter spot together.`},
+      {e:'🏠', t:`When the party is over, ${d.n} will go home with ${d.companion}. Parties always have an ending — and then it is time to go home. ${C(d.n)} should feel very proud for coming!`},
+    ]
+  },
+  {
+    id:'school_trip', name:'School Trip', emoji:'🚌',
+    accent:'var(--sun)', bg:'var(--sun-l)', sub:'Day trips, museums, visits',
+    fields:[
+      {id:'destination', label:'Where is the trip to?', ph:'e.g. the science museum', def:'a special place'},
+      {id:'teacher', label:'Teacher or adult in charge', ph:'e.g. Mrs Jones', def:'a teacher'},
+      {id:'travel', label:'How will they travel?', ph:'e.g. by coach, by train', def:'by coach'},
+    ],
+    pages: d => [
+      {e:'📋', t:`${d.n}'s class is going on a school trip to ${d.destination}! A school trip means going somewhere new with ${d.p.poss} class instead of a normal school day.`},
+      {e:'🚌', t:`${d.n} will travel ${d.travel} with ${d.p.poss} class and ${d.teacher}. ${C(d.teacher)} will be there to help at all times.`},
+      {e:'🎒', t:`${d.n} will need to bring ${d.p.poss} packed lunch and anything on the list. ${C(d.p.s)} should stay with the group at all times.`},
+      {e:'🗺️', t:`At ${d.destination} there will be new sights and sounds. ${d.n} can take ${d.p.poss} time and look around slowly. There is no rush.`},
+      {e:'🙋', t:`If ${d.n} feels worried or needs anything, ${d.p.s} can go to ${d.teacher} straight away. It is always okay to ask for help.`},
+      {e:'🏠', t:`At the end of the day everyone will travel back. ${d.n} will return to school and then go home. The trip will be finished.`},
+    ]
+  },
+  {
+    id:'hospital', name:'Going to Hospital', emoji:'🏥',
+    accent:'var(--sky)', bg:'var(--sky-l)', sub:'Appointments, scans, procedures',
+    fields:[
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a parent'},
+      {id:'reason', label:'What is the visit for?', ph:'e.g. a scan, an appointment', def:'an appointment'},
+      {id:'ward', label:'Ward or department', ph:"e.g. children's ward", opt:true},
+    ],
+    pages: d => [
+      {e:'🏥', t:`${d.n} is going to hospital for ${d.reason}. Hospitals are places that help people feel better and keep their body healthy.`},
+      {e:'🚗', t:`${d.companion} will go with ${d.n}. ${C(d.p.s)} will not be alone at any point during the visit.`},
+      {e:'🪑', t:`When they arrive, ${d.n} may need to wait${d.ward ? ' in the ' + d.ward : ''}. The hospital might smell different and feel busy. This is normal.`},
+      {e:'👩‍⚕️', t:`Doctors and nurses wear uniforms and name badges. Their job is to help. They will tell ${d.n} what they are doing before they do it.`},
+      {e:'💬', t:`${d.n} can ask questions at any time. ${C(d.companion)} can help explain what is happening too. It is always okay to speak up.`},
+      {e:'⭐', t:`When the visit is over, ${d.n} will go home with ${d.companion}. ${C(d.n)} was so brave coming to hospital today!`},
+    ]
+  },
+  {
+    id:'dentist', name:'Visiting the Dentist', emoji:'🦷',
+    accent:'var(--mint)', bg:'var(--mint-l)', sub:'Check-ups and treatments',
+    fields:[
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'dentistName', label:"Dentist's name", ph:'e.g. Dr Lee', opt:true},
+      {id:'reason', label:'What is the visit for?', ph:'e.g. a check-up', def:'a check-up'},
+    ],
+    pages: d => [
+      {e:'🦷', t:`${d.n} is going to the dentist for ${d.reason}. The dentist looks after our teeth and helps keep them clean and healthy.`},
+      {e:'🚗', t:`${d.companion} will take ${d.n}. ${C(d.p.s)} will be there the whole time and will not leave.`},
+      {e:'🪑', t:`At the dentist, ${d.n} will sit in a special chair that can lean back flat. There will be a bright light above so the dentist can see ${d.p.poss} teeth clearly.`},
+      {e:'🔍', t:`${d.dentistName || 'The dentist'} will look inside ${d.n}'s mouth using a small mirror and a tiny light. They might gently count ${d.p.poss} teeth.`},
+      {e:'🤚', t:`${d.n} can raise ${d.p.poss} hand any time ${d.p.s} needs a break. The dentist will stop and wait.`},
+      {e:'⭐', t:`When it is over, ${d.n} will leave with ${d.companion}. Looking after teeth is important — and ${d.n} did it brilliantly!`},
+    ]
+  },
+  {
+    id:'new_school', name:'Starting New School', emoji:'🏫',
+    accent:'var(--teal)', bg:'var(--teal-l)', sub:'First day, transitions, new class',
+    fields:[
+      {id:'schoolName', label:'Name of the school', ph:'e.g. Oakfield Primary', def:'the new school'},
+      {id:'companion', label:'Who will take them?', ph:'e.g. Mum, Dad', def:'a parent'},
+      {id:'teacherName', label:"Teacher's name", ph:'e.g. Mr Ahmed', opt:true},
+    ],
+    pages: d => [
+      {e:'🏫', t:`${d.n} is going to start at ${d.schoolName}. Starting somewhere new can feel exciting and a little wobbly at the same time — both feelings are perfectly okay.`},
+      {e:'🚗', t:`${d.companion} will take ${d.n} on the first day and help ${d.p.o} find ${d.p.poss} way around.`},
+      {e:'🎒', t:`${d.n} will have ${d.p.poss} bag with everything ${d.p.s} needs. Being prepared helps things feel more settled.`},
+      {e:'👋', t:`${d.teacherName ? d.n + ' will meet ' + d.teacherName + ', who will be ' + d.p.poss + ' teacher.' : d.n + ' will meet a new teacher.'} Teachers are there to help and to make sure everyone is safe.`},
+      {e:'💬', t:`If ${d.n} feels worried at any point, ${d.p.s} can tell a teacher or talk to ${d.companion} later. There is no need to manage feelings alone.`},
+      {e:'🌟', t:`After a few days, ${d.schoolName} will start to feel much more familiar. ${d.n} is doing something really big — and really brave!`},
+    ]
+  },
+  {
+    id:'supermarket', name:'At the Supermarket', emoji:'🛒',
+    accent:'var(--mint)', bg:'var(--mint-l)', sub:'Shopping trips, busy places',
+    fields:[
+      {id:'shopName', label:'Name of the shop', ph:'e.g. Tesco, the supermarket', def:'the supermarket'},
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'reward', label:'Something to look forward to after', ph:'e.g. choosing a treat', opt:true},
+    ],
+    pages: d => [
+      {e:'🛒', t:`${d.n} is going to ${d.shopName} with ${d.companion}. Supermarkets are large shops where families buy food and other things they need.`},
+      {e:'🔊', t:`Supermarkets can be bright and noisy with lots of people. This is normal. ${d.n} can stay close to ${d.companion} at all times.`},
+      {e:'📋', t:`${C(d.companion)} will have a list of things to find. ${d.n} might be able to help spot things on the shelves — that can make it more interesting.`},
+      {e:'⏱️', t:`Shopping does not last forever. When everything on the list is found, they will go to the checkout and then it will be time to leave.`},
+      {e:'😤', t:`If ${d.n} feels overwhelmed, ${d.p.s} can tell ${d.companion} straight away. They can take a break or find a quieter spot together.`},
+      {e:'✅', t:`When the shopping is done, ${d.n} will leave with ${d.companion}${d.reward ? ' and look forward to ' + d.reward : ''}. All finished — well done!`},
+    ]
+  },
+  {
+    id:'sleepover', name:'Staying Overnight', emoji:'🌙',
+    accent:'var(--lavender)', bg:'var(--lavender-l)', sub:'Sleepovers, relatives, respite',
+    fields:[
+      {id:'hostName', label:'Who are they staying with?', ph:"e.g. Grandma, a friend", def:'a trusted person'},
+      {id:'location', label:"Where will they stay?", ph:"e.g. Grandma's house", def:'a familiar place'},
+      {id:'comfortThing', label:'Comfort item they will bring', ph:'e.g. their teddy, their blanket', opt:true},
+    ],
+    pages: d => [
+      {e:'🌙', t:`${d.n} is going to stay overnight at ${d.location} with ${d.hostName}. This means sleeping somewhere other than ${d.p.poss} own home — just for one night.`},
+      {e:'🎒', t:`${d.n} will pack a bag with ${d.p.poss} pyjamas, toothbrush, and anything else ${d.p.s} needs${d.comfortThing ? ' — including ' + d.p.poss + ' ' + d.comfortThing : ''}.`},
+      {e:'🏠', t:`${d.location} might feel a little different from home. The sounds and smells might be different. That is okay — it is still a safe and caring place.`},
+      {e:'🍽️', t:`${d.hostName} will make sure ${d.n} has everything ${d.p.s} needs — food, a comfortable place to sleep, and someone nearby.`},
+      {e:'😴', t:`At bedtime, ${d.n} will get into ${d.p.poss} bed${d.comfortThing ? ' with ' + d.p.poss + ' ' + d.comfortThing : ''}. If ${d.p.s} cannot sleep, ${d.p.s} can tell ${d.hostName}.`},
+      {e:'☀️', t:`In the morning, ${d.n} will wake up and the sleepover will be over. ${C(d.n)} will go home soon — and should feel very proud of ${d.p.refl}!`},
+    ]
+  },
+  {
+    id:'aeroplane', name:'Going on an Aeroplane', emoji:'✈️',
+    accent:'var(--sky)', bg:'var(--sky-l)', sub:'First flights, airports, holidays',
+    fields:[
+      {id:'destination', label:'Where are they flying to?', ph:"e.g. Spain, Grandma's country", def:'a new place'},
+      {id:'companion', label:'Who is going with them?', ph:'e.g. the whole family', def:'family'},
+      {id:'flightTime', label:'How long is the flight?', ph:'e.g. about 2 hours', opt:true},
+    ],
+    pages: d => [
+      {e:'✈️', t:`${d.n} is going on an aeroplane to ${d.destination}! An aeroplane is a very large vehicle that flies high up in the sky.`},
+      {e:'🏢', t:`First, ${d.n} will go to the airport with ${d.companion}. The airport is a big building with lots of signs, queues, and people. ${C(d.companion)} will know exactly what to do.`},
+      {e:'🎒', t:`${d.n}'s bag will go on a conveyor belt to be checked. This is completely normal — the bag will be returned at the other end of the journey.`},
+      {e:'🚶', t:`${d.n} will walk through a security gate that might beep or make a noise. This is to keep everyone on the plane safe — it is nothing to worry about.`},
+      {e:'💺', t:`On the aeroplane, ${d.n} will sit in a seat with a seatbelt${d.flightTime ? '. The flight takes ' + d.flightTime : ''}. ${C(d.companion)} will be sitting right next to ${d.p.o}.`},
+      {e:'🌍', t:`The plane might feel wobbly during take-off and landing — this is completely normal. When the plane lands, ${d.n} will have arrived at ${d.destination}. The adventure begins!`},
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════
+// PRONOUNS
+// ═══════════════════════════════════════════════════
+const PRONOUNS = {
+  he:  {s:'he',  o:'him', poss:'his',  refl:'himself'},
+  she: {s:'she', o:'her', poss:'her',  refl:'herself'},
+  they:{s:'they',o:'them',poss:'their',refl:'themselves'},
+};
+function C(str){ return str ? str.charAt(0).toUpperCase() + str.slice(1) : '' }
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let chosen = null;
+
+// ═══════════════════════════════════════════════════
+// STEP 1 — SCENARIO GRID
+// ═══════════════════════════════════════════════════
+const grid = document.getElementById('scenarioGrid');
+SCENARIOS.forEach(sc => {
+  const card = document.createElement('div');
+  card.className = 'sc-card';
+  card.style.setProperty('--sc-accent', sc.accent);
+  card.style.setProperty('--sc-bg', sc.bg);
+  card.innerHTML = `<span class="sc-emoji">${sc.emoji}</span><div class="sc-name">${sc.name}</div><div class="sc-sub">${sc.sub}</div>`;
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.sc-card').forEach(c => c.classList.remove('sel'));
+    card.classList.add('sel');
+    chosen = sc;
+  });
+  grid.appendChild(card);
+});
+
+document.getElementById('step1Next').addEventListener('click', () => {
+  if (!chosen) { toast('Please choose a scenario first'); return; }
+  buildDynamicFields(chosen);
+  goTo(2);
+});
+
+// ═══════════════════════════════════════════════════
+// STEP 2 — PERSONALISE
+// ═══════════════════════════════════════════════════
+function buildDynamicFields(sc) {
+  const wrap = document.getElementById('dynamicFields');
+  wrap.innerHTML = `<h3>${sc.emoji} About this ${sc.name.toLowerCase()}</h3>`;
+  sc.fields.forEach(f => {
+    const d = document.createElement('div');
+    d.className = 'field';
+    d.innerHTML = `
+      <label class="field-label" for="f_${f.id}">
+        ${f.label}
+        ${f.opt
+          ? '<span class="opt-label"> (optional)</span>'
+          : '<span style="color:var(--rose)"> *</span>'}
+      </label>
+      <input type="text" id="f_${f.id}" class="field-input" placeholder="${f.ph}" maxlength="100" autocomplete="off">`;
+    wrap.appendChild(d);
+  });
+}
+
+// Pronoun chips
+document.querySelectorAll('#pronounChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#pronounChips .chip').forEach(x => x.className = 'chip');
+    c.classList.add('sel-teal');
+  });
+});
+
+// Placement chips
+document.querySelectorAll('#placementChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#placementChips .chip').forEach(x => x.className = 'chip');
+    c.classList.add('sel-sun');
+  });
+});
+
+// Custom sentences
+document.getElementById('addSentenceBtn').addEventListener('click', () => addCustomRow());
+function addCustomRow(val='') {
+  const row = document.createElement('div');
+  row.className = 'custom-row';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'field-input';
+  inp.placeholder = 'e.g. Jamie can bring his fidget toy to help him feel calm.';
+  inp.value = val;
+  inp.maxLength = 250;
+  const btn = document.createElement('button');
+  btn.className = 'rm-btn';
+  btn.innerHTML = '&#10005;';
+  btn.title = 'Remove';
+  btn.addEventListener('click', () => row.remove());
+  row.appendChild(inp);
+  row.appendChild(btn);
+  document.getElementById('customList').appendChild(row);
+  inp.focus();
+}
+
+function getCustoms() {
+  return [...document.querySelectorAll('#customList .field-input')]
+    .map(i => i.value.trim()).filter(Boolean);
+}
+function getPlacement() {
+  return document.querySelector('#placementChips .chip.sel-sun')?.dataset.val || 'end';
+}
+function getPronouns() {
+  return PRONOUNS[document.querySelector('#pronounChips .chip.sel-teal')?.dataset.val || 'he'];
+}
+
+document.getElementById('step2Back').addEventListener('click', () => goTo(1));
+document.getElementById('step2Next').addEventListener('click', () => {
+  const name = document.getElementById('childName').value.trim();
+  if (!name) { document.getElementById('childName').focus(); toast("Please enter your child's name"); return; }
+  for (const f of chosen.fields) {
+    if (!f.opt) {
+      const val = document.getElementById('f_'+f.id)?.value.trim();
+      if (!val) { document.getElementById('f_'+f.id)?.focus(); toast('Please fill in: ' + f.label); return; }
+    }
+  }
+  buildStory();
+  goTo(3);
+});
+
+// ═══════════════════════════════════════════════════
+// STEP 3 — BUILD & RENDER STORY
+// ═══════════════════════════════════════════════════
+function gatherData() {
+  const p = getPronouns();
+  const name = document.getElementById('childName').value.trim();
+  const data = { n: name, p };
+  chosen.fields.forEach(f => {
+    const el = document.getElementById('f_'+f.id);
+    data[f.id] = el?.value.trim() || f.def || '';
+  });
+  return data;
+}
+
+function buildStory() {
+  const sc = chosen;
+  const data = gatherData();
+  let pages = sc.pages(data);
+  const customs = getCustoms();
+  const placement = getPlacement();
+
+  if (customs.length) {
+    const extras = customs.map(t => ({e:'💛', t, custom:true}));
+    if (placement === 'start') pages = [...extras, ...pages];
+    else if (placement === 'middle') {
+      const mid = Math.floor(pages.length / 2);
+      pages = [...pages.slice(0,mid), ...extras, ...pages.slice(mid)];
+    } else {
+      pages = [...pages, ...extras];
+    }
+  }
+
+  document.getElementById('previewTitle').textContent = sc.name + ' — ' + data.n + "'s story";
+
+  const body = document.getElementById('storyBody');
+  body.innerHTML = '';
+  body.style.setProperty('--sc-accent', sc.accent);
+  body.style.setProperty('--sc-bg', sc.bg);
+
+  // Cover page
+  const dotColors = ['var(--teal)','var(--sun)','var(--rose)','var(--mint)','var(--lavender)','var(--sky)'];
+  const cover = document.createElement('div');
+  cover.className = 'story-cover';
+  cover.innerHTML =
+    '<span class="cover-emoji">' + sc.emoji + '</span>' +
+    '<div class="cover-title"><em>' + esc(data.n) + "'s</em> story about<br>" + esc(sc.name) + '</div>' +
+    '<div class="cover-sub">A social story made just for ' + esc(data.n) + '</div>' +
+    '<div class="cover-dots">' + dotColors.map(c => '<div class="cover-dot" style="background:'+c+'"></div>').join('') + '</div>';
+  body.appendChild(cover);
+
+  // Story pages
+  const list = document.createElement('div');
+  list.className = 'story-pages-list';
+  pages.forEach((pg, i) => {
+    const div = document.createElement('div');
+    div.className = 'story-page' + (i % 2 === 1 ? ' rev' : '');
+
+    const illus = document.createElement('div');
+    illus.className = 'illus-box';
+    illus.innerHTML = '<div class="illus-emoji">' + pg.e + '</div><div class="illus-label">illustration</div>';
+
+    const textCol = document.createElement('div');
+    textCol.className = 'text-col';
+    textCol.innerHTML =
+      '<div class="page-num">Page ' + (i+1) + '</div>' +
+      '<div class="page-text">' + renderText(pg.t, data.n) +
+      (pg.custom ? '<span class="custom-badge">your sentence</span>' : '') +
+      '</div>';
+
+    div.appendChild(illus);
+    div.appendChild(textCol);
+    list.appendChild(div);
+  });
+  body.appendChild(list);
+}
+
+function renderText(text, name) {
+  let s = esc(text);
+  s = s.replace(new RegExp('\\b' + escRx(name) + '\\b', 'g'), '<strong>' + name + '</strong>');
+  s = s.replace(/\b(worried|scared|nervous|excited|happy|proud|brave|calm|overwhelmed|uncomfortable|wobbly)\b/gi, m => '<em>' + m + '</em>');
+  return s;
+}
+
+// ═══════════════════════════════════════════════════
+// PRINT
+// ═══════════════════════════════════════════════════
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('step3Back').addEventListener('click', () => goTo(2));
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function goTo(n) {
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i+1===n));
+  ['ws1','ws2','ws3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.className = 'wstep' + (i+1===n ? ' active' : i+1<n ? ' done' : '');
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function escRx(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') }
+
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
