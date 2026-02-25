@@ -837,7 +837,7 @@ function findTask(input) {
 
       // Count how many MEANINGFUL words from the query appear in this keyword
       const qWords = q.split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
-      const kwWords = kw.split(/\s+/);
+      const kwWords = kw.split(/\s+/).filter(w => w.length >= 3);
       let hits = 0;
       for (const w of qWords) {
         if (kwWords.some(kw2 => kw2.includes(w) || w.includes(kw2))) hits++;
