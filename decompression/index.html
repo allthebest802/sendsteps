@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decompression Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0F1320;
+  --bg2:#161C2E;
+  --surface:#1E2640;
+  --surface2:#252E4A;
+  --border:#2E3A5C;
+  --border2:#3A4870;
+  --amber:#F5B942;
+  --amber-l:#FDE9B0;
+  --amber-d:#C9901A;
+  --lavender:#A78BD4;
+  --lavender-l:#D4C5F0;
+  --lavender-d:#7A5FAA;
+  --mint:#5EC4A8;
+  --mint-l:#A8E8D8;
+  --rose:#E07B8A;
+  --rose-l:#F5C0C8;
+  --text:#E8EAF0;
+  --text2:#A0AABB;
+  --text3:#6A7590;
+  --radius:16px;
+  --radius-lg:24px;
+  --shadow:0 4px 24px rgba(0,0,0,0.3);
+  --shadow-lg:0 8px 48px rgba(0,0,0,0.5);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Quicksand',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding:0 0 60px;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%,rgba(167,139,212,0.12) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 90% 90%,rgba(245,185,66,0.06) 0%,transparent 60%);
+}
+button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:none}
+
+/* ── HEADER ── */
+.header{text-align:center;padding:48px 20px 32px}
+.header-icon{
+  font-size:3rem;display:block;margin-bottom:16px;
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(167,139,212,0.4))}
+  50%{transform:scale(1.08);filter:drop-shadow(0 0 18px rgba(167,139,212,0.7))}
+}
+.header h1{
+  font-family:'Quicksand',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);
+  font-weight:700;color:var(--text);letter-spacing:-0.3px;line-height:1.2;margin-bottom:10px;
+}
+.header h1 span{color:var(--lavender)}
+.header p{color:var(--text2);font-size:0.9rem;font-weight:600;max-width:420px;margin:0 auto;line-height:1.65}
+.header-note{
+  display:inline-block;margin-top:14px;
+  background:rgba(167,139,212,0.12);border:1.5px solid rgba(167,139,212,0.25);
+  border-radius:100px;padding:5px 16px;font-size:0.75rem;font-weight:700;
+  color:var(--lavender-l);letter-spacing:0.3px;
+}
+
+/* ── PLANNER ── */
+.planner{max-width:560px;margin:0 auto;padding:0 20px}
+
+.section{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:14px;
+  box-shadow:var(--shadow);animation:fadeUp 0.4s ease both;
+}
+.section:nth-child(1){animation-delay:0.05s}
+.section:nth-child(2){animation-delay:0.12s}
+.section:nth-child(3){animation-delay:0.19s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-icon{font-size:1.3rem;line-height:1}
+.section-title{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)}
+.section-q{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--text);line-height:1.4;margin-top:2px}
+
+/* ── OPTIONS ── */
+.options{display:flex;flex-wrap:wrap;gap:8px}
+.opt-btn{
+  padding:9px 18px;border-radius:100px;font-family:'Quicksand',sans-serif;
+  font-size:0.85rem;font-weight:700;border:2px solid var(--border2);
+  background:var(--surface2);color:var(--text2);cursor:pointer;
+  transition:all 0.18s;display:flex;align-items:center;gap:7px;user-select:none;
+}
+.opt-btn:hover{border-color:var(--text3);color:var(--text);background:var(--surface)}
+.opt-btn.sel-mint{background:rgba(94,196,168,0.15);border-color:var(--mint);color:var(--mint-l)}
+.opt-btn.sel-amber{background:rgba(245,185,66,0.15);border-color:var(--amber);color:var(--amber-l)}
+.opt-btn.sel-rose{background:rgba(224,123,138,0.15);border-color:var(--rose);color:var(--rose-l)}
+
+/* ── GENERATE ── */
+.gen-wrap{text-align:center;margin:20px 0 8px}
+.gen-btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:14px 32px;border-radius:100px;
+  background:linear-gradient(135deg,var(--lavender-d),var(--lavender));
+  color:white;font-family:'Quicksand',sans-serif;font-size:1rem;font-weight:700;
+  border:none;cursor:pointer;box-shadow:0 4px 20px rgba(167,139,212,0.35);
+  transition:all 0.2s;letter-spacing:0.2px;
+}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(167,139,212,0.5)}
+.gen-btn:active{transform:translateY(0)}
+.gen-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ── OUTPUT ── */
+.output{
+  display:none;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-lg),0 0 40px rgba(167,139,212,0.12);
+  margin-top:8px;
+}
+.output.show{display:block;animation:glowIn 0.5s ease both}
+@keyframes glowIn{
+  from{opacity:0;transform:scale(0.97)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.output-top{
+  padding:22px 24px 18px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:flex-start;gap:14px;
+}
+.output-top-icon{font-size:2rem;line-height:1;margin-top:2px}
+.output-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px}
+.output-headline{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--lavender-l);line-height:1.45}
+
+.output-plan{padding:20px 24px}
+.output-plan-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:14px}
+
+.plan-items{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.plan-item{
+  display:flex;align-items:flex-start;gap:12px;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:12px 16px;
+  animation:slideIn 0.25s ease both;
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.plan-item-icon{font-size:1.4rem;flex-shrink:0;line-height:1;margin-top:1px}
+.plan-item-title{font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.plan-item-desc{font-family:'Lora',serif;font-style:italic;font-size:0.82rem;color:var(--text2);line-height:1.5}
+
+.output-note{
+  background:rgba(245,185,66,0.08);border:1.5px solid rgba(245,185,66,0.2);
+  border-radius:var(--radius);padding:12px 16px;
+  font-family:'Lora',serif;font-style:italic;font-size:0.85rem;
+  color:var(--amber-l);line-height:1.6;
+}
+.output-note strong{font-style:normal;font-weight:700;font-family:'Quicksand',sans-serif;color:var(--amber)}
+
+.intensity-bar{display:flex;align-items:center;gap:10px;margin-top:14px}
+.intensity-label{font-size:0.7rem;font-weight:700;color:var(--text3);min-width:80px}
+.intensity-track{flex:1;height:6px;background:var(--border);border-radius:100px;overflow:hidden}
+.intensity-fill{height:100%;border-radius:100px;transition:width 0.7s cubic-bezier(.34,1.1,.64,1)}
+.intensity-val{font-size:0.72rem;font-weight:700;color:var(--text3);min-width:36px;text-align:right}
+
+.output-footer{
+  padding:14px 24px 18px;display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:10px;border-top:1.5px solid var(--border);
+}
+.reset-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 16px;
+  border-radius:100px;background:transparent;border:1.5px solid var(--border2);
+  color:var(--text3);font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.15s;
+}
+.reset-btn:hover{border-color:var(--text3);color:var(--text2)}
+.print-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:7px 16px;
+  border-radius:100px;background:rgba(167,139,212,0.12);border:1.5px solid var(--lavender-d);
+  color:var(--lavender-l);font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.15s;
+}
+.print-btn:hover{background:rgba(167,139,212,0.22)}
+
+@media print{
+  body{background:white!important;color:black!important}
+  .header p,.header-note,.gen-wrap,.section,.output-footer{display:none!important}
+  .output{display:block!important;box-shadow:none!important;border:2px solid #ccc!important;background:white!important}
+  .output *{color:black!important;background:transparent!important;border-color:#ddd!important}
+  .plan-item{border:1px solid #ddd!important}
+}
+@media(max-width:480px){
+  .options{gap:6px}
+  .opt-btn{padding:8px 14px;font-size:0.8rem}
+  .section{padding:18px 16px}
+  .output-plan,.output-top{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">🧠</span>
+  <h1>Decompression <span>Planner</span></h1>
+  <p>After a day of masking and managing, your child needs the right kind of recovery. Tell us about today.</p>
+  <span class="header-note">Takes 30 seconds &middot; No data stored</span>
+</div>
+
+<div class="planner">
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔊</span>
+      <div>
+        <div class="section-title">Question 1 of 3</div>
+        <div class="section-q">How noisy was today?</div>
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt-btn" data-group="noise" data-val="0" data-color="sel-mint">🌿 Pretty quiet</button>
+      <button class="opt-btn" data-group="noise" data-val="1" data-color="sel-amber">📢 Quite noisy</button>
+      <button class="opt-btn" data-group="noise" data-val="2" data-color="sel-rose">🔥 Overwhelming</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">👥</span>
+      <div>
+        <div class="section-title">Question 2 of 3</div>
+        <div class="section-q">How much social demand was there?</div>
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt-btn" data-group="social" data-val="0" data-color="sel-mint">😌 Mostly alone</button>
+      <button class="opt-btn" data-group="social" data-val="1" data-color="sel-amber">🤝 Some interaction</button>
+      <button class="opt-btn" data-group="social" data-val="2" data-color="sel-rose">😤 On all day</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔄</span>
+      <div>
+        <div class="section-title">Question 3 of 3</div>
+        <div class="section-q">How much change or unpredictability?</div>
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt-btn" data-group="change" data-val="0" data-color="sel-mint">📅 Normal routine</button>
+      <button class="opt-btn" data-group="change" data-val="1" data-color="sel-amber">🔀 A few surprises</button>
+      <button class="opt-btn" data-group="change" data-val="2" data-color="sel-rose">🌪️ Lots of changes</button>
+    </div>
+  </div>
+
+  <div class="gen-wrap">
+    <button class="gen-btn" id="genBtn" disabled>✨ Show me today's plan</button>
+  </div>
+
+  <div class="output" id="output">
+    <div class="output-top">
+      <div class="output-top-icon" id="outIcon"></div>
+      <div>
+        <div class="output-label">Today's decompression needs</div>
+        <div class="output-headline" id="outHeadline"></div>
+      </div>
+    </div>
+    <div class="output-plan">
+      <div class="output-plan-label">Recommended right now</div>
+      <div class="plan-items" id="planItems"></div>
+      <div class="output-note" id="outNote"></div>
+      <div class="intensity-bar">
+        <div class="intensity-label">Demand level</div>
+        <div class="intensity-track"><div class="intensity-fill" id="intensityFill"></div></div>
+        <div class="intensity-val" id="intensityVal"></div>
+      </div>
+    </div>
+    <div class="output-footer">
+      <button class="reset-btn" id="resetBtn">&#8635; Start again</button>
+      <button class="print-btn" onclick="window.print()">&#128424; Print plan</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const PLANS = [
+  // Score 0-1: Easy day
+  {
+    min:0, max:1,
+    icon:'🌿',
+    headline:"Today was manageable — a gentle wind-down is all that's needed.",
+    items:[
+      {icon:'🍎', title:'Light snack', desc:"Something easy and familiar — they've earned it."},
+      {icon:'🎮', title:'Free choice time', desc:'30 minutes of whatever they want, no agenda.'},
+      {icon:'💬', title:'Chat is welcome', desc:"They're likely okay to talk — just follow their lead."},
+    ],
+    note:"<strong>Good news:</strong> Today wasn't too draining. Keep the evening calm and they should regulate fairly quickly.",
+    barColor:'var(--mint)',
+  },
+  // Score 2-3: Moderate day
+  {
+    min:2, max:3,
+    icon:'🌤️',
+    headline:"Today asked quite a lot — they need real space to recover.",
+    items:[
+      {icon:'🍫', title:'Favourite snack', desc:'Blood sugar helps. Let them choose what they want.'},
+      {icon:'🚪', title:'Alone time first', desc:'20–30 minutes in their room before any interaction.'},
+      {icon:'🎧', title:'Sensory reset', desc:'Headphones, dim lights, or a comfort activity.'},
+      {icon:'🤫', title:'No questions yet', desc:'Save homework, "how was your day?" and decisions for later.'},
+    ],
+    note:"<strong>Remember:</strong> What looks like a bad mood is probably exhaustion from masking. They held it together all day — home is where they finally let go.",
+    barColor:'var(--amber)',
+  },
+  // Score 4-5: Hard day
+  {
+    min:4, max:5,
+    icon:'🌙',
+    headline:"Today was genuinely tough — maximum decompression needed.",
+    items:[
+      {icon:'🍕', title:'Comfort food', desc:"Whatever their safe food is — now is not the time for healthy eating negotiations."},
+      {icon:'🚪', title:'Alone time, no interruptions', desc:'At least 30–45 minutes. Knock first, respect the door.'},
+      {icon:'📵', title:'Screen time without guilt', desc:"Let them zone out. It's regulating, not rotting."},
+      {icon:'🤫', title:'No questions for 45 mins', desc:'No homework talk, no decisions of any kind.'},
+      {icon:'🧸', title:'Safe space ready', desc:'Make sure their comfort items or favourite spot is available.'},
+    ],
+    note:"<strong>This was a high-demand day.</strong> The behaviour you might see now is the mask coming off — not defiance. Give them the full recovery window before expecting anything.",
+    barColor:'var(--rose)',
+  },
+  // Score 6: Maximum
+  {
+    min:6, max:6,
+    icon:'⛔',
+    headline:"Today was at maximum demand — full shutdown recovery needed tonight.",
+    items:[
+      {icon:'🚪', title:'Complete retreat', desc:'Their room, their rules. No interruptions for at least an hour.'},
+      {icon:'🍕', title:'Bring food to them', desc:"Don't ask them to come to the table. Safe food, delivered quietly."},
+      {icon:'📵', title:'Unlimited comfort time', desc:'This is medicine right now, not a reward.'},
+      {icon:'🤐', title:'Zero demands — full stop', desc:'No homework, no chores, no questions, no eye contact unless they initiate.'},
+      {icon:'💙', title:'Gentle check-in later', desc:'After 60+ minutes, "I\'m here if you need me" is enough.'},
+    ],
+    note:"<strong>Shutdown mode.</strong> This isn't a choice — their nervous system is in full recovery. The kindest thing is to make home feel completely safe and ask nothing of them tonight.",
+    barColor:'var(--lavender)',
+  },
+];
+
+const selections = {noise:null, social:null, change:null};
+
+document.querySelectorAll('.opt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.dataset.group;
+    const color = btn.dataset.color;
+    document.querySelectorAll(`.opt-btn[data-group="${group}"]`).forEach(b => b.className = 'opt-btn');
+    btn.classList.add(color);
+    selections[group] = parseInt(btn.dataset.val);
+    const allDone = selections.noise !== null && selections.social !== null && selections.change !== null;
+    document.getElementById('genBtn').disabled = !allDone;
+  });
+});
+
+document.getElementById('genBtn').addEventListener('click', () => {
+  const score = selections.noise + selections.social + selections.change;
+  const plan = PLANS.find(p => score >= p.min && score <= p.max);
+
+  document.getElementById('outIcon').textContent = plan.icon;
+  document.getElementById('outHeadline').textContent = plan.headline;
+
+  const list = document.getElementById('planItems');
+  list.innerHTML = '';
+  plan.items.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'plan-item';
+    el.style.animationDelay = (i * 0.08) + 's';
+    el.innerHTML = `
+      <div class="plan-item-icon">${item.icon}</div>
+      <div>
+        <div class="plan-item-title">${item.title}</div>
+        <div class="plan-item-desc">${item.desc}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+
+  document.getElementById('outNote').innerHTML = plan.note;
+
+  const pct = Math.round((score / 6) * 100);
+  const fill = document.getElementById('intensityFill');
+  fill.style.width = pct + '%';
+  fill.style.background = plan.barColor;
+  document.getElementById('intensityVal').textContent = pct + '%';
+
+  const output = document.getElementById('output');
+  output.classList.add('show');
+  setTimeout(() => output.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  selections.noise = null; selections.social = null; selections.change = null;
+  document.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn');
+  document.getElementById('genBtn').disabled = true;
+  document.getElementById('output').classList.remove('show');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+</script>
+</body>
+</html>
