@@ -323,11 +323,6 @@ body.large-text .card-emoji{font-size:2.4rem}
   <button class="template-btn" data-template="morning">🌅 School Morning</button>
   <button class="template-btn" data-template="afterschool">🎒 After School</button>
   <button class="template-btn" data-template="bedtime">🌙 Bedtime</button>
-  <button class="template-btn" data-template="weekend">🏡 Weekend Morning</button>
-  <button class="template-btn" data-template="homework">📚 Homework Time</button>
-  <button class="template-btn" data-template="bathtime">🛁 Bath Time</button>
-  <button class="template-btn" data-template="leavinghouse">🚪 Leaving the House</button>
-  <button class="template-btn" data-template="calm">🧸 Calm Down Routine</button>
 </div>
 
 <!-- TOOLBAR -->
@@ -479,49 +474,7 @@ const TEMPLATES = {
     {title:'Brush Teeth',emoji:'🦷',time:'7:40 PM',notes:'2 minute timer',color:COLOR_OPTIONS[0]},
     {title:'Story Time',emoji:'📖',time:'7:50 PM',notes:'2 books tonight',color:COLOR_OPTIONS[5]},
     {title:'Lights Out',emoji:'🌙',time:'8:00 PM',notes:'Sleep tight! 🌟',color:COLOR_OPTIONS[6]},
-  ],
-  weekend: [
-    {title:'Wake Up',emoji:'⏰',time:'8:30 AM',notes:'No rush this morning!',color:COLOR_OPTIONS[3]},
-    {title:'Breakfast',emoji:'🥞',time:'8:45 AM',notes:'Choose your favourite',color:COLOR_OPTIONS[1]},
-    {title:'Get Dressed',emoji:'👕',time:'9:15 AM',notes:'Comfy clothes ok!',color:COLOR_OPTIONS[2]},
-    {title:'Brush Teeth',emoji:'🦷',time:'9:25 AM',notes:'2 minutes',color:COLOR_OPTIONS[0]},
-    {title:'Tidy Room',emoji:'🧹',time:'9:30 AM',notes:'Just 10 minutes',color:COLOR_OPTIONS[4]},
-    {title:'Free Time',emoji:'🎮',time:'9:45 AM',notes:'Your choice!',color:COLOR_OPTIONS[6]},
-  ],
-  homework: [
-    {title:'Get Snack & Drink',emoji:'🍎',time:'4:00 PM',notes:'Brain needs fuel first',color:COLOR_OPTIONS[1]},
-    {title:'Get Homework Out',emoji:'🎒',time:'4:10 PM',notes:'Put on the table',color:COLOR_OPTIONS[2]},
-    {title:'Read the Task',emoji:'👀',time:'4:12 PM',notes:'Just read, don't start yet',color:COLOR_OPTIONS[3]},
-    {title:'Do First Question',emoji:'✏️',time:'4:15 PM',notes:'Just one to start',color:COLOR_OPTIONS[0]},
-    {title:'Keep Going',emoji:'📚',time:'4:20 PM',notes:'You're doing great!',color:COLOR_OPTIONS[4]},
-    {title:'Check Your Work',emoji:'✅',time:'4:45 PM',notes:'Read back through',color:COLOR_OPTIONS[5]},
-    {title:'Pack It Away',emoji:'🎒',time:'4:50 PM',notes:'Done! Free time now',color:COLOR_OPTIONS[6]},
-  ],
-  bathtime: [
-    {title:'Get Towel & PJs',emoji:'🛁',time:'7:00 PM',notes:'Put them in bathroom',color:COLOR_OPTIONS[2]},
-    {title:'Take Clothes Off',emoji:'👕',time:'7:05 PM',notes:'Put in washing basket',color:COLOR_OPTIONS[4]},
-    {title:'Get In Bath',emoji:'🛁',time:'7:06 PM',notes:'Check temperature first',color:COLOR_OPTIONS[1]},
-    {title:'Wash Hair',emoji:'🧴',time:'7:10 PM',notes:'If it's wash night',color:COLOR_OPTIONS[3]},
-    {title:'Wash Body',emoji:'🧼',time:'7:15 PM',notes:'',color:COLOR_OPTIONS[0]},
-    {title:'Get Out & Dry',emoji:'🏊',time:'7:20 PM',notes:'Dry properly',color:COLOR_OPTIONS[5]},
-    {title:'PJs On',emoji:'👕',time:'7:25 PM',notes:'',color:COLOR_OPTIONS[4]},
-  ],
-  leavinghouse: [
-    {title:'Check the Weather',emoji:'🌤️',time:'',notes:'Coat? Umbrella?',color:COLOR_OPTIONS[3]},
-    {title:'Shoes On',emoji:'👟',time:'',notes:'',color:COLOR_OPTIONS[2]},
-    {title:'Coat On',emoji:'🧥',time:'',notes:'',color:COLOR_OPTIONS[1]},
-    {title:'Bag Packed?',emoji:'🎒',time:'',notes:'Everything inside?',color:COLOR_OPTIONS[0]},
-    {title:'Phone / Keys',emoji:'🔑',time:'',notes:'Check your pocket',color:COLOR_OPTIONS[4]},
-    {title:'Lock the Door',emoji:'🚪',time:'',notes:'',color:COLOR_OPTIONS[6]},
-  ],
-  calm: [
-    {title:'Find a Safe Spot',emoji:'🧸',time:'',notes:'Somewhere quiet',color:COLOR_OPTIONS[5]},
-    {title:'Take 3 Big Breaths',emoji:'💨',time:'',notes:'In through nose, out through mouth',color:COLOR_OPTIONS[2]},
-    {title:'Squeeze Something',emoji:'✊',time:'',notes:'Stress ball or pillow',color:COLOR_OPTIONS[0]},
-    {title:'Get a Drink of Water',emoji:'💧',time:'',notes:'Cold water helps',color:COLOR_OPTIONS[1]},
-    {title:'Tell Someone How You Feel',emoji:'💬',time:'',notes:'Or write it down',color:COLOR_OPTIONS[3]},
-    {title:'Choose What Helps',emoji:'💛',time:'',notes:'Music? Blanket? Walk?',color:COLOR_OPTIONS[4]},
-  ],
+  ]
 };
 
 let state = {
