@@ -134,11 +134,13 @@
     box-shadow: 1px 1px 0 #1A1A2E;
   }
 
-  .chip[data-subject="Math"].selected { background: #FF6B35; }
+  .chip[data-subject="Maths"].selected { background: #FF6B35; }
   .chip[data-subject="Reading"].selected { background: #4ECDC4; }
   .chip[data-subject="Writing"].selected { background: #A855F7; }
+  .chip[data-subject="English"].selected { background: #2563EB; }
   .chip[data-subject="Science"].selected { background: #06D6A0; }
   .chip[data-subject="History"].selected { background: #F59E0B; }
+  .chip[data-subject="Geography"].selected { background: #10B981; }
   .chip[data-subject="Language"].selected { background: #EC4899; }
   .chip[data-subject="Art"].selected { background: #3B82F6; }
   .chip[data-subject="Other"].selected { background: #6B7280; }
@@ -416,11 +418,13 @@
   <!-- SUBJECT -->
   <div class="section-label">📖 Subject</div>
   <div class="chips-grid" id="subjectChips">
-    <div class="chip" data-subject="Math">🔢 Math</div>
+    <div class="chip" data-subject="Maths">🔢 Maths</div>
+    <div class="chip" data-subject="English">📘 English</div>
     <div class="chip" data-subject="Reading">📖 Reading</div>
     <div class="chip" data-subject="Writing">✍️ Writing</div>
     <div class="chip" data-subject="Science">🔬 Science</div>
     <div class="chip" data-subject="History">🏛️ History</div>
+    <div class="chip" data-subject="Geography">🗺️ Geography</div>
     <div class="chip" data-subject="Language">🌍 Language</div>
     <div class="chip" data-subject="Art">🎨 Art</div>
     <div class="chip" data-subject="Other">📦 Other</div>
@@ -510,13 +514,29 @@
 
   // Base times per subject (minutes for difficulty=3, amount=2)
   const subjectBase = {
-    Math: 22, Reading: 18, Writing: 28, Science: 20,
-    History: 18, Language: 22, Art: 15, Other: 20
+    Maths: 22,
+    English: 24,
+    Reading: 18,
+    Writing: 28,
+    Science: 20,
+    History: 18,
+    Geography: 19,
+    Language: 22,
+    Art: 15,
+    Other: 20
   };
 
   const subjectEmoji = {
-    Math:'🔢', Reading:'📖', Writing:'✍️', Science:'🔬',
-    History:'🏛️', Language:'🌍', Art:'🎨', Other:'📦'
+    Maths:'🔢',
+    English:'📘',
+    Reading:'📖',
+    Writing:'✍️',
+    Science:'🔬',
+    History:'🏛️',
+    Geography:'🗺️',
+    Language:'🌍',
+    Art:'🎨',
+    Other:'📦'
   };
 
   // Subject chips
@@ -648,32 +668,92 @@
   }
 
   function buildTips(subject, attn, diff) {
-    const pool = [
-      { icon:'📵', label:'Phone Away', text:'Put your phone in another room. Even face-down on the desk cuts focus by 20%.' },
-      { icon:'💧', label:'Hydrate First', text:'Drink a glass of water before you start — dehydration kills concentration.' },
-      { icon:'🎧', label:'Background Music', text:'Instrumental or lo-fi beats help block distractions without pulling attention.' },
-      { icon:'📝', label:'Read Aloud', text:'Reading questions out loud helps your brain process them more deeply.' },
-      { icon:'⏰', label:'Use a Timer', text:'Set a visible timer for each work block. Seeing time pass keeps you on track.' },
-      { icon:'🛋️', label:'Move First', text:'5 minutes of movement (walk, stretch, jumping jacks) boosts focus big time.' },
-      { icon:'🌿', label:'Good Lighting', text:'Natural light or a bright desk lamp reduces eye strain and keeps you alert.' },
-      { icon:'✅', label:'Break It Down', text:'Check off each block as you finish — small wins keep momentum going.' },
+    // Global tips (used as fillers)
+    const global = {
+      phone: { icon:'📵', label:'Phone Away', text:'Put your phone in another room (or use Do Not Disturb). Less distraction = less stress.' },
+      water: { icon:'💧', label:'Hydrate First', text:'A drink before you start helps focus more than you’d think.' },
+      timer: { icon:'⏰', label:'Use a Timer', text:'Set a visible timer for each work block. When it ends, you stop and take a break.' },
+      move:  { icon:'🛋️', label:'Move First', text:'2–5 minutes of movement (walk/stretch) can “switch on” attention.' },
+      check: { icon:'✅', label:'Tiny Wins', text:'Tick off each block. Small wins keep momentum going.' },
+      music: { icon:'🎧', label:'Background Sound', text:'Try lo‑fi or instrumental to block distractions (skip lyrics if they hook attention).' },
+      light: { icon:'🌿', label:'Good Lighting', text:'A bright lamp reduces tiredness and makes reading easier.' }
+    };
+
+    // Subject-specific tips (main difference)
+    const bySubject = {
+      Maths: [
+        { icon:'✏️', label:'Show Working', text:'Write every step. If you skip steps, your brain has to hold too much at once.' },
+        { icon:'🔁', label:'Check One Answer', text:'After each block, check ONE answer for mistakes (signs, units, decimals).' },
+        { icon:'🧱', label:'Start With Easiest', text:'Do the easiest questions first to build confidence and momentum.' }
+      ],
+      English: [
+        { icon:'🧠', label:'Plan First', text:'Write 3 bullet points before you start. A tiny plan reduces overwhelm.' },
+        { icon:'🗣️', label:'Say It Out Loud', text:'Say your sentence out loud. If it sounds confusing, it’ll read confusing.' },
+        { icon:'🧩', label:'PEE/PEEL', text:'Use a structure: Point → Evidence → Explain (→ Link). Keeps it focused.' }
+      ],
+      Reading: [
+        { icon:'🔍', label:'Skim Then Read', text:'Skim headings/questions first, then read with a goal. It feels easier.' },
+        { icon:'🖍️', label:'Highlight Keywords', text:'Highlight 3–5 key words per paragraph (or write them on scrap paper).' },
+        { icon:'❓', label:'Answer in Your Words', text:'Say the answer in your own words first, then write it.' }
+      ],
+      Writing: [
+        { icon:'🧱', label:'Sentence Starters', text:'Use starters like “Firstly…”, “Because…”, “For example…”. Less blank-page stress.' },
+        { icon:'🗺️', label:'Mini Outline', text:'Do 4 bullets: intro, point 1, point 2, ending. Then fill in.' },
+        { icon:'🔎', label:'One Edit Pass', text:'Do ONE edit pass only: capitals + full stops + spelling of key words.' }
+      ],
+      Science: [
+        { icon:'🧪', label:'Key Words Bank', text:'Make a mini word bank (osmosis, reactant, variable). Use them in answers.' },
+        { icon:'📈', label:'Units & Graphs', text:'Check units and labels. Most easy marks are in units/axes.' },
+        { icon:'🧠', label:'Explain Simply', text:'Write the explanation as if teaching someone younger. Clarity = marks.' }
+      ],
+      History: [
+        { icon:'📅', label:'Timeline First', text:'Write 3–5 dates/events in order. It makes essays way easier.' },
+        { icon:'🧩', label:'Cause/Effect', text:'Use: “This led to…” / “As a result…” to link points clearly.' },
+        { icon:'🗣️', label:'PEEL Paragraphs', text:'Point → Evidence (quote/date) → Explain → Link back to the question.' }
+      ],
+      Geography: [
+        { icon:'🗺️', label:'Case Study Facts', text:'Write 3 key facts (place, numbers, impacts). Then build your answer.' },
+        { icon:'🌦️', label:'Process Words', text:'Use process words: erosion, deposition, migration, urbanisation, precipitation.' },
+        { icon:'📊', label:'Use Data', text:'Add one number (percent, year, figure). Data makes answers stronger.' }
+      ],
+      Language: [
+        { icon:'🧾', label:'Phrase Bank', text:'Write 5 useful phrases you can reuse (I think…, because…, however…).' },
+        { icon:'🗣️', label:'Speak It First', text:'Say the sentence out loud before writing. It helps grammar flow.' },
+        { icon:'🔁', label:'Repeat & Swap', text:'Write one sentence, then swap one word to make a second. Easy progress.' }
+      ],
+      Art: [
+        { icon:'🗂️', label:'Materials Ready', text:'Get everything out before you start. Stopping/starting breaks flow.' },
+        { icon:'⏳', label:'Tiny Goal', text:'Set a tiny goal: “outline only” or “one section only”.' },
+        { icon:'📸', label:'Photo Progress', text:'Take a photo at the end of each block. Progress feels real.' }
+      ],
+      Other: [
+        { icon:'🎯', label:'Define “Done”', text:'Write what “done” looks like in one sentence. Then do the first small piece.' },
+        { icon:'🧩', label:'Break Into 3', text:'Split it into 3 chunks. Do chunk 1 only.' },
+        { icon:'✅', label:'Check Criteria', text:'If unsure, check the marking points or ask what the teacher wants.' }
+      ]
+    };
+
+    // Attention-specific pick
+    let attnPick = global.timer;
+    if(attn === 'low') attnPick = global.move;
+    else if(attn === 'great') attnPick = global.music;
+
+    // Difficulty pick
+    const diffPick = (diff >= 4) ? global.check : global.water;
+
+    // Compose: 2 subject tips + 1 attention + 1 difficulty (dedupe by icon)
+    const chosen = [
+      ...(bySubject[subject] || bySubject.Other).slice(0,2),
+      attnPick,
+      diffPick
     ];
 
-    const selected = [];
-    if (attn === 'low') selected.push(pool[5], pool[1]);
-    else if (attn === 'okay') selected.push(pool[6], pool[4]);
-    else selected.push(pool[2], pool[4]);
-
-    if (subject === 'Math') selected.push(pool[7]);
-    else if (subject === 'Reading' || subject === 'Writing') selected.push(pool[3]);
-    else selected.push(pool[0]);
-
-    if (diff >= 4) selected.push(pool[7]);
-    else selected.push(pool[1]);
-
-    // Dedupe and return 4
     const seen = new Set();
-    return selected.filter(t => { if (seen.has(t.icon)) return false; seen.add(t.icon); return true; }).slice(0, 4);
+    return chosen.filter(t => {
+      if(seen.has(t.icon)) return false;
+      seen.add(t.icon);
+      return true;
+    }).slice(0, 4);
   }
 
   // Reset
