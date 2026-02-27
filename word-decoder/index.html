@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Decoder — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F0FF;
+  --surface:#FFFFFF;
+  --surface2:#F9F6FF;
+  --border:#E0D4FF;
+  --border2:#C8B8F8;
+  --purple:#7C3AED;
+  --purple-d:#5B21B6;
+  --purple-l:#EDE9FE;
+  --purple-m:#A78BFA;
+  --text:#1E1030;
+  --text2:#4B3F6B;
+  --text3:#8B7BB0;
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 4px 20px rgba(124,58,237,0.08);
+  --shadow-lg:0 8px 40px rgba(124,58,237,0.14);
+  /* Syllable colours */
+  --s1:#E53E3E;--s1-l:#FED7D7;
+  --s2:#D97706;--s2-l:#FEF3C7;
+  --s3:#059669;--s3-l:#D1FAE5;
+  --s4:#2563EB;--s4-l:#DBEAFE;
+  --s5:#7C3AED;--s5-l:#EDE9FE;
+  --s6:#DB2777;--s6-l:#FCE7F3;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,var(--purple-d),var(--purple));
+  padding:28px 20px 24px;text-align:center;color:white;
+}
+.header-icon{font-size:2.2rem;display:block;margin-bottom:8px}
+.header h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:900;margin-bottom:6px}
+.header p{font-size:0.88rem;font-weight:600;opacity:0.88;max-width:460px;margin:0 auto;line-height:1.6}
+
+/* ── WRAP ── */
+.wrap{max-width:860px;margin:0 auto;padding:24px 20px}
+
+/* ── INPUT CARD ── */
+.input-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);
+  margin-bottom:16px;
+}
+.input-label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px}
+
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{
+  padding:7px 16px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  border:1.5px solid var(--border2);background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all 0.15s;
+}
+.tab.active{background:var(--purple-l);border-color:var(--purple);color:var(--purple-d)}
+
+.input-row{display:flex;gap:10px;align-items:stretch}
+#wordInput{
+  flex:1;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;
+  background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);border-radius:var(--radius);padding:12px 16px;
+  outline:none;transition:border-color 0.2s;
+}
+#wordInput:focus{border-color:var(--purple)}
+#wordInput::placeholder{color:var(--text3);font-weight:600}
+
+#paraInput{
+  display:none;width:100%;font-family:'Nunito',sans-serif;font-size:0.95rem;
+  background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);border-radius:var(--radius);padding:12px 16px;
+  outline:none;line-height:1.7;resize:vertical;min-height:100px;
+  transition:border-color 0.2s;
+}
+#paraInput:focus{border-color:var(--purple)}
+#paraInput::placeholder{color:var(--text3)}
+
+.decode-btn{
+  padding:12px 24px;border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--purple-d),var(--purple));
+  color:white;font-size:0.9rem;font-weight:800;
+  box-shadow:0 3px 12px rgba(124,58,237,0.35);
+  transition:all 0.2s;white-space:nowrap;
+}
+.decode-btn:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,0.45)}
+.decode-btn:active{transform:translateY(0)}
+
+/* ── SINGLE WORD OUTPUT ── */
+.word-output{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px;box-shadow:var(--shadow-lg);
+  margin-bottom:16px;display:none;
+}
+.word-output.show{display:block;animation:fadeUp 0.3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.decoded-word{
+  display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:0;margin-bottom:20px;justify-content:center;
+}
+.syllable-block{
+  display:inline-flex;flex-direction:column;align-items:center;
+  margin:0 2px;
+}
+.syllable-text{
+  font-family:'Nunito',sans-serif;
+  font-size:clamp(2rem,6vw,3.5rem);
+  font-weight:900;
+  padding:4px 10px 6px;
+  border-radius:12px;
+  line-height:1.1;
+  transition:all 0.2s;
+  cursor:default;
+  position:relative;
+}
+.syllable-text.stressed{
+  transform:scale(1.08);
+}
+.stress-marker{
+  font-size:0.65rem;font-weight:800;letter-spacing:0.5px;
+  margin-bottom:2px;opacity:0.7;text-transform:uppercase;
+}
+.separator{
+  font-size:clamp(1.5rem,4vw,2.5rem);
+  font-weight:300;color:var(--text3);
+  padding:0 2px;align-self:center;margin-bottom:6px;
+}
+
+/* Stats row */
+.stats-row{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  margin-bottom:20px;
+}
+.stat-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:100px;
+  background:var(--purple-l);border:1.5px solid var(--border2);
+  font-size:0.78rem;font-weight:700;color:var(--purple-d);
+}
+
+/* Pronunciation */
+.pronunciation{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:14px 18px;
+  text-align:center;
+}
+.pron-label{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px}
+.pron-text{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:1.1rem;color:var(--text2);letter-spacing:1px;
+}
+.pron-guide{font-size:0.8rem;color:var(--text3);margin-top:4px;font-weight:600}
+
+/* ── PARAGRAPH OUTPUT ── */
+.para-output{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px;box-shadow:var(--shadow-lg);
+  margin-bottom:16px;display:none;
+}
+.para-output.show{display:block;animation:fadeUp 0.3s ease}
+.para-output-label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:16px}
+.para-text{
+  font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;
+  line-height:2.2;
+}
+.word-decoded{
+  display:inline;cursor:pointer;border-radius:6px;padding:1px 2px;
+  transition:background 0.15s;position:relative;
+}
+.word-decoded:hover{background:var(--purple-l)}
+
+/* syllable spans inside paragraph */
+.syl{font-weight:800;padding:1px 0}
+
+/* ── COLOUR KEY ── */
+.colour-key{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:18px 22px;box-shadow:var(--shadow);
+  margin-bottom:16px;
+}
+.key-label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px}
+.key-items{display:flex;flex-wrap:wrap;gap:8px}
+.key-item{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:100px;font-size:0.78rem;font-weight:700;
+}
+
+/* ── SYLLABLE COLOURS ── */
+.s-0{color:var(--s1);background:var(--s1-l)}
+.s-1{color:var(--s2);background:var(--s2-l)}
+.s-2{color:var(--s3);background:var(--s3-l)}
+.s-3{color:var(--s4);background:var(--s4-l)}
+.s-4{color:var(--s5);background:var(--s5-l)}
+.s-5{color:var(--s6);background:var(--s6-l)}
+
+@media(max-width:500px){
+  .input-row{flex-direction:column}
+  .syllable-text{font-size:2rem;padding:3px 8px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">🔤</span>
+  <h1>Word Decoder</h1>
+  <p>Break any word into syllables with colour coding, stress markers, and pronunciation guides.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- INPUT -->
+  <div class="input-card">
+    <div class="tabs">
+      <button class="tab active" id="tabWord">One word</button>
+      <button class="tab" id="tabPara">Sentence or paragraph</button>
+    </div>
+
+    <div id="wordMode">
+      <div class="input-row">
+        <input type="text" id="wordInput" placeholder="Type a word, e.g. elephant" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="decode-btn" id="decodeWordBtn">Decode →</button>
+      </div>
+    </div>
+
+    <div id="paraMode" style="display:none">
+      <textarea id="paraInput" placeholder="Paste a sentence or paragraph here..."></textarea>
+      <div style="margin-top:10px">
+        <button class="decode-btn" id="decodeParaBtn">Decode all words →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOUR KEY -->
+  <div class="colour-key">
+    <div class="key-label">🎨 Colour key — each colour = one syllable</div>
+    <div class="key-items">
+      <div class="key-item s-0">1st syllable</div>
+      <div class="key-item s-1">2nd syllable</div>
+      <div class="key-item s-2">3rd syllable</div>
+      <div class="key-item s-3">4th syllable</div>
+      <div class="key-item s-4">5th syllable</div>
+      <div class="key-item s-5">6th syllable</div>
+    </div>
+  </div>
+
+  <!-- SINGLE WORD OUTPUT -->
+  <div class="word-output" id="wordOutput">
+    <div class="decoded-word" id="decodedWord"></div>
+    <div class="stats-row" id="statsRow"></div>
+    <div class="pronunciation" id="pronBox"></div>
+  </div>
+
+  <!-- PARAGRAPH OUTPUT -->
+  <div class="para-output" id="paraOutput">
+    <div class="para-output-label">👆 Click any word to see it decoded in detail</div>
+    <div class="para-text" id="paraText"></div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// SYLLABLE ENGINE
+// Rules-based syllabification for English
+// ══════════════════════════════════════════════════
+
+const VOWELS = 'aeiouy';
+
+// Common prefixes and suffixes for better splitting
+const PREFIXES = ['anti','auto','bi','co','de','dis','ex','extra','hyper','im','in','inter','mis','non','over','post','pre','pro','re','semi','sub','super','trans','tri','un','under'];
+const SUFFIXES = ['able','ably','age','al','ance','ancy','ant','ary','ate','ation','ative','ator','ble','cy','dom','ed','en','ence','ency','ent','er','ery','ess','est','ful','hood','ian','ible','ibly','ic','ical','ify','ing','ion','ious','ise','ish','ism','ist','ity','ive','ize','less','like','ly','ment','ness','ous','ry','s','ship','sion','tion','tious','ture','ty','ual','ure','ward','wise','y'];
+
+// Manual dictionary for very common tricky words
+const DICT = {
+  'the':['the'],'a':['a'],'i':['i'],'to':['to'],'of':['of'],'and':['and'],
+  'is':['is'],'it':['it'],'in':['in'],'on':['on'],'at':['at'],'be':['be'],
+  'elephant':['el','e','phant'],'beautiful':['beau','ti','ful'],
+  'because':['be','cause'],'between':['be','tween'],
+  'chocolate':['choc','o','late'],'different':['dif','fer','ent'],
+  'education':['ed','u','ca','tion'],'everybody':['eve','ry','bo','dy'],
+  'everything':['eve','ry','thing'],'family':['fam','i','ly'],
+  'favourite':['fa','vour','ite'],'february':['feb','ru','ar','y'],
+  'generally':['gen','er','al','ly'],'government':['gov','ern','ment'],
+  'hospital':['hos','pi','tal'],'important':['im','por','tant'],
+  'impossible':['im','pos','si','ble'],'interesting':['in','ter','est','ing'],
+  'january':['jan','u','ar','y'],'library':['li','brar','y'],
+  'medicine':['med','i','cine'],'necessary':['nec','es','sar','y'],
+  'ordinary':['or','di','nar','y'],'particular':['par','tic','u','lar'],
+  'perhaps':['per','haps'],'probably':['prob','ab','ly'],
+  'question':['ques','tion'],'remember':['re','mem','ber'],
+  'sandwich':['sand','wich'],'separate':['sep','a','rate'],
+  'something':['some','thing'],'sometimes':['some','times'],
+  'tomorrow':['to','mor','row'],'together':['to','geth','er'],
+  'understand':['un','der','stand'],'vegetables':['veg','e','ta','bles'],
+  'wednesday':['wednes','day'],'wonderful':['won','der','ful'],
+  'yesterday':['yes','ter','day'],'address':['ad','dress'],
+  'because':['be','cause'],'believe':['be','lieve'],
+  'calendar':['cal','en','dar'],'camera':['cam','er','a'],
+  'comfortable':['com','fort','a','ble'],'computer':['com','pu','ter'],
+  'decided':['de','ci','ded'],'describe':['de','scribe'],
+  'dinosaur':['di','no','saur'],'disappear':['dis','ap','pear'],
+  'discovery':['dis','cov','er','y'],'enormous':['e','nor','mous'],
+  'experience':['ex','pe','ri','ence'],'explain':['ex','plain'],
+  'finally':['fi','nal','ly'],'forward':['for','ward'],
+  'friendly':['friend','ly'],'happened':['hap','pened'],
+  'imagine':['i','mag','ine'],'information':['in','for','ma','tion'],
+  'journey':['jour','ney'],'knowledge':['knowl','edge'],
+  'language':['lan','guage'],'listen':['lis','ten'],
+  'material':['ma','te','ri','al'],'minute':['min','ute'],
+  'natural':['nat','ur','al'],'november':['no','vem','ber'],
+  'october':['oc','to','ber'],'opposite':['op','po','site'],
+  'outside':['out','side'],'people':['peo','ple'],
+  'picture':['pic','ture'],'possible':['pos','si','ble'],
+  'potato':['po','ta','to'],'present':['pres','ent'],
+  'purpose':['pur','pose'],'receive':['re','ceive'],
+  'science':['sci','ence'],'sentence':['sen','tence'],
+  'similar':['sim','i','lar'],'special':['spe','cial'],
+  'stopped':['stopped'],'student':['stu','dent'],
+  'subject':['sub','ject'],'sudden':['sud','den'],
+  'suppose':['sup','pose'],'surprise':['sur','prise'],
+  'themselves':['them','selves'],'therefore':['there','fore'],
+  'thought':['thought'],'through':['through'],
+  'beautiful':['beau','ti','ful'],'caught':['caught'],
+  'brought':['brought'],'daughter':['daugh','ter'],
+  'enough':['e','nough'],'eight':['eight'],
+  'friend':['friend'],'great':['great'],
+  'heart':['heart'],'height':['height'],
+  'laugh':['laugh'],'light':['light'],
+  'might':['might'],'night':['night'],
+  'right':['right'],'sight':['sight'],
+  'straight':['straight'],'weight':['weight'],
+  'which':['which'],'white':['white'],
+  'whole':['whole'],'write':['write'],
+};
+
+// Stress patterns for common syllable counts
+// 0-indexed: which syllable gets primary stress
+const STRESS_PATTERNS = {
+  1: [0],
+  2: [0], // most 2-syllable words stress first (TA-ble, AP-ple)
+  3: [0], // 3-syllable often first (EL-e-phant)
+  4: [1], // 4-syllable often second (im-POR-tant)
+  5: [2], // 5-syllable often third
+  6: [2],
+};
+
+// Words where stress is on 2nd syllable (2-syllable)
+const STRESS_2ND = ['above','about','across','afraid','again','ahead','alone','along','already','although','among','around','arrive','away','because','before','begin','behind','below','beside','between','beyond','complete','decide','describe','despite','during','enough','except','explain','forget','inside','instead','itself','machine','myself','perhaps','police','protect','provide','receive','reply','result','return','reveal','suppose','today','tonight','toward','unless','until','while','within'];
+
+function isVowel(c) { return VOWELS.includes(c.toLowerCase()); }
+
+function syllabify(word) {
+  const lower = word.toLowerCase().replace(/[^a-z]/g,'');
+  if (!lower) return [word];
+  if (lower.length <= 2) return [lower];
+
+  // Check dictionary first
+  if (DICT[lower]) return DICT[lower];
+
+  // Pre-check: handle consonant-le endings (ap-ple, bot-tle etc.)
+  // Pattern: vowel + double-consonant + le  OR  consonant + double-consonant + le
+  const lePattern = /^(.+?)([b-df-hj-np-tv-z])\2le$/;
+  const leMatch = lower.match(lePattern);
+  if (leMatch && leMatch[1].length >= 1) {
+    const first = leMatch[1] + leMatch[2];
+    const second = leMatch[2] + 'le';
+    // Recursively syllabify the first part if it's long enough
+    if (first.length >= 3) {
+      const firstParts = syllabify(first);
+      return [...firstParts, second];
+    }
+    return [first, second];
+  }
+
+  // Handle -le endings with single consonant: ta-ble, no-ble
+  const singleLePattern = /^(.+[aeiou])([b-df-hj-np-tv-z])le$/;
+  const singleLeMatch = lower.match(singleLePattern);
+  if (singleLeMatch && !DICT[lower]) {
+    return [singleLeMatch[1], singleLeMatch[2] + 'le'];
+  }
+
+  // Handle double consonants in the middle: split between them
+  // e.g. ap·ple → already handled above, but also: but·ter, hap·py, lit·tle
+  const doubleConsonantMatch = lower.match(/^([a-z]*[aeiou][a-z]*)([b-df-hj-np-tv-z])\2([a-z]+)$/);
+  if (doubleConsonantMatch) {
+    const first = doubleConsonantMatch[1] + doubleConsonantMatch[2];
+    const rest = doubleConsonantMatch[2] + doubleConsonantMatch[3];
+    if (first.split('').some(c => isVowel(c)) && rest.split('').some(c => isVowel(c))) {
+      return [first, rest];
+    }
+  }
+
+  // Rules-based approach
+  const syllables = [];
+  let current = '';
+  const chars = lower.split('');
+  const n = chars.length;
+
+  // Find vowel groups (nuclei)
+  let i = 0;
+  while (i < n) {
+    current += chars[i];
+
+    // Check if next char starts a new syllable
+    if (i < n - 1) {
+      const curr = chars[i];
+      const next = chars[i + 1];
+      const prev = i > 0 ? chars[i - 1] : '';
+      const afterNext = i < n - 2 ? chars[i + 2] : '';
+
+      // Vowel followed by consonant+vowel: split before consonant
+      // e.g. "ba-by", "ta-ble"
+      if (isVowel(curr) && !isVowel(next) && i < n - 2 && isVowel(afterNext)) {
+        // Check for consonant clusters: if two consonants, split between them
+        // e.g. "bet-ter", "hap-py"
+        if (!isVowel(next)) {
+          const nextNext = afterNext;
+          if (!isVowel(nextNext) && i < n - 3 && isVowel(chars[i + 3])) {
+            // Two consonants: split between them
+            current += next;
+            syllables.push(current);
+            current = '';
+            i += 2;
+            continue;
+          } else {
+            syllables.push(current);
+            current = '';
+            i++;
+            continue;
+          }
+        }
+      }
+
+      // Two vowels together that aren't a digraph: may split
+      if (isVowel(curr) && isVowel(next)) {
+        const digraphs = ['ai','ay','ea','ee','ei','eo','eu','ie','oa','oe','oi','oo','ou','ow','oy','au','aw','ue','ui'];
+        const pair = curr + next;
+        if (!digraphs.includes(pair) && i < n - 2) {
+          syllables.push(current);
+          current = '';
+          i++;
+          continue;
+        }
+      }
+    }
+    i++;
+  }
+
+  if (current) syllables.push(current);
+
+  // Clean up: merge very short syllables (single consonant) with neighbours
+  const merged = [];
+  for (let j = 0; j < syllables.length; j++) {
+    const s = syllables[j];
+    if (s.length === 1 && !isVowel(s[0]) && merged.length > 0) {
+      merged[merged.length - 1] += s;
+    } else {
+      merged.push(s);
+    }
+  }
+
+  // Ensure at least one vowel sound per syllable — if not, merge
+  const valid = [];
+  for (let j = 0; j < merged.length; j++) {
+    const s = merged[j];
+    const hasVowel = s.split('').some(c => isVowel(c));
+    if (!hasVowel && valid.length > 0) {
+      valid[valid.length - 1] += s;
+    } else {
+      valid.push(s);
+    }
+  }
+
+  return valid.length ? valid : [lower];
+}
+
+function getStress(word, syllables) {
+  const n = syllables.length;
+  if (n === 1) return 0;
+  const lower = word.toLowerCase();
+  if (n === 2 && STRESS_2ND.includes(lower)) return 1;
+  return STRESS_PATTERNS[Math.min(n, 6)] ?? 0;
+}
+
+function getPronunciation(word, syllables) {
+  // Build a simple pronunciation guide
+  const joined = syllables.join(' - ');
+  const stressIdx = getStress(word, syllables);
+  const withStress = syllables.map((s, i) => i === stressIdx ? s.toUpperCase() : s).join(' · ');
+  return { joined, withStress };
+}
+
+// ══════════════════════════════════════════════════
+// RENDER SINGLE WORD
+// ══════════════════════════════════════════════════
+function renderWord(word) {
+  if (!word.trim()) return;
+  const clean = word.trim();
+  const syllables = syllabify(clean);
+  const stressIdx = getStress(clean, syllables);
+  const pron = getPronunciation(clean, syllables);
+
+  const container = document.getElementById('decodedWord');
+  container.innerHTML = '';
+
+  syllables.forEach((syl, i) => {
+    const block = document.createElement('div');
+    block.className = 'syllable-block';
+
+    const stressEl = document.createElement('div');
+    stressEl.className = 'stress-marker';
+    stressEl.style.color = `var(--s${i % 6})`;
+    stressEl.textContent = i === stressIdx ? '▲ say loudest' : '';
+    block.appendChild(stressEl);
+
+    const textEl = document.createElement('div');
+    textEl.className = `syllable-text s-${i % 6}${i === stressIdx ? ' stressed' : ''}`;
+    textEl.textContent = syl;
+    block.appendChild(textEl);
+
+    container.appendChild(block);
+
+    // Add separator between syllables
+    if (i < syllables.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'separator';
+      sep.textContent = '·';
+      container.appendChild(sep);
+    }
+  });
+
+  // Stats
+  const stats = document.getElementById('statsRow');
+  stats.innerHTML = `
+    <div class="stat-chip">🔢 ${syllables.length} syllable${syllables.length !== 1 ? 's' : ''}</div>
+    <div class="stat-chip">🔤 ${clean.length} letters</div>
+    <div class="stat-chip">▲ Stress on syllable ${stressIdx + 1}</div>
+  `;
+
+  // Pronunciation
+  const pronBox = document.getElementById('pronBox');
+  pronBox.innerHTML = `
+    <div class="pron-label">How to say it</div>
+    <div class="pron-text">${pron.withStress}</div>
+    <div class="pron-guide">Capital letters = say that syllable the loudest · dots separate syllables</div>
+  `;
+
+  document.getElementById('wordOutput').classList.add('show');
+  document.getElementById('wordOutput').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ══════════════════════════════════════════════════
+// RENDER PARAGRAPH
+// ══════════════════════════════════════════════════
+function renderParagraph(text) {
+  if (!text.trim()) return;
+
+  const container = document.getElementById('paraText');
+  container.innerHTML = '';
+
+  // Split into words preserving spaces and punctuation
+  const tokens = text.split(/(\s+|[.,!?;:'"()\-–—])/);
+
+  tokens.forEach(token => {
+    if (!token) return;
+    if (/^\s+$/.test(token)) {
+      container.appendChild(document.createTextNode(token));
+      return;
+    }
+    if (/^[.,!?;:'"()\-–—]+$/.test(token)) {
+      container.appendChild(document.createTextNode(token));
+      return;
+    }
+
+    // It's a word
+    const wordEl = document.createElement('span');
+    wordEl.className = 'word-decoded';
+
+    const letters = token.replace(/[^a-zA-Z]/g, '');
+    if (letters.length < 2) {
+      wordEl.textContent = token;
+    } else {
+      const syllables = syllabify(token);
+      if (syllables.length <= 1) {
+        // Single syllable - just colour it
+        const span = document.createElement('span');
+        span.className = 'syl s-0';
+        span.textContent = token;
+        wordEl.appendChild(span);
+      } else {
+        syllables.forEach((syl, i) => {
+          const span = document.createElement('span');
+          span.className = `syl s-${i % 6}`;
+          span.textContent = syl;
+          wordEl.appendChild(span);
+          if (i < syllables.length - 1) {
+            const dot = document.createElement('span');
+            dot.style.color = 'var(--text3)';
+            dot.style.fontSize = '0.7em';
+            dot.textContent = '·';
+            wordEl.appendChild(dot);
+          }
+        });
+      }
+    }
+
+    // Click to show full decode
+    wordEl.addEventListener('click', () => {
+      const w = token.replace(/[^a-zA-Z]/g,'');
+      if (w) {
+        document.getElementById('wordInput').value = w;
+        switchTab('word');
+        renderWord(w);
+      }
+    });
+
+    wordEl.title = `Click to decode "${token}"`;
+    container.appendChild(wordEl);
+  });
+
+  document.getElementById('paraOutput').classList.add('show');
+}
+
+// ══════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════
+function switchTab(tab) {
+  if (tab === 'word') {
+    document.getElementById('tabWord').classList.add('active');
+    document.getElementById('tabPara').classList.remove('active');
+    document.getElementById('wordMode').style.display = 'block';
+    document.getElementById('paraMode').style.display = 'none';
+  } else {
+    document.getElementById('tabPara').classList.add('active');
+    document.getElementById('tabWord').classList.remove('active');
+    document.getElementById('paraMode').style.display = 'block';
+    document.getElementById('wordMode').style.display = 'none';
+  }
+}
+
+document.getElementById('tabWord').addEventListener('click', () => switchTab('word'));
+document.getElementById('tabPara').addEventListener('click', () => switchTab('para'));
+
+// ══════════════════════════════════════════════════
+// EVENTS
+// ══════════════════════════════════════════════════
+document.getElementById('decodeWordBtn').addEventListener('click', () => {
+  renderWord(document.getElementById('wordInput').value);
+});
+document.getElementById('wordInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') renderWord(document.getElementById('wordInput').value);
+});
+document.getElementById('decodeParaBtn').addEventListener('click', () => {
+  renderParagraph(document.getElementById('paraInput').value);
+});
+</script>
+</body>
+</html>
