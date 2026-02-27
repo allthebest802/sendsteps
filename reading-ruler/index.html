@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Ruler — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F6FF;
+  --surface:#FFFFFF;
+  --surface2:#F7FAFF;
+  --border:#D4E4FF;
+  --border2:#B8D0F8;
+  --blue:#3B82F6;
+  --blue-d:#1D4ED8;
+  --blue-l:#DBEAFE;
+  --text:#1E293B;
+  --text2:#475569;
+  --text3:#94A3B8;
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 4px 20px rgba(30,41,59,0.08);
+  --shadow-lg:0 8px 40px rgba(30,41,59,0.12);
+  --font-ui:'Nunito',sans-serif;
+  --font-read:'Lexend',sans-serif;
+  --ruler-color:rgba(255,230,0,0.45);
+  --ruler-height:2.2em;
+}
+html{font-size:16px}
+body{
+  font-family:var(--font-ui);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:60px;
+  user-select:none;
+}
+button{cursor:pointer;font-family:var(--font-ui);border:none;background:none}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#1D4ED8,#3B82F6);
+  padding:28px 20px 24px;
+  text-align:center;color:white;
+}
+.header-icon{font-size:2.2rem;display:block;margin-bottom:8px}
+.header h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;margin-bottom:6px}
+.header p{font-size:0.88rem;font-weight:600;opacity:0.88;max-width:460px;margin:0 auto;line-height:1.6}
+
+/* ── CONTROLS ── */
+.controls{
+  max-width:900px;margin:20px auto 0;padding:0 20px;
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;
+}
+
+.control-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:16px 20px;
+  box-shadow:var(--shadow);flex:1;min-width:200px;
+}
+.control-label{
+  font-size:0.7rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3);margin-bottom:10px;
+}
+
+/* Colour swatches */
+.colour-swatches{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{
+  width:34px;height:34px;border-radius:10px;cursor:pointer;
+  border:3px solid transparent;transition:all 0.15s;
+  position:relative;
+}
+.swatch.active{border-color:var(--text);transform:scale(1.12)}
+.swatch:hover{transform:scale(1.08)}
+
+/* Size slider */
+input[type=range]{
+  width:100%;height:6px;-webkit-appearance:none;appearance:none;
+  background:var(--border2);border-radius:100px;outline:none;cursor:pointer;margin-top:4px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--blue);border:2px solid white;
+  box-shadow:0 2px 6px rgba(59,130,246,0.4);cursor:pointer;
+}
+.size-val{
+  font-size:0.75rem;font-weight:700;color:var(--blue);
+  margin-top:6px;display:block;
+}
+
+/* Opacity slider */
+.opacity-val{font-size:0.75rem;font-weight:700;color:var(--blue);margin-top:6px;display:block;}
+
+/* Toggle */
+.ruler-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;border-radius:100px;
+  background:var(--blue-l);border:2px solid var(--blue);
+  color:var(--blue-d);font-size:0.85rem;font-weight:800;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.ruler-toggle.off{
+  background:var(--surface2);border-color:var(--border2);
+  color:var(--text3);
+}
+.toggle-dot{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--blue);transition:background 0.2s;
+}
+.ruler-toggle.off .toggle-dot{background:var(--text3)}
+
+/* Text tabs */
+.text-tabs{display:flex;gap:6px;margin-bottom:12px}
+.tab-btn{
+  padding:6px 14px;border-radius:100px;font-size:0.78rem;font-weight:700;
+  border:1.5px solid var(--border2);background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all 0.15s;
+}
+.tab-btn.active{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
+
+/* ── READING AREA ── */
+.reading-wrap{
+  max-width:900px;margin:16px auto 0;padding:0 20px;
+  position:relative;
+}
+
+.reading-area{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
+  padding:36px 40px;position:relative;overflow:hidden;
+  cursor:none;
+}
+@media(max-width:600px){.reading-area{padding:24px 20px}}
+
+/* The ruler overlay */
+#ruler{
+  position:absolute;
+  left:0;right:0;
+  pointer-events:none;
+  transition:top 0.05s linear;
+  z-index:10;
+  border-top:2px solid rgba(0,0,0,0.08);
+  border-bottom:2px solid rgba(0,0,0,0.08);
+  display:none;
+}
+
+/* Reading text */
+#readingText{
+  font-family:var(--font-read);
+  font-size:1.15rem;
+  line-height:2;
+  color:var(--text);
+  position:relative;
+  z-index:1;
+  user-select:text;
+}
+#readingText p{margin-bottom:1.4em}
+#readingText p:last-child{margin-bottom:0}
+
+/* Paste textarea */
+#pasteArea{
+  width:100%;min-height:120px;
+  font-family:var(--font-ui);font-size:0.9rem;
+  background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);border-radius:var(--radius);
+  padding:12px;resize:vertical;outline:none;line-height:1.6;
+  margin-bottom:10px;transition:border-color 0.2s;display:none;
+}
+#pasteArea:focus{border-color:var(--blue)}
+#pasteArea::placeholder{color:var(--text3)}
+
+.load-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 20px;border-radius:100px;
+  background:var(--blue);color:white;
+  font-size:0.82rem;font-weight:800;
+  border:none;cursor:pointer;
+  box-shadow:0 2px 10px rgba(59,130,246,0.35);
+  transition:all 0.15s;
+}
+.load-btn:hover{background:var(--blue-d)}
+
+/* ── SAMPLE PICKER ── */
+.sample-picker{
+  display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;
+}
+.sample-btn{
+  padding:6px 14px;border-radius:100px;font-size:0.78rem;font-weight:700;
+  border:1.5px solid var(--border2);background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all 0.15s;
+}
+.sample-btn:hover,.sample-btn.active{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
+
+/* ── HINT ── */
+.hint{
+  text-align:center;padding:10px 0 0;
+  font-size:0.78rem;font-weight:600;color:var(--text3);
+}
+.hint span{
+  display:inline-block;
+  background:var(--blue-l);color:var(--blue-d);
+  padding:3px 10px;border-radius:100px;font-weight:700;
+}
+
+@media print{
+  .header,.controls,.hint{display:none!important}
+  body{background:white!important}
+  .reading-area{border:none!important;box-shadow:none!important;padding:0!important}
+  #ruler{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">📏</span>
+  <h1>Reading Ruler</h1>
+  <p>A coloured strip that follows your finger or mouse to help track across the line — no losing your place.</p>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+
+  <!-- Ruler on/off -->
+  <div class="control-card" style="flex:0 0 auto">
+    <div class="control-label">Ruler</div>
+    <button class="ruler-toggle" id="rulerToggle">
+      <div class="toggle-dot"></div>
+      Ruler is ON
+    </button>
+  </div>
+
+  <!-- Colour -->
+  <div class="control-card">
+    <div class="control-label">Ruler colour</div>
+    <div class="colour-swatches" id="swatches">
+      <div class="swatch active" data-color="rgba(255,230,0,0.45)"   style="background:#FFE000" title="Yellow"></div>
+      <div class="swatch"        data-color="rgba(144,238,144,0.45)" style="background:#90EE90" title="Green"></div>
+      <div class="swatch"        data-color="rgba(135,206,250,0.50)" style="background:#87CEFA" title="Blue"></div>
+      <div class="swatch"        data-color="rgba(255,182,193,0.50)" style="background:#FFB6C1" title="Pink"></div>
+      <div class="swatch"        data-color="rgba(216,191,216,0.50)" style="background:#D8BFD8" title="Lavender"></div>
+      <div class="swatch"        data-color="rgba(255,165,0,0.35)"   style="background:#FFA500" title="Orange"></div>
+      <div class="swatch"        data-color="rgba(0,0,0,0.12)"       style="background:#BBBBBB" title="Grey"></div>
+    </div>
+  </div>
+
+  <!-- Size -->
+  <div class="control-card">
+    <div class="control-label">Ruler height</div>
+    <input type="range" id="rulerSize" min="1" max="5" value="2" step="0.5">
+    <span class="size-val" id="sizeVal">Medium</span>
+  </div>
+
+  <!-- Opacity -->
+  <div class="control-card">
+    <div class="control-label">Strength</div>
+    <input type="range" id="rulerOpacity" min="1" max="10" value="5" step="1">
+    <span class="opacity-val" id="opacityVal">Medium</span>
+  </div>
+
+</div>
+
+<!-- TEXT AREA -->
+<div class="reading-wrap">
+
+  <!-- Tab switcher -->
+  <div class="text-tabs">
+    <button class="tab-btn active" id="tabSample">📚 Sample texts</button>
+    <button class="tab-btn" id="tabPaste">📋 Paste your own</button>
+  </div>
+
+  <!-- Sample picker -->
+  <div class="sample-picker" id="samplePicker">
+    <button class="sample-btn active" data-sample="story">🦊 Story</button>
+    <button class="sample-btn" data-sample="space">🚀 Space facts</button>
+    <button class="sample-btn" data-sample="animals">🐬 Animals</button>
+    <button class="sample-btn" data-sample="recipe">🍪 Recipe</button>
+    <button class="sample-btn" data-sample="history">🏰 History</button>
+  </div>
+
+  <!-- Paste input -->
+  <textarea id="pasteArea" placeholder="Paste your text here — a story, homework, a letter, anything you need to read..."></textarea>
+  <div id="loadWrap" style="display:none;margin-bottom:12px">
+    <button class="load-btn" id="loadBtn">📖 Load text</button>
+  </div>
+
+  <!-- Reading area -->
+  <div class="reading-area" id="readingArea">
+    <div id="ruler"></div>
+    <div id="readingText"></div>
+  </div>
+
+  <div class="hint">Move your mouse or finger over the text — <span>the ruler follows you</span></div>
+</div>
+
+<script>
+// ── SAMPLE TEXTS ──
+const SAMPLES = {
+  story: `The fox crept through the forest, her orange fur glowing in the evening light. She had been walking for hours, searching for something she could not quite name.
+
+At last she came to a clearing where a silver stream ran between mossy stones. She stopped and drank, the cold water fresh against her tongue.
+
+A small frog sat watching her from a log. "Where are you going?" it asked in a voice like a raindrop.
+
+The fox thought for a moment. "I am not sure," she said honestly. "But I think I will know it when I find it."
+
+The frog nodded slowly. "That is the best kind of journey," it said. "The ones where the ending surprises you."
+
+The fox smiled and walked on into the deepening woods, her tail held high.`,
+
+  space: `The Sun is a star at the centre of our solar system. It is so enormous that about one million Earths could fit inside it.
+
+Light from the Sun takes around eight minutes to reach Earth. This means that when you look at the Sun, you are actually seeing what it looked like eight minutes ago.
+
+The Moon does not produce its own light. The white glow we see at night is sunlight bouncing off the Moon's surface back towards Earth.
+
+Saturn's rings are made mostly of ice and rock. They stretch out for hundreds of thousands of kilometres but are surprisingly thin — in some places just ten metres deep.
+
+The Milky Way, our galaxy, contains between 100 and 400 billion stars. Scientists believe there may be more galaxies in the universe than grains of sand on all of Earth's beaches.`,
+
+  animals: `Dolphins are one of the most intelligent animals on the planet. They live in groups called pods and communicate with each other using a series of clicks, whistles, and body movements.
+
+Elephants have excellent memories and can recognise themselves in mirrors — something very few animals can do. They mourn their dead and have been observed returning to the bones of lost family members years later.
+
+A group of flamingos is called a flamboyance. They get their distinctive pink colour from the food they eat — tiny shrimp and algae that contain natural pink pigments.
+
+Octopuses have three hearts and blue blood. Two hearts pump blood to the gills while the third pumps it to the rest of the body. Their blood is blue because it contains copper instead of iron.
+
+Bees can recognise human faces. In experiments, bees were trained to associate photographs of human faces with sweet rewards, and they remembered those faces for several days.`,
+
+  recipe: `You will need: 200g butter, 200g sugar, 2 eggs, 200g flour, 1 teaspoon vanilla extract, a pinch of salt, and chocolate chips if you like them.
+
+First, preheat your oven to 180 degrees. Line a baking tray with baking paper and set it to one side.
+
+Next, beat the butter and sugar together in a large bowl until the mixture is pale and fluffy. This takes about three minutes with an electric whisk.
+
+Add the eggs one at a time, mixing well between each one. Stir in the vanilla extract.
+
+Gently fold in the flour and salt using a wooden spoon. Do not overmix or the biscuits will be tough. Stir in the chocolate chips if you are using them.
+
+Roll the dough into small balls and place them on the baking tray, leaving space between each one. Press each ball down slightly with the back of a spoon.
+
+Bake for 12 to 14 minutes until golden at the edges. Leave to cool on the tray for five minutes before moving to a wire rack.`,
+
+  history: `The ancient Egyptians built the pyramids as tombs for their pharaohs. The Great Pyramid of Giza, built around 2560 BC, was the tallest human-made structure in the world for nearly 4,000 years.
+
+The pyramids were built by thousands of workers, not by slaves as was once believed. Recent archaeological evidence shows that the builders were skilled Egyptian workers who were fed, housed, and cared for during construction.
+
+The Egyptians developed one of the earliest writing systems, called hieroglyphics. This used pictures and symbols to represent sounds and words. For many centuries, nobody could read hieroglyphics at all.
+
+In 1799, a large stone was discovered in Egypt near the town of Rosetta. The Rosetta Stone had the same message written in three scripts — including hieroglyphics and Greek. Because scholars could already read Greek, they were able to use the stone as a key to finally decode hieroglyphics.
+
+Today the Rosetta Stone is kept in the British Museum in London, where millions of visitors come to see it every year.`,
+};
+
+// ── STATE ──
+let rulerOn = true;
+let rulerColor = 'rgba(255,230,0,0.45)';
+let rulerMultiplier = 1;
+let opacityMultiplier = 1;
+let currentTab = 'sample';
+
+const ruler = document.getElementById('ruler');
+const readingArea = document.getElementById('readingArea');
+const readingText = document.getElementById('readingText');
+
+// ── LOAD SAMPLE ──
+function loadSample(key) {
+  const text = SAMPLES[key];
+  const paras = text.split('\n\n').filter(p => p.trim());
+  readingText.innerHTML = paras.map(p => `<p>${p.trim()}</p>`).join('');
+}
+loadSample('story');
+
+document.querySelectorAll('.sample-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.sample-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    loadSample(this.dataset.sample);
+  });
+});
+
+// ── TABS ──
+document.getElementById('tabSample').addEventListener('click', function() {
+  currentTab = 'sample';
+  this.classList.add('active');
+  document.getElementById('tabPaste').classList.remove('active');
+  document.getElementById('samplePicker').style.display = 'flex';
+  document.getElementById('pasteArea').style.display = 'none';
+  document.getElementById('loadWrap').style.display = 'none';
+  loadSample(document.querySelector('.sample-btn.active').dataset.sample);
+});
+
+document.getElementById('tabPaste').addEventListener('click', function() {
+  currentTab = 'paste';
+  this.classList.add('active');
+  document.getElementById('tabSample').classList.remove('active');
+  document.getElementById('samplePicker').style.display = 'none';
+  document.getElementById('pasteArea').style.display = 'block';
+  document.getElementById('loadWrap').style.display = 'block';
+});
+
+document.getElementById('loadBtn').addEventListener('click', function() {
+  const text = document.getElementById('pasteArea').value.trim();
+  if (!text) return;
+  const paras = text.split(/\n\s*\n/).filter(p => p.trim());
+  readingText.innerHTML = paras.map(p => `<p>${p.trim().replace(/\n/g,' ')}</p>`).join('');
+});
+
+// ── RULER TOGGLE ──
+document.getElementById('rulerToggle').addEventListener('click', function() {
+  rulerOn = !rulerOn;
+  this.classList.toggle('off', !rulerOn);
+  this.innerHTML = `<div class="toggle-dot"></div> Ruler is ${rulerOn ? 'ON' : 'OFF'}`;
+  ruler.style.display = rulerOn ? 'block' : 'none';
+});
+
+// ── COLOUR SWATCHES ──
+document.querySelectorAll('.swatch').forEach(swatch => {
+  swatch.addEventListener('click', function() {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    this.classList.add('active');
+    rulerColor = this.dataset.color;
+    updateRulerStyle();
+  });
+});
+
+// ── SIZE SLIDER ──
+const sizeLabels = {1:'Slim', 1.5:'Small', 2:'Medium', 2.5:'Large', 3:'Extra large', 3.5:'XL', 4:'XXL', 4.5:'Huge', 5:'Maximum'};
+document.getElementById('rulerSize').addEventListener('input', function() {
+  rulerMultiplier = parseFloat(this.value);
+  document.getElementById('sizeVal').textContent = sizeLabels[this.value] || this.value;
+  updateRulerStyle();
+});
+
+// ── OPACITY SLIDER ──
+const opacityLabels = {1:'Very light',2:'Light',3:'Light',4:'Medium',5:'Medium',6:'Strong',7:'Strong',8:'Very strong',9:'Very strong',10:'Maximum'};
+document.getElementById('rulerOpacity').addEventListener('input', function() {
+  opacityMultiplier = parseInt(this.value) / 5;
+  document.getElementById('opacityVal').textContent = opacityLabels[this.value] || this.value;
+  updateRulerStyle();
+});
+
+// ── UPDATE RULER STYLE ──
+function updateRulerStyle() {
+  // Parse color and apply opacity multiplier
+  let color = rulerColor;
+  const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]+)?\)/);
+  if (match) {
+    const baseOpacity = parseFloat(match[4] || 0.45);
+    const newOpacity = Math.min(0.85, baseOpacity * opacityMultiplier);
+    color = `rgba(${match[1]},${match[2]},${match[3]},${newOpacity})`;
+  }
+  ruler.style.background = color;
+}
+
+// ── RULER FOLLOWS MOUSE / TOUCH ──
+// Uses Range API to find the exact line the cursor is on
+
+function getLineRects() {
+  // Get all text nodes inside readingText
+  const lineRects = [];
+  const walker = document.createTreeWalker(readingText, NodeFilter.SHOW_TEXT);
+  let node;
+  while (node = walker.nextNode()) {
+    const range = document.createRange();
+    const text = node.textContent;
+    if (!text.trim()) continue;
+    // Walk character by character to find line boundaries
+    let prevTop = null;
+    let lineStart = 0;
+    for (let i = 0; i <= text.length; i++) {
+      range.setStart(node, i === text.length ? i - 1 : i);
+      range.setEnd(node, i === text.length ? i : i + 1);
+      const rects = range.getClientRects();
+      if (!rects.length) continue;
+      const top = Math.round(rects[0].top);
+      if (prevTop === null) { prevTop = top; lineStart = i; }
+      if (top !== prevTop || i === text.length) {
+        // New line found
+        range.setStart(node, lineStart);
+        range.setEnd(node, i === text.length ? i : i);
+        const lineRect = range.getBoundingClientRect();
+        if (lineRect.height > 0) lineRects.push(lineRect);
+        prevTop = top;
+        lineStart = i;
+      }
+    }
+  }
+  return lineRects;
+}
+
+function moveRuler(clientY) {
+  if (!rulerOn) return;
+  const rect = readingArea.getBoundingClientRect();
+  if (clientY < rect.top || clientY > rect.bottom) {
+    ruler.style.display = 'none';
+    return;
+  }
+
+  // Find which line the cursor is closest to
+  const lineRects = getLineRects();
+  if (!lineRects.length) return;
+
+  let bestRect = lineRects[0];
+  let bestDist = Infinity;
+  for (const lr of lineRects) {
+    const midY = lr.top + lr.height / 2;
+    const dist = Math.abs(clientY - midY);
+    if (dist < bestDist) { bestDist = dist; bestRect = lr; }
+  }
+
+  const areaTop = rect.top;
+  const top = bestRect.top - areaTop;
+  const height = bestRect.height * rulerMultiplier;
+  // Centre ruler on the line
+  const centredTop = top + bestRect.height / 2 - height / 2;
+
+  ruler.style.display = 'block';
+  ruler.style.top = Math.max(0, centredTop) + 'px';
+  ruler.style.height = height + 'px';
+}
+
+readingArea.addEventListener('mousemove', (e) => moveRuler(e.clientY));
+readingArea.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  moveRuler(e.touches[0].clientY);
+}, {passive:false});
+readingArea.addEventListener('mouseleave', () => {
+  if (rulerOn) ruler.style.display = 'none';
+});
+
+// ── INIT ──
+updateRulerStyle();
+</script>
+</body>
+</html>
