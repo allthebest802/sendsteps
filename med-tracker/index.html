@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medication & Appointments — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#EEF4F0;
+  --bg2:#E4EDE7;
+  --surface:#FFFFFF;
+  --surface2:#F7FAF8;
+  --border:#C8DDD0;
+  --border2:#A8C8B8;
+  --teal:#1A8A6E;
+  --teal-d:#126050;
+  --teal-l:#D0EDE5;
+  --coral:#E05C3A;
+  --coral-l:#FDEAE4;
+  --coral-d:#B8401E;
+  --amber:#D4860A;
+  --amber-l:#FDF0D5;
+  --text:#1A2820;
+  --text2:#3D5248;
+  --text3:#7A9688;
+  --radius:12px;
+  --radius-lg:18px;
+  --shadow:0 3px 16px rgba(26,40,32,0.08);
+  --shadow-lg:0 6px 32px rgba(26,40,32,0.12);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
+button{cursor:pointer;font-family:'DM Sans',sans-serif;border:none;background:none}
+input,textarea,select{font-family:'DM Sans',sans-serif}
+
+.header{background:linear-gradient(135deg,var(--teal-d),var(--teal));padding:28px 20px 24px;color:white}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.header-icon{font-size:2.4rem;line-height:1}
+.header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:400;color:white}
+.header p{font-size:0.85rem;opacity:0.88;line-height:1.6;margin-top:3px}
+
+.nav{background:var(--teal-d);border-bottom:2px solid rgba(255,255,255,0.15)}
+.nav-inner{max-width:900px;margin:0 auto;display:flex}
+.nav-tab{padding:12px 24px;color:rgba(255,255,255,0.7);font-size:0.88rem;font-weight:600;border-bottom:3px solid transparent;transition:all 0.2s;cursor:pointer}
+.nav-tab.active{color:white;border-bottom-color:white}
+.nav-tab:hover{color:white}
+
+.main{max-width:900px;margin:0 auto;padding:24px 20px}
+
+.section-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.4rem;font-weight:400}
+.add-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;background:var(--teal);color:white;font-size:0.85rem;font-weight:600;box-shadow:0 2px 10px rgba(26,138,110,0.3);transition:all 0.15s}
+.add-btn:hover{background:var(--teal-d);transform:translateY(-1px)}
+
+.today-banner{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:16px 20px;box-shadow:var(--shadow);margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.today-date{font-size:0.78rem;font-weight:600;color:var(--text3)}
+.today-label{font-family:'DM Serif Display',serif;font-size:1.1rem}
+.reset-btn{padding:6px 14px;border-radius:100px;font-size:0.75rem;font-weight:600;border:1.5px solid var(--border2);color:var(--text2);background:var(--surface2);transition:all 0.15s}
+.reset-btn:hover{border-color:var(--coral);color:var(--coral-d)}
+
+.med-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:12px;transition:all 0.2s;animation:slideIn 0.25s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.med-card.taken{border-color:var(--teal-l);background:linear-gradient(135deg,#FAFFFE,#F0FAF6)}
+
+.med-top{display:flex;align-items:flex-start;gap:14px}
+.med-tick{width:40px;height:40px;border-radius:50%;flex-shrink:0;border:2.5px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;margin-top:2px}
+.med-tick:hover{border-color:var(--teal);background:var(--teal-l)}
+.med-card.taken .med-tick{background:var(--teal);border-color:var(--teal);color:white}
+
+.med-info{flex:1}
+.med-name{font-size:1.05rem;font-weight:700;margin-bottom:3px}
+.med-dose{font-size:0.82rem;font-weight:600;color:var(--teal-d);margin-bottom:4px}
+.med-times{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.time-chip{padding:2px 10px;border-radius:100px;font-size:0.72rem;font-weight:600;background:var(--amber-l);color:var(--amber);border:1px solid #F0D090}
+.time-chip.done{background:var(--teal-l);color:var(--teal-d);border-color:var(--teal-l)}
+.med-notes{font-size:0.78rem;color:var(--text3);font-style:italic;margin-top:4px}
+
+.med-actions{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.action-btn{padding:5px 12px;border-radius:8px;font-size:0.75rem;font-weight:600;border:1.5px solid var(--border);color:var(--text2);background:var(--surface2);transition:all 0.15s}
+.action-btn:hover{border-color:var(--border2);background:var(--bg2)}
+.action-btn.danger{color:var(--coral-d);border-color:var(--coral-l)}
+.action-btn.danger:hover{background:var(--coral-l)}
+
+.appt-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:12px;animation:slideIn 0.25s ease;display:flex;gap:16px;align-items:flex-start}
+.appt-card.past{opacity:0.6}
+.appt-date-block{background:var(--teal);color:white;border-radius:12px;padding:10px 14px;text-align:center;flex-shrink:0;min-width:64px}
+.appt-day{font-size:1.6rem;font-weight:700;line-height:1}
+.appt-month{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;opacity:0.88}
+.appt-time-small{font-size:0.7rem;font-weight:600;opacity:0.88;margin-top:2px}
+.appt-card.past .appt-date-block{background:var(--text3)}
+.appt-card.today-appt .appt-date-block{background:var(--coral)}
+
+.appt-info{flex:1}
+.appt-name{font-size:1rem;font-weight:700;margin-bottom:3px}
+.appt-who{font-size:0.82rem;color:var(--teal-d);font-weight:600;margin-bottom:4px}
+.appt-countdown{display:inline-block;padding:2px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;margin-bottom:6px}
+.appt-countdown.future{background:var(--teal-l);color:var(--teal-d)}
+.appt-countdown.today{background:var(--coral-l);color:var(--coral-d)}
+.appt-countdown.past{background:var(--bg2);color:var(--text3)}
+.appt-notes{font-size:0.78rem;color:var(--text3);margin-top:6px;font-style:italic;white-space:pre-wrap}
+.appt-actions{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+
+.empty{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty-icon{font-size:2.5rem;display:block;margin-bottom:10px;opacity:0.5}
+.empty p{font-size:0.9rem;font-weight:500}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(10,24,16,0.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}
+.modal-backdrop.open{display:flex;animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:min(560px,100%);max-height:90vh;overflow-y:auto}
+.modal-head{background:linear-gradient(135deg,var(--teal-d),var(--teal));color:white;padding:16px 20px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{font-family:'DM Serif Display',serif;font-size:1.2rem;font-weight:400;color:white}
+.modal-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.15);color:white;font-size:1.2rem;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:rgba(255,255,255,0.25)}
+.modal-body{padding:20px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:0.75rem;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+.field input,.field textarea,.field select{width:100%;padding:9px 12px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem;outline:none;transition:border-color 0.2s}
+.field input:focus,.field textarea:focus{border-color:var(--teal)}
+.field textarea{min-height:80px;resize:vertical;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+
+.times-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.time-toggle{padding:6px 14px;border-radius:100px;font-size:0.78rem;font-weight:600;border:1.5px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 0.15s}
+.time-toggle.active{background:var(--amber-l);border-color:var(--amber);color:var(--amber)}
+
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--border)}
+.btn-save{padding:9px 20px;border-radius:100px;background:var(--teal);color:white;font-size:0.88rem;font-weight:600;box-shadow:0 2px 8px rgba(26,138,110,0.3);transition:all 0.15s}
+.btn-save:hover{background:var(--teal-d)}
+.btn-cancel{padding:9px 18px;border-radius:100px;font-size:0.88rem;font-weight:600;border:1.5px solid var(--border2);color:var(--text2);background:var(--surface2);transition:all 0.15s}
+
+.print-bar{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 20px;box-shadow:var(--shadow);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.print-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:100px;border:1.5px solid var(--border2);color:var(--text2);background:var(--surface2);font-size:0.82rem;font-weight:600;transition:all 0.15s}
+.print-btn:hover{border-color:var(--teal);color:var(--teal-d);background:var(--teal-l)}
+.clear-btn{padding:8px 18px;border-radius:100px;font-size:0.82rem;font-weight:600;border:1.5px solid var(--coral-l);color:var(--coral-d);background:var(--surface);transition:all 0.15s}
+.clear-btn:hover{background:var(--coral-l)}
+
+.sort-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.sort-label{font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.sort-btn{padding:4px 12px;border-radius:100px;font-size:0.75rem;font-weight:600;border:1.5px solid var(--border);color:var(--text2);background:var(--surface2);cursor:pointer;transition:all 0.15s}
+.sort-btn.active{background:var(--teal-l);border-color:var(--teal);color:var(--teal-d)}
+
+@media print{
+  .nav,.add-btn,.action-btn,.appt-actions,.med-actions,.print-bar,.sort-row,.reset-btn,.modal-backdrop{display:none!important}
+  body{background:white!important;padding:0}
+  .header{background:var(--teal)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .med-card,.appt-card{box-shadow:none!important;border:1px solid #ccc!important;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <span class="header-icon">💊</span>
+    <div>
+      <h1>Medication & Appointments</h1>
+      <p>Track medications, doses, and upcoming appointments — saved privately on your device.</p>
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-tab active" id="tabMeds" onclick="showTab('meds')">💊 Medications</div>
+    <div class="nav-tab" id="tabAppts" onclick="showTab('appts')">📅 Appointments</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div id="medSection">
+    <div class="print-bar">
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Storage</div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text2)">Saved privately in your browser only</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="print-btn" onclick="window.print()">🖨️ Print summary</button>
+        <button class="clear-btn" onclick="clearAll('meds')">Clear all medications</button>
+      </div>
+    </div>
+
+    <div class="today-banner">
+      <div>
+        <div class="today-date" id="todayDate"></div>
+        <div class="today-label">Today's medications</div>
+      </div>
+      <button class="reset-btn" onclick="resetToday()">↺ Reset today's ticks</button>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">All medications</div>
+      <button class="add-btn" onclick="openMedModal()">+ Add medication</button>
+    </div>
+    <div id="medList"></div>
+  </div>
+
+  <div id="apptSection" style="display:none">
+    <div class="print-bar">
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Storage</div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text2)">Saved privately in your browser only</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="print-btn" onclick="window.print()">🖨️ Print summary</button>
+        <button class="clear-btn" onclick="clearAll('appts')">Clear all appointments</button>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Upcoming appointments</div>
+      <button class="add-btn" onclick="openApptModal()">+ Add appointment</button>
+    </div>
+
+    <div class="sort-row">
+      <span class="sort-label">Sort:</span>
+      <button class="sort-btn active" id="sortDate" onclick="setSort('date')">By date</button>
+      <button class="sort-btn" id="sortName" onclick="setSort('name')">By name</button>
+      <button class="sort-btn" id="sortWho" onclick="setSort('who')">By who</button>
+    </div>
+
+    <div id="apptList"></div>
+  </div>
+</div>
+
+<!-- MED MODAL -->
+<div class="modal-backdrop" id="medModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="medModalTitle">Add medication</h2>
+      <button class="modal-close" onclick="closeMedModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Medication name *</label><input type="text" id="medName" placeholder="e.g. Melatonin"></div>
+      <div class="field-row">
+        <div class="field"><label>Dose</label><input type="text" id="medDose" placeholder="e.g. 3mg"></div>
+        <div class="field"><label>Appearance</label><input type="text" id="medAppearance" placeholder="e.g. small white tablet"></div>
+      </div>
+      <div class="field">
+        <label>Time(s) of day</label>
+        <div class="times-grid" id="timesGrid">
+          <button type="button" class="time-toggle" data-time="Morning">🌅 Morning</button>
+          <button type="button" class="time-toggle" data-time="Midday">☀️ Midday</button>
+          <button type="button" class="time-toggle" data-time="Afternoon">🌤️ Afternoon</button>
+          <button type="button" class="time-toggle" data-time="Evening">🌆 Evening</button>
+          <button type="button" class="time-toggle" data-time="Bedtime">🌙 Bedtime</button>
+          <button type="button" class="time-toggle" data-time="With food">🍽️ With food</button>
+        </div>
+      </div>
+      <div class="field"><label>Notes (e.g. keep in fridge, take with water)</label><textarea id="medNotes" placeholder="Any important notes..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeMedModal()">Cancel</button>
+      <button class="btn-save" onclick="saveMed()">Save medication</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPT MODAL -->
+<div class="modal-backdrop" id="apptModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="apptModalTitle">Add appointment</h2>
+      <button class="modal-close" onclick="closeApptModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Appointment name *</label><input type="text" id="apptName" placeholder="e.g. CAMHS review, GP appointment"></div>
+      <div class="field"><label>Who is it with?</label><input type="text" id="apptWho" placeholder="e.g. Dr Smith, CAMHS team"></div>
+      <div class="field-row">
+        <div class="field"><label>Date *</label><input type="date" id="apptDate"></div>
+        <div class="field"><label>Time</label><input type="time" id="apptTime"></div>
+      </div>
+      <div class="field"><label>Location</label><input type="text" id="apptLocation" placeholder="e.g. Children's Centre, Room 4"></div>
+      <div class="field"><label>Prep notes / questions to ask</label><textarea id="apptNotes" placeholder="e.g. Ask about changing dose&#10;Bring last school report&#10;How long is the waiting list?"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeApptModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAppt()">Save appointment</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MED_KEY='sendsteps_meds_v1';
+const APPT_KEY='sendsteps_appts_v1';
+const TAKEN_KEY='sendsteps_taken_v1';
+let meds=[],appts=[],takenToday={},editMedId=null,editApptId=null,apptSort='date';
+
+function load(){
+  try{meds=JSON.parse(localStorage.getItem(MED_KEY))||[];}catch(e){meds=[];}
+  try{appts=JSON.parse(localStorage.getItem(APPT_KEY))||[];}catch(e){appts=[];}
+  try{
+    const saved=JSON.parse(localStorage.getItem(TAKEN_KEY))||{};
+    takenToday=saved.date===todayStr()?saved.taken:{};
+  }catch(e){takenToday={};}
+}
+
+function save(){
+  try{localStorage.setItem(MED_KEY,JSON.stringify(meds));}catch(e){}
+  try{localStorage.setItem(APPT_KEY,JSON.stringify(appts));}catch(e){}
+  try{localStorage.setItem(TAKEN_KEY,JSON.stringify({date:todayStr(),taken:takenToday}));}catch(e){}
+}
+
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+
+function showTab(tab){
+  document.getElementById('medSection').style.display=tab==='meds'?'block':'none';
+  document.getElementById('apptSection').style.display=tab==='appts'?'block':'none';
+  document.getElementById('tabMeds').classList.toggle('active',tab==='meds');
+  document.getElementById('tabAppts').classList.toggle('active',tab==='appts');
+}
+
+function setTodayDate(){
+  document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+
+function renderMeds(){
+  const list=document.getElementById('medList');
+  if(!meds.length){
+    list.innerHTML=`<div class="empty"><span class="empty-icon">💊</span><p>No medications added yet.<br>Click <strong>+ Add medication</strong> to start.</p></div>`;
+    return;
+  }
+  list.innerHTML=meds.map(med=>{
+    const taken=takenToday[med.id];
+    const times=(med.times||[]).map(t=>`<span class="time-chip${taken?' done':''}">${t}</span>`).join('');
+    return `<div class="med-card${taken?' taken':''}" id="mc-${med.id}">
+      <div class="med-top">
+        <div class="med-tick" onclick="toggleTaken('${med.id}')" title="${taken?'Mark as not taken':'Mark as taken'}">${taken?'✓':''}</div>
+        <div class="med-info">
+          <div class="med-name">${med.name}</div>
+          ${med.dose?`<div class="med-dose">💊 ${med.dose}${med.appearance?` — ${med.appearance}`:''}</div>`:''}
+          ${times?`<div class="med-times">${times}</div>`:''}
+          ${med.notes?`<div class="med-notes">📝 ${med.notes}</div>`:''}
+        </div>
+      </div>
+      <div class="med-actions">
+        <button class="action-btn" onclick="openMedModal('${med.id}')">✏️ Edit</button>
+        <button class="action-btn danger" onclick="deleteMed('${med.id}')">🗑️ Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleTaken(id){takenToday[id]=!takenToday[id];save();renderMeds();}
+function resetToday(){if(!confirm('Reset all medication ticks for today?'))return;takenToday={};save();renderMeds();}
+function deleteMed(id){if(!confirm('Delete this medication?'))return;meds=meds.filter(m=>m.id!==id);delete takenToday[id];save();renderMeds();}
+function clearAll(type){
+  if(type==='meds'){if(!confirm('Delete ALL medications?'))return;meds=[];takenToday={};save();renderMeds();}
+  else{if(!confirm('Delete ALL appointments?'))return;appts=[];save();renderAppts();}
+}
+
+function openMedModal(id){
+  editMedId=id||null;
+  const med=id?meds.find(m=>m.id===id):null;
+  document.getElementById('medModalTitle').textContent=med?'Edit medication':'Add medication';
+  document.getElementById('medName').value=med?.name||'';
+  document.getElementById('medDose').value=med?.dose||'';
+  document.getElementById('medAppearance').value=med?.appearance||'';
+  document.getElementById('medNotes').value=med?.notes||'';
+  document.querySelectorAll('.time-toggle').forEach(btn=>btn.classList.toggle('active',!!(med?.times?.includes(btn.dataset.time))));
+  document.getElementById('medModal').classList.add('open');
+  document.getElementById('medName').focus();
+}
+function closeMedModal(){document.getElementById('medModal').classList.remove('open');editMedId=null;}
+function saveMed(){
+  const name=document.getElementById('medName').value.trim();
+  if(!name){document.getElementById('medName').focus();return;}
+  const times=[...document.querySelectorAll('.time-toggle.active')].map(b=>b.dataset.time);
+  const med={id:editMedId||uid(),name,dose:document.getElementById('medDose').value.trim(),appearance:document.getElementById('medAppearance').value.trim(),times,notes:document.getElementById('medNotes').value.trim()};
+  if(editMedId){meds=meds.map(m=>m.id===editMedId?med:m);}else{meds.push(med);}
+  save();renderMeds();closeMedModal();
+}
+
+document.querySelectorAll('.time-toggle').forEach(btn=>btn.addEventListener('click',()=>btn.classList.toggle('active')));
+
+function setSort(s){
+  apptSort=s;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sort'+s.charAt(0).toUpperCase()+s.slice(1)).classList.add('active');
+  renderAppts();
+}
+
+function renderAppts(){
+  const list=document.getElementById('apptList');
+  if(!appts.length){
+    list.innerHTML=`<div class="empty"><span class="empty-icon">📅</span><p>No appointments added yet.<br>Click <strong>+ Add appointment</strong> to start.</p></div>`;
+    return;
+  }
+  const today=new Date();today.setHours(0,0,0,0);
+  let sorted=[...appts];
+  if(apptSort==='date')sorted.sort((a,b)=>a.date.localeCompare(b.date));
+  else if(apptSort==='name')sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(apptSort==='who')sorted.sort((a,b)=>(a.who||'').localeCompare(b.who||''));
+
+  list.innerHTML=sorted.map(appt=>{
+    const d=new Date(appt.date+'T00:00:00');
+    const diff=Math.round((d-today)/86400000);
+    const isPast=diff<0,isToday=diff===0;
+    const dayNum=d.getDate();
+    const month=d.toLocaleDateString('en-GB',{month:'short'}).toUpperCase();
+    let countdown='',countClass='';
+    if(isPast){countdown='Past';countClass='past';}
+    else if(isToday){countdown='TODAY';countClass='today';}
+    else if(diff===1){countdown='Tomorrow';countClass='future';}
+    else{countdown=`In ${diff} days`;countClass='future';}
+    return `<div class="appt-card${isPast?' past':''}${isToday?' today-appt':''}">
+      <div class="appt-date-block">
+        <div class="appt-day">${dayNum}</div>
+        <div class="appt-month">${month}</div>
+        ${appt.time?`<div class="appt-time-small">${appt.time}</div>`:''}
+      </div>
+      <div class="appt-info">
+        <div class="appt-name">${appt.name}</div>
+        ${appt.who?`<div class="appt-who">👤 ${appt.who}</div>`:''}
+        ${appt.location?`<div style="font-size:0.78rem;color:var(--text3);margin-bottom:4px">📍 ${appt.location}</div>`:''}
+        <span class="appt-countdown ${countClass}">${countdown}</span>
+        ${appt.notes?`<div class="appt-notes">📋 ${appt.notes}</div>`:''}
+        <div class="appt-actions">
+          <button class="action-btn" onclick="openApptModal('${appt.id}')">✏️ Edit</button>
+          <button class="action-btn danger" onclick="deleteAppt('${appt.id}')">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteAppt(id){if(!confirm('Delete this appointment?'))return;appts=appts.filter(a=>a.id!==id);save();renderAppts();}
+
+function openApptModal(id){
+  editApptId=id||null;
+  const appt=id?appts.find(a=>a.id===id):null;
+  document.getElementById('apptModalTitle').textContent=appt?'Edit appointment':'Add appointment';
+  document.getElementById('apptName').value=appt?.name||'';
+  document.getElementById('apptWho').value=appt?.who||'';
+  document.getElementById('apptDate').value=appt?.date||'';
+  document.getElementById('apptTime').value=appt?.time||'';
+  document.getElementById('apptLocation').value=appt?.location||'';
+  document.getElementById('apptNotes').value=appt?.notes||'';
+  document.getElementById('apptModal').classList.add('open');
+  document.getElementById('apptName').focus();
+}
+function closeApptModal(){document.getElementById('apptModal').classList.remove('open');editApptId=null;}
+function saveAppt(){
+  const name=document.getElementById('apptName').value.trim();
+  const date=document.getElementById('apptDate').value;
+  if(!name||!date){if(!name)document.getElementById('apptName').focus();else document.getElementById('apptDate').focus();return;}
+  const appt={id:editApptId||uid(),name,who:document.getElementById('apptWho').value.trim(),date,time:document.getElementById('apptTime').value,location:document.getElementById('apptLocation').value.trim(),notes:document.getElementById('apptNotes').value.trim()};
+  if(editApptId){appts=appts.map(a=>a.id===editApptId?appt:a);}else{appts.push(appt);}
+  save();renderAppts();closeApptModal();
+}
+
+document.getElementById('medModal').addEventListener('click',e=>{if(e.target===document.getElementById('medModal'))closeMedModal();});
+document.getElementById('apptModal').addEventListener('click',e=>{if(e.target===document.getElementById('apptModal'))closeApptModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMedModal();closeApptModal();}});
+
+load();setTodayDate();renderMeds();renderAppts();
+</script>
+</body>
+</html>
