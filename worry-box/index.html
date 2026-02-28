@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worry Box — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FDF6F0;
+  --bg2:#FAF0E8;
+  --rose:#E8A0A0;
+  --rose-d:#C87878;
+  --rose-l:#FDEAEA;
+  --rose-ll:#FEF5F5;
+  --teal:#5BBFB0;
+  --teal-l:#D4F0EB;
+  --teal-d:#3A9A8C;
+  --gold:#E8B84B;
+  --gold-l:#FDF3D8;
+  --lavender:#A89BD8;
+  --lav-l:#EDE8F8;
+  --text:#3A2820;
+  --text2:#6A4840;
+  --text3:#A88878;
+  --border:#F0D8CC;
+  --border2:#E0C0B0;
+  --radius:16px;
+  --radius-lg:24px;
+  --shadow:0 6px 28px rgba(58,40,32,0.10);
+  --shadow-lg:0 12px 48px rgba(58,40,32,0.15);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:
+    radial-gradient(800px 500px at 10% 0%,rgba(232,160,160,0.2),transparent 60%),
+    radial-gradient(600px 400px at 90% 100%,rgba(91,191,176,0.15),transparent 60%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:60px;
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+
+/* ── HEADER ── */
+.header{
+  text-align:center;padding:40px 20px 20px;
+}
+.header-icon{font-size:3rem;display:block;margin-bottom:12px;filter:drop-shadow(0 4px 8px rgba(58,40,32,0.15))}
+.header h1{
+  font-family:'Fredoka',sans-serif;font-size:clamp(2rem,5vw,2.8rem);
+  font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:0.3px;
+}
+.header p{font-size:0.95rem;color:var(--text2);max-width:420px;margin:0 auto;line-height:1.7;font-weight:500}
+
+/* ── WRAP ── */
+.wrap{max-width:620px;margin:0 auto;padding:0 20px}
+
+/* ── STEP INDICATOR ── */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin:24px 0 28px}
+.step-dot{
+  width:28px;height:28px;border-radius:50%;
+  border:2.5px solid var(--border2);background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:700;color:var(--text3);
+  transition:all 0.3s;flex-shrink:0;
+}
+.step-dot.active{background:var(--rose);border-color:var(--rose-d);color:white;transform:scale(1.1)}
+.step-dot.done{background:var(--teal);border-color:var(--teal-d);color:white}
+.step-line{flex:1;height:2px;background:var(--border);max-width:40px;transition:background 0.3s}
+.step-line.done{background:var(--teal)}
+
+/* ── CARDS ── */
+.step-card{
+  background:white;border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:32px 28px;
+  box-shadow:var(--shadow-lg);
+  animation:fadeUp 0.35s cubic-bezier(0.34,1.2,0.64,1);
+  display:none;
+}
+.step-card.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.step-title{
+  font-family:'Fredoka',sans-serif;font-size:1.5rem;font-weight:600;
+  color:var(--text);margin-bottom:8px;text-align:center;
+}
+.step-sub{font-size:0.88rem;color:var(--text2);text-align:center;margin-bottom:24px;line-height:1.6;font-weight:500}
+
+/* ── STEP 1: WRITE ── */
+#worryInput{
+  width:100%;min-height:120px;
+  font-family:'Nunito',sans-serif;font-size:1rem;font-weight:500;
+  background:var(--rose-ll);border:2px solid var(--rose);
+  color:var(--text);border-radius:var(--radius);
+  padding:14px 16px;resize:none;outline:none;
+  line-height:1.6;transition:border-color 0.2s;
+}
+#worryInput:focus{border-color:var(--rose-d)}
+#worryInput::placeholder{color:var(--text3)}
+.char-hint{font-size:0.75rem;color:var(--text3);text-align:right;margin-top:6px;font-weight:600}
+
+/* ── STEP 2: BREATHING ── */
+.breath-container{display:flex;flex-direction:column;align-items:center;gap:20px}
+.breath-circle{
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,var(--teal-l),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;
+  color:white;text-align:center;line-height:1.3;
+  box-shadow:0 0 0 0 rgba(91,191,176,0.4);
+  transition:all 0.1s;
+  cursor:pointer;
+}
+.breath-circle.breathing-in{
+  animation:breatheIn 4s ease-in-out forwards;
+}
+.breath-circle.hold{
+  animation:holdBreath 4s linear forwards;
+}
+.breath-circle.breathing-out{
+  animation:breatheOut 4s ease-in-out forwards;
+}
+@keyframes breatheIn{
+  0%{transform:scale(1);box-shadow:0 0 0 0 rgba(91,191,176,0.4)}
+  100%{transform:scale(1.35);box-shadow:0 0 0 20px rgba(91,191,176,0)}
+}
+@keyframes holdBreath{
+  0%,100%{transform:scale(1.35)}
+}
+@keyframes breatheOut{
+  0%{transform:scale(1.35)}
+  100%{transform:scale(1);box-shadow:0 0 0 0 rgba(91,191,176,0)}
+}
+
+.breath-instruction{
+  font-family:'Fredoka',sans-serif;font-size:1.3rem;font-weight:600;
+  color:var(--teal-d);text-align:center;min-height:32px;
+}
+.breath-count{
+  display:flex;gap:8px;
+}
+.breath-pip{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--border2);transition:background 0.3s;
+}
+.breath-pip.done{background:var(--teal)}
+.breath-skip{
+  font-size:0.78rem;font-weight:700;color:var(--text3);
+  text-decoration:underline;cursor:pointer;margin-top:4px;
+}
+.breath-skip:hover{color:var(--text2)}
+
+/* ── STEP 3: COPING ── */
+.coping-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:440px){.coping-grid{grid-template-columns:1fr}}
+.coping-btn{
+  padding:14px 12px;border-radius:var(--radius);
+  border:2px solid var(--border);background:var(--bg);
+  text-align:center;font-size:0.85rem;font-weight:700;color:var(--text2);
+  cursor:pointer;transition:all 0.15s;line-height:1.4;
+}
+.coping-btn .coping-icon{font-size:1.6rem;display:block;margin-bottom:6px}
+.coping-btn:hover{border-color:var(--lavender);background:var(--lav-l);color:var(--text)}
+.coping-btn.selected{border-color:var(--lavender);background:var(--lav-l);color:var(--lavender);transform:scale(1.03)}
+
+/* ── STEP 4: LOCK ── */
+.box-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+
+.worry-paper{
+  background:var(--rose-ll);border:2px solid var(--rose);
+  border-radius:12px;padding:16px 20px;
+  font-size:0.9rem;font-weight:600;color:var(--text2);
+  text-align:center;max-width:320px;line-height:1.6;
+  font-style:italic;
+  transition:all 0.6s cubic-bezier(0.34,1.2,0.64,1);
+  position:relative;
+}
+
+.box-visual{
+  width:120px;height:90px;position:relative;cursor:pointer;
+  transition:transform 0.2s;
+}
+.box-visual:hover{transform:scale(1.05)}
+.box-body{
+  width:120px;height:70px;
+  background:linear-gradient(160deg,#D4A870,#B8884A);
+  border-radius:0 0 12px 12px;
+  position:absolute;bottom:0;left:0;
+  box-shadow:inset 0 -4px 8px rgba(0,0,0,0.1),var(--shadow);
+}
+.box-body::before{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:24px;height:16px;border-radius:8px;
+  background:linear-gradient(135deg,var(--gold),#C89830);
+  box-shadow:0 2px 4px rgba(0,0,0,0.2);
+}
+.box-lid{
+  width:128px;height:28px;
+  background:linear-gradient(160deg,#C49060,#A87030);
+  border-radius:8px 8px 0 0;
+  position:absolute;top:0;left:-4px;
+  box-shadow:0 -2px 8px rgba(0,0,0,0.1);
+  transition:transform 0.5s cubic-bezier(0.34,1.2,0.64,1);
+  transform-origin:bottom center;
+}
+.box-visual.open .box-lid{transform:rotateX(-60deg) translateY(-8px)}
+.box-glow{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:100px;height:20px;
+  background:radial-gradient(ellipse,rgba(232,184,75,0.5),transparent 70%);
+  opacity:0;transition:opacity 0.5s;
+}
+.box-visual.locked .box-glow{opacity:1;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+
+.lock-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;border-radius:100px;
+  background:linear-gradient(135deg,var(--rose-d),var(--rose));
+  color:white;font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:600;
+  box-shadow:0 4px 18px rgba(200,120,120,0.4);
+  transition:all 0.2s;
+}
+.lock-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(200,120,120,0.5)}
+
+/* Worry fly animation */
+@keyframes flyIntoBox{
+  0%{opacity:1;transform:scale(1) translateY(0)}
+  50%{opacity:0.8;transform:scale(0.6) translateY(60px)}
+  100%{opacity:0;transform:scale(0.1) translateY(120px)}
+}
+.worry-paper.flying{
+  animation:flyIntoBox 0.7s cubic-bezier(0.34,0.8,0.64,1) forwards;
+}
+
+/* ── STEP 5: CALM ── */
+.calm-card{text-align:center}
+.calm-icon{font-size:3.5rem;display:block;margin-bottom:16px;animation:bobble 2s ease-in-out infinite}
+@keyframes bobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.calm-message{
+  font-family:'Fredoka',sans-serif;font-size:1.4rem;font-weight:600;
+  color:var(--teal-d);margin-bottom:12px;line-height:1.3;
+}
+.calm-body{
+  font-size:0.92rem;color:var(--text2);line-height:1.7;
+  background:var(--teal-l);border-radius:var(--radius);
+  padding:16px 20px;margin-bottom:20px;font-weight:500;
+}
+.coping-reminder{
+  background:var(--lav-l);border:1.5px solid var(--lavender);
+  border-radius:var(--radius);padding:14px 18px;
+  font-size:0.88rem;font-weight:700;color:var(--lavender);
+  margin-bottom:20px;text-align:center;
+}
+.locked-count{
+  font-size:0.78rem;color:var(--text3);font-weight:600;margin-bottom:20px;
+}
+.again-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 24px;border-radius:100px;
+  border:2px solid var(--border2);background:white;
+  color:var(--text2);font-size:0.88rem;font-weight:700;
+  transition:all 0.15s;
+}
+.again-btn:hover{border-color:var(--rose);color:var(--rose-d);background:var(--rose-ll)}
+
+/* ── BUTTONS ── */
+.primary-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px;border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--rose-d),var(--rose));
+  color:white;font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:600;
+  box-shadow:0 4px 16px rgba(200,120,120,0.35);transition:all 0.2s;margin-top:20px;
+}
+.primary-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,120,120,0.45)}
+.primary-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+.secondary-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;padding:10px;border-radius:var(--radius);
+  border:2px solid var(--border2);background:white;
+  color:var(--text2);font-size:0.88rem;font-weight:700;
+  transition:all 0.15s;margin-top:10px;
+}
+.secondary-btn:hover{border-color:var(--rose);color:var(--rose-d)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">📦</span>
+  <h1>The Worry Box</h1>
+  <p>Write your worry down, take a breath, choose something that helps — then lock it away for good.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- STEP INDICATOR -->
+  <div class="steps">
+    <div class="step-dot active" id="dot1">1</div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-dot" id="dot2">2</div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-dot" id="dot3">3</div>
+    <div class="step-line" id="line3"></div>
+    <div class="step-dot" id="dot4">4</div>
+    <div class="step-line" id="line4"></div>
+    <div class="step-dot" id="dot5">✓</div>
+  </div>
+
+  <!-- STEP 1: WRITE YOUR WORRY -->
+  <div class="step-card active" id="step1">
+    <div class="step-title">What's on your mind? 💭</div>
+    <div class="step-sub">Write down whatever is worrying you. You don't have to get it perfect — just get it out.</div>
+    <textarea id="worryInput" placeholder="I'm worried about..." maxlength="400"></textarea>
+    <div class="char-hint"><span id="charLeft">400</span> characters left</div>
+    <button class="primary-btn" id="step1Next">Next — let's breathe 🌿</button>
+  </div>
+
+  <!-- STEP 2: BREATHING -->
+  <div class="step-card" id="step2">
+    <div class="step-title">Let's take a breath 🌿</div>
+    <div class="step-sub">Before we lock that worry away, let's calm your body down first. Follow the circle.</div>
+    <div class="breath-container">
+      <div class="breath-circle" id="breathCircle" onclick="startBreathing()">
+        Tap to<br>start
+      </div>
+      <div class="breath-instruction" id="breathInstruction"></div>
+      <div class="breath-count" id="breathCount">
+        <div class="breath-pip" id="pip1"></div>
+        <div class="breath-pip" id="pip2"></div>
+        <div class="breath-pip" id="pip3"></div>
+      </div>
+      <div class="breath-skip" onclick="goToStep(3)">Skip breathing →</div>
+    </div>
+    <button class="primary-btn" id="step2Next" style="margin-top:24px" onclick="goToStep(3)">I feel calmer — next ✨</button>
+  </div>
+
+  <!-- STEP 3: COPING STRATEGY -->
+  <div class="step-card" id="step3">
+    <div class="step-title">Choose something that helps 💛</div>
+    <div class="step-sub">Pick one thing you can do after locking your worry away.</div>
+    <div class="coping-grid" id="copingGrid">
+      <button class="coping-btn" data-coping="Talk to someone I trust" onclick="selectCoping(this)">
+        <span class="coping-icon">🗣️</span>Talk to someone I trust
+      </button>
+      <button class="coping-btn" data-coping="Get a hug or cuddle" onclick="selectCoping(this)">
+        <span class="coping-icon">🤗</span>Get a hug or cuddle
+      </button>
+      <button class="coping-btn" data-coping="Do something I enjoy" onclick="selectCoping(this)">
+        <span class="coping-icon">🎮</span>Do something I enjoy
+      </button>
+      <button class="coping-btn" data-coping="Go outside for fresh air" onclick="selectCoping(this)">
+        <span class="coping-icon">🌳</span>Go outside for fresh air
+      </button>
+      <button class="coping-btn" data-coping="Listen to my favourite music" onclick="selectCoping(this)">
+        <span class="coping-icon">🎵</span>Listen to my favourite music
+      </button>
+      <button class="coping-btn" data-coping="Have a snack and a drink" onclick="selectCoping(this)">
+        <span class="coping-icon">🍎</span>Have a snack and a drink
+      </button>
+      <button class="coping-btn" data-coping="Draw or write how I feel" onclick="selectCoping(this)">
+        <span class="coping-icon">✏️</span>Draw or write how I feel
+      </button>
+      <button class="coping-btn" data-coping="Curl up with a blanket" onclick="selectCoping(this)">
+        <span class="coping-icon">🧸</span>Curl up with a blanket
+      </button>
+    </div>
+    <button class="primary-btn" id="step3Next" disabled onclick="goToStep(4)">Lock my worry away 🔒</button>
+    <button class="secondary-btn" onclick="goToStep(4)">Skip — just lock it</button>
+  </div>
+
+  <!-- STEP 4: LOCK IT AWAY -->
+  <div class="step-card" id="step4">
+    <div class="step-title">Ready to let it go? 🔒</div>
+    <div class="step-sub">Your worry is about to go in the box — locked away forever.</div>
+    <div class="box-wrap">
+      <div class="worry-paper" id="worryPaper"></div>
+      <div class="box-visual open" id="boxVisual">
+        <div class="box-lid"></div>
+        <div class="box-body"></div>
+        <div class="box-glow"></div>
+      </div>
+      <button class="lock-btn" id="lockBtn" onclick="lockWorry()">🔒 Lock it away</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: CALM RESPONSE -->
+  <div class="step-card" id="step5">
+    <div class="calm-card">
+      <span class="calm-icon" id="calmIcon">🌟</span>
+      <div class="calm-message" id="calmMessage"></div>
+      <div class="calm-body" id="calmBody"></div>
+      <div class="coping-reminder" id="copingReminder" style="display:none"></div>
+      <div class="locked-count" id="lockedCount"></div>
+      <button class="again-btn" onclick="startAgain()">📦 I have another worry</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──
+let worryText = '';
+let selectedCoping = '';
+let worryCount = 0;
+let breathCycle = 0;
+let breathTimer = null;
+let breathRunning = false;
+
+// Load count from storage
+try { worryCount = parseInt(localStorage.getItem('sendsteps_worry_count') || '0'); } catch(e){}
+
+// ── CHAR COUNT ──
+document.getElementById('worryInput').addEventListener('input', function() {
+  document.getElementById('charLeft').textContent = 400 - this.value.length;
+});
+
+// ── STEP NAVIGATION ──
+function goToStep(n) {
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  updateDots(n);
+  window.scrollTo({top: 0, behavior:'smooth'});
+
+  if (n === 4) showLockStep();
+  if (n === 5) showCalmStep();
+}
+
+function updateDots(current) {
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot' + i);
+    const line = document.getElementById('line' + i);
+    if (i < current) {
+      dot.classList.remove('active');
+      dot.classList.add('done');
+      dot.textContent = '✓';
+    } else if (i === current) {
+      dot.classList.add('active');
+      dot.classList.remove('done');
+      dot.textContent = i;
+    } else {
+      dot.classList.remove('active','done');
+      dot.textContent = i === 5 ? '✓' : i;
+    }
+    if (line && i < current) line.classList.add('done');
+    else if (line) line.classList.remove('done');
+  }
+}
+
+// ── STEP 1 ──
+document.getElementById('step1Next').addEventListener('click', () => {
+  worryText = document.getElementById('worryInput').value.trim();
+  if (!worryText) {
+    document.getElementById('worryInput').focus();
+    document.getElementById('worryInput').style.borderColor = '#C87878';
+    setTimeout(() => document.getElementById('worryInput').style.borderColor = '', 1500);
+    return;
+  }
+  goToStep(2);
+});
+
+// ── STEP 2: BREATHING ──
+const BREATH_PHASES = [
+  { label: 'Breathe in...', duration: 4000, class: 'breathing-in' },
+  { label: 'Hold...', duration: 4000, class: 'hold' },
+  { label: 'Breathe out...', duration: 4000, class: 'breathing-out' },
+];
+
+function startBreathing() {
+  if (breathRunning) return;
+  breathRunning = true;
+  breathCycle = 0;
+  runBreathPhase(0);
+}
+
+function runBreathPhase(phase) {
+  if (phase >= BREATH_PHASES.length * 3) {
+    // Done 3 full cycles
+    document.getElementById('breathInstruction').textContent = 'Well done 🌿';
+    document.getElementById('breathCircle').className = 'breath-circle';
+    document.getElementById('breathCircle').innerHTML = 'Well<br>done! 🌿';
+    breathRunning = false;
+    return;
+  }
+
+  const p = BREATH_PHASES[phase % 3];
+  const cycle = Math.floor(phase / 3);
+
+  // Update pip
+  for (let i = 0; i < 3; i++) {
+    document.getElementById('pip' + (i+1)).classList.toggle('done', i <= cycle && phase % 3 === 0);
+  }
+  // Actually mark pips by completed cycles
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('pip' + i).classList.toggle('done', i <= cycle);
+  }
+
+  const circle = document.getElementById('breathCircle');
+  circle.className = 'breath-circle';
+  circle.innerHTML = p.label.replace('...','');
+  void circle.offsetWidth; // reflow
+  circle.classList.add(p.class);
+  document.getElementById('breathInstruction').textContent = p.label;
+
+  breathTimer = setTimeout(() => runBreathPhase(phase + 1), p.duration);
+}
+
+// ── STEP 3: COPING ──
+function selectCoping(btn) {
+  document.querySelectorAll('.coping-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedCoping = btn.dataset.coping;
+  document.getElementById('step3Next').disabled = false;
+}
+
+// ── STEP 4: LOCK ──
+function showLockStep() {
+  const paper = document.getElementById('worryPaper');
+  paper.textContent = '"' + worryText + '"';
+  paper.classList.remove('flying');
+  const box = document.getElementById('boxVisual');
+  box.classList.add('open');
+  box.classList.remove('locked');
+  document.getElementById('lockBtn').style.display = 'flex';
+}
+
+function lockWorry() {
+  const paper = document.getElementById('worryPaper');
+  const box = document.getElementById('boxVisual');
+
+  // Fly animation
+  paper.classList.add('flying');
+
+  setTimeout(() => {
+    box.classList.remove('open');
+  }, 400);
+
+  setTimeout(() => {
+    box.classList.add('locked');
+    worryCount++;
+    try { localStorage.setItem('sendsteps_worry_count', worryCount); } catch(e){}
+  }, 800);
+
+  setTimeout(() => {
+    goToStep(5);
+  }, 1200);
+}
+
+// ── STEP 5: CALM ──
+const CALM_RESPONSES = [
+  {
+    icon: '🌟',
+    message: 'That was really brave.',
+    body: 'It takes courage to face a worry and let it go. Your worry is locked away now — it can\'t follow you. You did something hard today, and that matters.',
+  },
+  {
+    icon: '🌈',
+    message: 'You did it — it\'s gone.',
+    body: 'Worries can feel really big inside our heads. But you wrote it down, took a breath, and let it go. That\'s a really powerful thing to do.',
+  },
+  {
+    icon: '💙',
+    message: 'Your worry is safe in the box.',
+    body: 'Sometimes worries need somewhere to go so our brain can rest. You\'ve put it away safely. Now your mind has a little more space for calm things.',
+  },
+  {
+    icon: '🦋',
+    message: 'You\'re stronger than your worry.',
+    body: 'Every time you lock a worry away, you remind yourself that you can handle hard feelings. The worry is gone. You\'re still here, and you\'re okay.',
+  },
+  {
+    icon: '⭐',
+    message: 'Look how well you did.',
+    body: 'Worrying is something everyone does — but not everyone knows what to do with worries. You do. You wrote it down and let it go. That\'s a really good skill.',
+  },
+  {
+    icon: '🌸',
+    message: 'That worry doesn\'t belong to you anymore.',
+    body: 'You gave it to the box. It\'s not yours to carry now. Take a slow breath, notice how your body feels, and know that you are safe right now.',
+  },
+];
+
+function showCalmStep() {
+  const r = CALM_RESPONSES[Math.floor(Math.random() * CALM_RESPONSES.length)];
+  document.getElementById('calmIcon').textContent = r.icon;
+  document.getElementById('calmMessage').textContent = r.message;
+  document.getElementById('calmBody').textContent = r.body;
+
+  const reminder = document.getElementById('copingReminder');
+  if (selectedCoping) {
+    reminder.style.display = 'block';
+    reminder.textContent = '💛 Remember: ' + selectedCoping;
+  } else {
+    reminder.style.display = 'none';
+  }
+
+  const count = document.getElementById('lockedCount');
+  count.textContent = worryCount === 1
+    ? '🔒 1 worry locked away so far'
+    : `🔒 ${worryCount} worries locked away so far`;
+}
+
+// ── START AGAIN ──
+function startAgain() {
+  if (breathTimer) clearTimeout(breathTimer);
+  breathRunning = false;
+  breathCycle = 0;
+  selectedCoping = '';
+  worryText = '';
+  document.getElementById('worryInput').value = '';
+  document.getElementById('charLeft').textContent = '400';
+  document.querySelectorAll('.coping-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('step3Next').disabled = true;
+  document.getElementById('breathCircle').className = 'breath-circle';
+  document.getElementById('breathCircle').innerHTML = 'Tap to<br>start';
+  document.getElementById('breathInstruction').textContent = '';
+  for (let i = 1; i <= 3; i++) document.getElementById('pip'+i).classList.remove('done');
+  goToStep(1);
+}
+</script>
+</body>
+</html>
