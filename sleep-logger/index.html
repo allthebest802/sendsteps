@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sleep Logger — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B0F1E;
+  --bg2:#0F1428;
+  --panel:#151C35;
+  --panel2:#1A2240;
+  --border:#2A3560;
+  --border2:#3A4878;
+  --indigo:#6B7FE8;
+  --indigo-d:#4A5CC8;
+  --indigo-l:rgba(107,127,232,0.15);
+  --indigo-gl:rgba(107,127,232,0.08);
+  --gold:#F0C060;
+  --gold-l:rgba(240,192,96,0.15);
+  --teal:#48C8A8;
+  --teal-l:rgba(72,200,168,0.15);
+  --rose:#E87878;
+  --rose-l:rgba(232,120,120,0.15);
+  --text:#E8EAF6;
+  --text2:#9AA8D8;
+  --text3:#5A6898;
+  --radius:12px;
+  --radius-lg:18px;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg:0 8px 48px rgba(0,0,0,0.5);
+  --glow:0 0 20px rgba(107,127,232,0.2);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
+button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:none}
+input,textarea,select{font-family:'Quicksand',sans-serif}
+
+/* Stars background */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 20% 10%,rgba(107,127,232,0.12) 0%,transparent 50%),
+             radial-gradient(ellipse at 80% 80%,rgba(72,200,168,0.08) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+.header{
+  position:relative;z-index:1;
+  background:linear-gradient(180deg,#0A0D1C,var(--bg2));
+  border-bottom:1px solid var(--border);
+  padding:32px 20px 28px;text-align:center;
+}
+.moon{font-size:3rem;display:block;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(240,192,96,0.6))}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;color:var(--text);margin-bottom:8px}
+.header p{font-size:0.85rem;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6;font-weight:500}
+
+/* ── NAV ── */
+.nav{position:relative;z-index:1;background:var(--bg2);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:900px;margin:0 auto;display:flex}
+.nav-tab{padding:12px 22px;color:var(--text3);font-size:0.85rem;font-weight:600;border-bottom:2px solid transparent;transition:all 0.2s;cursor:pointer}
+.nav-tab.active{color:var(--indigo);border-bottom-color:var(--indigo)}
+.nav-tab:hover{color:var(--text2)}
+
+/* ── MAIN ── */
+.main{max-width:900px;margin:0 auto;padding:24px 20px;position:relative;z-index:1}
+
+/* ── CHILD NAME BAR ── */
+.name-bar{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:14px 20px;
+  box-shadow:var(--shadow);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.name-bar label{font-size:0.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap}
+.name-bar input{
+  flex:1;min-width:160px;background:var(--panel2);border:1px solid var(--border2);
+  color:var(--text);border-radius:var(--radius);padding:8px 12px;
+  font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.2s;
+}
+.name-bar input:focus{border-color:var(--indigo)}
+
+/* ── LOG FORM ── */
+.log-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;
+  box-shadow:var(--shadow),var(--glow);margin-bottom:20px;
+}
+.card-title{
+  font-family:'Playfair Display',serif;font-size:1.1rem;
+  color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:8px;
+}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:540px){.form-grid{grid-template-columns:1fr}}
+
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px}
+.field input,.field select,.field textarea{
+  background:var(--panel2);border:1px solid var(--border2);
+  color:var(--text);border-radius:var(--radius);padding:9px 12px;
+  font-size:0.9rem;font-weight:600;outline:none;transition:border-color 0.2s;
+  color-scheme:dark;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--indigo)}
+.field textarea{min-height:72px;resize:vertical;line-height:1.5;grid-column:1/-1}
+.field select option{background:var(--panel2)}
+
+/* Mood picker */
+.mood-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.mood-btn{
+  padding:6px 12px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  border:1.5px solid var(--border2);background:var(--panel2);color:var(--text2);
+  cursor:pointer;transition:all 0.15s;
+}
+.mood-btn.active{border-color:var(--indigo);background:var(--indigo-l);color:var(--indigo)}
+
+/* Wetting toggle */
+.wet-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;border-radius:var(--radius);
+  border:1.5px solid var(--border2);background:var(--panel2);
+  cursor:pointer;transition:all 0.15s;
+}
+.wet-toggle.active{border-color:var(--rose);background:var(--rose-l)}
+.wet-dot{width:12px;height:12px;border-radius:50%;background:var(--border2);transition:all 0.2s}
+.wet-toggle.active .wet-dot{background:var(--rose)}
+.wet-label{font-size:0.82rem;font-weight:600;color:var(--text2)}
+.wet-toggle.active .wet-label{color:var(--rose)}
+
+.save-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:18px;padding:13px;border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--indigo-d),var(--indigo));
+  color:white;font-size:0.95rem;font-weight:700;
+  box-shadow:0 3px 16px rgba(107,127,232,0.4);transition:all 0.2s;
+}
+.save-btn:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(107,127,232,0.5)}
+
+/* ── SLEEP ENTRIES ── */
+.entry-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:18px 20px;
+  box-shadow:var(--shadow);margin-bottom:10px;
+  animation:fadeUp 0.25s ease;
+  display:flex;gap:14px;align-items:flex-start;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.entry-date-block{
+  background:linear-gradient(135deg,var(--indigo-d),var(--indigo));
+  border-radius:12px;padding:10px 12px;text-align:center;
+  flex-shrink:0;min-width:58px;box-shadow:0 2px 12px rgba(107,127,232,0.3);
+}
+.entry-day{font-size:1.5rem;font-weight:700;line-height:1;color:white}
+.entry-month{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.8)}
+
+.entry-info{flex:1}
+.entry-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.entry-hours{
+  font-size:1.1rem;font-weight:700;color:var(--gold);
+  filter:drop-shadow(0 0 6px rgba(240,192,96,0.4));
+}
+.entry-times{font-size:0.8rem;color:var(--text2);font-weight:600}
+.entry-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.chip{padding:2px 10px;border-radius:100px;font-size:0.72rem;font-weight:700}
+.chip-mood{background:var(--indigo-l);color:var(--indigo)}
+.chip-wake{background:var(--gold-l);color:var(--gold)}
+.chip-wet{background:var(--rose-l);color:var(--rose)}
+.chip-sleep{background:var(--teal-l);color:var(--teal)}
+.entry-notes{font-size:0.78rem;color:var(--text3);font-style:italic;margin-top:4px}
+.entry-actions{display:flex;gap:6px;margin-top:8px}
+.entry-action{
+  padding:4px 10px;border-radius:8px;font-size:0.72rem;font-weight:700;
+  border:1px solid var(--border2);color:var(--text3);background:transparent;transition:all 0.15s;
+}
+.entry-action:hover{border-color:var(--rose);color:var(--rose)}
+
+/* ── CHART ── */
+.chart-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;
+  box-shadow:var(--shadow),var(--glow);margin-bottom:20px;
+}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:180px;margin:16px 0 8px}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.bar-outer{flex:1;width:100%;display:flex;align-items:flex-end;position:relative}
+.bar-inner{
+  width:100%;border-radius:8px 8px 0 0;
+  background:linear-gradient(180deg,var(--indigo),var(--indigo-d));
+  box-shadow:0 0 12px rgba(107,127,232,0.3);
+  transition:height 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;min-height:4px;
+}
+.bar-inner.good{background:linear-gradient(180deg,var(--teal),#2A9A80)}
+.bar-inner.short{background:linear-gradient(180deg,var(--rose),#C05050)}
+.bar-inner.wet-bar::after{
+  content:'💧';position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  font-size:0.7rem;
+}
+.bar-hours{font-size:0.7rem;font-weight:700;color:var(--text2)}
+.bar-day{font-size:0.68rem;font-weight:700;color:var(--text3);text-align:center}
+
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:700;color:var(--text3)}
+.legend-dot{width:10px;height:10px;border-radius:3px}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:16px 18px;
+  box-shadow:var(--shadow);text-align:center;
+}
+.stat-icon{font-size:1.6rem;display:block;margin-bottom:6px}
+.stat-val{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);display:block;margin-bottom:2px}
+.stat-label{font-size:0.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty-icon{font-size:2.5rem;display:block;margin-bottom:10px;opacity:0.4}
+.empty p{font-size:0.88rem;font-weight:500}
+
+/* ── PRINT BAR ── */
+.print-bar{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:14px 20px;
+  box-shadow:var(--shadow);margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.print-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  border:1px solid var(--border2);color:var(--text2);background:transparent;
+  transition:all 0.15s;
+}
+.print-btn:hover{border-color:var(--indigo);color:var(--indigo)}
+.clear-btn{
+  padding:7px 16px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  border:1px solid var(--border2);color:var(--rose);background:transparent;transition:all 0.15s;
+}
+.clear-btn:hover{background:var(--rose-l)}
+
+/* ── WEEK SELECTOR ── */
+.week-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.week-btn{
+  padding:6px 14px;border-radius:100px;font-size:0.78rem;font-weight:700;
+  border:1px solid var(--border2);color:var(--text2);background:transparent;transition:all 0.15s;
+}
+.week-btn:hover{border-color:var(--indigo);color:var(--indigo)}
+.week-label{font-size:0.82rem;font-weight:700;color:var(--text);flex:1;text-align:center}
+
+@media print{
+  body{background:white!important;color:#111!important}
+  .nav,.log-card,.print-bar,.entry-actions,.name-bar{display:none!important}
+  .panel,.panel2{background:white!important;border-color:#ddd!important}
+  .text,.text2,.text3{color:#333!important}
+  .stat-val{color:#333!important}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="moon">🌙</span>
+  <h1>Sleep Pattern Logger</h1>
+  <p>Track your child's sleep each night — bedtimes, wakings, mood, and patterns over time.</p>
+</div>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-tab active" id="tabLog" onclick="showTab('log')">🌙 Log tonight</div>
+    <div class="nav-tab" id="tabHistory" onclick="showTab('history')">📋 History</div>
+    <div class="nav-tab" id="tabChart" onclick="showTab('chart')">📊 Chart & stats</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- CHILD NAME -->
+  <div class="name-bar">
+    <label>Child's name</label>
+    <input type="text" id="childName" placeholder="Enter name..." oninput="saveName()">
+    <span style="font-size:0.78rem;color:var(--text3);font-weight:600">Saved privately on this device</span>
+  </div>
+
+  <!-- LOG TAB -->
+  <div id="logSection">
+    <div class="log-card">
+      <div class="card-title">🌟 Log last night's sleep</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="logDate">
+        </div>
+
+        <div class="field">
+          <label>Bedtime</label>
+          <input type="time" id="logBedtime">
+        </div>
+
+        <div class="field">
+          <label>Wake time</label>
+          <input type="time" id="logWake">
+        </div>
+
+        <div class="field">
+          <label>Time to fall asleep</label>
+          <select id="logFallAsleep">
+            <option value="">Not sure</option>
+            <option value="5">Under 5 mins</option>
+            <option value="10">~10 mins</option>
+            <option value="20">~20 mins</option>
+            <option value="30">~30 mins</option>
+            <option value="45">~45 mins</option>
+            <option value="60">~1 hour</option>
+            <option value="90">1–2 hours</option>
+            <option value="120">Over 2 hours</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Night wakings</label>
+          <select id="logWakings">
+            <option value="0">None — slept through</option>
+            <option value="1">Once</option>
+            <option value="2">Twice</option>
+            <option value="3">3 times</option>
+            <option value="4">4+ times</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Mood on waking</label>
+          <div class="mood-row" id="moodRow">
+            <button type="button" class="mood-btn" data-mood="😄 Happy">😄 Happy</button>
+            <button type="button" class="mood-btn" data-mood="😐 Okay">😐 Okay</button>
+            <button type="button" class="mood-btn" data-mood="😴 Tired">😴 Tired</button>
+            <button type="button" class="mood-btn" data-mood="😠 Grumpy">😠 Grumpy</button>
+            <button type="button" class="mood-btn" data-mood="😢 Upset">😢 Upset</button>
+            <button type="button" class="mood-btn" data-mood="😰 Anxious">😰 Anxious</button>
+          </div>
+        </div>
+
+        <div class="field" style="grid-column:1/-1">
+          <label>Bed wetting?</label>
+          <button type="button" class="wet-toggle" id="wetToggle" onclick="toggleWet()">
+            <div class="wet-dot"></div>
+            <span class="wet-label">Tap to mark as yes</span>
+          </button>
+        </div>
+
+        <div class="field" style="grid-column:1/-1">
+          <label>Notes — what happened today / anything that may have affected sleep</label>
+          <textarea id="logNotes" placeholder="e.g. Big day at school, worried about tomorrow, had a late snack..."></textarea>
+        </div>
+
+      </div>
+      <button class="save-btn" onclick="saveEntry()">💾 Save this night</button>
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div id="historySection" style="display:none">
+    <div class="print-bar">
+      <span style="font-size:0.82rem;font-weight:600;color:var(--text2)">All sleep entries</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="print-btn" onclick="window.print()">🖨️ Print summary</button>
+        <button class="clear-btn" onclick="clearAll()">Clear all data</button>
+      </div>
+    </div>
+    <div id="entryList"></div>
+  </div>
+
+  <!-- CHART TAB -->
+  <div id="chartSection" style="display:none">
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="chart-card">
+      <div class="card-title">📊 Sleep duration — last 7 nights</div>
+      <div class="week-row">
+        <button class="week-btn" onclick="changeWeek(-1)">← Earlier</button>
+        <div class="week-label" id="weekLabel"></div>
+        <button class="week-btn" onclick="changeWeek(1)">Later →</button>
+      </div>
+      <div class="chart-bars" id="chartBars"></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>9+ hrs (great)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--indigo)"></div>7–9 hrs (good)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Under 7 hrs (short)</div>
+        <div class="legend-item">💧 Bed wetting</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'sendsteps_sleep_v1';
+const NAME_KEY = 'sendsteps_sleep_name';
+let entries = [];
+let selectedMood = '';
+let bedWet = false;
+let weekOffset = 0;
+
+// ── LOAD ──
+function load() {
+  try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { entries = []; }
+  const name = localStorage.getItem(NAME_KEY) || '';
+  document.getElementById('childName').value = name;
+}
+
+function saveName() {
+  localStorage.setItem(NAME_KEY, document.getElementById('childName').value);
+}
+
+function saveData() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch(e) {}
+}
+
+// ── INIT FORM ──
+function initForm() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('logDate').value = today;
+  document.getElementById('logBedtime').value = '20:00';
+  document.getElementById('logWake').value = '07:00';
+}
+
+// ── TABS ──
+function showTab(tab) {
+  ['log','history','chart'].forEach(t => {
+    document.getElementById(t+'Section').style.display = t === tab ? 'block' : 'none';
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t === tab);
+  });
+  if (tab === 'history') renderHistory();
+  if (tab === 'chart') { renderChart(); renderStats(); }
+}
+
+// ── MOOD ──
+document.querySelectorAll('.mood-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    selectedMood = this.dataset.mood;
+  });
+});
+
+// ── WET TOGGLE ──
+function toggleWet() {
+  bedWet = !bedWet;
+  const btn = document.getElementById('wetToggle');
+  btn.classList.toggle('active', bedWet);
+  btn.querySelector('.wet-label').textContent = bedWet ? 'Yes — bed was wet' : 'Tap to mark as yes';
+}
+
+// ── CALC HOURS ──
+function calcHours(bedtime, wake) {
+  if (!bedtime || !wake) return null;
+  const [bh, bm] = bedtime.split(':').map(Number);
+  const [wh, wm] = wake.split(':').map(Number);
+  let mins = (wh * 60 + wm) - (bh * 60 + bm);
+  if (mins < 0) mins += 24 * 60; // next day
+  return Math.round(mins / 6) / 10; // hours to 1dp
+}
+
+// ── SAVE ENTRY ──
+function saveEntry() {
+  const date = document.getElementById('logDate').value;
+  if (!date) { alert('Please enter a date.'); return; }
+
+  const bedtime = document.getElementById('logBedtime').value;
+  const wake = document.getElementById('logWake').value;
+  const hours = calcHours(bedtime, wake);
+
+  const entry = {
+    id: Date.now().toString(36),
+    date,
+    bedtime,
+    wake,
+    hours,
+    fallAsleep: document.getElementById('logFallAsleep').value,
+    wakings: parseInt(document.getElementById('logWakings').value) || 0,
+    mood: selectedMood,
+    bedWet,
+    notes: document.getElementById('logNotes').value.trim(),
+  };
+
+  // Replace if same date exists
+  const idx = entries.findIndex(e => e.date === date);
+  if (idx >= 0) {
+    if (!confirm('You already have an entry for this date. Replace it?')) return;
+    entries[idx] = entry;
+  } else {
+    entries.push(entry);
+  }
+
+  entries.sort((a, b) => b.date.localeCompare(a.date));
+  saveData();
+
+  // Reset form
+  selectedMood = '';
+  bedWet = false;
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('wetToggle').classList.remove('active');
+  document.getElementById('wetToggle').querySelector('.wet-label').textContent = 'Tap to mark as yes';
+  document.getElementById('logNotes').value = '';
+  document.getElementById('logFallAsleep').value = '';
+  document.getElementById('logWakings').value = '0';
+
+  // Flash confirmation
+  const btn = document.querySelector('.save-btn');
+  btn.textContent = '✅ Saved!';
+  setTimeout(() => btn.textContent = '💾 Save this night', 2000);
+}
+
+// ── RENDER HISTORY ──
+function renderHistory() {
+  const list = document.getElementById('entryList');
+  if (!entries.length) {
+    list.innerHTML = `<div class="empty"><span class="empty-icon">🌙</span><p>No sleep entries yet.<br>Go to <strong>Log tonight</strong> to add your first entry.</p></div>`;
+    return;
+  }
+  list.innerHTML = entries.map(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    const dayNum = d.getDate();
+    const month = d.toLocaleDateString('en-GB', {month:'short'}).toUpperCase();
+    const chips = [
+      e.mood ? `<span class="chip chip-mood">${e.mood}</span>` : '',
+      e.wakings > 0 ? `<span class="chip chip-wake">🌙 ${e.wakings} waking${e.wakings > 1 ? 's' : ''}</span>` : '<span class="chip chip-sleep">💤 Slept through</span>',
+      e.fallAsleep ? `<span class="chip chip-sleep">⏱️ ${e.fallAsleep} mins to sleep</span>` : '',
+      e.bedWet ? `<span class="chip chip-wet">💧 Bed wet</span>` : '',
+    ].filter(Boolean).join('');
+    return `<div class="entry-card">
+      <div class="entry-date-block">
+        <div class="entry-day">${dayNum}</div>
+        <div class="entry-month">${month}</div>
+      </div>
+      <div class="entry-info">
+        <div class="entry-top">
+          ${e.hours !== null ? `<span class="entry-hours">⭐ ${e.hours}h</span>` : ''}
+          ${e.bedtime && e.wake ? `<span class="entry-times">${e.bedtime} → ${e.wake}</span>` : ''}
+        </div>
+        <div class="entry-chips">${chips}</div>
+        ${e.notes ? `<div class="entry-notes">📝 ${e.notes}</div>` : ''}
+        <div class="entry-actions">
+          <button class="entry-action" onclick="deleteEntry('${e.id}')">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteEntry(id) {
+  if (!confirm('Delete this entry?')) return;
+  entries = entries.filter(e => e.id !== id);
+  saveData();
+  renderHistory();
+}
+
+function clearAll() {
+  if (!confirm('Delete ALL sleep data? This cannot be undone.')) return;
+  entries = [];
+  saveData();
+  renderHistory();
+}
+
+// ── CHART ──
+let currentWeekStart = 0;
+
+function changeWeek(dir) {
+  weekOffset += dir;
+  renderChart();
+}
+
+function getWeekDates() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const end = new Date(today);
+  end.setDate(today.getDate() - weekOffset * 7);
+  const start = new Date(end);
+  start.setDate(end.getDate() - 6);
+  return { start, end };
+}
+
+function renderChart() {
+  const { start, end } = getWeekDates();
+
+  // Label
+  const fmt = d => d.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+  document.getElementById('weekLabel').textContent = `${fmt(start)} – ${fmt(end)}`;
+
+  // Build 7 days
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    const str = d.toISOString().split('T')[0];
+    const entry = entries.find(e => e.date === str);
+    days.push({ date: d, str, entry });
+  }
+
+  const maxH = 12;
+  const bars = document.getElementById('chartBars');
+  bars.innerHTML = days.map(({ date, entry }) => {
+    const h = entry?.hours ?? 0;
+    const pct = h > 0 ? Math.min(100, (h / maxH) * 100) : 0;
+    const cls = h >= 9 ? 'good' : h >= 7 ? '' : h > 0 ? 'short' : '';
+    const wetClass = entry?.bedWet ? ' wet-bar' : '';
+    const dayName = date.toLocaleDateString('en-GB', {weekday:'short'});
+    return `<div class="bar-wrap">
+      <div class="bar-hours">${h > 0 ? h+'h' : '—'}</div>
+      <div class="bar-outer">
+        <div class="bar-inner ${cls}${wetClass}" style="height:${pct}%"></div>
+      </div>
+      <div class="bar-day">${dayName}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── STATS ──
+function renderStats() {
+  const grid = document.getElementById('statsGrid');
+  if (!entries.length) {
+    grid.innerHTML = `<div class="stat-card"><span class="stat-icon">🌙</span><span class="stat-val">—</span><span class="stat-label">No data yet</span></div>`;
+    return;
+  }
+
+  const withHours = entries.filter(e => e.hours !== null);
+  const avg = withHours.length ? (withHours.reduce((s, e) => s + e.hours, 0) / withHours.length).toFixed(1) : '—';
+  const best = withHours.length ? Math.max(...withHours.map(e => e.hours)) : '—';
+  const worst = withHours.length ? Math.min(...withHours.map(e => e.hours)) : '—';
+  const wetNights = entries.filter(e => e.bedWet).length;
+  const sleptThrough = entries.filter(e => e.wakings === 0).length;
+
+  const bestEntry = withHours.find(e => e.hours === best);
+  const worstEntry = withHours.find(e => e.hours === worst);
+
+  function fmtDate(str) {
+    if (!str) return '';
+    const d = new Date(str + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+  }
+
+  grid.innerHTML = `
+    <div class="stat-card"><span class="stat-icon">⭐</span><span class="stat-val">${avg}h</span><span class="stat-label">Average sleep</span></div>
+    <div class="stat-card"><span class="stat-icon">🏆</span><span class="stat-val">${best}h</span><span class="stat-label">Best night${bestEntry ? ' ('+fmtDate(bestEntry.date)+')' : ''}</span></div>
+    <div class="stat-card"><span class="stat-icon">😴</span><span class="stat-val">${worst}h</span><span class="stat-label">Shortest night${worstEntry ? ' ('+fmtDate(worstEntry.date)+')' : ''}</span></div>
+    <div class="stat-card"><span class="stat-icon">💤</span><span class="stat-val">${sleptThrough}</span><span class="stat-label">Slept through nights</span></div>
+    <div class="stat-card"><span class="stat-icon">💧</span><span class="stat-val">${wetNights}</span><span class="stat-label">Bed wetting nights</span></div>
+    <div class="stat-card"><span class="stat-icon">📅</span><span class="stat-val">${entries.length}</span><span class="stat-label">Nights logged</span></div>
+  `;
+}
+
+// ── INIT ──
+load();
+initForm();
+</script>
+</body>
+</html>
