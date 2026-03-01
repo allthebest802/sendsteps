@@ -1,610 +1,647 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Energy Battery Tracker (SEND)</title>
-  <style>
-    :root{
-      --bg:#f7fbff;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#475569;
-      --line:#dbeafe;
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Social Battery Tracker — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F6F9F7;
+  --surface:#FFFFFF;
+  --surface2:#F2F7F4;
+  --border:#D4E6DC;
+  --border2:#B8D4C4;
+  --sage:#5A9E7A;
+  --sage-d:#3D7A5A;
+  --sage-l:#D8EFE3;
+  --sage-ll:#EEF8F2;
+  --amber:#E8963A;
+  --amber-l:#FDF0DC;
+  --rose:#D4727A;
+  --rose-l:#FAEAEB;
+  --rose-d:#A84850;
+  --sky:#5A9EC8;
+  --sky-l:#DCF0FA;
+  --teal:#4ABCB0;
+  --teal-l:#D8F4F0;
+  --text:#1E3228;
+  --text2:#3D5E4A;
+  --text3:#7A9E8A;
+  --good:#48C880;
+  --warn:#E8C03A;
+  --low:#D4727A;
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 3px 16px rgba(30,50,40,0.08);
+  --shadow-lg:0 6px 32px rgba(30,50,40,0.12);
+}
+html{font-size:16px}
+body{
+  font-family:'Nunito',sans-serif;
+  background:
+    radial-gradient(700px 500px at 0% 0%,rgba(90,158,122,0.10),transparent 60%),
+    radial-gradient(600px 400px at 100% 100%,rgba(74,188,176,0.08),transparent 60%),
+    var(--bg);
+  color:var(--text);min-height:100vh;padding-bottom:60px;
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+input,textarea,select{font-family:'Nunito',sans-serif}
 
-      --primary:#0ea5e9;
-      --primary2:#0284c7;
+/* ── HEADER ── */
+.header{
+  max-width:1160px;margin:0 auto;
+  padding:20px 20px 14px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  justify-content:space-between;
+}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-icon{font-size:2.2rem;flex-shrink:0}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3vw,1.8rem);font-weight:600;color:var(--text);margin-bottom:4px}
+.header p{color:var(--text2);font-size:0.82rem;font-weight:600;line-height:1.55;max-width:480px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-      --good:#22c55e;
-      --warn:#f59e0b;
-      --low:#ef4444;
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:100px;font-size:0.82rem;font-weight:700;transition:all 0.15s;white-space:nowrap}
+.btn-primary{background:var(--sage);color:white;box-shadow:0 2px 10px rgba(90,158,122,0.3)}
+.btn-primary:hover{background:var(--sage-d);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--rose-l);color:var(--rose);border:1.5px solid #F0C8CC}
+.btn-danger:hover{background:#F8D8DA}
+.btn-sm{padding:6px 14px;font-size:0.78rem}
+.btn-add{
+  padding:9px 16px;border-radius:var(--radius);font-size:0.82rem;font-weight:700;
+  transition:all 0.15s;
+}
+.btn-add-drain{background:var(--rose-l);color:var(--rose-d);border:1.5px solid #F0C8CC}
+.btn-add-drain:hover{background:#F8D8DA}
+.btn-add-charge{background:var(--sage-ll);color:var(--sage-d);border:1.5px solid var(--sage-l)}
+.btn-add-charge:hover{background:var(--sage-l)}
 
-      --shadow: 0 10px 24px rgba(15,23,42,.10);
-      --radius:16px;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family:var(--font);
-      background: radial-gradient(1100px 650px at 20% 0%, #eef6ff 0%, var(--bg) 60%, #fff 100%) fixed;
-      color:var(--text);
-    }
-    .wrap{ max-width:1100px; margin:24px auto 60px; padding:0 14px; }
-    header{
-      display:flex; align-items:flex-start; justify-content:space-between;
-      gap:14px; flex-wrap:wrap;
-    }
-    h1{ margin:0 0 6px; font-size: clamp(22px, 2.6vw, 32px); }
-    .sub{ margin:0; color:var(--muted); font-size:14px; max-width:75ch; }
+/* ── LAYOUT ── */
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:940px){.wrap{grid-template-columns:1fr}}
 
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
-    button{
-      border:1px solid rgba(2,132,199,.25);
-      background: linear-gradient(180deg, var(--primary), var(--primary2));
-      color:white;
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      box-shadow: 0 10px 20px rgba(2,132,199,.18);
-      font-weight:900;
-      font-size:14px;
-    }
-    button:hover{ filter:brightness(1.03); }
-    button:active{ transform: translateY(1px); }
-    button.secondary{
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--line);
-      box-shadow:none;
-    }
-    button.danger{
-      background:#fff;
-      color:#b91c1c;
-      border:1px solid rgba(239,68,68,.35);
-      box-shadow:none;
-    }
+/* ── CARDS ── */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px}
+.card-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:14px;
-      margin-top:14px;
-    }
-    @media (max-width: 920px){ .grid{ grid-template-columns: 1fr; } }
+/* ── FORM ── */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3)}
+.form-input{
+  width:100%;padding:9px 13px;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);color:var(--text);font-size:0.88rem;font-weight:600;
+  outline:none;transition:border-color 0.15s;
+}
+.form-input:focus{border-color:var(--sage);background:white}
+.form-input::placeholder{color:var(--text3);font-weight:500}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
-    }
+/* ── BATTERY ── */
+.battery-section{margin-bottom:20px}
+.battery-outer{
+  width:100%;height:52px;
+  border:3px solid var(--text);border-radius:12px;
+  background:var(--surface2);
+  position:relative;overflow:hidden;margin:10px 0 6px;
+}
+.battery-outer::after{
+  content:'';position:absolute;right:-12px;top:14px;
+  width:14px;height:24px;
+  border:3px solid var(--text);border-left:none;
+  border-radius:0 7px 7px 0;background:var(--surface2);
+}
+.battery-fill{
+  height:100%;width:65%;
+  border-radius:8px 0 0 8px;
+  background:linear-gradient(90deg,var(--good),#86efac);
+  transition:width 0.4s cubic-bezier(.4,0,.2,1),background 0.3s;
+  position:relative;
+}
+.battery-fill::after{
+  content:attr(data-pct);
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  font-size:0.9rem;font-weight:800;color:rgba(255,255,255,0.9);
+  text-shadow:0 1px 3px rgba(0,0,0,0.2);pointer-events:none;
+}
+.battery-fill.warn{background:linear-gradient(90deg,var(--warn),#fde68a)}
+.battery-fill.warn::after{color:rgba(50,30,0,0.7)}
+.battery-fill.low{background:linear-gradient(90deg,var(--low),#fca5a5)}
+.battery-labels{display:flex;justify-content:space-between;font-size:0.72rem;font-weight:700;color:var(--text3)}
+.level-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.level-row input[type=range]{
+  flex:1;-webkit-appearance:none;height:8px;border-radius:100px;
+  background:linear-gradient(90deg,var(--sage-l),var(--amber-l),var(--rose-l));
+  border:none;cursor:pointer;outline:none;
+}
+.level-row input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:white;border:3px solid var(--border2);cursor:pointer;
+  box-shadow:var(--shadow);transition:transform 0.1s;
+}
+.level-row input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.level-badge{
+  font-size:0.82rem;font-weight:800;padding:4px 12px;border-radius:100px;
+  min-width:52px;text-align:center;background:var(--surface2);
+  border:1.5px solid var(--border);color:var(--text2);transition:all 0.2s;
+}
 
-    label{ display:block; font-size:12px; color:var(--muted); margin: 0 0 6px; font-weight:800; }
-    input[type="text"], textarea, select{
-      width:100%;
-      background:#f8fafc;
-      border:1px solid var(--line);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      outline:none;
-      font-family:var(--font);
-    }
-    textarea{ min-height: 80px; resize: vertical; }
-    input:focus, textarea:focus, select:focus{
-      border-color: rgba(14,165,233,.55);
-      box-shadow: 0 0 0 4px rgba(14,165,233,.14);
-    }
+/* ── DRAINS & CHARGERS ── */
+.dc-section{margin-bottom:20px}
+.dc-label{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.dc-label.drain{color:var(--rose-d)}
+.dc-label.charge{color:var(--sage-d)}
 
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 650px){ .row{ grid-template-columns: 1fr; } }
+.preset-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.preset-chip{
+  padding:4px 11px;border-radius:100px;font-size:0.76rem;font-weight:700;
+  cursor:pointer;transition:all 0.13s;border:1.5px solid;user-select:none;
+}
+.preset-chip.drain{background:var(--rose-l);border-color:#F0C8CC;color:var(--rose-d)}
+.preset-chip.drain:hover{background:#F8D8DA;border-color:var(--rose)}
+.preset-chip.drain.added{background:var(--rose);color:white;border-color:var(--rose-d)}
+.preset-chip.charge{background:var(--sage-ll);border-color:var(--sage-l);color:var(--sage-d)}
+.preset-chip.charge:hover{background:var(--sage-l);border-color:var(--sage)}
+.preset-chip.charge.added{background:var(--sage);color:white;border-color:var(--sage-d)}
 
-    .adder{
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:10px;
-      align-items:end;
-    }
+.custom-row{display:flex;gap:8px;margin-bottom:8px}
+.custom-row .form-input{flex:1}
 
-    .pillbar{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-weight:800;
-      font-size:13px;
-      color:var(--text);
-    }
-    .pill small{ color:var(--muted); font-weight:900; }
-    .pill .x{
-      all:unset;
-      cursor:pointer;
-      font-weight:900;
-      padding:2px 6px;
-      border-radius:8px;
-      color:var(--muted);
-    }
-    .pill .x:hover{ background: rgba(15,23,42,.06); }
+.pill-bar{display:flex;flex-wrap:wrap;gap:6px;min-height:10px}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:100px;font-size:0.78rem;font-weight:700;
+}
+.pill.drain{background:var(--rose-l);border:1.5px solid #F0C8CC;color:var(--rose-d)}
+.pill.charge{background:var(--sage-ll);border:1.5px solid var(--sage-l);color:var(--sage-d)}
+.pill-x{all:unset;cursor:pointer;font-size:0.9rem;opacity:0.6;transition:opacity 0.1s}
+.pill-x:hover{opacity:1}
 
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 650px){ .split{ grid-template-columns: 1fr; } }
+/* ── PREVIEW PANEL ── */
+.preview-battery-outer{
+  width:100%;height:64px;
+  border:3px solid var(--text);border-radius:14px;
+  background:var(--surface2);
+  position:relative;overflow:hidden;margin:10px 0 6px;
+}
+.preview-battery-outer::after{
+  content:'';position:absolute;right:-13px;top:18px;
+  width:15px;height:28px;
+  border:3px solid var(--text);border-left:none;
+  border-radius:0 8px 8px 0;background:var(--surface2);
+}
+.preview-fill{
+  height:100%;border-radius:10px 0 0 10px;
+  background:linear-gradient(90deg,var(--good),#86efac);
+  transition:width 0.4s cubic-bezier(.4,0,.2,1),background 0.3s;
+  position:relative;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;
+}
+.preview-fill.warn{background:linear-gradient(90deg,var(--warn),#fde68a)}
+.preview-fill.low{background:linear-gradient(90deg,var(--low),#fca5a5)}
+.preview-pct{font-size:1rem;font-weight:800;color:rgba(255,255,255,0.95);text-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.preview-pct.dark{color:rgba(50,30,0,0.75)}
 
-    /* Battery display */
-    .batteryBox{
-      border:1px solid #e5e7eb;
-      border-radius:14px;
-      padding:14px;
-      background:#fff;
-    }
-    .batteryTop{
-      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
-      border-bottom:1px solid #e5e7eb;
-      padding-bottom:10px; margin-bottom:10px;
-    }
-    .batteryTop h2{ margin:0; font-size:18px; }
-    .meta{ margin:4px 0 0; color:#374151; font-size:12px; }
+.preview-lists{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:560px){.preview-lists{grid-template-columns:1fr}}
+.preview-list-title{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:7px}
+.preview-list-title.drain{color:var(--rose-d)}
+.preview-list-title.charge{color:var(--sage-d)}
+.preview-list ul{list-style:none;padding:0}
+.preview-list li{font-size:0.82rem;font-weight:600;color:var(--text2);padding:3px 0;display:flex;align-items:center;gap:6px}
+.preview-list li::before{content:'•';font-weight:900}
+.preview-list li.drain::before{color:var(--rose)}
+.preview-list li.charge::before{color:var(--sage)}
 
-    .battery{
-      width:100%;
-      max-width:520px;
-      height:54px;
-      border:2px solid #111827;
-      border-radius:12px;
-      position:relative;
-      overflow:hidden;
-      background:#f3f4f6;
-      margin: 10px 0 6px;
-    }
-    .battery::after{
-      content:"";
-      position:absolute;
-      right:-10px; top:16px;
-      width:16px; height:22px;
-      border:2px solid #111827;
-      border-left:none;
-      border-radius:0 8px 8px 0;
-      background:#f3f4f6;
-    }
-    .fill{
-      height:100%;
-      width: 60%;
-      background: linear-gradient(90deg, var(--good), #86efac);
-      transition: width .25s ease;
-    }
-    .fill.warn{
-      background: linear-gradient(90deg, var(--warn), #fcd34d);
-    }
-    .fill.low{
-      background: linear-gradient(90deg, var(--low), #fca5a5);
-    }
-    .batteryLabel{
-      font-weight:900;
-      font-size:13px;
-      color:#111827;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-    }
+.preview-low-plan{
+  background:var(--amber-l);border:1.5px solid #F0D8A0;border-radius:var(--radius);
+  padding:10px 14px;margin:12px 0;
+}
+.preview-low-plan .plp-label{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--amber);margin-bottom:3px}
+.preview-low-plan .plp-text{font-size:0.88rem;font-weight:700;color:var(--text2)}
 
-    .levelRow{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      margin-top:10px;
-      flex-wrap:wrap;
-    }
-    .levelRow input[type="range"]{
-      width:min(520px, 100%);
-      accent-color: var(--primary);
-    }
+.preview-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.preview-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:var(--text)}
+.preview-day-badge{padding:4px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);color:var(--text2)}
 
-    .lists{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 650px){ .lists{ grid-template-columns: 1fr; } }
+.print-hint{font-size:0.72rem;font-weight:600;color:var(--text3);margin-top:12px;text-align:center}
 
-    .boxTitle{
-      display:flex; align-items:center; justify-content:space-between;
-      margin:0 0 8px;
-      font-size:13px;
-      text-transform:uppercase;
-      letter-spacing:.6px;
-    }
-    .tag{
-      display:inline-flex; align-items:center; gap:8px;
-      font-size:12px; font-weight:900;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid #e5e7eb;
-      background:#fff;
-    }
-    .hint{ margin:10px 0 0; color:var(--muted); font-size:12px; }
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1.5px solid var(--border);margin:16px 0}
 
-    /* Print */
-    @media print{
-      header, .grid .card:first-child, .actions, .hint { display:none !important; }
-      body{ background:#fff; }
-      .wrap{ margin:0; max-width:none; padding:0; }
-      .grid{ grid-template-columns: 1fr; }
-      .card{ border:none; box-shadow:none; padding:0; }
-      .batteryBox{ border:none; padding:0; }
-    }
-  </style>
+/* ── PRINT ── */
+@media print{
+  .no-print{display:none!important}
+  body{background:#fff!important}
+  .wrap{grid-template-columns:1fr!important}
+  .card:first-child{display:none!important}
+  .card{border:none!important;box-shadow:none!important}
+  @page{size:A4;margin:12mm}
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Energy Battery Tracker</h1>
-        <p class="sub">
-          A simple way to explain “running low” before it becomes a meltdown.
-          Add <b>drains</b> and <b>chargers</b>, set today’s battery size, and print.
-        </p>
-      </div>
-      <div class="actions">
-        <button id="btnPrint">Print</button>
-        <button id="btnReset" class="danger">Reset</button>
-      </div>
-    </header>
 
-    <div class="grid">
-      <!-- Builder -->
-      <section class="card" aria-label="Builder">
-        <div class="row">
-          <div>
-            <label for="childName">Name (optional)</label>
-            <input id="childName" type="text" placeholder="e.g., Andreas" />
-          </div>
-          <div>
-            <label for="batterySize">Battery size for today</label>
-            <select id="batterySize">
-              <option value="small">Small day</option>
-              <option value="medium" selected>Medium day</option>
-              <option value="big">Big day</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="schoolDay">Day type (optional)</label>
-            <select id="schoolDay">
-              <option value="">Choose…</option>
-              <option value="school">School day</option>
-              <option value="weekend">Weekend</option>
-              <option value="appointment">Appointment day</option>
-              <option value="travel">Travel day</option>
-              <option value="new">New/Change day</option>
-            </select>
-          </div>
-          <div>
-            <label for="lowPlan">When battery is low, try…</label>
-            <input id="lowPlan" type="text" placeholder="e.g., snack + quiet room + headphones" />
-          </div>
-        </div>
-
-        <div class="split">
-          <div>
-            <label for="drainInput">Add an energy drain</label>
-            <div class="adder">
-              <input id="drainInput" type="text" placeholder="e.g., PE, assembly, noisy classroom" />
-              <button id="addDrain" class="secondary">Add</button>
-            </div>
-            <div class="pillbar" id="drains"></div>
-            <p class="hint">Keep these short. They’re just cues, not a diary.</p>
-          </div>
-
-          <div>
-            <label for="chargeInput">Add an energy charger</label>
-            <div class="adder">
-              <input id="chargeInput" type="text" placeholder="e.g., alone time, music, snack, walk" />
-              <button id="addCharge" class="secondary">Add</button>
-            </div>
-            <div class="pillbar" id="charges"></div>
-            <p class="hint">Chargers are the things that help recovery.</p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div>
-            <label for="notes">Notes (optional)</label>
-            <textarea id="notes" placeholder="e.g., Big change today. Keep demands low after school."></textarea>
-          </div>
-          <div>
-            <label for="level">Current energy level</label>
-            <div class="levelRow">
-              <input id="level" type="range" min="0" max="100" value="65" />
-              <span class="tag" id="levelTag">65%</span>
-            </div>
-            <p class="hint">You can adjust this any time. The printout shows the current level.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Printable Preview -->
-      <aside class="card" aria-label="Printable Preview">
-        <div class="batteryBox" id="printArea">
-          <div class="batteryTop">
-            <div>
-              <h2 id="title">Energy Battery</h2>
-              <div class="meta" id="subtitle">A quick visual to help notice when energy is running low.</div>
-            </div>
-            <div class="meta" style="text-align:right;">
-              Updated: <span id="date"></span>
-            </div>
-          </div>
-
-          <div class="batteryLabel">
-            <span id="sizeLabel">Battery size: Medium day</span>
-            <span id="dayLabel"></span>
-          </div>
-
-          <div class="battery" aria-label="Battery visual">
-            <div class="fill" id="fill"></div>
-          </div>
-
-          <div class="batteryLabel">
-            <span>Current level</span>
-            <span id="levelOut">65%</span>
-          </div>
-
-          <div class="lists">
-            <div>
-              <div class="boxTitle">
-                <span>Drains</span>
-                <span class="tag">Things that use energy</span>
-              </div>
-              <ul id="drainList"></ul>
-            </div>
-            <div>
-              <div class="boxTitle">
-                <span>Chargers</span>
-                <span class="tag">Things that restore energy</span>
-              </div>
-              <ul id="chargeList"></ul>
-            </div>
-          </div>
-
-          <div style="margin-top:12px; border:1px solid #e5e7eb; border-radius:12px; padding:10px;">
-            <div class="boxTitle" style="margin:0 0 6px;">
-              <span>When low, try…</span>
-              <span class="tag">Simple plan</span>
-            </div>
-            <div class="meta" id="lowPlanOut">Snack + quiet room + headphones</div>
-          </div>
-
-          <div style="margin-top:12px;">
-            <div class="boxTitle" style="margin:0 0 6px;">
-              <span>Notes</span>
-              <span class="tag">Optional</span>
-            </div>
-            <div class="meta" id="notesOut">—</div>
-          </div>
-        </div>
-
-        <p class="hint">
-          Printing tip: use “Fit to page” if your printer crops the sides.
-        </p>
-      </aside>
+<!-- HEADER -->
+<div class="header no-print">
+  <div class="header-left">
+    <div class="header-icon">🔋</div>
+    <div>
+      <h1>Social Battery Tracker</h1>
+      <p>Help children (and adults!) understand their energy — before it runs out. Stays on your device.</p>
     </div>
   </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" id="btnPrint">🖨️ Print</button>
+    <button class="btn btn-danger btn-sm" id="btnReset">↺ Reset</button>
+  </div>
+</div>
 
-  <script>
-    const STORAGE_KEY = "sendsteps_energy_battery_v1";
-    const $ = (id) => document.getElementById(id);
+<div class="wrap">
 
-    const state = {
-      childName: "",
-      batterySize: "medium",
-      schoolDay: "",
-      level: 65,
-      drains: [],
-      charges: [],
-      lowPlan: "Snack + quiet room + headphones",
-      notes: ""
-    };
+  <!-- LEFT: BUILDER -->
+  <div class="no-print">
 
-    function save(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
+    <!-- BASICS -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">⚙️ Setup</div>
+      <div class="form-row">
+        <div class="field">
+          <label for="childName">Name (optional)</label>
+          <input id="childName" type="text" placeholder="e.g. Jamie" class="form-input">
+        </div>
+        <div class="field">
+          <label for="batterySize">Battery size today</label>
+          <select id="batterySize" class="form-input">
+            <option value="small">🪫 Small day</option>
+            <option value="medium" selected>🔋 Medium day</option>
+            <option value="big">⚡ Big day</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="schoolDay">Day type</label>
+          <select id="schoolDay" class="form-input">
+            <option value="">Choose…</option>
+            <option value="school">🏫 School day</option>
+            <option value="weekend">🏡 Weekend</option>
+            <option value="holiday">🌴 Holiday</option>
+            <option value="appointment">🏥 Appointment day</option>
+            <option value="travel">🚗 Travel day</option>
+            <option value="new">⚡ New / change day</option>
+            <option value="party">🎉 Party / event</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="lowPlan">When low, try…</label>
+          <input id="lowPlan" type="text" placeholder="e.g. snack + quiet room + headphones" class="form-input">
+        </div>
+      </div>
 
-    function load(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return;
-        const s = JSON.parse(raw);
-        if(!s || typeof s !== "object") return;
+      <!-- Energy level -->
+      <div class="field" style="margin-bottom:0">
+        <label>Current energy level</label>
+        <div class="battery-section" style="margin-bottom:0">
+          <div class="battery-outer">
+            <div class="battery-fill" id="batteryFill" data-pct="65%"></div>
+          </div>
+          <div class="level-row">
+            <input type="range" id="level" min="0" max="100" value="65">
+            <div class="level-badge" id="levelBadge">65%</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        state.childName = s.childName || "";
-        state.batterySize = s.batterySize || "medium";
-        state.schoolDay = s.schoolDay || "";
-        state.level = Number.isFinite(+s.level) ? Math.max(0, Math.min(100, +s.level)) : 65;
-        state.drains = Array.isArray(s.drains) ? s.drains.filter(x=>typeof x==="string").slice(0,50) : [];
-        state.charges = Array.isArray(s.charges) ? s.charges.filter(x=>typeof x==="string").slice(0,50) : [];
-        state.lowPlan = s.lowPlan || "Snack + quiet room + headphones";
-        state.notes = s.notes || "";
-      }catch{}
-    }
+    <!-- DRAINS -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:var(--rose-d)">⚡ Energy Drains</div>
+      <div class="dc-label drain">Quick add — tap to add a drain</div>
+      <div class="preset-chips" id="drainPresets">
+        <span class="preset-chip drain" data-val="Loud noises">🔊 Loud noises</span>
+        <span class="preset-chip drain" data-val="Crowds">👥 Crowds</span>
+        <span class="preset-chip drain" data-val="PE lesson">🏃 PE lesson</span>
+        <span class="preset-chip drain" data-val="Assembly">📢 Assembly</span>
+        <span class="preset-chip drain" data-val="Homework">📚 Homework</span>
+        <span class="preset-chip drain" data-val="Transitions">🔄 Transitions</span>
+        <span class="preset-chip drain" data-val="Unexpected changes">⚡ Unexpected changes</span>
+        <span class="preset-chip drain" data-val="Bright lights">💡 Bright lights</span>
+        <span class="preset-chip drain" data-val="Too many questions">❓ Too many questions</span>
+        <span class="preset-chip drain" data-val="Social demands">🤝 Social demands</span>
+        <span class="preset-chip drain" data-val="Busy classroom">🏫 Busy classroom</span>
+        <span class="preset-chip drain" data-val="Waiting">⏳ Waiting</span>
+        <span class="preset-chip drain" data-val="Being told off">😟 Being told off</span>
+        <span class="preset-chip drain" data-val="Smells">👃 Smells</span>
+        <span class="preset-chip drain" data-val="Busy supermarket">🛒 Busy supermarket</span>
+        <span class="preset-chip drain" data-val="Screen time cut off">📵 Screen time cut off</span>
+        <span class="preset-chip drain" data-val="Conflict with sibling">👧 Sibling conflict</span>
+        <span class="preset-chip drain" data-val="Dentist / doctor">🏥 Dentist / doctor</span>
+      </div>
+      <div class="dc-label drain" style="margin-top:4px">Or type your own</div>
+      <div class="custom-row">
+        <input id="drainInput" type="text" placeholder="e.g. school trip, lunch hall noise…" class="form-input">
+        <button class="btn-add btn-add-drain" id="addDrain">Add</button>
+      </div>
+      <div class="pill-bar" id="drains"></div>
+    </div>
 
-    function uniqPush(arr, value){
-      const v = value.trim();
-      if(!v) return;
-      const exists = arr.some(x => x.toLowerCase() === v.toLowerCase());
-      if(!exists) arr.push(v);
-    }
+    <!-- CHARGERS -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:var(--sage-d)">🔌 Energy Chargers</div>
+      <div class="dc-label charge">Quick add — tap to add a charger</div>
+      <div class="preset-chips" id="chargePresets">
+        <span class="preset-chip charge" data-val="Screen time">📱 Screen time</span>
+        <span class="preset-chip charge" data-val="Quiet time alone">🤫 Quiet time alone</span>
+        <span class="preset-chip charge" data-val="Music / headphones">🎵 Music</span>
+        <span class="preset-chip charge" data-val="Favourite snack">🍎 Favourite snack</span>
+        <span class="preset-chip charge" data-val="Walk outside">🌳 Walk outside</span>
+        <span class="preset-chip charge" data-val="Reading">📖 Reading</span>
+        <span class="preset-chip charge" data-val="Drawing">🎨 Drawing</span>
+        <span class="preset-chip charge" data-val="Playing with pet">🐾 Playing with pet</span>
+        <span class="preset-chip charge" data-val="Cuddle / physical comfort">🤗 Cuddle</span>
+        <span class="preset-chip charge" data-val="Lego / building">🧱 Lego / building</span>
+        <span class="preset-chip charge" data-val="Video games">🎮 Video games</span>
+        <span class="preset-chip charge" data-val="Watching favourite show">📺 Favourite show</span>
+        <span class="preset-chip charge" data-val="Trampoline">🤸 Trampoline</span>
+        <span class="preset-chip charge" data-val="Bath / shower">🛁 Bath / shower</span>
+        <span class="preset-chip charge" data-val="Spinning / swinging">🌀 Spinning / swinging</span>
+        <span class="preset-chip charge" data-val="Nap / rest">😴 Nap / rest</span>
+        <span class="preset-chip charge" data-val="Comfort object">🧸 Comfort object</span>
+        <span class="preset-chip charge" data-val="Favourite meal">🍽️ Favourite meal</span>
+      </div>
+      <div class="dc-label charge" style="margin-top:4px">Or type your own</div>
+      <div class="custom-row">
+        <input id="chargeInput" type="text" placeholder="e.g. yoga, swimming, minecraft…" class="form-input">
+        <button class="btn-add btn-add-charge" id="addCharge">Add</button>
+      </div>
+      <div class="pill-bar" id="charges"></div>
+    </div>
 
-    function removeItem(arr, value){
-      const idx = arr.findIndex(x => x === value);
-      if(idx >= 0) arr.splice(idx,1);
-    }
+    <!-- NOTES -->
+    <div class="card">
+      <div class="card-title">📝 Notes</div>
+      <div class="field" style="margin-bottom:0">
+        <label for="notes">Anything else to note today?</label>
+        <textarea id="notes" class="form-input" rows="3" placeholder="e.g. Big change today. Keep demands low after school."></textarea>
+      </div>
+    </div>
 
-    function pill(text, kind){
-      const el = document.createElement("div");
-      el.className = "pill";
-      el.innerHTML = `<span>${escapeHtml(text)}</span> <small>${kind}</small> <button class="x" title="Remove" aria-label="Remove">×</button>`;
-      el.querySelector("button").addEventListener("click", ()=>{
-        if(kind === "drain") removeItem(state.drains, text);
-        else removeItem(state.charges, text);
-        save();
-        render();
-      });
-      return el;
-    }
+  </div>
 
-    function escapeHtml(str){
-      return String(str).replace(/[&<>"']/g, (m)=>({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[m]));
-    }
+  <!-- RIGHT: PREVIEW -->
+  <div class="card">
+    <div class="card-title">👀 Preview <span style="font-size:0.72rem;font-weight:600;color:var(--text3);margin-left:4px">— this is what prints</span></div>
 
-    function sizeText(size){
-      if(size==="small") return "Small day";
-      if(size==="big") return "Big day";
-      return "Medium day";
-    }
+    <div class="preview-meta">
+      <div class="preview-name" id="previewName">Energy Battery</div>
+      <div id="previewDayBadge" style="display:none" class="preview-day-badge"></div>
+    </div>
 
-    function render(){
-      // inputs
-      $("childName").value = state.childName;
-      $("batterySize").value = state.batterySize;
-      $("schoolDay").value = state.schoolDay;
-      $("level").value = state.level;
-      $("levelTag").textContent = state.level + "%";
-      $("lowPlan").value = state.lowPlan;
-      $("notes").value = state.notes;
+    <!-- Big battery -->
+    <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--text3);margin-bottom:4px" id="previewSizeLabel">Battery size: Medium day</div>
+    <div class="preview-battery-outer">
+      <div class="preview-fill" id="previewFill">
+        <span class="preview-pct" id="previewPct">65%</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text3)">
+      <span>Empty</span><span>Full</span>
+    </div>
 
-      // pills
-      const drainsHost = $("drains");
-      const chargesHost = $("charges");
-      drainsHost.innerHTML = "";
-      chargesHost.innerHTML = "";
-      state.drains.slice().sort((a,b)=>a.localeCompare(b)).forEach(t=> drainsHost.appendChild(pill(t,"drain")));
-      state.charges.slice().sort((a,b)=>a.localeCompare(b)).forEach(t=> chargesHost.appendChild(pill(t,"charge")));
+    <!-- Drains & Chargers preview -->
+    <div class="preview-lists">
+      <div class="preview-list">
+        <div class="preview-list-title drain">⚡ Drains</div>
+        <ul id="previewDrainList"><li class="drain" style="color:var(--text3);list-style:none">None added yet</li></ul>
+      </div>
+      <div class="preview-list">
+        <div class="preview-list-title charge">🔌 Chargers</div>
+        <ul id="previewChargeList"><li class="charge" style="color:var(--text3);list-style:none">None added yet</li></ul>
+      </div>
+    </div>
 
-      // print view
-      const name = state.childName.trim();
-      $("title").textContent = name ? `Energy Battery for ${name}` : "Energy Battery";
-      $("date").textContent = new Date().toLocaleDateString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+    <!-- When low -->
+    <div class="preview-low-plan" id="previewLowPlan">
+      <div class="plp-label">When battery is low, try…</div>
+      <div class="plp-text" id="previewLowPlanText">Snack + quiet room + headphones</div>
+    </div>
 
-      $("sizeLabel").textContent = `Battery size: ${sizeText(state.batterySize)}`;
-      $("dayLabel").textContent = state.schoolDay ? `Day: ${labelDay(state.schoolDay)}` : "";
+    <!-- Notes -->
+    <div id="previewNotesWrap" style="display:none;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 14px">
+      <div style="font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--text3);margin-bottom:3px">Notes</div>
+      <div style="font-size:0.84rem;font-weight:600;color:var(--text2)" id="previewNotesText"></div>
+    </div>
 
-      $("levelOut").textContent = state.level + "%";
+    <div class="print-hint no-print">Use "Print" → "Fit to page" if your printer crops the edges</div>
+  </div>
 
-      const fill = $("fill");
-      fill.style.width = state.level + "%";
-      fill.classList.remove("warn","low");
-      if(state.level <= 25) fill.classList.add("low");
-      else if(state.level <= 55) fill.classList.add("warn");
+</div>
 
-      // lists in print view
-      renderList($("drainList"), state.drains);
-      renderList($("chargeList"), state.charges);
+<script>
+const STORAGE_KEY = 'sendsteps_energy_battery_v2';
+const $ = id => document.getElementById(id);
 
-      $("lowPlanOut").textContent = state.lowPlan.trim() ? state.lowPlan.trim() : "—";
-      $("notesOut").textContent = state.notes.trim() ? state.notes.trim() : "—";
-    }
+const state = {
+  childName:'', batterySize:'medium', schoolDay:'',
+  level:65, drains:[], charges:[],
+  lowPlan:'Snack + quiet room + headphones', notes:''
+};
 
-    function renderList(ul, arr){
-      ul.innerHTML = "";
-      const items = arr.slice().sort((a,b)=>a.localeCompare(b));
-      if(items.length === 0){
-        const li = document.createElement("li");
-        li.textContent = "—";
-        li.style.color = "#6b7280";
-        ul.appendChild(li);
-        return;
-      }
-      items.forEach(t=>{
-        const li = document.createElement("li");
-        li.textContent = t;
-        ul.appendChild(li);
-      });
-    }
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) }
 
-    function labelDay(v){
-      const map = {
-        school:"School day",
-        weekend:"Weekend",
-        appointment:"Appointment day",
-        travel:"Travel day",
-        new:"New/Change day"
-      };
-      return map[v] || v;
-    }
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(!s || typeof s !== 'object') return;
+    state.childName   = s.childName   || '';
+    state.batterySize = s.batterySize || 'medium';
+    state.schoolDay   = s.schoolDay   || '';
+    state.level       = Number.isFinite(+s.level) ? Math.max(0,Math.min(100,+s.level)) : 65;
+    state.drains      = Array.isArray(s.drains)  ? s.drains.filter(x=>typeof x==='string').slice(0,60)  : [];
+    state.charges     = Array.isArray(s.charges) ? s.charges.filter(x=>typeof x==='string').slice(0,60) : [];
+    state.lowPlan     = s.lowPlan  || 'Snack + quiet room + headphones';
+    state.notes       = s.notes    || '';
+  }catch{}
+}
 
-    function addDrain(){
-      const v = $("drainInput").value.trim();
-      if(!v) return;
-      uniqPush(state.drains, v);
-      $("drainInput").value = "";
-      save(); render();
-      $("drainInput").focus();
-    }
-    function addCharge(){
-      const v = $("chargeInput").value.trim();
-      if(!v) return;
-      uniqPush(state.charges, v);
-      $("chargeInput").value = "";
-      save(); render();
-      $("chargeInput").focus();
-    }
+function uniqPush(arr, val){
+  const v = val.trim();
+  if(!v) return false;
+  if(arr.some(x=>x.toLowerCase()===v.toLowerCase())) return false;
+  arr.push(v); return true;
+}
 
-    // wire events
-    $("addDrain").addEventListener("click", addDrain);
-    $("addCharge").addEventListener("click", addCharge);
-    $("drainInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addDrain(); });
-    $("chargeInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") addCharge(); });
+function esc(s){ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])) }
 
-    $("childName").addEventListener("input", (e)=>{ state.childName = e.target.value; save(); render(); });
-    $("batterySize").addEventListener("change", (e)=>{ state.batterySize = e.target.value; save(); render(); });
-    $("schoolDay").addEventListener("change", (e)=>{ state.schoolDay = e.target.value; save(); render(); });
-    $("level").addEventListener("input", (e)=>{ state.level = +e.target.value; save(); render(); });
-    $("lowPlan").addEventListener("input", (e)=>{ state.lowPlan = e.target.value; save(); render(); });
-    $("notes").addEventListener("input", (e)=>{ state.notes = e.target.value; save(); render(); });
+const DAY_LABELS = {school:'🏫 School day',weekend:'🏡 Weekend',holiday:'🌴 Holiday',appointment:'🏥 Appointment day',travel:'🚗 Travel day',new:'⚡ New / change day',party:'🎉 Party / event'};
+const SIZE_LABELS = {small:'🪫 Small day',medium:'🔋 Medium day',big:'⚡ Big day'};
 
-    $("btnPrint").addEventListener("click", ()=> window.print());
-    $("btnReset").addEventListener("click", ()=>{
-      const ok = confirm("Reset everything? This clears the data saved on this device.");
-      if(!ok) return;
-      localStorage.removeItem(STORAGE_KEY);
-      state.childName="";
-      state.batterySize="medium";
-      state.schoolDay="";
-      state.level=65;
-      state.drains=[];
-      state.charges=[];
-      state.lowPlan="Snack + quiet room + headphones";
-      state.notes="";
+function render(){
+  // Inputs
+  $('childName').value   = state.childName;
+  $('batterySize').value = state.batterySize;
+  $('schoolDay').value   = state.schoolDay;
+  $('level').value       = state.level;
+  $('lowPlan').value     = state.lowPlan;
+  $('notes').value       = state.notes;
+
+  // Builder battery
+  const fill = $('batteryFill');
+  fill.style.width = state.level + '%';
+  fill.setAttribute('data-pct', state.level + '%');
+  fill.classList.remove('warn','low');
+  if(state.level <= 25) fill.classList.add('low');
+  else if(state.level <= 50) fill.classList.add('warn');
+
+  $('levelBadge').textContent = state.level + '%';
+
+  // Pills
+  renderPills('drains',  state.drains,  'drain');
+  renderPills('charges', state.charges, 'charge');
+
+  // Preset chip states
+  updatePresetChips('drainPresets',  state.drains,  'drain');
+  updatePresetChips('chargePresets', state.charges, 'charge');
+
+  // Preview
+  const name = state.childName.trim();
+  $('previewName').textContent = name ? `Energy Battery — ${name}` : 'Energy Battery';
+
+  const dayBadge = $('previewDayBadge');
+  if(state.schoolDay && DAY_LABELS[state.schoolDay]){
+    dayBadge.style.display='inline-flex'; dayBadge.textContent=DAY_LABELS[state.schoolDay];
+  } else { dayBadge.style.display='none' }
+
+  $('previewSizeLabel').textContent = 'Battery size: ' + (SIZE_LABELS[state.batterySize]||'Medium day');
+
+  const pFill = $('previewFill');
+  pFill.style.width = state.level + '%';
+  pFill.classList.remove('warn','low');
+  const pct = $('previewPct');
+  if(state.level <= 25){ pFill.classList.add('low'); pct.classList.remove('dark'); }
+  else if(state.level <= 50){ pFill.classList.add('warn'); pct.classList.add('dark'); }
+  else { pct.classList.remove('dark') }
+  pct.textContent = state.level + '%';
+
+  renderPreviewList('previewDrainList',  state.drains,  'drain');
+  renderPreviewList('previewChargeList', state.charges, 'charge');
+
+  $('previewLowPlanText').textContent = state.lowPlan.trim() || '—';
+
+  const notesWrap = $('previewNotesWrap');
+  if(state.notes.trim()){ notesWrap.style.display='block'; $('previewNotesText').textContent=state.notes.trim(); }
+  else { notesWrap.style.display='none' }
+}
+
+function renderPills(hostId, arr, kind){
+  const host = $(hostId);
+  host.innerHTML = '';
+  arr.forEach(text=>{
+    const p = document.createElement('div');
+    p.className = 'pill ' + kind;
+    p.innerHTML = `<span>${esc(text)}</span><button class="pill-x" title="Remove">×</button>`;
+    p.querySelector('button').addEventListener('click',()=>{
+      const idx = arr.indexOf(text);
+      if(idx>=0) arr.splice(idx,1);
       save(); render();
     });
+    host.appendChild(p);
+  });
+}
 
-    load();
-    render();
-  </script>
+function renderPreviewList(hostId, arr, kind){
+  const ul = $(hostId);
+  ul.innerHTML = '';
+  if(!arr.length){
+    const li = document.createElement('li');
+    li.textContent='None added yet';li.style.color='var(--text3)';li.style.listStyle='none';
+    ul.appendChild(li);return;
+  }
+  arr.forEach(t=>{
+    const li = document.createElement('li');
+    li.className = kind;
+    li.textContent = t;
+    ul.appendChild(li);
+  });
+}
+
+function updatePresetChips(hostId, arr, kind){
+  document.querySelectorAll(`#${hostId} .preset-chip`).forEach(chip=>{
+    const val = chip.dataset.val;
+    const isAdded = arr.some(x=>x.toLowerCase()===val.toLowerCase());
+    chip.classList.toggle('added', isAdded);
+    chip.textContent = isAdded ? '✓ ' + val : getChipLabel(chip, val);
+  });
+}
+
+// Store original chip labels
+const chipLabels = {};
+document.querySelectorAll('.preset-chip').forEach(chip=>{
+  chipLabels[chip.dataset.val] = chip.textContent;
+});
+function getChipLabel(chip, val){
+  return chipLabels[val] || val;
+}
+
+// Preset chip clicks
+document.querySelectorAll('#drainPresets .preset-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const val = chip.dataset.val;
+    const idx = state.drains.findIndex(x=>x.toLowerCase()===val.toLowerCase());
+    if(idx>=0) state.drains.splice(idx,1);
+    else uniqPush(state.drains, val);
+    save(); render();
+  });
+});
+document.querySelectorAll('#chargePresets .preset-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const val = chip.dataset.val;
+    const idx = state.charges.findIndex(x=>x.toLowerCase()===val.toLowerCase());
+    if(idx>=0) state.charges.splice(idx,1);
+    else uniqPush(state.charges, val);
+    save(); render();
+  });
+});
+
+// Custom add
+function addDrain(){
+  const v = $('drainInput').value.trim();
+  if(v){ uniqPush(state.drains,v); $('drainInput').value=''; save(); render(); $('drainInput').focus(); }
+}
+function addCharge(){
+  const v = $('chargeInput').value.trim();
+  if(v){ uniqPush(state.charges,v); $('chargeInput').value=''; save(); render(); $('chargeInput').focus(); }
+}
+$('addDrain').addEventListener('click', addDrain);
+$('addCharge').addEventListener('click', addCharge);
+$('drainInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addDrain(); });
+$('chargeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addCharge(); });
+
+// Input wiring
+$('childName').addEventListener('input',  e=>{ state.childName=e.target.value; save(); render(); });
+$('batterySize').addEventListener('change',e=>{ state.batterySize=e.target.value; save(); render(); });
+$('schoolDay').addEventListener('change', e=>{ state.schoolDay=e.target.value; save(); render(); });
+$('level').addEventListener('input',      e=>{ state.level=+e.target.value; save(); render(); });
+$('lowPlan').addEventListener('input',    e=>{ state.lowPlan=e.target.value; save(); render(); });
+$('notes').addEventListener('input',      e=>{ state.notes=e.target.value; save(); render(); });
+
+$('btnPrint').addEventListener('click', ()=> window.print());
+$('btnReset').addEventListener('click', ()=>{
+  if(!confirm('Reset everything? This clears the data saved on this device.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  Object.assign(state,{childName:'',batterySize:'medium',schoolDay:'',level:65,drains:[],charges:[],lowPlan:'Snack + quiet room + headphones',notes:''});
+  save(); render();
+});
+
+load(); render();
+</script>
 </body>
 </html>
