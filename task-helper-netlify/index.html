@@ -28,12 +28,13 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
 input{font-family:'Nunito',sans-serif}
 
 /* ── HEADER ── */
-.header{text-align:center;padding:40px 20px 24px}
-.header-emoji{font-size:3.5rem;display:block;margin-bottom:10px;animation:bounce 2s ease-in-out infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.header h1{font-family:'Fredoka One',cursive;font-size:clamp(2rem,5vw,3rem);color:var(--ink);letter-spacing:0.5px;line-height:1.1}
+.header{padding:20px 20px 16px;max-width:620px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.header-emoji{font-size:2.2rem;flex-shrink:0;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.header-text{}
+.header h1{font-family:'Fredoka One',cursive;font-size:clamp(1.5rem,3.5vw,2rem);color:var(--ink);letter-spacing:0.5px;line-height:1.1}
 .header h1 span{color:#E8A000}
-.header p{color:var(--ink2);font-size:1rem;font-weight:600;margin-top:8px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
+.header p{color:var(--ink2);font-size:0.85rem;font-weight:600;margin-top:4px;line-height:1.5}
 
 /* ── INPUT CARD ── */
 .input-wrap{max-width:620px;margin:0 auto;padding:0 20px}
@@ -209,8 +210,10 @@ input{font-family:'Nunito',sans-serif}
 
 <div class="header">
   <span class="header-emoji">🧹</span>
-  <h1>Task <span>Helper</span></h1>
-  <p>Type any task and get small, easy steps — one at a time, no stress. Knows hundreds of tasks — and can figure out anything else too!</p>
+  <div class="header-text">
+    <h1>Task <span>Helper</span></h1>
+    <p>Type any task and get small, easy steps — one at a time, no stress. Knows hundreds of tasks — and can figure out anything else too!</p>
+  </div>
 </div>
 
 <div class="input-wrap">
