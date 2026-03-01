@@ -51,13 +51,11 @@ input,textarea{font-family:'Nunito',sans-serif}
 
 .rainbow-stripe{height:6px;background:linear-gradient(90deg,#2D9B8A 0%,#2D9B8A 16.6%,#F5A623 16.6%,#F5A623 33.2%,#D9534F 33.2%,#D9534F 50%,#4CAF82 50%,#4CAF82 66.6%,#8B6DB5 66.6%,#8B6DB5 83.2%,#4A90C4 83.2%,#4A90C4 100%)}
 
-.site-header{background:var(--paper);border-bottom:2px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px}
-.site-header-icon{font-size:2.2rem;flex-shrink:0}
-.site-header-text{flex:1}
-.header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-l);color:var(--teal-d);border:2px solid var(--teal);border-radius:100px;padding:3px 12px;font-size:0.68rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
-.site-header h1{font-family:'Lora',serif;font-size:clamp(1.3rem,3vw,1.8rem);font-weight:700;color:var(--ink);line-height:1.15;letter-spacing:-0.3px;margin-bottom:3px}
+.site-header{background:var(--paper);border-bottom:2px solid var(--border);text-align:center;padding:40px 20px 32px}
+.header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-l);color:var(--teal-d);border:2px solid var(--teal);border-radius:100px;padding:4px 14px;font-size:0.72rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px}
+.site-header h1{font-family:'Lora',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:var(--ink);line-height:1.1;letter-spacing:-0.5px;margin-bottom:10px}
 .site-header h1 em{font-style:italic;color:var(--teal-d)}
-.site-header p{color:var(--ink2);font-size:0.82rem;font-weight:600;line-height:1.55}
+.site-header p{color:var(--ink2);font-size:0.95rem;font-weight:600;max-width:500px;margin:0 auto;line-height:1.65}
 
 .wizard-wrap{max-width:680px;margin:0 auto;padding:0 20px}
 .wizard-nav{display:flex;align-items:flex-start;gap:0;margin:28px 0 0;padding:22px 28px;background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
@@ -195,12 +193,9 @@ input,textarea{font-family:'Nunito',sans-serif}
 <div class="rainbow-stripe"></div>
 
 <header class="site-header">
-  <div class="site-header-icon">📖</div>
-  <div class="site-header-text">
-    <div class="header-badge">✨ Free to use &middot; No account needed</div>
-    <h1>Social Story <em>Mini-Builder</em></h1>
-    <p>Choose a scenario, add your child's name, and get a beautifully formatted social story — ready to read and print together.</p>
-  </div>
+  <div class="header-badge">✨ Free to use &middot; No account needed</div>
+  <h1>Social Story <em>Mini-Builder</em></h1>
+  <p>Choose a scenario, add your child's name, and get a beautifully formatted social story — ready to read and print together.</p>
 </header>
 
 <div class="wizard-wrap">
