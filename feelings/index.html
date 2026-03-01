@@ -1,711 +1,747 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Emotion Scale Builder (Words → Visuals)</title>
-  <style>
-    :root{
-      --bg:#f4f8ff;
-      --panel:rgba(255,255,255,.85);
-      --panel2:rgba(255,255,255,.95);
-      --text:#1b2a4a;
-      --muted:#5f6f95;
-      --line:rgba(120,170,255,.35);
-      --shadow: 0 10px 30px rgba(0,0,0,.12);
-      --radius:18px;
-      --radius2:14px;
-      --focus: 0 0 0 3px rgba(120,170,255,.45);
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emotion Scale Builder — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F6F9F7;
+  --surface:#FFFFFF;
+  --surface2:#F2F7F4;
+  --border:#D4E6DC;
+  --border2:#B8D4C4;
+  --sage:#5A9E7A;
+  --sage-d:#3D7A5A;
+  --sage-l:#D8EFE3;
+  --sage-ll:#EEF8F2;
+  --amber:#E8963A;
+  --amber-l:#FDF0DC;
+  --rose:#D4727A;
+  --rose-l:#FAEAEB;
+  --sky:#5A9EC8;
+  --sky-l:#DCF0FA;
+  --teal:#4ABCB0;
+  --teal-l:#D8F4F0;
+  --lav:#8A7EC8;
+  --lav-l:#ECEAF8;
+  --text:#1E3228;
+  --text2:#3D5E4A;
+  --text3:#7A9E8A;
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 3px 16px rgba(30,50,40,0.08);
+  --shadow-lg:0 6px 32px rgba(30,50,40,0.12);
+}
+html{font-size:16px}
+body{
+  font-family:'Nunito',sans-serif;
+  background:
+    radial-gradient(700px 500px at 0% 0%,rgba(90,158,122,0.10),transparent 60%),
+    radial-gradient(600px 400px at 100% 100%,rgba(74,188,176,0.08),transparent 60%),
+    var(--bg);
+  color:var(--text);min-height:100vh;padding-bottom:60px;
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+input,textarea,select{font-family:'Nunito',sans-serif}
 
-    body{
-      margin:0;
-      font-family:var(--font);
-      background:
-        radial-gradient(800px 500px at 10% 10%, rgba(120,170,255,.25), transparent 60%),
-        radial-gradient(700px 500px at 90% 20%, rgba(120,220,180,.25), transparent 60%),
-        radial-gradient(600px 500px at 50% 100%, rgba(255,210,120,.18), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.45;
-    }
+/* ── HEADER ── */
+.header{
+  max-width:1200px;margin:0 auto;
+  padding:24px 20px 16px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:600;color:var(--text);margin-bottom:5px}
+.header p{color:var(--text2);font-size:0.83rem;font-weight:600;line-height:1.6;max-width:500px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;padding-top:4px}
 
-    header{
-      max-width: 1180px;
-      margin: 22px auto 0;
-      padding: 0 16px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    h1{ margin:0; font-size: clamp(22px, 2.2vw, 30px); }
-    .sub{ margin:6px 0 0; color:var(--muted); max-width: 90ch; font-size:14px; }
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:100px;font-size:0.82rem;font-weight:700;transition:all 0.15s;white-space:nowrap}
+.btn-primary{background:var(--sage);color:white;box-shadow:0 2px 10px rgba(90,158,122,0.3)}
+.btn-primary:hover{background:var(--sage-d);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--rose-l);color:var(--rose);border:1.5px solid #F0C8CC}
+.btn-danger:hover{background:#F8D8DA}
+.btn-sm{padding:6px 12px;font-size:0.76rem}
 
-    .wrap{
-      max-width: 1180px;
-      margin: 16px auto 60px;
-      padding: 0 16px;
-      display:grid;
-      grid-template-columns: 460px 1fr;
-      gap: 16px;
-    }
-    @media (max-width: 1020px){ .wrap{ grid-template-columns: 1fr; } }
+/* ── LAYOUT ── */
+.wrap{
+  max-width:1200px;margin:0 auto;padding:0 20px;
+  display:grid;grid-template-columns:420px 1fr;gap:16px;
+}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}}
 
-    .panel{
-      background: linear-gradient(180deg, var(--panel), var(--panel2));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .panelHead{ padding: 14px 14px 0; }
-    .panelBody{ padding: 14px; }
+/* ── PANELS ── */
+.panel{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;
+}
+.panel-head{padding:18px 20px 14px;border-bottom:1.5px solid var(--border)}
+.panel-head h2{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.panel-head .hint{font-size:0.76rem;color:var(--text3);font-weight:600}
+.panel-body{padding:18px 20px}
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
+/* ── FORM ── */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{font-size:0.71rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3)}
+.form-input{
+  width:100%;padding:9px 13px;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);color:var(--text);font-size:0.88rem;font-weight:600;
+  outline:none;transition:border-color 0.15s;
+}
+.form-input:focus{border-color:var(--sage);background:white}
+.form-input::placeholder{color:var(--text3);font-weight:500}
+textarea.form-input{resize:vertical;min-height:56px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-    button{
-      font-family:inherit;
-      border:1px solid rgba(120,170,255,.45);
-      background: rgba(120,170,255,.16);
-      color: #0b1a3a;
-      border-radius: 12px;
-      padding: 10px 12px;
-      cursor:pointer;
-      transition: transform .05s ease, background .15s ease, border-color .15s ease;
-      font-size: 14px;
-      line-height:1;
-    }
-    button:hover{ background: rgba(120,170,255,.24); border-color: rgba(120,170,255,.65); }
-    button:active{ transform: translateY(1px); }
-    button:focus-visible{ outline:none; box-shadow: var(--focus); }
-    .primary{
-      background: linear-gradient(180deg, #9fc2ff, #78aaff);
-      border-color:#78aaff;
-      color:#0b1a3a;
-    }
-    .ok{
-      background: linear-gradient(180deg, #9fe3c8, #6fd6b2);
-      border-color:#6fd6b2;
-      color:#0b2a1d;
-    }
-    .danger{
-      background: linear-gradient(180deg, #ffb3c1, #ff8fa3);
-      border-color:#ff8fa3;
-      color:#3a0b14;
-    }
+/* ── PRESETS SECTION ── */
+.presets-section{margin-bottom:16px}
+.presets-label{font-size:0.71rem;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);margin-bottom:8px;display:block}
+.preset-select{
+  width:100%;padding:9px 13px;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);color:var(--text);font-size:0.88rem;font-weight:600;
+  outline:none;cursor:pointer;transition:border-color 0.15s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A9E8A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+.preset-select:focus{border-color:var(--sage);background-color:white}
+.preset-apply-btn{
+  margin-top:8px;width:100%;padding:9px;border-radius:var(--radius);
+  background:var(--sage-ll);border:1.5px solid var(--sage-l);color:var(--sage-d);
+  font-size:0.84rem;font-weight:700;transition:all 0.15s;
+}
+.preset-apply-btn:hover{background:var(--sage-l);border-color:var(--sage)}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .grid .full{ grid-column: 1 / -1; }
-    .field{ display:flex; flex-direction:column; gap:6px; }
-    .field label{ font-size: 13px; color: var(--muted); }
+/* ── FACE CHIPS ── */
+.chip-row{display:flex;flex-wrap:wrap;gap:6px}
+.face-chip{
+  padding:6px 12px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);
+  cursor:pointer;transition:all 0.13s;
+}
+.face-chip:hover{border-color:var(--border2)}
+.face-chip[aria-pressed="true"]{background:var(--sage-l);border-color:var(--sage);color:var(--sage-d)}
 
-    input[type="text"], textarea, select{
-      width:100%;
-      box-sizing:border-box;
-      border:1px solid rgba(120,170,255,.35);
-      background: rgba(255,255,255,.65);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 14px;
-      outline:none;
-    }
-    textarea{ min-height: 64px; resize: vertical; }
-    input:focus, textarea:focus, select:focus{ box-shadow: var(--focus); border-color: rgba(120,170,255,.6); }
+/* ── DIVIDER ── */
+.divider{border:none;border-top:1.5px solid var(--border);margin:16px 0}
 
-    .hint{ font-size: 12px; color: var(--muted); margin-top:6px; }
+/* ── LEVEL EDITOR ── */
+.level-editor-wrap{}
+.level-editor-item{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;
+  transition:border-color 0.15s;
+}
+.level-editor-item:hover{border-color:var(--border2)}
+.level-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  font-size:0.7rem;font-weight:800;color:white;margin-right:6px;flex-shrink:0;
+}
+.level-title-row{display:flex;align-items:center;margin-bottom:8px}
+.level-title-label{font-size:0.71rem;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--text3)}
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(120,170,255,.35);
-      background: rgba(255,255,255,.55);
-      color: var(--muted);
-      font-size: 12px;
-      user-select:none;
-    }
+/* ── PREVIEW PANEL ── */
+.preview-head{
+  padding:16px 20px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+}
+.preview-head h2{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;color:var(--text)}
+.local-badge{
+  padding:4px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;
+  background:var(--surface2);border:1.5px solid var(--border);color:var(--text3);
+}
+.scale-wrap{padding:20px}
+.scale-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.scale-help-hint{
+  font-size:0.82rem;font-weight:600;color:var(--text2);margin-bottom:14px;
+  background:var(--sage-ll);border:1.5px solid var(--sage-l);border-radius:var(--radius);
+  padding:8px 12px;display:none;
+}
+.levels{display:grid;gap:10px}
+.levels.horizontal{grid-template-columns:repeat(5,minmax(0,1fr))}
+.levels.vertical{grid-template-columns:1fr}
 
-    .previewHead{
-      padding: 14px;
-      border-bottom:1px solid rgba(120,170,255,.25);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .previewHead h2{ margin:0; font-size:16px; }
-    .previewHead .small{ color: var(--muted); font-size:12px; margin-top:4px; }
+.level-card{
+  border:1.5px solid var(--border);background:white;
+  border-radius:var(--radius-lg);padding:14px;
+  display:flex;flex-direction:column;gap:8px;
+  box-shadow:var(--shadow);min-height:120px;
+  cursor:pointer;user-select:none;transition:all 0.15s;
+}
+.level-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.level-card.selected{outline:3px solid var(--sage);box-shadow:var(--shadow-lg)}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.card-num{
+  font-size:0.72rem;font-weight:800;padding:4px 10px;border-radius:100px;
+  background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.1);color:var(--text2);
+}
+.card-face{
+  width:50px;height:50px;border-radius:50%;border:2px solid rgba(0,0,0,0.08);
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.10);
+}
+.card-label{font-weight:800;font-size:0.95rem;color:var(--text)}
+.card-desc{font-size:0.78rem;color:var(--text2);line-height:1.4}
 
-    .scaleWrap{
-      padding: 14px;
-      display:flex;
-      flex-direction:column;
-      gap: 12px;
-    }
+.scale-tip{font-size:0.76rem;color:var(--text3);font-weight:600;margin-top:10px}
 
-    .scaleTitle{
-      font-weight:900;
-      font-size: 18px;
-      letter-spacing:.2px;
-    }
+/* ── STATUS ── */
+.status{font-size:0.76rem;color:var(--text3);font-weight:600;margin-top:8px;min-height:18px}
 
-    .levels{
-      display:grid;
-      gap: 10px;
-    }
-    .levels.horizontal{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .levels.vertical{ grid-template-columns: 1fr; }
-
-    .levelCard{
-      border:1px solid rgba(120,170,255,.35);
-      background: rgba(255,255,255,.75);
-      border-radius: 16px;
-      padding: 12px;
-      display:flex;
-      flex-direction:column;
-      gap: 8px;
-      box-shadow: 0 10px 24px rgba(0,0,0,.08);
-      min-height: 120px;
-      cursor:pointer;
-      user-select:none;
-    }
-
-    .topRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      flex-wrap:wrap;
-    }
-    .num{
-      font-weight:900;
-      font-size: 13px;
-      color: rgba(27,42,74,.85);
-      background: rgba(255,255,255,.65);
-      border:1px solid rgba(120,170,255,.35);
-      padding: 6px 10px;
-      border-radius: 999px;
-      user-select:none;
-    }
-
-    .face{
-      width: 54px;
-      height: 54px;
-      border-radius: 999px;
-      border: 2px solid rgba(0,0,0,.08);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 30px;
-      user-select:none;
-      box-shadow: 0 10px 22px rgba(0,0,0,.10);
-    }
-
-    .label{
-      font-weight:900;
-      font-size: 16px;
-    }
-    .desc{
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(120,170,255,.35);
-      background: rgba(255,255,255,.55);
-      cursor:pointer;
-      user-select:none;
-      font-size: 13px;
-      color: var(--text);
-    }
-    .chip[aria-pressed="true"]{
-      border-color: rgba(120,170,255,.65);
-      background: rgba(120,170,255,.18);
-    }
-
-    .status{
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .levelEditor{
-      border: 1px solid rgba(120,170,255,.25);
-      border-radius: 16px;
-      background: rgba(255,255,255,.6);
-      padding: 12px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      align-items:start;
-      margin-top:10px;
-    }
-
-    @media print{
-      header .noPrint, .noPrint{ display:none !important; }
-      body{ background:#fff !important; color:#111 !important; }
-      .panel{ border:none !important; box-shadow:none !important; background:#fff !important; }
-      .wrap{ grid-template-columns: 1fr !important; max-width:none !important; margin:0 !important; padding:0 !important; }
-      .levelCard{ box-shadow:none !important; }
-      @page{ size:A4; margin: 12mm; }
-    }
-  </style>
+/* ── PRINT ── */
+@media print{
+  .no-print{display:none!important}
+  body{background:#fff!important}
+  .panel{border:none!important;box-shadow:none!important}
+  .wrap{grid-template-columns:1fr!important}
+  .level-card{box-shadow:none!important}
+  @page{size:A4;margin:12mm}
+}
+</style>
 </head>
-
 <body>
-  <header>
-    <div>
-      <h1>Emotion Scale Builder</h1>
-      <p class="sub">
-        Turn “words” into “visuals” so kids can point instead of explain. Works on screen and prints nicely.
-        No accounts, no backend. Everything stays on this device.
-      </p>
+
+<div class="header">
+  <div>
+    <h1>🎭 Emotion Scale Builder</h1>
+    <p>Turn feelings into visuals so children can point instead of explain. Choose a preset or build your own. Nothing leaves this device.</p>
+  </div>
+  <div class="header-actions no-print">
+    <button class="btn btn-primary" id="printBtn">🖨️ Print</button>
+    <button class="btn btn-ghost" id="copyBtn">📋 Copy text</button>
+    <button class="btn btn-danger btn-sm" id="resetBtn">↺ Reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- LEFT: BUILDER -->
+  <section class="panel no-print">
+    <div class="panel-head">
+      <h2>Build your scale</h2>
+      <div class="hint">Pick a preset to start, then customise the words to fit your child.</div>
     </div>
-    <div class="row noPrint">
-      <button id="printBtn" class="primary" type="button">Print</button>
-      <button id="copyBtn" type="button">Copy scale text</button>
-      <button id="resetBtn" class="danger" type="button">Reset</button>
+    <div class="panel-body">
+
+      <!-- PRESETS -->
+      <div class="presets-section">
+        <span class="presets-label">Start from a preset</span>
+        <select class="preset-select" id="presetSelect">
+          <optgroup label="Emotions">
+            <option value="">— choose a preset —</option>
+            <option value="anxiety">😰 Anxiety scale</option>
+            <option value="anger">😠 Anger scale</option>
+            <option value="sad">😔 Sad / low mood</option>
+            <option value="happy">😊 Happiness scale</option>
+            <option value="worry">🌀 Worry scale</option>
+            <option value="frustration">😤 Frustration scale</option>
+          </optgroup>
+          <optgroup label="Body & Senses">
+            <option value="sensory">🌊 Sensory overload</option>
+            <option value="pain">🤕 Pain scale</option>
+            <option value="tired">😴 Tired / energy level</option>
+            <option value="hunger">🍽️ Hunger scale</option>
+          </optgroup>
+          <optgroup label="Social & School">
+            <option value="social">🤝 Social battery</option>
+            <option value="school">🏫 School day feelings</option>
+            <option value="zones">🚦 Zones of regulation</option>
+          </optgroup>
+          <optgroup label="Blank">
+            <option value="blank">✏️ Start from scratch</option>
+          </optgroup>
+        </select>
+        <button class="preset-apply-btn" id="applyPresetBtn">✦ Apply this preset</button>
+      </div>
+
+      <hr class="divider">
+
+      <!-- SCALE SETTINGS -->
+      <div class="field">
+        <label for="scaleTitleInput">Scale title</label>
+        <input id="scaleTitleInput" type="text" maxlength="60" placeholder="e.g. How I feel right now" class="form-input">
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="modeSelect">Scale style</label>
+          <select id="modeSelect" class="form-input">
+            <option value="1to5">1–5 numbers</option>
+            <option value="colors">Colour scale</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="layoutSelect">Layout</label>
+          <select id="layoutSelect" class="form-input">
+            <option value="horizontal">Horizontal</option>
+            <option value="vertical">Vertical</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Emoji / face style</label>
+        <div class="chip-row" id="faceChips"></div>
+      </div>
+
+      <div class="field">
+        <label for="helpPromptInput">"What helps?" prompt (optional)</label>
+        <input id="helpPromptInput" type="text" maxlength="70" placeholder="e.g. What helps me right now?" class="form-input">
+      </div>
+
+      <hr class="divider">
+
+      <div style="font-weight:800;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.7px;color:var(--text3);margin-bottom:10px">Edit each level</div>
+      <div id="editor"></div>
+      <div class="status" id="status" aria-live="polite"></div>
+
     </div>
-  </header>
+  </section>
 
-  <main class="wrap">
-    <!-- LEFT: BUILDER -->
-    <section class="panel">
-      <div class="panelHead">
-        <h2 style="margin:0 0 6px;font-size:16px;">Build your scale</h2>
-        <div class="hint">Keep labels simple (“OK”, “Worried”, “Overwhelmed”). Add a “what helps” prompt.</div>
-      </div>
+  <!-- RIGHT: PREVIEW -->
+  <section class="panel">
+    <div class="preview-head">
+      <h2>Preview</h2>
+      <span class="local-badge">🔒 Stays on your device</span>
+    </div>
+    <div class="scale-wrap">
+      <div class="scale-title" id="previewTitle">Emotion scale</div>
+      <div class="scale-help-hint" id="previewHelpHint"></div>
+      <div class="levels horizontal" id="levels"></div>
+      <div class="scale-tip">Tip: ask "Which one is closest right now?" then "What would help?"</div>
+    </div>
+  </section>
 
-      <div class="panelBody">
-        <div class="grid">
-          <div class="field full">
-            <label for="scaleTitleInput">Scale title</label>
-            <input id="scaleTitleInput" type="text" maxlength="60" placeholder="e.g., How my body feels" />
-          </div>
+</div>
 
-          <div class="field">
-            <label for="modeSelect">Scale style</label>
-            <select id="modeSelect">
-              <option value="1to5" selected>1–5</option>
-              <option value="colors">Colour scale</option>
-            </select>
-          </div>
+<script>
+(function(){
+'use strict';
 
-          <div class="field">
-            <label for="layoutSelect">Layout</label>
-            <select id="layoutSelect">
-              <option value="horizontal" selected>Horizontal</option>
-              <option value="vertical">Vertical</option>
-            </select>
-          </div>
+const STORAGE_KEY = 'sendsteps_emotion_scale_v2';
 
-          <div class="field full">
-            <label>Quick presets</label>
-            <div class="row" style="justify-content:flex-start;">
-              <button class="ok" type="button" data-preset="anxiety">Anxiety</button>
-              <button class="ok" type="button" data-preset="anger">Anger</button>
-              <button class="ok" type="button" data-preset="sad">Sad / low</button>
-              <button class="ok" type="button" data-preset="sensory">Sensory</button>
-            </div>
-          </div>
+const FACE_SETS = [
+  { key:'emoji',   label:'Emoji',   faces:['😌','🙂','😟','😣','😭'] },
+  { key:'simple',  label:'Simple',  faces:['😊','🙂','😐','☹️','😫'] },
+  { key:'numbers', label:'Numbers', faces:['1','2','3','4','5'] },
+  { key:'thermo',  label:'Thermo',  faces:['🧊','🌡️','🌡️','🌡️','🔥'] },
+  { key:'hearts',  label:'Hearts',  faces:['💚','💛','🧡','🔴','💔'] },
+  { key:'weather', label:'Weather', faces:['☀️','🌤️','⛅','🌧️','⛈️'] },
+];
 
-          <div class="field full">
-            <label>Emoji / face style</label>
-            <div class="row" style="justify-content:flex-start;" id="faceChips"></div>
-          </div>
+const FIXED_COLORS = ['#A7F3D0','#D9F99D','#FDE68A','#FDBA74','#F87171'];
+const LEVEL_DOT_COLORS = ['#5A9E7A','#7EC870','#E8C03A','#E8963A','#D4727A'];
 
-          <div class="field full">
-            <label for="helpPromptInput">“What helps?” prompt (optional)</label>
-            <input id="helpPromptInput" type="text" maxlength="70" placeholder="e.g., What helps me right now?" />
-          </div>
-        </div>
+const PRESETS = {
+  anxiety:{
+    title:'Anxiety scale',
+    helpPrompt:'What helps: breathing, squeeze toy, quiet space?',
+    levels:[
+      {label:'Calm',       desc:'Breathing OK. I can carry on.'},
+      {label:'Worried',    desc:'I\'m thinking a lot. A check-in helps.'},
+      {label:'Anxious',    desc:'Body feels tight. I need a break.'},
+      {label:'Panicky',    desc:'Reduce demands. Help me regulate.'},
+      {label:'Overwhelmed',desc:'Quiet space + support. Keep me safe.'},
+    ]
+  },
+  anger:{
+    title:'Anger scale',
+    helpPrompt:'What helps: space, water, quiet, squeeze toy?',
+    levels:[
+      {label:'OK',         desc:'I\'m fine. I can talk.'},
+      {label:'Irritated',  desc:'Small things annoy me. Give me space.'},
+      {label:'Angry',      desc:'I need a break. Calm voice please.'},
+      {label:'Very angry', desc:'Don\'t argue. Help me move to safety.'},
+      {label:'Exploding',  desc:'Safety first. Reduce demands. Wait it out.'},
+    ]
+  },
+  sad:{
+    title:'Sad / low mood',
+    helpPrompt:'What helps: favourite show, cuddle, snack, quiet?',
+    levels:[
+      {label:'OK',        desc:'I\'m alright. I can do usual stuff.'},
+      {label:'Low',       desc:'I\'m quiet. Gentle support helps.'},
+      {label:'Sad',       desc:'I might want comfort or a calm activity.'},
+      {label:'Very sad',  desc:'Reduce demands. Stay close.'},
+      {label:'Shut down', desc:'Quiet + low stimulation + safety.'},
+    ]
+  },
+  happy:{
+    title:'Happiness scale',
+    helpPrompt:'How can we keep this feeling going?',
+    levels:[
+      {label:'Great',     desc:'I feel really happy and good!'},
+      {label:'Good',      desc:'Things feel nice today.'},
+      {label:'OK',        desc:'Not bad, not amazing — just OK.'},
+      {label:'Not great', desc:'Something is bothering me a bit.'},
+      {label:'Sad',       desc:'I\'m having a hard day.'},
+    ]
+  },
+  worry:{
+    title:'Worry scale',
+    helpPrompt:'Is this worry big, medium or small?',
+    levels:[
+      {label:'No worry',     desc:'I feel fine. Nothing is bothering me.'},
+      {label:'Little worry', desc:'A small thought in the back of my mind.'},
+      {label:'Medium worry', desc:'I keep thinking about it. I might need to talk.'},
+      {label:'Big worry',    desc:'It\'s hard to think about other things.'},
+      {label:'Huge worry',   desc:'I can\'t stop thinking about it. I need help.'},
+    ]
+  },
+  frustration:{
+    title:'Frustration scale',
+    helpPrompt:'What helps when I feel frustrated?',
+    levels:[
+      {label:'Fine',         desc:'Things are going OK.'},
+      {label:'A bit annoyed',desc:'Something is bothering me but I can cope.'},
+      {label:'Frustrated',   desc:'I\'m finding this hard. I might need a break.'},
+      {label:'Really stuck', desc:'I feel like giving up. Please help me.'},
+      {label:'Melting down', desc:'I can\'t manage this right now. I need support.'},
+    ]
+  },
+  sensory:{
+    title:'Sensory overload scale',
+    mode:'colors',
+    helpPrompt:'What helps: headphones, outside air, dim lights, pressure?',
+    levels:[
+      {label:'Green',       desc:'My body feels OK.'},
+      {label:'Light green', desc:'A bit noisy/bright. I can cope.'},
+      {label:'Yellow',      desc:'Getting too much. I need a break soon.'},
+      {label:'Orange',      desc:'Reduce noise and words. Help me pause.'},
+      {label:'Red',         desc:'Overloaded. Safety + calm + low demand.'},
+    ]
+  },
+  pain:{
+    title:'Pain / discomfort scale',
+    helpPrompt:'Where does it hurt? What would help?',
+    levels:[
+      {label:'No pain',    desc:'I feel comfortable.'},
+      {label:'A little',   desc:'I notice something but can carry on.'},
+      {label:'Some pain',  desc:'It\'s bothering me. I might need help.'},
+      {label:'A lot',      desc:'It\'s hard to focus. I need attention.'},
+      {label:'Very bad',   desc:'I really need help right now.'},
+    ]
+  },
+  tired:{
+    title:'Energy / tiredness scale',
+    helpPrompt:'What helps when I\'m tired?',
+    levels:[
+      {label:'Full energy', desc:'I feel awake and ready!'},
+      {label:'Good',        desc:'I\'m OK. A bit slower but managing.'},
+      {label:'Tired',       desc:'I need a quieter activity or short break.'},
+      {label:'Very tired',  desc:'I\'m struggling. I need rest.'},
+      {label:'Exhausted',   desc:'I can\'t function right now. I need sleep or quiet.'},
+    ]
+  },
+  hunger:{
+    title:'Hunger scale',
+    helpPrompt:'What would feel good to eat right now?',
+    levels:[
+      {label:'Full',         desc:'I don\'t need food right now.'},
+      {label:'A bit peckish',desc:'I could eat something small.'},
+      {label:'Hungry',       desc:'I\'d like food soon please.'},
+      {label:'Very hungry',  desc:'I really need to eat. I feel wobbly.'},
+      {label:'Starving',     desc:'I can\'t concentrate. I need food urgently.'},
+    ]
+  },
+  social:{
+    title:'Social battery',
+    helpPrompt:'What recharges you — alone time, quiet play, screen time?',
+    levels:[
+      {label:'Fully charged', desc:'I love being with people right now.'},
+      {label:'Good',          desc:'I\'m happy to be social.'},
+      {label:'Half charge',   desc:'I can manage but need a break soon.'},
+      {label:'Low',           desc:'I need quiet time away from people.'},
+      {label:'Empty',         desc:'I can\'t manage socialising. I need alone time.'},
+    ]
+  },
+  school:{
+    title:'How school feels today',
+    helpPrompt:'What would make school feel easier?',
+    levels:[
+      {label:'Great day',   desc:'I feel happy and confident at school.'},
+      {label:'Good day',    desc:'Things are going well.'},
+      {label:'OK day',      desc:'Coping but some things are hard.'},
+      {label:'Hard day',    desc:'I\'m struggling. I might need extra support.'},
+      {label:'Terrible day',desc:'I can\'t manage today. Please check in with me.'},
+    ]
+  },
+  zones:{
+    title:'Zones of regulation',
+    mode:'colors',
+    helpPrompt:'Which zone am I in? What do I need?',
+    levels:[
+      {label:'Blue zone',   desc:'I feel slow, tired, sad or bored.'},
+      {label:'Green zone',  desc:'I feel calm, happy and ready to learn.'},
+      {label:'Yellow zone', desc:'I feel excited, silly, worried or frustrated.'},
+      {label:'Orange zone', desc:'I\'m losing control. I need support.'},
+      {label:'Red zone',    desc:'I feel out of control. I need help to be safe.'},
+    ]
+  },
+  blank:{
+    title:'My scale',
+    helpPrompt:'',
+    levels:[
+      {label:'Level 1', desc:'Describe how this feels and what to do.'},
+      {label:'Level 2', desc:'Describe how this feels and what to do.'},
+      {label:'Level 3', desc:'Describe how this feels and what to do.'},
+      {label:'Level 4', desc:'Describe how this feels and what to do.'},
+      {label:'Level 5', desc:'Describe how this feels and what to do.'},
+    ]
+  }
+};
 
-        <hr style="border:none;border-top:1px solid rgba(120,170,255,.25);margin:14px 0;" />
+const DEFAULTS = {
+  title:'How I feel right now',
+  mode:'1to5',
+  layout:'horizontal',
+  faceSet:'emoji',
+  helpPrompt:'What helps me right now?',
+  selectedIndex:-1,
+  levels:[
+    {label:'Calm',       desc:'Body feels OK. I can do things.'},
+    {label:'OK',         desc:'A bit wobbly. I can cope with support.'},
+    {label:'Unsure',     desc:'Something feels off. I might need a break.'},
+    {label:'Stressed',   desc:'It\'s getting too much. I need help soon.'},
+    {label:'Overwhelmed',desc:'I can\'t cope right now. Keep me safe.'},
+  ]
+};
 
-        <div style="font-weight:900;margin-bottom:6px;">Edit levels (1–5)</div>
-        <div class="hint">You can edit the words only. Colours are fixed (calm → overwhelmed).</div>
-        <div id="editor"></div>
+let state = loadState();
 
-        <div class="status" id="status" aria-live="polite"></div>
-      </div>
-    </section>
+const $ = s => document.querySelector(s);
+const scaleTitleInput = $('#scaleTitleInput');
+const modeSelect      = $('#modeSelect');
+const layoutSelect    = $('#layoutSelect');
+const helpPromptInput = $('#helpPromptInput');
+const presetSelect    = $('#presetSelect');
+const applyPresetBtn  = $('#applyPresetBtn');
+const editor          = $('#editor');
+const levelsEl        = $('#levels');
+const previewTitle    = $('#previewTitle');
+const previewHelpHint = $('#previewHelpHint');
+const statusEl        = $('#status');
+const printBtn        = $('#printBtn');
+const copyBtn         = $('#copyBtn');
+const resetBtn        = $('#resetBtn');
+const faceChips       = $('#faceChips');
 
-    <!-- RIGHT: PREVIEW -->
-    <section class="panel">
-      <div class="previewHead">
-        <div>
-          <h2 style="margin:0;">Preview</h2>
-          <div class="small">Click a level to “select” it on screen (useful for quick check-ins).</div>
-        </div>
-        <div class="pill">Local only</div>
-      </div>
+function announce(msg){
+  statusEl.textContent = msg;
+  clearTimeout(announce._t);
+  announce._t = setTimeout(()=> statusEl.textContent='', 2500);
+}
 
-      <div class="scaleWrap">
-        <div class="scaleTitle" id="previewTitle">Emotion scale</div>
-        <div class="hint" id="previewHelpHint" style="display:none;"></div>
-        <div class="levels horizontal" id="levels"></div>
-        <div class="hint">Tip: ask “Which one is closest?” then “What would help?”</div>
-      </div>
-    </section>
-  </main>
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) }
 
-  <script>
-    (function(){
-      "use strict";
-
-      const STORAGE_KEY = "sendsteps_emotion_scale_simple_v1";
-
-      const FACE_SETS = [
-        { key:"emoji",   label:"Emoji",   faces:["😌","🙂","😟","😣","😭"] },
-        { key:"simple",  label:"Simple",  faces:["😊","🙂","😐","☹️","😫"] },
-        { key:"numbers", label:"Numbers", faces:["1","2","3","4","5"] },
-
-        // FIXED: now 2/3/4 are thermometer levels instead of random emojis
-        { key:"thermo",  label:"Thermo",  faces:["🧊","🌡️","🌡️🌡️","🌡️🌡️🌡️","🔥"] }
-      ];
-
-      // Fixed, calm palette (no editing needed)
-      const FIXED_COLORS = ["#A7F3D0","#BBF7D0","#FDE68A","#FDBA74","#F87171"];
-
-      const DEFAULTS = {
-        title: "How I feel right now",
-        mode: "1to5",
-        layout: "horizontal",
-        faceSet: "emoji",
-        helpPrompt: "What helps me right now?",
-        levels: [
-          { label:"Calm", desc:"Body feels OK. I can do things." },
-          { label:"OK", desc:"A bit wobbly. I can cope with support." },
-          { label:"Unsure", desc:"Something feels off. I might need a break." },
-          { label:"Stressed", desc:"It’s getting too much. I need help soon." },
-          { label:"Overwhelmed", desc:"I can’t cope right now. Keep me safe." }
-        ]
-      };
-
-      let state = loadState();
-
-      const $ = (s)=>document.querySelector(s);
-      const scaleTitleInput = $("#scaleTitleInput");
-      const modeSelect = $("#modeSelect");
-      const layoutSelect = $("#layoutSelect");
-      const helpPromptInput = $("#helpPromptInput");
-      const editor = $("#editor");
-      const levelsEl = $("#levels");
-      const previewTitle = $("#previewTitle");
-      const previewHelpHint = $("#previewHelpHint");
-      const status = $("#status");
-      const printBtn = $("#printBtn");
-      const copyBtn = $("#copyBtn");
-      const resetBtn = $("#resetBtn");
-      const faceChips = $("#faceChips");
-
-      function announce(msg){
-        status.textContent = msg;
-        clearTimeout(announce._t);
-        announce._t = setTimeout(()=> status.textContent="", 2200);
-      }
-
-      function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-      function loadState(){
-        try{
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if(raw){
-            const parsed = JSON.parse(raw);
-            if(parsed && typeof parsed === "object" && Array.isArray(parsed.levels) && parsed.levels.length === 5){
-              return {
-                title: parsed.title || DEFAULTS.title,
-                mode: parsed.mode || DEFAULTS.mode,
-                layout: parsed.layout || DEFAULTS.layout,
-                faceSet: parsed.faceSet || DEFAULTS.faceSet,
-                helpPrompt: parsed.helpPrompt || DEFAULTS.helpPrompt,
-                selectedIndex: Number.isInteger(parsed.selectedIndex) ? parsed.selectedIndex : -1,
-                levels: parsed.levels.map((l,i)=>({
-                  label: l.label || DEFAULTS.levels[i].label,
-                  desc: l.desc || DEFAULTS.levels[i].desc
-                }))
-              };
-            }
-          }
-        }catch(e){ /* ignore */ }
-        return { ...DEFAULTS, selectedIndex: -1, levels: DEFAULTS.levels.map(x=>({...x})) };
-      }
-
-      function escapeHtml(s){
-        return String(s)
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#039;");
-      }
-
-      function getFaces(){
-        const set = FACE_SETS.find(x=>x.key === state.faceSet) || FACE_SETS[0];
-        return set.faces;
-      }
-
-      function renderFaceChips(){
-        faceChips.innerHTML = "";
-        FACE_SETS.forEach(set=>{
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "chip";
-          b.textContent = set.label;
-          b.setAttribute("aria-pressed", set.key === state.faceSet ? "true" : "false");
-          b.addEventListener("click", ()=>{
-            state.faceSet = set.key;
-            state.selectedIndex = -1;
-            saveState();
-            renderPreviewOnly();
-            renderFaceChips();
-          });
-          faceChips.appendChild(b);
-        });
-      }
-
-      function renderEditor(){
-        editor.innerHTML = "";
-        state.levels.forEach((lvl, idx)=>{
-          const wrap = document.createElement("div");
-          wrap.className = "levelEditor";
-          wrap.innerHTML = `
-            <div class="field">
-              <label>Level ${idx+1} label</label>
-              <input type="text" maxlength="28" value="${escapeHtml(lvl.label)}" data-k="label" data-i="${idx}">
-            </div>
-            <div class="field">
-              <label>Description (what it feels like / what to do)</label>
-              <textarea maxlength="120" data-k="desc" data-i="${idx}">${escapeHtml(lvl.desc)}</textarea>
-            </div>
-          `;
-          editor.appendChild(wrap);
-        });
-
-        editor.querySelectorAll("input[data-k], textarea[data-k]").forEach(el=>{
-          el.addEventListener("input", ()=>{
-            const i = Number(el.getAttribute("data-i"));
-            const k = el.getAttribute("data-k");
-            if(!Number.isInteger(i) || i<0 || i>4) return;
-
-            if(k === "label"){
-              state.levels[i].label = String(el.value || "").trim().slice(0,28) || DEFAULTS.levels[i].label;
-            }else{
-              state.levels[i].desc = String(el.value || "").trim().slice(0,120) || DEFAULTS.levels[i].desc;
-            }
-            saveState();
-            renderPreviewOnly();
-          });
-        });
-      }
-
-      function renderPreviewOnly(){
-        previewTitle.textContent = state.title || "Emotion scale";
-
-        const help = (state.helpPrompt || "").trim();
-        if(help){
-          previewHelpHint.style.display = "block";
-          previewHelpHint.textContent = help;
-        }else{
-          previewHelpHint.style.display = "none";
-        }
-
-        levelsEl.className = "levels " + (state.layout === "vertical" ? "vertical" : "horizontal");
-        levelsEl.innerHTML = "";
-
-        const faces = getFaces();
-
-        state.levels.forEach((lvl, idx)=>{
-          const card = document.createElement("div");
-          card.className = "levelCard";
-          card.setAttribute("role", "button");
-          card.setAttribute("tabindex", "0");
-
-          const col = FIXED_COLORS[idx];
-          const bg = (state.mode === "colors") ? col : "#ffffff";
-          card.style.background = `linear-gradient(180deg, ${bg}, rgba(255,255,255,.95))`;
-
-          if(idx === state.selectedIndex){
-            card.style.outline = "3px solid rgba(120,170,255,.55)";
-            card.style.boxShadow = "0 14px 30px rgba(0,0,0,.14)";
-          }
-
-          const face = faces[idx] ?? String(idx+1);
-
-          card.innerHTML = `
-            <div class="topRow">
-              <div class="num">${state.mode === "1to5" ? `Level ${idx+1}` : lvl.label}</div>
-              <div class="face" style="background:${bg};">${escapeHtml(face)}</div>
-            </div>
-            <div class="label">${escapeHtml(lvl.label)}</div>
-            <div class="desc">${escapeHtml(lvl.desc)}</div>
-          `;
-
-          const onSelect = ()=>{
-            state.selectedIndex = (state.selectedIndex === idx) ? -1 : idx;
-            saveState();
-            renderPreviewOnly();
-          };
-          card.addEventListener("click", onSelect);
-          card.addEventListener("keydown", (e)=>{
-            if(e.key === "Enter" || e.key === " "){
-              e.preventDefault();
-              onSelect();
-            }
-          });
-
-          levelsEl.appendChild(card);
-        });
-      }
-
-      function applyInputsToState(){
-        state.title = String(scaleTitleInput.value || "").trim().slice(0,60) || DEFAULTS.title;
-        state.mode = modeSelect.value;
-        state.layout = layoutSelect.value;
-        state.helpPrompt = String(helpPromptInput.value || "").trim().slice(0,70);
-      }
-
-      function render(){
-        scaleTitleInput.value = state.title || "";
-        modeSelect.value = state.mode || "1to5";
-        layoutSelect.value = state.layout || "horizontal";
-        helpPromptInput.value = state.helpPrompt || "";
-        renderFaceChips();
-        renderEditor();
-        renderPreviewOnly();
-      }
-
-      function setPreset(preset){
-        const base = {
-          title: DEFAULTS.title,
-          mode: "1to5",
-          layout: "horizontal",
-          faceSet: state.faceSet || "emoji",
-          helpPrompt: "What helps me right now?",
-          levels: DEFAULTS.levels.map(x=>({...x}))
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p && Array.isArray(p.levels) && p.levels.length === 5){
+        return {
+          title:         p.title         || DEFAULTS.title,
+          mode:          p.mode          || DEFAULTS.mode,
+          layout:        p.layout        || DEFAULTS.layout,
+          faceSet:       p.faceSet       || DEFAULTS.faceSet,
+          helpPrompt:    p.helpPrompt    ?? DEFAULTS.helpPrompt,
+          selectedIndex: typeof p.selectedIndex === 'number' ? p.selectedIndex : -1,
+          levels: p.levels.map((l,i)=>({
+            label: l.label || DEFAULTS.levels[i].label,
+            desc:  l.desc  || DEFAULTS.levels[i].desc,
+          }))
         };
-
-        if(preset === "anxiety"){
-          base.title = "Anxiety scale";
-          base.levels = [
-            { label:"Calm", desc:"Breathing OK. I can carry on." },
-            { label:"Worried", desc:"I’m thinking a lot. A quick check-in helps." },
-            { label:"Anxious", desc:"Body feels tight. I need a break or reassurance." },
-            { label:"Panicky", desc:"Reduce demands. Help me regulate." },
-            { label:"Overwhelmed", desc:"Quiet space + support. Keep me safe." }
-          ];
-        }else if(preset === "anger"){
-          base.title = "Anger scale";
-          base.levels = [
-            { label:"OK", desc:"I’m fine. I can talk." },
-            { label:"Irritated", desc:"Small things annoy me. Give me space." },
-            { label:"Angry", desc:"I need a break. Calm voice." },
-            { label:"Very angry", desc:"Don’t argue. Help me move to a safe space." },
-            { label:"Exploding", desc:"Safety first. Reduce demands. Wait it out." }
-          ];
-          base.helpPrompt = "What helps: space, water, quiet, squeeze toy?";
-        }else if(preset === "sad"){
-          base.title = "Sad / low mood";
-          base.levels = [
-            { label:"OK", desc:"I’m alright. I can do usual stuff." },
-            { label:"Low", desc:"I’m quiet. Gentle support helps." },
-            { label:"Sad", desc:"I might want comfort or a calm activity." },
-            { label:"Very sad", desc:"Reduce demands. Stay close." },
-            { label:"Shut down", desc:"Quiet + low stimulation + safety." }
-          ];
-          base.helpPrompt = "What helps: favourite show, cuddle, snack, quiet?";
-        }else if(preset === "sensory"){
-          base.title = "Sensory overload";
-          base.mode = "colors";
-          base.levels = [
-            { label:"Green", desc:"My body feels OK." },
-            { label:"Light green", desc:"A bit noisy/bright. I can cope." },
-            { label:"Yellow", desc:"Getting too much. I need a break soon." },
-            { label:"Orange", desc:"Reduce noise/words. Help me pause or leave." },
-            { label:"Red", desc:"Overloaded. Safety + calm + low demand." }
-          ];
-          base.helpPrompt = "What helps: headphones, outside air, dim lights, pressure?";
-        }
-
-        state = { ...state, ...base, selectedIndex: -1 };
-        saveState();
-        render();
-        announce("Preset applied.");
       }
+    }
+  }catch(e){}
+  return { ...DEFAULTS, levels: DEFAULTS.levels.map(x=>({...x})) };
+}
 
-      // wire inputs
-      scaleTitleInput.addEventListener("input", ()=>{ applyInputsToState(); saveState(); renderPreviewOnly(); });
-      modeSelect.addEventListener("change", ()=>{ applyInputsToState(); saveState(); renderPreviewOnly(); });
-      layoutSelect.addEventListener("change", ()=>{ applyInputsToState(); saveState(); renderPreviewOnly(); });
-      helpPromptInput.addEventListener("input", ()=>{ applyInputsToState(); saveState(); renderPreviewOnly(); });
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-      document.querySelectorAll("button[data-preset]").forEach(btn=>{
-        btn.addEventListener("click", ()=> setPreset(btn.dataset.preset));
-      });
+function getFaces(){
+  return (FACE_SETS.find(x=>x.key===state.faceSet)||FACE_SETS[0]).faces;
+}
 
-      printBtn.addEventListener("click", ()=> window.print());
+function renderFaceChips(){
+  faceChips.innerHTML='';
+  FACE_SETS.forEach(set=>{
+    const b = document.createElement('button');
+    b.type='button';
+    b.className='face-chip';
+    b.textContent = set.label;
+    b.setAttribute('aria-pressed', set.key===state.faceSet ? 'true':'false');
+    b.addEventListener('click',()=>{
+      state.faceSet = set.key;
+      state.selectedIndex = -1;
+      saveState();
+      renderPreview();
+      renderFaceChips();
+    });
+    faceChips.appendChild(b);
+  });
+}
 
-      copyBtn.addEventListener("click", async ()=>{
-        const lines = [];
-        lines.push(state.title || "Emotion scale");
-        if((state.helpPrompt||"").trim()){
-          lines.push("");
-          lines.push("Prompt: " + state.helpPrompt.trim());
-        }
-        lines.push("");
-        state.levels.forEach((l, i)=>{
-          lines.push(`${i+1}. ${l.label} — ${l.desc}`);
-        });
-        const txt = lines.join("\n");
+function renderEditor(){
+  editor.innerHTML='';
+  state.levels.forEach((lvl, idx)=>{
+    const item = document.createElement('div');
+    item.className='level-editor-item';
+    item.innerHTML=`
+      <div class="level-title-row">
+        <span class="level-num" style="background:${LEVEL_DOT_COLORS[idx]}">${idx+1}</span>
+        <span class="level-title-label">Level ${idx+1}</span>
+      </div>
+      <div class="field" style="margin-bottom:8px">
+        <label>Label (short word)</label>
+        <input type="text" class="form-input" maxlength="28" value="${esc(lvl.label)}" data-k="label" data-i="${idx}">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Description (what it feels like / what to do)</label>
+        <textarea class="form-input" maxlength="120" data-k="desc" data-i="${idx}" rows="2">${esc(lvl.desc)}</textarea>
+      </div>
+    `;
+    editor.appendChild(item);
+  });
 
-        try{
-          await navigator.clipboard.writeText(txt);
-          announce("Copied scale text.");
-        }catch{
-          const ta = document.createElement("textarea");
-          ta.value = txt;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          document.body.removeChild(ta);
-          announce("Copied scale text.");
-        }
-      });
+  editor.querySelectorAll('input[data-k],textarea[data-k]').forEach(el=>{
+    el.addEventListener('input',()=>{
+      const i = Number(el.dataset.i);
+      const k = el.dataset.k;
+      if(k==='label'){
+        state.levels[i].label = el.value.trim().slice(0,28) || DEFAULTS.levels[i].label;
+      } else {
+        state.levels[i].desc = el.value.trim().slice(0,120) || DEFAULTS.levels[i].desc;
+      }
+      saveState();
+      renderPreview();
+    });
+  });
+}
 
-      resetBtn.addEventListener("click", ()=>{
-        const ok = confirm("Reset the scale to defaults? (This only affects this device.)");
-        if(!ok) return;
-        localStorage.removeItem(STORAGE_KEY);
-        state = { ...DEFAULTS, selectedIndex: -1, levels: DEFAULTS.levels.map(x=>({...x})) };
-        render();
-        announce("Reset.");
-      });
+function renderPreview(){
+  previewTitle.textContent = state.title || 'Emotion scale';
 
-      render();
-      announce("Loaded (local only).");
-    })();
-  </script>
+  const help = (state.helpPrompt||'').trim();
+  previewHelpHint.style.display = help ? 'block':'none';
+  previewHelpHint.textContent = help;
+
+  levelsEl.className = 'levels ' + (state.layout==='vertical' ? 'vertical':'horizontal');
+  levelsEl.innerHTML = '';
+
+  const faces = getFaces();
+
+  state.levels.forEach((lvl, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'level-card' + (idx===state.selectedIndex ? ' selected':'');
+
+    const bg = state.mode==='colors' ? FIXED_COLORS[idx] : '#ffffff';
+    card.style.background = `linear-gradient(160deg, ${bg}, rgba(255,255,255,0.95))`;
+
+    const face = faces[idx] ?? String(idx+1);
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-num">${state.mode==='1to5' ? 'Level '+(idx+1) : lvl.label}</div>
+        <div class="card-face" style="background:${bg}">${esc(face)}</div>
+      </div>
+      <div class="card-label">${esc(lvl.label)}</div>
+      <div class="card-desc">${esc(lvl.desc)}</div>
+    `;
+
+    card.addEventListener('click',()=>{
+      state.selectedIndex = state.selectedIndex===idx ? -1 : idx;
+      saveState();
+      renderPreview();
+    });
+    card.addEventListener('keydown', e=>{
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); card.click(); }
+    });
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+
+    levelsEl.appendChild(card);
+  });
+}
+
+function applyInputsToState(){
+  state.title      = scaleTitleInput.value.trim().slice(0,60) || DEFAULTS.title;
+  state.mode       = modeSelect.value;
+  state.layout     = layoutSelect.value;
+  state.helpPrompt = helpPromptInput.value.trim().slice(0,70);
+}
+
+function render(){
+  scaleTitleInput.value  = state.title      || '';
+  modeSelect.value       = state.mode       || '1to5';
+  layoutSelect.value     = state.layout     || 'horizontal';
+  helpPromptInput.value  = state.helpPrompt || '';
+  renderFaceChips();
+  renderEditor();
+  renderPreview();
+}
+
+// Apply preset
+applyPresetBtn.addEventListener('click',()=>{
+  const key = presetSelect.value;
+  if(!key){ announce('Please choose a preset first'); return; }
+  const p = PRESETS[key];
+  state = {
+    ...state,
+    title:         p.title      || DEFAULTS.title,
+    mode:          p.mode       || '1to5',
+    layout:        state.layout,
+    helpPrompt:    p.helpPrompt ?? '',
+    selectedIndex: -1,
+    levels:        p.levels.map(x=>({...x}))
+  };
+  saveState();
+  render();
+  announce('✦ Preset applied — customise the words below');
+});
+
+// Wire inputs
+scaleTitleInput.addEventListener('input', ()=>{ applyInputsToState(); saveState(); renderPreview(); });
+modeSelect.addEventListener('change',     ()=>{ applyInputsToState(); saveState(); renderPreview(); });
+layoutSelect.addEventListener('change',   ()=>{ applyInputsToState(); saveState(); renderPreview(); });
+helpPromptInput.addEventListener('input', ()=>{ applyInputsToState(); saveState(); renderPreview(); });
+
+printBtn.addEventListener('click', ()=> window.print());
+
+copyBtn.addEventListener('click', async ()=>{
+  const lines = [state.title||'Emotion scale',''];
+  if((state.helpPrompt||'').trim()) lines.push('Prompt: '+state.helpPrompt,'');
+  state.levels.forEach((l,i)=> lines.push(`${i+1}. ${l.label} — ${l.desc}`));
+  const txt = lines.join('\n');
+  try{
+    await navigator.clipboard.writeText(txt);
+    announce('✅ Copied to clipboard');
+  }catch{
+    const ta=document.createElement('textarea');ta.value=txt;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);announce('✅ Copied');
+  }
+});
+
+resetBtn.addEventListener('click',()=>{
+  if(!confirm('Reset to defaults? This only affects this device.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { ...DEFAULTS, selectedIndex:-1, levels:DEFAULTS.levels.map(x=>({...x})) };
+  render();announce('Reset to defaults');
+});
+
+render();
+})();
+</script>
 </body>
 </html>
