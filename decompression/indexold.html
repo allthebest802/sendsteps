@@ -46,26 +46,25 @@ body{
 button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:none}
 
 /* ── HEADER ── */
-.header{padding:14px 20px 10px;display:flex;align-items:center;gap:14px;max-width:700px;margin:0 auto}
+.header{text-align:center;padding:48px 20px 32px}
 .header-icon{
-  font-size:2.2rem;flex-shrink:0;
+  font-size:3rem;display:block;margin-bottom:16px;
   animation:breathe 4s ease-in-out infinite;
 }
-.header-text{}
 @keyframes breathe{
   0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(167,139,212,0.4))}
   50%{transform:scale(1.08);filter:drop-shadow(0 0 18px rgba(167,139,212,0.7))}
 }
 .header h1{
-  font-family:'Quicksand',sans-serif;font-size:clamp(1.2rem,3vw,1.6rem);
-  font-weight:700;color:var(--text);letter-spacing:-0.3px;line-height:1.2;margin-bottom:4px;
+  font-family:'Quicksand',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);
+  font-weight:700;color:var(--text);letter-spacing:-0.3px;line-height:1.2;margin-bottom:10px;
 }
 .header h1 span{color:var(--lavender)}
-.header p{color:var(--text2);font-size:0.8rem;font-weight:600;line-height:1.55}
+.header p{color:var(--text2);font-size:0.9rem;font-weight:600;max-width:420px;margin:0 auto;line-height:1.65}
 .header-note{
-  display:inline-block;margin-top:5px;
+  display:inline-block;margin-top:14px;
   background:rgba(167,139,212,0.12);border:1.5px solid rgba(167,139,212,0.25);
-  border-radius:100px;padding:3px 12px;font-size:0.7rem;font-weight:700;
+  border-radius:100px;padding:5px 16px;font-size:0.75rem;font-weight:700;
   color:var(--lavender-l);letter-spacing:0.3px;
 }
 
@@ -200,11 +199,9 @@ button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:
 
 <div class="header">
   <span class="header-icon">🧠</span>
-  <div class="header-text">
-    <h1>Decompression <span>Planner</span></h1>
-    <p>After a day of masking and managing, your child needs the right kind of recovery. Tell us about today.</p>
-    <span class="header-note">Takes 30 seconds &middot; No data stored</span>
-  </div>
+  <h1>Decompression <span>Planner</span></h1>
+  <p>After a day of masking and managing, your child needs the right kind of recovery. Tell us about today.</p>
+  <span class="header-note">Takes 30 seconds &middot; No data stored</span>
 </div>
 
 <div class="planner">
