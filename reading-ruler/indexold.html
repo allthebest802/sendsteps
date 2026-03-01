@@ -42,14 +42,12 @@ button{cursor:pointer;font-family:var(--font-ui);border:none;background:none}
 /* ── HEADER ── */
 .header{
   background:linear-gradient(135deg,#1D4ED8,#3B82F6);
-  padding:14px 24px;
-  display:flex;align-items:center;gap:14px;
-  color:white;
+  padding:28px 20px 24px;
+  text-align:center;color:white;
 }
-.header-icon{font-size:2.2rem;flex-shrink:0}
-.header-text{}
-.header h1{font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:800;margin-bottom:3px}
-.header p{font-size:0.82rem;font-weight:600;opacity:0.88;line-height:1.5}
+.header-icon{font-size:2.2rem;display:block;margin-bottom:8px}
+.header h1{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;margin-bottom:6px}
+.header p{font-size:0.88rem;font-weight:600;opacity:0.88;max-width:460px;margin:0 auto;line-height:1.6}
 
 /* ── CONTROLS ── */
 .controls{
@@ -218,10 +216,8 @@ input[type=range]::-webkit-slider-thumb{
 
 <div class="header">
   <span class="header-icon">📏</span>
-  <div class="header-text">
-    <h1>Reading Ruler</h1>
-    <p>A coloured strip that follows your finger or mouse to help track across the line — no losing your place.</p>
-  </div>
+  <h1>Reading Ruler</h1>
+  <p>A coloured strip that follows your finger or mouse to help track across the line — no losing your place.</p>
 </div>
 
 <!-- CONTROLS -->
