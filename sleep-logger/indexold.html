@@ -51,12 +51,11 @@ body::before{
   position:relative;z-index:1;
   background:linear-gradient(180deg,#0A0D1C,var(--bg2));
   border-bottom:1px solid var(--border);
-  padding:14px 24px;display:flex;align-items:center;gap:14px;
+  padding:32px 20px 28px;text-align:center;
 }
-.moon{font-size:2.2rem;flex-shrink:0;filter:drop-shadow(0 0 16px rgba(240,192,96,0.6))}
-.header-text{}
-.header h1{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:600;color:var(--text);margin-bottom:3px}
-.header p{font-size:0.8rem;color:var(--text2);line-height:1.5;font-weight:500}
+.moon{font-size:3rem;display:block;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(240,192,96,0.6))}
+.header h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;color:var(--text);margin-bottom:8px}
+.header p{font-size:0.85rem;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.6;font-weight:500}
 
 /* ── NAV ── */
 .nav{position:relative;z-index:1;background:var(--bg2);border-bottom:1px solid var(--border)}
@@ -266,10 +265,8 @@ body::before{
 
 <div class="header">
   <span class="moon">🌙</span>
-  <div class="header-text">
-    <h1>Sleep Pattern Logger</h1>
-    <p>Track your child's sleep each night — bedtimes, wakings, mood, and patterns over time.</p>
-  </div>
+  <h1>Sleep Pattern Logger</h1>
+  <p>Track your child's sleep each night — bedtimes, wakings, mood, and patterns over time.</p>
 </div>
 
 <div class="nav">
