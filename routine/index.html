@@ -335,7 +335,7 @@ body.large-text .card-emoji{font-size:2.4rem}
   <button class="template-btn" data-template="classwork">🖊️ Classroom Task</button>
   <button class="template-btn" data-template="transition">🔄 Transition / Change</button>
   <div style="width:1px;height:24px;background:var(--border);flex-shrink:0;align-self:center"></div>
-  <button class="template-btn ai-btn" id="aiRequestBtn" style="background:linear-gradient(135deg,#7C3AED,#2ECC87);color:white;border:none">✨ AI: Make my own</button>
+  <button class="ai-btn" id="aiRequestBtn" style="background:linear-gradient(135deg,#7C3AED,#2ECC87);color:white;border:none;padding:6px 14px;border-radius:100px;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap">✨ AI: Make my own</button>
 </div>
 
 <!-- TOOLBAR -->
@@ -519,9 +519,9 @@ const TEMPLATES = {
   homework: [
     {title:'Get Snack & Drink',emoji:'🍎',time:'4:00 PM',notes:'Brain needs fuel first',color:COLOR_OPTIONS[1]},
     {title:'Get Homework Out',emoji:'🎒',time:'4:10 PM',notes:'Put on the table',color:COLOR_OPTIONS[2]},
-    {title:'Read the Task',emoji:'👀',time:'4:12 PM',notes:'Just read, don't start yet',color:COLOR_OPTIONS[3]},
+    {title:'Read the Task',emoji:'👀',time:'4:12 PM',notes:"Just read, don't start yet",color:COLOR_OPTIONS[3]},
     {title:'Do First Question',emoji:'✏️',time:'4:15 PM',notes:'Just one to start',color:COLOR_OPTIONS[0]},
-    {title:'Keep Going',emoji:'📚',time:'4:20 PM',notes:'You're doing great!',color:COLOR_OPTIONS[4]},
+    {title:'Keep Going',emoji:'📚',time:'4:20 PM',notes:"You're doing great!",color:COLOR_OPTIONS[4]},
     {title:'Check Your Work',emoji:'✅',time:'4:45 PM',notes:'Read back through',color:COLOR_OPTIONS[5]},
     {title:'Pack It Away',emoji:'🎒',time:'4:50 PM',notes:'Done! Free time now',color:COLOR_OPTIONS[6]},
   ],
@@ -529,7 +529,7 @@ const TEMPLATES = {
     {title:'Get Towel & PJs',emoji:'🛁',time:'7:00 PM',notes:'Put them in bathroom',color:COLOR_OPTIONS[2]},
     {title:'Take Clothes Off',emoji:'👕',time:'7:05 PM',notes:'Put in washing basket',color:COLOR_OPTIONS[4]},
     {title:'Get In Bath',emoji:'🛁',time:'7:06 PM',notes:'Check temperature first',color:COLOR_OPTIONS[1]},
-    {title:'Wash Hair',emoji:'🧴',time:'7:10 PM',notes:'If it's wash night',color:COLOR_OPTIONS[3]},
+    {title:'Wash Hair',emoji:'🧴',time:'7:10 PM',notes:"If it's wash night",color:COLOR_OPTIONS[3]},
     {title:'Wash Body',emoji:'🧼',time:'7:15 PM',notes:'',color:COLOR_OPTIONS[0]},
     {title:'Get Out & Dry',emoji:'🏊',time:'7:20 PM',notes:'Dry properly',color:COLOR_OPTIONS[5]},
     {title:'PJs On',emoji:'👕',time:'7:25 PM',notes:'',color:COLOR_OPTIONS[4]},
@@ -1215,11 +1215,14 @@ Example format:
     const response = await fetch('/.netlify/functions/breakdown', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task: prompt })
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
 
     const data = await response.json();
-    const text = typeof data === 'string' ? data : (data.steps || data.result || JSON.stringify(data));
+    if (data.error) throw new Error(data.error.message || 'API error');
+    const text = data.content[0].text;
 
     // Parse JSON from response
     const clean = text.replace(/```json|```/g, '').trim();
