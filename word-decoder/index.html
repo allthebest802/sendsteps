@@ -229,6 +229,8 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
       <div class="input-row">
         <input type="text" id="wordInput" placeholder="Type a word, e.g. elephant" autocomplete="off" autocorrect="off" spellcheck="false">
         <button class="decode-btn" id="decodeWordBtn">Decode →</button>
+        <button class="decode-btn" id="testBtn" style="background:#6B7280;margin-top:8px;font-size:0.8rem">🔌 Test connection</button>
+        <div id="testResult" style="font-size:0.82rem;margin-top:8px;padding:8px 12px;border-radius:6px;display:none"></div>
       </div>
     </div>
 
@@ -323,6 +325,17 @@ Examples:
     return valid;
   } catch(e) {
     console.error('API error:', e);
+    // Show visible error in the output area
+    const container = document.getElementById('decodedWord');
+    container.innerHTML = `<div style="color:#c00;font-size:0.88rem;padding:16px;background:#fff0f0;border-radius:8px;border:1px solid #fcc;max-width:400px">
+      ⚠️ <strong>Could not reach the decode function.</strong><br><br>
+      Error: ${e.message}<br><br>
+      Check: <ul style="margin:8px 0 0 18px;line-height:1.8">
+        <li>Is <code>netlify/functions/decode.js</code> in your repo?</li>
+        <li>Is <code>ANTHROPIC_API_KEY</code> set in Netlify environment variables?</li>
+        <li>Has the site been redeployed since adding the file?</li>
+      </ul>
+    </div>`;
     return [lower];
   }
 }
@@ -526,6 +539,35 @@ function switchTab(tab) {
 
 document.getElementById('tabWord').addEventListener('click', () => switchTab('word'));
 document.getElementById('tabPara').addEventListener('click', () => switchTab('para'));
+
+document.getElementById('testBtn').addEventListener('click', async () => {
+  const el = document.getElementById('testResult');
+  el.style.display = 'block';
+  el.style.background = '#f0f0f0';
+  el.style.color = '#333';
+  el.textContent = '⏳ Testing...';
+  try {
+    const response = await fetch('/.netlify/functions/decode', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: 'Reply with just the word OK' })
+    });
+    const data = await response.json();
+    if (response.ok) {
+      el.style.background = '#d1fae5';
+      el.style.color = '#065f46';
+      el.textContent = '✅ Connected! Function is working. Response: ' + data.result;
+    } else {
+      el.style.background = '#fee2e2';
+      el.style.color = '#991b1b';
+      el.textContent = '❌ Function reached but returned error: ' + (data.error || response.status);
+    }
+  } catch(e) {
+    el.style.background = '#fee2e2';
+    el.style.color = '#991b1b';
+    el.textContent = '❌ Could not reach function at /.netlify/functions/decode — ' + e.message;
+  }
+});
 
 document.getElementById('decodeWordBtn').addEventListener('click', () => {
   renderWord(document.getElementById('wordInput').value);
