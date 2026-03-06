@@ -270,125 +270,247 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
 
 <script>
 // ══════════════════════════════════════════════════
-// API-POWERED SYLLABLE ENGINE
-// Uses Claude API for accurate digraph + syllable splitting
+// SYLLABLE ENGINE
+// Rules-based syllabification for English
 // ══════════════════════════════════════════════════
 
-// Cache to avoid repeat API calls for the same word
-const cache = {};
+const VOWELS = 'aeiouy';
 
-async function callClaude(prompt) {
-  const response = await fetch("/.netlify/functions/decode", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt })
-  });
-  const data = await response.json();
-  if (data.error) throw new Error(data.error);
-  return data.result;
-}
+// Common prefixes and suffixes for better splitting
+const PREFIXES = ['anti','auto','bi','co','de','dis','ex','extra','hyper','im','in','inter','mis','non','over','post','pre','pro','re','semi','sub','super','trans','tri','un','under'];
+const SUFFIXES = ['able','ably','age','al','ance','ancy','ant','ary','ate','ation','ative','ator','ble','cy','dom','ed','en','ence','ency','ent','er','ery','ess','est','ful','hood','ian','ible','ibly','ic','ical','ify','ing','ion','ious','ise','ish','ism','ist','ity','ive','ize','less','like','ly','ment','ness','ous','ry','s','ship','sion','tion','tious','ture','ty','ual','ure','ward','wise','y'];
 
-async function syllabifyWord(word) {
-  const lower = word.toLowerCase().replace(/[^a-z]/g, '');
+// Manual dictionary for very common tricky words
+const DICT = {
+  'the':['the'],'a':['a'],'i':['i'],'to':['to'],'of':['of'],'and':['and'],
+  'is':['is'],'it':['it'],'in':['in'],'on':['on'],'at':['at'],'be':['be'],
+  'elephant':['el','e','phant'],'beautiful':['beau','ti','ful'],
+  'because':['be','cause'],'between':['be','tween'],
+  'chocolate':['choc','o','late'],'different':['dif','fer','ent'],
+  'education':['ed','u','ca','tion'],'everybody':['eve','ry','bo','dy'],
+  'everything':['eve','ry','thing'],'family':['fam','i','ly'],
+  'favourite':['fa','vour','ite'],'february':['feb','ru','ar','y'],
+  'generally':['gen','er','al','ly'],'government':['gov','ern','ment'],
+  'hospital':['hos','pi','tal'],'important':['im','por','tant'],
+  'impossible':['im','pos','si','ble'],'interesting':['in','ter','est','ing'],
+  'january':['jan','u','ar','y'],'library':['li','brar','y'],
+  'medicine':['med','i','cine'],'necessary':['nec','es','sar','y'],
+  'ordinary':['or','di','nar','y'],'particular':['par','tic','u','lar'],
+  'perhaps':['per','haps'],'probably':['prob','ab','ly'],
+  'question':['ques','tion'],'remember':['re','mem','ber'],
+  'sandwich':['sand','wich'],'separate':['sep','a','rate'],
+  'something':['some','thing'],'sometimes':['some','times'],
+  'tomorrow':['to','mor','row'],'together':['to','geth','er'],
+  'understand':['un','der','stand'],'vegetables':['veg','e','ta','bles'],
+  'wednesday':['wednes','day'],'wonderful':['won','der','ful'],
+  'yesterday':['yes','ter','day'],'address':['ad','dress'],
+  'because':['be','cause'],'believe':['be','lieve'],
+  'calendar':['cal','en','dar'],'camera':['cam','er','a'],
+  'comfortable':['com','fort','a','ble'],'computer':['com','pu','ter'],
+  'decided':['de','ci','ded'],'describe':['de','scribe'],
+  'dinosaur':['di','no','saur'],'disappear':['dis','ap','pear'],
+  'discovery':['dis','cov','er','y'],'enormous':['e','nor','mous'],
+  'experience':['ex','pe','ri','ence'],'explain':['ex','plain'],
+  'finally':['fi','nal','ly'],'forward':['for','ward'],
+  'friendly':['friend','ly'],'happened':['hap','pened'],
+  'imagine':['i','mag','ine'],'information':['in','for','ma','tion'],
+  'journey':['jour','ney'],'knowledge':['knowl','edge'],
+  'language':['lan','guage'],'listen':['lis','ten'],
+  'material':['ma','te','ri','al'],'minute':['min','ute'],
+  'natural':['nat','ur','al'],'november':['no','vem','ber'],
+  'october':['oc','to','ber'],'opposite':['op','po','site'],
+  'outside':['out','side'],'people':['peo','ple'],
+  'picture':['pic','ture'],'possible':['pos','si','ble'],
+  'potato':['po','ta','to'],'present':['pres','ent'],
+  'purpose':['pur','pose'],'receive':['re','ceive'],
+  'science':['sci','ence'],'sentence':['sen','tence'],
+  'similar':['sim','i','lar'],'special':['spe','cial'],
+  'stopped':['stopped'],'student':['stu','dent'],
+  'subject':['sub','ject'],'sudden':['sud','den'],
+  'suppose':['sup','pose'],'surprise':['sur','prise'],
+  'themselves':['them','selves'],'therefore':['there','fore'],
+  'thought':['thought'],'through':['through'],
+  'beautiful':['beau','ti','ful'],'caught':['caught'],
+  'brought':['brought'],'daughter':['daugh','ter'],
+  'enough':['e','nough'],'eight':['eight'],
+  'friend':['friend'],'great':['great'],
+  'heart':['heart'],'height':['height'],
+  'laugh':['laugh'],'light':['light'],
+  'might':['might'],'night':['night'],
+  'right':['right'],'sight':['sight'],
+  'straight':['straight'],'weight':['weight'],
+  'which':['which'],'white':['white'],
+  'whole':['whole'],'write':['write'],
+};
+
+// Stress patterns for common syllable counts
+// 0-indexed: which syllable gets primary stress
+const STRESS_PATTERNS = {
+  1: [0],
+  2: [0], // most 2-syllable words stress first (TA-ble, AP-ple)
+  3: [0], // 3-syllable often first (EL-e-phant)
+  4: [1], // 4-syllable often second (im-POR-tant)
+  5: [2], // 5-syllable often third
+  6: [2],
+};
+
+// Words where stress is on 2nd syllable (2-syllable)
+const STRESS_2ND = ['above','about','across','afraid','again','ahead','alone','along','already','although','among','around','arrive','away','because','before','begin','behind','below','beside','between','beyond','complete','decide','describe','despite','during','enough','except','explain','forget','inside','instead','itself','machine','myself','perhaps','police','protect','provide','receive','reply','result','return','reveal','suppose','today','tonight','toward','unless','until','while','within'];
+
+function isVowel(c) { return VOWELS.includes(c.toLowerCase()); }
+
+function syllabify(word) {
+  const lower = word.toLowerCase().replace(/[^a-z]/g,'');
   if (!lower) return [word];
   if (lower.length <= 2) return [lower];
-  if (cache[lower]) return cache[lower];
 
-  const prompt = `You are a phonics expert. Split this English word into syllables correctly, paying careful attention to digraphs (ch, sh, th, ph, wh, ck, ng, ee, ea, oa, ai, etc.) which must NEVER be split across syllables.
+  // Check dictionary first
+  if (DICT[lower]) return DICT[lower];
 
-Word: "${lower}"
-
-Rules:
-- Digraphs (two letters = one sound) must stay together: ch, sh, th, ph, wh, ck, ng, ee, ea, oa, ai, ay, oi, oy, ou, ow, au, aw, oo, ue, ui, ie, ei
-- Each syllable must contain exactly one vowel sound
-- Follow standard English syllable division rules (VC/CV, VCC/CV etc.)
-- Silent-e words: the 'e' stays with the previous syllable (e.g. make = make, not mak+e)
-
-Respond with ONLY the syllables separated by hyphens. Nothing else. No explanation.
-Examples: 
-- "chair" → chair
-- "champion" → cham-pi-on  
-- "teacher" → teach-er
-- "shopping" → shop-ping
-- "beautiful" → beau-ti-ful
-- "telephone" → tel-e-phone
-- "shoulder" → shoul-der`;
-
-  try {
-    const result = await callClaude(prompt);
-    // Parse the hyphen-separated result
-    const syllables = result.replace(/[^a-z\-]/gi, '').split('-').filter(s => s.length > 0);
-    const valid = syllables.length > 0 ? syllables : [lower];
-    cache[lower] = valid;
-    return valid;
-  } catch(e) {
-    console.error('API error:', e);
-    return [lower];
+  // Pre-check: handle consonant-le endings (ap-ple, bot-tle etc.)
+  // Pattern: vowel + double-consonant + le  OR  consonant + double-consonant + le
+  const lePattern = /^(.+?)([b-df-hj-np-tv-z])\2le$/;
+  const leMatch = lower.match(lePattern);
+  if (leMatch && leMatch[1].length >= 1) {
+    const first = leMatch[1] + leMatch[2];
+    const second = leMatch[2] + 'le';
+    // Recursively syllabify the first part if it's long enough
+    if (first.length >= 3) {
+      const firstParts = syllabify(first);
+      return [...firstParts, second];
+    }
+    return [first, second];
   }
-}
 
-async function syllabifyParagraph(text) {
-  // Extract unique words, batch them in one API call for efficiency
-  const tokens = text.split(/(\s+|[.,!?;:'"()\-–—])/);
-  const words = [...new Set(
-    tokens
-      .filter(t => t && /[a-zA-Z]{2,}/.test(t))
-      .map(t => t.toLowerCase().replace(/[^a-z]/g, ''))
-      .filter(w => w.length >= 2 && !cache[w])
-  )];
+  // Handle -le endings with single consonant: ta-ble, no-ble
+  const singleLePattern = /^(.+[aeiou])([b-df-hj-np-tv-z])le$/;
+  const singleLeMatch = lower.match(singleLePattern);
+  if (singleLeMatch && !DICT[lower]) {
+    return [singleLeMatch[1], singleLeMatch[2] + 'le'];
+  }
 
-  if (words.length === 0) return;
+  // Handle double consonants in the middle: split between them
+  // e.g. ap·ple → already handled above, but also: but·ter, hap·py, lit·tle
+  const doubleConsonantMatch = lower.match(/^([a-z]*[aeiou][a-z]*)([b-df-hj-np-tv-z])\2([a-z]+)$/);
+  if (doubleConsonantMatch) {
+    const first = doubleConsonantMatch[1] + doubleConsonantMatch[2];
+    const rest = doubleConsonantMatch[2] + doubleConsonantMatch[3];
+    if (first.split('').some(c => isVowel(c)) && rest.split('').some(c => isVowel(c))) {
+      return [first, rest];
+    }
+  }
 
-  const prompt = `You are a phonics expert. Split each of these English words into syllables. Pay careful attention to digraphs (ch, sh, th, ph, wh, ck, ng, ee, ea, oa, ai, ay, oi, oy, ou, ow, au, aw, oo, ue, ui, ie, ei) — these must NEVER be split.
+  // Rules-based approach
+  const syllables = [];
+  let current = '';
+  const chars = lower.split('');
+  const n = chars.length;
 
-Words to split: ${words.join(', ')}
+  // Find vowel groups (nuclei)
+  let i = 0;
+  while (i < n) {
+    current += chars[i];
 
-Respond with ONLY a JSON object where keys are the words and values are arrays of syllables.
-Example format: {"teacher":["teach","er"],"champion":["cham","pi","on"],"the":["the"]}
-No explanation, just the JSON.`;
+    // Check if next char starts a new syllable
+    if (i < n - 1) {
+      const curr = chars[i];
+      const next = chars[i + 1];
+      const prev = i > 0 ? chars[i - 1] : '';
+      const afterNext = i < n - 2 ? chars[i + 2] : '';
 
-  try {
-    const result = await callClaude(prompt);
-    const clean = result.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    Object.entries(parsed).forEach(([word, syllables]) => {
-      if (Array.isArray(syllables) && syllables.length > 0) {
-        cache[word] = syllables;
+      // Vowel followed by consonant+vowel: split before consonant
+      // e.g. "ba-by", "ta-ble"
+      if (isVowel(curr) && !isVowel(next) && i < n - 2 && isVowel(afterNext)) {
+        // Check for consonant clusters: if two consonants, split between them
+        // e.g. "bet-ter", "hap-py"
+        if (!isVowel(next)) {
+          const nextNext = afterNext;
+          if (!isVowel(nextNext) && i < n - 3 && isVowel(chars[i + 3])) {
+            // Two consonants: split between them
+            current += next;
+            syllables.push(current);
+            current = '';
+            i += 2;
+            continue;
+          } else {
+            syllables.push(current);
+            current = '';
+            i++;
+            continue;
+          }
+        }
       }
-    });
-  } catch(e) {
-    console.error('Batch API error:', e);
-    // Fall back: each uncached word gets treated as single syllable
-    words.forEach(w => { if (!cache[w]) cache[w] = [w]; });
+
+      // Two vowels together that aren't a digraph: may split
+      if (isVowel(curr) && isVowel(next)) {
+        const digraphs = ['ai','ay','ea','ee','ei','eo','eu','ie','oa','oe','oi','oo','ou','ow','oy','au','aw','ue','ui'];
+        const pair = curr + next;
+        if (!digraphs.includes(pair) && i < n - 2) {
+          syllables.push(current);
+          current = '';
+          i++;
+          continue;
+        }
+      }
+    }
+    i++;
   }
+
+  if (current) syllables.push(current);
+
+  // Clean up: merge very short syllables (single consonant) with neighbours
+  const merged = [];
+  for (let j = 0; j < syllables.length; j++) {
+    const s = syllables[j];
+    if (s.length === 1 && !isVowel(s[0]) && merged.length > 0) {
+      merged[merged.length - 1] += s;
+    } else {
+      merged.push(s);
+    }
+  }
+
+  // Ensure at least one vowel sound per syllable — if not, merge
+  const valid = [];
+  for (let j = 0; j < merged.length; j++) {
+    const s = merged[j];
+    const hasVowel = s.split('').some(c => isVowel(c));
+    if (!hasVowel && valid.length > 0) {
+      valid[valid.length - 1] += s;
+    } else {
+      valid.push(s);
+    }
+  }
+
+  return valid.length ? valid : [lower];
 }
 
-function getStressIdx(syllables) {
+function getStress(word, syllables) {
   const n = syllables.length;
   if (n === 1) return 0;
-  if (n === 2) return 0;
-  if (n === 3) return 0;
-  if (n === 4) return 1;
-  return Math.floor(n / 2) - 1;
+  const lower = word.toLowerCase();
+  if (n === 2 && STRESS_2ND.includes(lower)) return 1;
+  return STRESS_PATTERNS[Math.min(n, 6)] ?? 0;
+}
+
+function getPronunciation(word, syllables) {
+  // Build a simple pronunciation guide
+  const joined = syllables.join(' - ');
+  const stressIdx = getStress(word, syllables);
+  const withStress = syllables.map((s, i) => i === stressIdx ? s.toUpperCase() : s).join(' · ');
+  return { joined, withStress };
 }
 
 // ══════════════════════════════════════════════════
 // RENDER SINGLE WORD
 // ══════════════════════════════════════════════════
-async function renderWord(word) {
+function renderWord(word) {
   if (!word.trim()) return;
   const clean = word.trim();
+  const syllables = syllabify(clean);
+  const stressIdx = getStress(clean, syllables);
+  const pron = getPronunciation(clean, syllables);
 
-  // Show loading state
   const container = document.getElementById('decodedWord');
-  container.innerHTML = '<div style="color:var(--text3);font-size:1rem;padding:20px;text-align:center">⏳ Decoding...</div>';
-  document.getElementById('wordOutput').classList.add('show');
-  document.getElementById('statsRow').innerHTML = '';
-  document.getElementById('pronBox').innerHTML = '';
-
-  const syllables = await syllabifyWord(clean);
-  const stressIdx = getStressIdx(syllables);
-
   container.innerHTML = '';
 
   syllables.forEach((syl, i) => {
@@ -408,6 +530,7 @@ async function renderWord(word) {
 
     container.appendChild(block);
 
+    // Add separator between syllables
     if (i < syllables.length - 1) {
       const sep = document.createElement('div');
       sep.className = 'separator';
@@ -425,44 +548,41 @@ async function renderWord(word) {
   `;
 
   // Pronunciation
-  const withStress = syllables.map((s, i) => i === stressIdx ? s.toUpperCase() : s).join(' · ');
   const pronBox = document.getElementById('pronBox');
   pronBox.innerHTML = `
     <div class="pron-label">How to say it</div>
-    <div class="pron-text">${withStress}</div>
+    <div class="pron-text">${pron.withStress}</div>
     <div class="pron-guide">Capital letters = say that syllable the loudest · dots separate syllables</div>
   `;
 
+  document.getElementById('wordOutput').classList.add('show');
   document.getElementById('wordOutput').scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
 // ══════════════════════════════════════════════════
 // RENDER PARAGRAPH
 // ══════════════════════════════════════════════════
-async function renderParagraph(text) {
+function renderParagraph(text) {
   if (!text.trim()) return;
 
   const container = document.getElementById('paraText');
-  container.innerHTML = '<div style="color:var(--text3);font-size:0.9rem;padding:16px;text-align:center">⏳ Decoding all words...</div>';
-  document.getElementById('paraOutput').classList.add('show');
-
-  // Pre-fetch all words in one batch API call
-  await syllabifyParagraph(text);
-
   container.innerHTML = '';
+
+  // Split into words preserving spaces and punctuation
   const tokens = text.split(/(\s+|[.,!?;:'"()\-–—])/);
 
-  for (const token of tokens) {
-    if (!token) continue;
+  tokens.forEach(token => {
+    if (!token) return;
     if (/^\s+$/.test(token)) {
       container.appendChild(document.createTextNode(token));
-      continue;
+      return;
     }
     if (/^[.,!?;:'"()\-–—]+$/.test(token)) {
       container.appendChild(document.createTextNode(token));
-      continue;
+      return;
     }
 
+    // It's a word
     const wordEl = document.createElement('span');
     wordEl.className = 'word-decoded';
 
@@ -470,9 +590,9 @@ async function renderParagraph(text) {
     if (letters.length < 2) {
       wordEl.textContent = token;
     } else {
-      const key = letters.toLowerCase();
-      const syllables = cache[key] || [letters];
+      const syllables = syllabify(token);
       if (syllables.length <= 1) {
+        // Single syllable - just colour it
         const span = document.createElement('span');
         span.className = 'syl s-0';
         span.textContent = token;
@@ -494,6 +614,7 @@ async function renderParagraph(text) {
       }
     }
 
+    // Click to show full decode
     wordEl.addEventListener('click', () => {
       const w = token.replace(/[^a-zA-Z]/g,'');
       if (w) {
@@ -502,13 +623,16 @@ async function renderParagraph(text) {
         renderWord(w);
       }
     });
+
     wordEl.title = `Click to decode "${token}"`;
     container.appendChild(wordEl);
-  }
+  });
+
+  document.getElementById('paraOutput').classList.add('show');
 }
 
 // ══════════════════════════════════════════════════
-// TABS & EVENTS
+// TABS
 // ══════════════════════════════════════════════════
 function switchTab(tab) {
   if (tab === 'word') {
@@ -527,6 +651,9 @@ function switchTab(tab) {
 document.getElementById('tabWord').addEventListener('click', () => switchTab('word'));
 document.getElementById('tabPara').addEventListener('click', () => switchTab('para'));
 
+// ══════════════════════════════════════════════════
+// EVENTS
+// ══════════════════════════════════════════════════
 document.getElementById('decodeWordBtn').addEventListener('click', () => {
   renderWord(document.getElementById('wordInput').value);
 });
