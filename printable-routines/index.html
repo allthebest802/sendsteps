@@ -557,7 +557,6 @@ function init() {
   renderCatTabs();
   renderRoutineList();
   renderColourSwatches();
-  buildPresetMenu();
 }
 
 function renderCatTabs() {
@@ -640,6 +639,7 @@ function renderEditor() {
     </div>
   `;
   renderSteps();
+  buildPresetMenu();
 }
 
 function renderSteps() {
@@ -741,12 +741,13 @@ function buildPresetMenu() {
   if (!menu) return;
   menu.innerHTML = PRESET_STEPS.map(group => `
     <div class="preset-group-label">${group.group}</div>
-    ${group.steps.map(s => `
-      <div class="preset-option" onclick="addPresetStep('${s.e}', ${JSON.stringify(s.t)})">
+    ${group.steps.map((s, si) => {
+      const gIdx = PRESET_STEPS.findIndex(g => g === group);
+      return `<div class="preset-option" data-emoji="${s.e}" data-title="${s.t.replace(/"/g,'&quot;')}" onclick="addPresetStep(this)">
         <span class="po-emoji">${s.e}</span>
         <span class="po-label">${s.t}</span>
-      </div>
-    `).join('')}
+      </div>`;
+    }).join('')}
   `).join('');
 }
 
@@ -765,10 +766,13 @@ function closePresetMenu() {
   document.removeEventListener('click', closePresetMenu);
 }
 
-function addPresetStep(emoji, title) {
+function addPresetStep(el) {
+  const emoji = el.dataset.emoji;
+  const title = el.dataset.title;
   state.steps.push({e: emoji, t: title});
   renderSteps();
   renderPreview();
+  buildPresetMenu();
   closePresetMenu();
 }
 
