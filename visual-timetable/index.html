@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Timetable Builder — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F5F0;
+  --surface:#FFFFFF;
+  --surface2:#F0EDE6;
+  --ink:#1A1A2E;
+  --ink2:#4A4A6A;
+  --muted:#9090AA;
+  --border:#E0DBD0;
+  --border2:#C8C0B0;
+  --radius:14px;
+  --shadow:0 2px 12px rgba(26,26,46,0.08);
+  --shadow-lg:0 8px 32px rgba(26,26,46,0.14);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+
+  /* Subject colours */
+  --c-english:#4F86C6;    --c-english-l:#EBF2FB;
+  --c-maths:#E8724A;      --c-maths-l:#FDF0EB;
+  --c-science:#3BAA7A;    --c-science-l:#E8F7F1;
+  --c-history:#9B6BB5;    --c-history-l:#F3EEF8;
+  --c-geography:#5BA8A0;  --c-geography-l:#EAF5F4;
+  --c-art:#E8A838;        --c-art-l:#FDF5E6;
+  --c-pe:#D4527A;         --c-pe-l:#FCEEF3;
+  --c-music:#6B8FD4;      --c-music-l:#EEF2FB;
+  --c-dt:#7BAA5B;         --c-dt-l:#EEF7E8;
+  --c-re:#C47B5A;         --c-re-l:#FAF0EB;
+  --c-pshe:#D4A0C8;       --c-pshe-l:#FAF2F8;
+  --c-languages:#5EB8D4;  --c-languages-l:#EAF7FB;
+  --c-computing:#7B8FE8;  --c-computing-l:#EEF0FB;
+  --c-break:#B0AFA8;      --c-break-l:#F5F4F2;
+  --c-other:#8A8A9A;      --c-other-l:#F0F0F4;
+}
+
+html{font-size:15px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 800px 500px at 0% 0%, rgba(79,134,198,0.07), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 100% 100%, rgba(59,170,122,0.06), transparent 55%);
+}
+button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
+input,select,textarea{font-family:var(--font-body)}
+*:focus-visible{outline:2px solid var(--c-english);outline-offset:2px;border-radius:4px}
+
+/* ── HEADER ── */
+.app-header{
+  background:var(--ink);
+  padding:16px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.header-back{font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.6);text-decoration:none;
+  padding:5px 10px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);transition:all 0.15s}
+.header-back:hover{color:white;border-color:rgba(255,255,255,0.4)}
+.header-logo{display:flex;align-items:center;gap:10px}
+.header-logo h1{font-family:var(--font-display);font-size:1.3rem;color:white;line-height:1}
+.header-logo h1 span{color:#6FCF97}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:100px;
+  font-size:0.82rem;font-weight:600;transition:all 0.15s;white-space:nowrap}
+.btn-primary{background:#3BAA7A;color:white}
+.btn-primary:hover{background:#2E8F64;transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,170,122,0.3)}
+.btn-ghost{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.2)}
+.btn-ghost:hover{background:rgba(255,255,255,0.2)}
+.btn-dark{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border2)}
+.btn-dark:hover{background:var(--border);color:var(--ink)}
+.btn-active{background:var(--ink);color:white}
+.btn-sm{padding:5px 10px;font-size:0.75rem}
+
+/* ── TABS (Day/Week) ── */
+.view-tabs{display:flex;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:3px;gap:2px}
+.view-tab{padding:6px 16px;border-radius:100px;font-size:0.8rem;font-weight:600;color:var(--ink2);transition:all 0.15s}
+.view-tab.active{background:var(--ink);color:white}
+
+/* ── TOOLBAR ── */
+.toolbar{max-width:1200px;margin:16px auto;padding:0 20px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.toolbar-left{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap}
+.toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+.child-name-input{padding:8px 14px;border-radius:100px;border:1.5px solid var(--border2);
+  background:var(--surface);font-size:0.85rem;font-weight:600;color:var(--ink);
+  width:180px;outline:none;transition:border-color 0.15s}
+.child-name-input:focus{border-color:#3BAA7A}
+.child-name-input::placeholder{color:var(--muted)}
+
+.day-selector{display:flex;gap:4px;flex-wrap:wrap}
+.day-btn{padding:6px 12px;border-radius:100px;font-size:0.78rem;font-weight:700;
+  border:1.5px solid var(--border2);color:var(--ink2);background:var(--surface);transition:all 0.15s}
+.day-btn:hover{border-color:#3BAA7A;color:#3BAA7A}
+.day-btn.active{background:var(--ink);color:white;border-color:var(--ink)}
+
+/* ── MAIN ── */
+.app-main{max-width:1200px;margin:0 auto;padding:0 20px 60px;display:grid;
+  grid-template-columns:260px 1fr;gap:16px;align-items:start}
+@media(max-width:800px){.app-main{grid-template-columns:1fr}}
+
+/* ── SIDEBAR ── */
+.sidebar{display:flex;flex-direction:column;gap:12px;position:sticky;top:12px}
+.panel{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:11px 14px;border-bottom:1px solid var(--border);
+  font-family:var(--font-display);font-size:0.95rem;color:var(--ink);display:flex;align-items:center;gap:7px}
+.panel-body{padding:12px}
+
+/* Subject palette */
+.subject-palette{display:flex;flex-direction:column;gap:4px;max-height:340px;overflow-y:auto}
+.subject-pill{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;
+  cursor:grab;border:1.5px solid transparent;transition:all 0.15s;user-select:none}
+.subject-pill:hover{border-color:currentColor;transform:translateX(2px)}
+.subject-pill:active{cursor:grabbing}
+.sp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sp-name{font-size:0.8rem;font-weight:600;flex:1}
+.sp-emoji{font-size:0.95rem}
+
+/* Slot settings */
+.slot-setting{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.slot-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)}
+.slot-input{padding:7px 10px;border-radius:9px;border:1.5px solid var(--border2);
+  font-size:0.82rem;color:var(--ink);background:var(--surface2);outline:none;transition:border-color 0.15s;width:100%}
+.slot-input:focus{border-color:#3BAA7A;background:white}
+
+/* ── TIMETABLE AREA ── */
+.timetable-wrap{display:flex;flex-direction:column;gap:12px}
+
+/* Day view */
+.day-view{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden}
+.day-view-head{padding:14px 18px;background:var(--ink);display:flex;align-items:center;justify-content:space-between}
+.day-view-head h2{font-family:var(--font-display);font-size:1.1rem;color:white}
+.day-view-head .child-tag{font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.6);
+  background:rgba(255,255,255,0.1);padding:3px 10px;border-radius:100px}
+.slots-list{padding:12px;display:flex;flex-direction:column;gap:6px}
+
+/* Week view */
+.week-view{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden}
+.week-grid{display:grid;grid-template-columns:80px repeat(5,1fr);border-top:1px solid var(--border)}
+.week-col-head{padding:10px 8px;text-align:center;font-family:var(--font-display);font-size:0.9rem;
+  color:white;background:var(--ink);border-right:1px solid rgba(255,255,255,0.1)}
+.week-col-head:first-child{background:var(--ink)}
+.week-time-cell{padding:6px 8px;font-size:0.7rem;font-weight:700;color:var(--muted);
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--surface2);text-align:center;display:flex;align-items:center;justify-content:center}
+.week-slot-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:4px;min-height:56px}
+
+/* Slot card */
+.slot-card{border-radius:10px;padding:8px 10px;position:relative;cursor:pointer;
+  transition:all 0.15s;border:1.5px solid transparent}
+.slot-card:hover{filter:brightness(0.96);transform:translateY(-1px);box-shadow:var(--shadow)}
+.slot-card.empty{background:var(--surface2);border:2px dashed var(--border2);
+  display:flex;align-items:center;justify-content:center;min-height:52px}
+.slot-card.empty:hover{border-color:#3BAA7A;background:#EAF7F1}
+.slot-card-inner{display:flex;align-items:flex-start;gap:7px}
+.slot-emoji{font-size:1.2rem;flex-shrink:0;line-height:1}
+.slot-info{flex:1;min-width:0}
+.slot-subject{font-size:0.82rem;font-weight:700;color:inherit;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot-time{font-size:0.68rem;font-weight:600;opacity:0.65;margin-top:2px}
+.slot-room{font-size:0.68rem;font-weight:600;opacity:0.55}
+.slot-flags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.flag{font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:100px;
+  background:rgba(0,0,0,0.1);color:inherit;white-space:nowrap}
+.flag.ta{background:rgba(59,170,122,0.2);color:#1D7A52}
+.slot-notes{font-size:0.68rem;opacity:0.65;margin-top:3px;font-style:italic;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot-del{position:absolute;top:4px;right:4px;font-size:0.7rem;padding:2px 5px;
+  border-radius:5px;opacity:0;transition:opacity 0.1s;background:rgba(0,0,0,0.15)}
+.slot-card:hover .slot-del{opacity:1}
+.add-slot-label{font-size:0.72rem;font-weight:600;color:var(--muted)}
+
+/* Week mini slot */
+.week-slot-card{border-radius:7px;padding:5px 6px;margin:2px;cursor:pointer;
+  transition:all 0.12s;border:1.5px solid transparent;position:relative}
+.week-slot-card:hover{filter:brightness(0.95);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.week-slot-card.empty-mini{background:var(--surface2);border:1.5px dashed var(--border2);
+  min-height:44px;display:flex;align-items:center;justify-content:center;margin:3px}
+.week-slot-card.empty-mini:hover{border-color:#3BAA7A}
+.wsc-subject{font-size:0.7rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wsc-time{font-size:0.6rem;opacity:0.6;font-weight:600}
+.wsc-ta{font-size:0.6rem;font-weight:700;color:#1D7A52;margin-top:2px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,26,46,0.6);
+  display:none;align-items:center;justify-content:center;padding:16px;z-index:500;
+  backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg);
+  width:min(480px,100%);overflow:hidden}
+.modal-head{background:var(--ink);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-family:var(--font-display);font-size:1.05rem;color:white}
+.modal-close{color:rgba(255,255,255,0.6);font-size:1.3rem;padding:4px 8px;border-radius:6px;transition:all 0.1s}
+.modal-close:hover{color:white;background:rgba(255,255,255,0.1)}
+.modal-body{padding:18px;display:flex;flex-direction:column;gap:12px}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted)}
+.field input,.field select,.field textarea{padding:9px 12px;border-radius:9px;border:1.5px solid var(--border2);
+  font-size:0.85rem;color:var(--ink);background:var(--surface2);outline:none;transition:border-color 0.15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#3BAA7A;background:white}
+.field textarea{resize:vertical;min-height:60px}
+.subject-picker{display:flex;flex-wrap:wrap;gap:5px}
+.subj-pick-btn{padding:5px 10px;border-radius:100px;font-size:0.75rem;font-weight:700;
+  border:2px solid transparent;cursor:pointer;transition:all 0.12s}
+.subj-pick-btn.selected{box-shadow:0 0 0 2px var(--ink)}
+.ta-toggle{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:9px;
+  border:1.5px solid var(--border2);cursor:pointer;transition:all 0.15s;background:var(--surface2)}
+.ta-toggle:hover{border-color:#3BAA7A}
+.ta-toggle input{width:16px;height:16px;accent-color:#3BAA7A}
+.ta-label{font-size:0.85rem;font-weight:600;color:var(--ink2)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;padding:0 18px 16px}
+.btn-save{background:#3BAA7A;color:white;padding:10px 22px;border-radius:100px;font-size:0.85rem;font-weight:700;transition:all 0.15s}
+.btn-save:hover{background:#2E8F64}
+.btn-cancel{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border2);
+  padding:10px 16px;border-radius:100px;font-size:0.85rem;font-weight:700}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:white;padding:10px 20px;border-radius:100px;
+  font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── PRINT ── */
+@media print{
+  .no-print{display:none!important}
+  body{background:white}
+  .app-main{display:block;padding:0}
+  .sidebar{display:none}
+  .timetable-wrap{margin:0}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header no-print">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a href="/" class="header-back">← SendSteps</a>
+    <div class="header-logo">
+      <h1>Visual <span>Timetable</span> Builder</h1>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="view-tabs">
+      <button class="view-tab active" id="tabDay" onclick="setView('day')">📅 Day</button>
+      <button class="view-tab" id="tabWeek" onclick="setView('week')">🗓️ Week</button>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="doPrint()">🖨️ Print</button>
+    <button class="btn btn-ghost btn-sm" onclick="clearAll()">🗑️ Clear</button>
+  </div>
+</header>
+
+<!-- TOOLBAR -->
+<div class="toolbar no-print">
+  <div class="toolbar-left">
+    <input type="text" class="child-name-input" id="childName" placeholder="Child / class name..." 
+      oninput="saveState()" maxlength="40">
+    <div class="day-selector" id="daySelector"></div>
+  </div>
+  <div class="toolbar-right">
+    <button class="btn btn-dark btn-sm" onclick="loadTemplate('primary')">📚 Primary template</button>
+    <button class="btn btn-dark btn-sm" onclick="loadTemplate('secondary')">🏫 Secondary template</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="app-main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar no-print">
+
+    <!-- SUBJECT PALETTE -->
+    <div class="panel">
+      <div class="panel-head">🎨 Subjects — click a slot to assign</div>
+      <div class="panel-body">
+        <div class="subject-palette" id="subjectPalette"></div>
+      </div>
+    </div>
+
+    <!-- SLOT SETTINGS -->
+    <div class="panel">
+      <div class="panel-head">⚙️ Slot settings</div>
+      <div class="panel-body">
+        <div class="slot-setting">
+          <div class="slot-label">Number of slots per day</div>
+          <select class="slot-input" id="slotCount" onchange="onSlotCountChange()">
+            <option value="5">5 slots</option>
+            <option value="6" selected>6 slots</option>
+            <option value="7">7 slots</option>
+            <option value="8">8 slots</option>
+            <option value="9">9 slots</option>
+            <option value="10">10 slots</option>
+          </select>
+        </div>
+        <div class="slot-setting">
+          <div class="slot-label">School start time</div>
+          <input type="time" class="slot-input" id="startTime" value="08:45" onchange="rebuildSlotTimes()">
+        </div>
+        <div class="slot-setting">
+          <div class="slot-label">Slot duration (mins)</div>
+          <select class="slot-input" id="slotDuration" onchange="rebuildSlotTimes()">
+            <option value="45">45 min</option>
+            <option value="50">50 min</option>
+            <option value="55">55 min</option>
+            <option value="60" selected>60 min</option>
+            <option value="70">70 min</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- TIMETABLE -->
+  <div class="timetable-wrap" id="timetableWrap"></div>
+
+</div>
+
+<!-- SLOT MODAL -->
+<div class="modal-overlay" id="slotModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Edit Slot</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Subject</label>
+        <div class="subject-picker" id="modalSubjectPicker"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field">
+          <label>Start time</label>
+          <input type="time" id="modalStart">
+        </div>
+        <div class="field">
+          <label>End time</label>
+          <input type="time" id="modalEnd">
+        </div>
+      </div>
+      <div class="field">
+        <label>Room / location</label>
+        <input type="text" id="modalRoom" placeholder="e.g. Room 4, Hall, Library" maxlength="40">
+      </div>
+      <label class="ta-toggle">
+        <input type="checkbox" id="modalTA">
+        <span class="ta-label">🟢 TA support in this slot</span>
+      </label>
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="modalNotes" placeholder="e.g. 1:1 reading, sensory break after, modified task..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveSlot()">✓ Save slot</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// SUBJECTS
+// ══════════════════════════════════════════
+const SUBJECTS = [
+  {id:'english',    name:'English',    emoji:'📖', color:'#4F86C6', light:'#EBF2FB'},
+  {id:'maths',      name:'Maths',      emoji:'🔢', color:'#E8724A', light:'#FDF0EB'},
+  {id:'science',    name:'Science',    emoji:'🔬', color:'#3BAA7A', light:'#E8F7F1'},
+  {id:'history',    name:'History',    emoji:'🏛️', color:'#9B6BB5', light:'#F3EEF8'},
+  {id:'geography',  name:'Geography',  emoji:'🌍', color:'#5BA8A0', light:'#EAF5F4'},
+  {id:'art',        name:'Art & DT',   emoji:'🎨', color:'#E8A838', light:'#FDF5E6'},
+  {id:'pe',         name:'PE',         emoji:'⚽', color:'#D4527A', light:'#FCEEF3'},
+  {id:'music',      name:'Music',      emoji:'🎵', color:'#6B8FD4', light:'#EEF2FB'},
+  {id:'re',         name:'RE / PSHE',  emoji:'💛', color:'#C47B5A', light:'#FAF0EB'},
+  {id:'languages',  name:'Languages',  emoji:'🗣️', color:'#5EB8D4', light:'#EAF7FB'},
+  {id:'computing',  name:'Computing',  emoji:'💻', color:'#7B8FE8', light:'#EEF0FB'},
+  {id:'break',      name:'Break / Lunch',emoji:'🍎',color:'#B0AFA8', light:'#F5F4F2'},
+  {id:'assembly',   name:'Assembly',   emoji:'🏫', color:'#7BAA5B', light:'#EEF7E8'},
+  {id:'reading',    name:'Reading',    emoji:'📚', color:'#D4A0C8', light:'#FAF2F8'},
+  {id:'other',      name:'Free / Other',emoji:'📋',color:'#8A8A9A', light:'#F0F0F4'},
+];
+
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+const SHORT_DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+function makeSlots(count, startTime, duration) {
+  const slots = [];
+  let [h, m] = startTime.split(':').map(Number);
+  for (let i = 0; i < count; i++) {
+    const startStr = pad(h) + ':' + pad(m);
+    let em = m + duration, eh = h;
+    while (em >= 60) { em -= 60; eh++; }
+    const endStr = pad(eh) + ':' + pad(em);
+    slots.push({start: startStr, end: endStr});
+    h = eh; m = em;
+    // Add 15 min break after slot 2 and slot 4 for primary feel
+  }
+  return slots;
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+
+let state = {
+  view: 'day',
+  activeDay: 0,
+  childName: '',
+  slotCount: 6,
+  startTime: '08:45',
+  slotDuration: 60,
+  // timetable[dayIdx][slotIdx] = slot data or null
+  timetable: Array.from({length:5}, () => Array(6).fill(null)),
+  slotTimes: [],
+};
+
+// Editing context
+let editCtx = {day: 0, slot: 0};
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  loadState();
+  buildDaySelector();
+  buildSubjectPalette();
+  buildModalSubjectPicker();
+  rebuildSlotTimes();
+  syncInputs();
+  render();
+}
+
+function syncInputs() {
+  document.getElementById('childName').value = state.childName;
+  document.getElementById('slotCount').value = state.slotCount;
+  document.getElementById('startTime').value = state.startTime;
+  document.getElementById('slotDuration').value = state.slotDuration;
+}
+
+function buildDaySelector() {
+  const el = document.getElementById('daySelector');
+  el.innerHTML = DAYS.map((d, i) => `
+    <button class="day-btn${i === state.activeDay ? ' active' : ''}" onclick="setActiveDay(${i})">${SHORT_DAYS[i]}</button>
+  `).join('');
+}
+
+function buildSubjectPalette() {
+  const el = document.getElementById('subjectPalette');
+  el.innerHTML = SUBJECTS.map(s => `
+    <div class="subject-pill" style="background:${s.light};color:${s.color}"
+      title="Click a slot then pick this subject">
+      <div class="sp-dot" style="background:${s.color}"></div>
+      <span class="sp-name">${s.name}</span>
+      <span class="sp-emoji">${s.emoji}</span>
+    </div>
+  `).join('');
+}
+
+function buildModalSubjectPicker() {
+  const el = document.getElementById('modalSubjectPicker');
+  el.innerHTML = SUBJECTS.map(s => `
+    <button class="subj-pick-btn" data-subj="${s.id}"
+      style="background:${s.light};color:${s.color};border-color:${s.color}40"
+      onclick="selectSubject('${s.id}')">${s.emoji} ${s.name}</button>
+  `).join('');
+}
+
+function rebuildSlotTimes() {
+  state.startTime = document.getElementById('startTime').value;
+  state.slotDuration = parseInt(document.getElementById('slotDuration').value);
+  // Build slot times with a 15min break inserted after slot 2
+  const slots = [];
+  let [h, m] = state.startTime.split(':').map(Number);
+  for (let i = 0; i < state.slotCount; i++) {
+    const startStr = pad(h) + ':' + pad(m);
+    let em = m + state.slotDuration, eh = h;
+    while (em >= 60) { em -= 60; eh++; }
+    const endStr = pad(eh) + ':' + pad(em);
+    slots.push({start: startStr, end: endStr, isBreak: false});
+    h = eh; m = em;
+    // 15 min break after slot 2
+    if (i === 1) { m += 15; while(m>=60){m-=60;h++;} }
+    // 45 min lunch after slot 3 (if slotCount > 5)
+    if (i === 3 && state.slotCount > 5) { m += 45; while(m>=60){m-=60;h++;} }
+  }
+  state.slotTimes = slots;
+  render();
+}
+
+function onSlotCountChange() {
+  const newCount = parseInt(document.getElementById('slotCount').value);
+  state.slotCount = newCount;
+  // Resize each day's array
+  state.timetable = state.timetable.map(day => {
+    const d = [...day];
+    while (d.length < newCount) d.push(null);
+    return d.slice(0, newCount);
+  });
+  rebuildSlotTimes();
+  saveState();
+}
+
+// ══════════════════════════════════════════
+// VIEW SWITCHING
+// ══════════════════════════════════════════
+function setView(v) {
+  state.view = v;
+  document.getElementById('tabDay').classList.toggle('active', v === 'day');
+  document.getElementById('tabWeek').classList.toggle('active', v === 'week');
+  // Day selector only relevant in day view
+  document.getElementById('daySelector').style.display = v === 'day' ? 'flex' : 'none';
+  render();
+}
+
+function setActiveDay(i) {
+  state.activeDay = i;
+  buildDaySelector();
+  render();
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function render() {
+  const wrap = document.getElementById('timetableWrap');
+  if (state.view === 'day') {
+    wrap.innerHTML = renderDayView();
+  } else {
+    wrap.innerHTML = renderWeekView();
+  }
+}
+
+function renderDayView() {
+  const day = DAYS[state.activeDay];
+  const slots = state.timetable[state.activeDay];
+  const childTag = state.childName
+    ? `<span class="child-tag">${escHtml(state.childName)}</span>` : '';
+
+  const slotCards = slots.map((slot, si) => {
+    const time = state.slotTimes[si] || {};
+    return `<div onclick="openModal(${state.activeDay}, ${si})">${renderSlotCard(slot, time, false)}</div>`;
+  }).join('');
+
+  return `<div class="day-view">
+    <div class="day-view-head">
+      <h2>${day}</h2>
+      ${childTag}
+    </div>
+    <div class="slots-list">${slotCards}</div>
+  </div>`;
+}
+
+function renderWeekView() {
+  const childName = state.childName ? ` — ${escHtml(state.childName)}` : '';
+
+  // Header row
+  const headCells = `<div class="week-col-head" style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Time</div>`
+    + SHORT_DAYS.map(d => `<div class="week-col-head">${d}</div>`).join('');
+
+  // Slot rows
+  const rows = Array.from({length: state.slotCount}, (_, si) => {
+    const time = state.slotTimes[si] || {};
+    const timeLabel = time.start ? `${time.start}` : `Slot ${si+1}`;
+    const cells = DAYS.map((_, di) => {
+      const slot = state.timetable[di][si];
+      return `<div class="week-slot-cell" onclick="openModal(${di}, ${si})">${renderWeekSlotCard(slot, time)}</div>`;
+    }).join('');
+    return `<div class="week-time-cell">${timeLabel}</div>${cells}`;
+  }).join('');
+
+  return `<div class="week-view">
+    <div style="padding:14px 18px;background:var(--ink);display:flex;align-items:center;gap:10px">
+      <h2 style="font-family:var(--font-display);font-size:1.05rem;color:white">Weekly Timetable${childName}</h2>
+    </div>
+    <div class="week-grid">${headCells}${rows}</div>
+  </div>`;
+}
+
+function renderSlotCard(slot, time, mini) {
+  if (!slot || !slot.subjectId) {
+    return `<div class="slot-card empty">
+      <span class="add-slot-label">＋ Add</span>
+    </div>`;
+  }
+  const subj = SUBJECTS.find(s => s.id === slot.subjectId) || SUBJECTS[14];
+  const timeStr = time.start && time.end ? `${time.start} – ${time.end}` : '';
+  const taFlag = slot.ta ? `<span class="flag ta">🟢 TA</span>` : '';
+  const roomFlag = slot.room ? `<span class="flag">${escHtml(slot.room)}</span>` : '';
+  const notes = slot.notes ? `<div class="slot-notes">${escHtml(slot.notes)}</div>` : '';
+
+  return `<div class="slot-card" style="background:${subj.light};color:${subj.color};border-color:${subj.color}30">
+    <button class="slot-del" onclick="event.stopPropagation();clearSlot(${editCtx?.day ?? 0})" title="Clear">✕</button>
+    <div class="slot-card-inner">
+      <span class="slot-emoji">${subj.emoji}</span>
+      <div class="slot-info">
+        <div class="slot-subject">${subj.name}</div>
+        ${timeStr ? `<div class="slot-time">${timeStr}</div>` : ''}
+        ${slot.room ? `<div class="slot-room">📍 ${escHtml(slot.room)}</div>` : ''}
+        <div class="slot-flags">${taFlag}${roomFlag ? '' : ''}</div>
+        ${notes}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderWeekSlotCard(slot, time) {
+  if (!slot || !slot.subjectId) {
+    return `<div class="week-slot-card empty-mini"><span style="font-size:0.65rem;color:var(--muted)">＋</span></div>`;
+  }
+  const subj = SUBJECTS.find(s => s.id === slot.subjectId) || SUBJECTS[14];
+  const ta = slot.ta ? `<div class="wsc-ta">🟢 TA</div>` : '';
+  return `<div class="week-slot-card" style="background:${subj.light};color:${subj.color}">
+    <div class="wsc-subject">${subj.emoji} ${subj.name}</div>
+    ${time.start ? `<div class="wsc-time">${time.start}</div>` : ''}
+    ${ta}
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════
+function openModal(dayIdx, slotIdx) {
+  editCtx = {day: dayIdx, slot: slotIdx};
+  const slot = state.timetable[dayIdx][slotIdx];
+  const time = state.slotTimes[slotIdx] || {};
+
+  document.getElementById('modalTitle').textContent =
+    `${DAYS[dayIdx]} — Slot ${slotIdx + 1}${time.start ? ' ('+time.start+')' : ''}`;
+
+  // Pre-fill
+  document.getElementById('modalStart').value = slot?.startOverride || time.start || '';
+  document.getElementById('modalEnd').value   = slot?.endOverride   || time.end   || '';
+  document.getElementById('modalRoom').value  = slot?.room  || '';
+  document.getElementById('modalTA').checked  = slot?.ta    || false;
+  document.getElementById('modalNotes').value = slot?.notes || '';
+
+  // Subject picker
+  document.querySelectorAll('.subj-pick-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.subj === slot?.subjectId);
+  });
+
+  document.getElementById('slotModal').classList.add('open');
+  document.addEventListener('keydown', onModalKey);
+}
+
+function closeModal() {
+  document.getElementById('slotModal').classList.remove('open');
+  document.removeEventListener('keydown', onModalKey);
+}
+
+function onModalKey(e) { if (e.key === 'Escape') closeModal(); }
+
+function selectSubject(id) {
+  document.querySelectorAll('.subj-pick-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.subj === id);
+  });
+}
+
+function saveSlot() {
+  const selected = document.querySelector('.subj-pick-btn.selected');
+  if (!selected) { showToast('⚠️ Please choose a subject'); return; }
+
+  state.timetable[editCtx.day][editCtx.slot] = {
+    subjectId: selected.dataset.subj,
+    startOverride: document.getElementById('modalStart').value,
+    endOverride:   document.getElementById('modalEnd').value,
+    room:  document.getElementById('modalRoom').value.trim(),
+    ta:    document.getElementById('modalTA').checked,
+    notes: document.getElementById('modalNotes').value.trim(),
+  };
+
+  closeModal();
+  render();
+  saveState();
+  showToast('✓ Slot saved');
+}
+
+function clearSlot(dayIdx, slotIdx) {
+  state.timetable[editCtx.day][editCtx.slot] = null;
+  render();
+  saveState();
+}
+
+// ══════════════════════════════════════════
+// TEMPLATES
+// ══════════════════════════════════════════
+const TEMPLATES = {
+  primary: [
+    // Each day = array of subjectIds matching slot count
+    ['english','maths','break','science','art','pe'],
+    ['maths','english','break','history','music','reading'],
+    ['english','maths','break','geography','pe','assembly'],
+    ['maths','english','break','science','re','art'],
+    ['english','maths','break','computing','reading','assembly'],
+  ],
+  secondary: [
+    ['english','maths','science','break','history','geography','pe'],
+    ['maths','english','languages','break','computing','music','re'],
+    ['science','maths','english','break','art','pe','assembly'],
+    ['history','english','maths','break','science','languages','re'],
+    ['geography','maths','english','break','computing','art','reading'],
+  ],
+};
+
+function loadTemplate(type) {
+  if (state.timetable.some(d => d.some(s => s !== null))) {
+    if (!confirm('This will replace your current timetable. Continue?')) return;
+  }
+  const tpl = TEMPLATES[type];
+  const count = type === 'secondary' ? 7 : 6;
+  state.slotCount = count;
+  document.getElementById('slotCount').value = count;
+
+  state.timetable = tpl.map(day => {
+    return day.slice(0, count).map(subj => ({subjectId: subj, room:'', ta:false, notes:''}));
+  });
+
+  if (type === 'secondary') {
+    state.startTime = '08:30';
+    state.slotDuration = 50;
+    document.getElementById('startTime').value = '08:30';
+    document.getElementById('slotDuration').value = '50';
+  } else {
+    state.startTime = '08:45';
+    state.slotDuration = 60;
+    document.getElementById('startTime').value = '08:45';
+    document.getElementById('slotDuration').value = '60';
+  }
+
+  rebuildSlotTimes();
+  saveState();
+  showToast(`✓ ${type === 'primary' ? 'Primary' : 'Secondary'} template loaded`);
+}
+
+// ══════════════════════════════════════════
+// PRINT
+// ══════════════════════════════════════════
+function doPrint() {
+  const childName = state.childName || 'Timetable';
+  const w = window.open('', '_blank', 'width=900,height=700');
+
+  const subjMap = {};
+  SUBJECTS.forEach(s => subjMap[s.id] = s);
+
+  // Build week grid for print
+  const headRow = `<th>Time</th>${SHORT_DAYS.map(d=>`<th>${d}</th>`).join('')}`;
+  const bodyRows = Array.from({length: state.slotCount}, (_, si) => {
+    const time = state.slotTimes[si] || {};
+    const timeLabel = time.start && time.end ? `${time.start}<br><small>${time.end}</small>` : `Slot ${si+1}`;
+    const cells = DAYS.map((_, di) => {
+      const slot = state.timetable[di][si];
+      if (!slot || !slot.subjectId) return `<td class="empty-cell"></td>`;
+      const s = subjMap[slot.subjectId] || subjMap['other'];
+      const ta = slot.ta ? `<div class="ta-tag">TA</div>` : '';
+      const room = slot.room ? `<div class="room-tag">📍${slot.room}</div>` : '';
+      const notes = slot.notes ? `<div class="notes-tag">${slot.notes}</div>` : '';
+      return `<td style="background:${s.light};border-left:4pt solid ${s.color}">
+        <div class="subj-name">${s.emoji} ${s.name}</div>
+        ${room}${ta}${notes}
+      </td>`;
+    }).join('');
+    return `<tr><td class="time-cell">${timeLabel}</td>${cells}</tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>${childName} Timetable</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:white;padding:12mm 10mm;color:#1A1A2E;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1{font-family:'DM Serif Display',serif;font-size:18pt;margin-bottom:10pt;color:#1A1A2E}
+table{width:100%;border-collapse:collapse;font-size:8pt}
+th{background:#1A1A2E;color:white;padding:6pt 5pt;text-align:center;font-weight:700}
+td{border:1pt solid #E0DBD0;padding:5pt 6pt;vertical-align:top;min-height:40pt}
+.time-cell{background:#F7F5F0;text-align:center;font-weight:700;font-size:7.5pt;color:#4A4A6A;width:50pt}
+.empty-cell{background:#FAFAF8}
+.subj-name{font-weight:700;font-size:8.5pt;margin-bottom:2pt}
+.ta-tag{font-size:6.5pt;font-weight:700;color:#1D7A52;margin-top:2pt}
+.room-tag{font-size:6.5pt;color:#666;margin-top:1pt}
+.notes-tag{font-size:6pt;color:#888;margin-top:2pt;font-style:italic}
+@media print{body{padding:8mm}}
+</style></head><body>
+<h1>${childName} — Weekly Timetable</h1>
+<table><thead><tr>${headRow}</tr></thead><tbody>${bodyRows}</tbody></table>
+</body></html>`;
+
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => { setTimeout(() => w.print(), 600); };
+}
+
+// ══════════════════════════════════════════
+// CLEAR
+// ══════════════════════════════════════════
+function clearAll() {
+  if (!confirm('Clear the whole timetable?')) return;
+  state.timetable = Array.from({length:5}, () => Array(state.slotCount).fill(null));
+  render();
+  saveState();
+  showToast('🗑️ Timetable cleared');
+}
+
+// ══════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════
+const STORAGE_KEY = 'sendsteps_timetable_v1';
+
+function saveState() {
+  state.childName = document.getElementById('childName').value;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const p = JSON.parse(saved);
+      Object.assign(state, p);
+    }
+  } catch(e){}
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// On day selector, hide in week view
+document.getElementById('daySelector').style.display = state.view === 'week' ? 'none' : 'flex';
+
+init();
+</script>
+</body>
+</html>
