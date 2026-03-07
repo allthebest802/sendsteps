@@ -105,6 +105,21 @@ button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
 .add-step-btn{padding:9px;border-radius:10px;border:2px dashed var(--border2);color:var(--muted);font-size:0.82rem;font-weight:700;width:100%;transition:all 0.15s}
 .add-step-btn:hover{border-color:var(--accent);color:var(--accent-d);background:var(--surface2)}
 
+/* ADD STEP ROW */
+.add-step-row{display:flex;gap:6px;align-items:stretch}
+.add-step-row .add-step-btn{flex:1;width:auto}
+.preset-dropdown-wrap{position:relative}
+.preset-dropdown-btn{padding:9px 12px;border-radius:10px;border:2px dashed var(--border2);color:var(--muted);font-size:0.82rem;font-weight:700;background:none;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:5px;cursor:pointer}
+.preset-dropdown-btn:hover{border-color:var(--accent);color:var(--accent-d);background:var(--surface2)}
+.preset-menu{position:absolute;bottom:calc(100% + 6px);right:0;background:white;border:1.5px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);min-width:220px;max-height:320px;overflow-y:auto;z-index:300;display:none}
+.preset-menu.open{display:block}
+.preset-group-label{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);padding:8px 12px 4px;border-top:1px solid var(--border)}
+.preset-group-label:first-child{border-top:none}
+.preset-option{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;transition:background 0.1s;font-size:0.82rem;font-weight:700;color:var(--ink)}
+.preset-option:hover{background:var(--surface2)}
+.preset-option .po-emoji{font-size:1rem;flex-shrink:0}
+.preset-option .po-label{flex:1}
+
 /* PRINT BUTTONS */
 .print-actions{display:flex;gap:8px;flex-wrap:wrap}
 .print-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:100px;font-size:0.88rem;font-weight:700;transition:all 0.15s}
@@ -542,6 +557,7 @@ function init() {
   renderCatTabs();
   renderRoutineList();
   renderColourSwatches();
+  buildPresetMenu();
 }
 
 function renderCatTabs() {
@@ -613,7 +629,15 @@ function renderEditor() {
     <input type="text" class="edit-title" id="editTitle" value="${escHtml(state.title)}"
       placeholder="Routine title..." oninput="onTitleChange(this.value)">
     <div class="steps-editor" id="stepsEditor"></div>
-    <button class="add-step-btn" onclick="addStep()">＋ Add a step</button>
+    <div class="add-step-row">
+      <button class="add-step-btn" onclick="addStep()">＋ Add your own step</button>
+      <div class="preset-dropdown-wrap">
+        <button class="preset-dropdown-btn" onclick="togglePresetMenu(event)" title="Add from presets">
+          📋 Quick add ▾
+        </button>
+        <div class="preset-menu" id="presetMenu"></div>
+      </div>
+    </div>
   `;
   renderSteps();
 }
@@ -643,11 +667,115 @@ function onStepChange(i, v) {
   renderPreview();
 }
 
+// ══════════════════════════════════════════
+// PRESET STEPS DROPDOWN
+// ══════════════════════════════════════════
+const PRESET_STEPS = [
+  { group: 'Morning', steps: [
+    {e:'⏰', t:'Wake Up'},
+    {e:'🚽', t:'Use the Toilet'},
+    {e:'🚿', t:'Shower or Wash'},
+    {e:'👀', t:'Wash Face'},
+    {e:'🙌', t:'Wash Hands'},
+    {e:'🦷', t:'Brush Teeth'},
+    {e:'👕', t:'Get Dressed'},
+    {e:'🥣', t:'Eat Breakfast'},
+    {e:'🎒', t:'Pack School Bag'},
+    {e:'👟', t:'Put Shoes On'},
+    {e:'🧥', t:'Put Coat On'},
+    {e:'🚌', t:'Leave for School'},
+  ]},
+  { group: 'Evening', steps: [
+    {e:'📵', t:'Screens Off'},
+    {e:'🛁', t:'Bath or Shower'},
+    {e:'👕', t:'Pyjamas On'},
+    {e:'🍵', t:'Calm Drink'},
+    {e:'📖', t:'Story or Reading'},
+    {e:'💡', t:'Lights Off'},
+    {e:'🌙', t:'Sleep Time'},
+    {e:'🧹', t:'Tidy Up'},
+  ]},
+  { group: 'School', steps: [
+    {e:'📚', t:'Reading Book'},
+    {e:'📓', t:'Homework Folder'},
+    {e:'✏️', t:'Pencil Case'},
+    {e:'💧', t:'Water Bottle'},
+    {e:'🥪', t:'Packed Lunch'},
+    {e:'👟', t:'PE Kit'},
+    {e:'✅', t:'Check Everything'},
+    {e:'🙋', t:'Put Hand Up'},
+    {e:'👀', t:'Read the Instructions'},
+  ]},
+  { group: 'Calm & Wellbeing', steps: [
+    {e:'💨', t:'Take a Deep Breath'},
+    {e:'🧸', t:'Find a Safe Spot'},
+    {e:'💧', t:'Drink Some Water'},
+    {e:'✊', t:'Squeeze Something Soft'},
+    {e:'💬', t:'Talk to Someone'},
+    {e:'🧘', t:'Slow Breathing'},
+    {e:'🌈', t:'Name 5 Things You Can See'},
+    {e:'🎵', t:'Listen to Music'},
+  ]},
+  { group: 'Life Skills', steps: [
+    {e:'🔑', t:'Keys / Phone'},
+    {e:'🛒', t:'Check the Shopping List'},
+    {e:'💳', t:'Pay at the Checkout'},
+    {e:'🌤️', t:'Check the Weather'},
+    {e:'🚪', t:'Lock the Door'},
+    {e:'🤸', t:'Warm Up'},
+    {e:'🏃', t:'Exercise'},
+    {e:'🙌', t:'Wash Hands'},
+  ]},
+  { group: 'Praise & Finish', steps: [
+    {e:'✅', t:'All Done!'},
+    {e:'🏆', t:'Well Done!'},
+    {e:'⭐', t:'You Did It!'},
+    {e:'🎉', t:'Great Job!'},
+    {e:'😊', t:'I Am Ready!'},
+    {e:'💛', t:'I Am Proud of Myself'},
+  ]},
+];
+
+function buildPresetMenu() {
+  const menu = document.getElementById('presetMenu');
+  if (!menu) return;
+  menu.innerHTML = PRESET_STEPS.map(group => `
+    <div class="preset-group-label">${group.group}</div>
+    ${group.steps.map(s => `
+      <div class="preset-option" onclick="addPresetStep('${s.e}', ${JSON.stringify(s.t)})">
+        <span class="po-emoji">${s.e}</span>
+        <span class="po-label">${s.t}</span>
+      </div>
+    `).join('')}
+  `).join('');
+}
+
+function togglePresetMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('presetMenu');
+  menu.classList.toggle('open');
+  if (menu.classList.contains('open')) {
+    setTimeout(() => document.addEventListener('click', closePresetMenu), 10);
+  }
+}
+
+function closePresetMenu() {
+  const menu = document.getElementById('presetMenu');
+  if (menu) menu.classList.remove('open');
+  document.removeEventListener('click', closePresetMenu);
+}
+
+function addPresetStep(emoji, title) {
+  state.steps.push({e: emoji, t: title});
+  renderSteps();
+  renderPreview();
+  closePresetMenu();
+}
+
 function addStep() {
   state.steps.push({e:'⭐', t:''});
   renderSteps();
   renderPreview();
-  // Focus the new input
   setTimeout(() => {
     const inputs = document.querySelectorAll('.step-input');
     if (inputs.length) inputs[inputs.length-1].focus();
