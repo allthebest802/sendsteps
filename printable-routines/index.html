@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Printable Routine Sheets — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0F7F4;--surface:#fff;--surface2:#EAF4F0;
+  --ink:#1C3A2F;--ink2:#4A6B5E;--muted:#8AA89F;
+  --accent:#2ECC87;--accent-d:#1FA869;
+  --purple:#7C3AED;--purple-l:#EDE9FE;
+  --amber:#F59E0B;--amber-l:#FEF3C7;
+  --rose:#F43F5E;--rose-l:#FFE4E6;
+  --sky:#0EA5E9;--sky-l:#E0F2FE;
+  --border:#D0E8DF;--border2:#B0D4C8;
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 2px 12px rgba(30,80,60,0.10);
+  --shadow-lg:0 8px 32px rgba(30,80,60,0.15);
+  --font-display:'Baloo 2',cursive;
+  --font-body:'Nunito',sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-height:100vh;
+  background-image:radial-gradient(ellipse at 0% 0%,rgba(46,204,135,0.12),transparent 55%),
+  radial-gradient(ellipse at 100% 100%,rgba(124,58,237,0.08),transparent 50%);
+}
+button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1FA869,#2ECC87);padding:20px 24px 16px;box-shadow:var(--shadow)}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{font-size:1.8rem}
+.logo h1{font-family:var(--font-display);font-size:1.4rem;font-weight:800;color:white;line-height:1}
+.logo h1 span{opacity:0.85;font-weight:600}
+.header-sub{font-size:0.8rem;color:rgba(255,255,255,0.8);font-weight:600}
+
+/* LAYOUT */
+.app{max-width:1100px;margin:0 auto;padding:24px 20px 60px;display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+@media(max-width:780px){.app{grid-template-columns:1fr}}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
+.panel{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.panel-head h3{font-family:var(--font-display);font-size:0.95rem;font-weight:800;color:var(--ink)}
+.panel-body{padding:12px}
+
+/* CATEGORY TABS */
+.cat-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.cat-tab{padding:5px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;border:1.5px solid var(--border2);color:var(--ink2);transition:all 0.15s;cursor:pointer}
+.cat-tab:hover{border-color:var(--accent);color:var(--accent-d)}
+.cat-tab.active{background:var(--accent);border-color:var(--accent);color:white}
+
+/* ROUTINE LIST */
+.routine-list{display:flex;flex-direction:column;gap:5px;max-height:380px;overflow-y:auto}
+.routine-item{padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px}
+.routine-item:hover{border-color:var(--accent);background:var(--surface2)}
+.routine-item.active{border-color:var(--accent);background:#E8FBF2;box-shadow:0 0 0 2px rgba(46,204,135,0.2)}
+.ri-emoji{font-size:1.2rem;flex-shrink:0}
+.ri-info{overflow:hidden}
+.ri-name{font-size:0.82rem;font-weight:700;color:var(--ink);line-height:1.2}
+.ri-cat{font-size:0.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
+
+/* FORMAT PICKER */
+.format-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.fmt-btn{padding:10px 8px;border-radius:10px;border:2px solid var(--border);font-size:0.78rem;font-weight:700;color:var(--ink2);transition:all 0.15s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.fmt-btn:hover{border-color:var(--accent);color:var(--accent-d);background:var(--surface2)}
+.fmt-btn.active{border-color:var(--accent);background:#E8FBF2;color:var(--accent-d)}
+.fmt-icon{font-size:1.4rem}
+
+/* COLOUR PICKER */
+.colour-swatches{display:flex;flex-wrap:wrap;gap:6px}
+.colour-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.15s}
+.colour-swatch:hover{transform:scale(1.1)}
+.colour-swatch.active{border-color:var(--ink);transform:scale(1.1)}
+
+/* MAIN AREA */
+.main-area{display:flex;flex-direction:column;gap:16px}
+
+/* EDITOR */
+.editor-panel{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.editor-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.editor-head h2{font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--ink);flex:1}
+.editor-body{padding:18px}
+
+/* EDITABLE TITLE */
+.edit-title{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--ink);background:var(--surface2);margin-bottom:14px;outline:none;transition:border-color 0.15s}
+.edit-title:focus{border-color:var(--accent)}
+
+/* STEPS EDITOR */
+.steps-editor{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.step-row{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;transition:border-color 0.15s}
+.step-row:focus-within{border-color:var(--accent)}
+.step-drag{color:var(--muted);cursor:grab;font-size:1rem;padding:0 2px;flex-shrink:0}
+.step-emoji-btn{font-size:1.3rem;flex-shrink:0;padding:2px 4px;border-radius:6px;transition:background 0.1s;background:none;border:none;cursor:pointer}
+.step-emoji-btn:hover{background:var(--border)}
+.step-input{flex:1;border:none;background:none;font-family:var(--font-body);font-size:0.88rem;font-weight:700;color:var(--ink);outline:none}
+.step-input::placeholder{color:var(--muted);font-weight:600}
+.step-del{color:var(--muted);font-size:1rem;padding:2px 6px;border-radius:6px;transition:all 0.1s;flex-shrink:0}
+.step-del:hover{background:#FFE4E6;color:var(--rose)}
+.add-step-btn{padding:9px;border-radius:10px;border:2px dashed var(--border2);color:var(--muted);font-size:0.82rem;font-weight:700;width:100%;transition:all 0.15s}
+.add-step-btn:hover{border-color:var(--accent);color:var(--accent-d);background:var(--surface2)}
+
+/* PRINT BUTTONS */
+.print-actions{display:flex;gap:8px;flex-wrap:wrap}
+.print-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:100px;font-size:0.88rem;font-weight:700;transition:all 0.15s}
+.print-btn.primary{background:var(--accent);color:white;box-shadow:0 4px 14px rgba(46,204,135,0.35)}
+.print-btn.primary:hover{background:var(--accent-d);transform:translateY(-1px);box-shadow:0 6px 18px rgba(46,204,135,0.4)}
+.print-btn.secondary{background:var(--purple);color:white;box-shadow:0 4px 14px rgba(124,58,237,0.25)}
+.print-btn.secondary:hover{background:#6D28D9;transform:translateY(-1px)}
+.print-btn.ghost{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border2)}
+.print-btn.ghost:hover{background:var(--border);color:var(--ink)}
+
+/* PREVIEW */
+.preview-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.preview-head{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.preview-head h3{font-family:var(--font-display);font-size:0.95rem;font-weight:800;color:var(--ink);flex:1}
+.preview-badge{font-size:0.68rem;font-weight:700;padding:3px 10px;border-radius:100px;background:var(--purple-l);color:var(--purple);text-transform:uppercase;letter-spacing:0.4px}
+.preview-body{padding:18px;min-height:200px}
+
+/* VISUAL SCHEDULE PREVIEW */
+.vs-preview{display:flex;flex-direction:column;gap:0}
+.vs-title{font-family:var(--font-display);font-size:1.1rem;font-weight:800;text-align:center;margin-bottom:14px;padding-bottom:10px;border-bottom:3px solid currentColor}
+.vs-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.vs-step{border-radius:12px;padding:10px 8px;text-align:center;border:2px solid rgba(0,0,0,0.08)}
+.vs-step-emoji{font-size:1.8rem;display:block;margin-bottom:5px}
+.vs-step-label{font-size:0.72rem;font-weight:700;line-height:1.3}
+.vs-step-num{font-size:0.6rem;font-weight:800;opacity:0.5;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px}
+
+/* CHECKLIST PREVIEW */
+.cl-preview{font-family:'Nunito',sans-serif}
+.cl-title{font-size:1.1rem;font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee;display:flex;align-items:center;gap:8px}
+.cl-step{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.cl-box{width:22px;height:22px;border-radius:5px;border:2px solid;flex-shrink:0}
+.cl-emoji{font-size:1.1rem;flex-shrink:0}
+.cl-label{font-size:0.88rem;font-weight:700}
+
+/* CHART PREVIEW */
+.chart-preview{}
+.chart-title{font-size:1rem;font-weight:800;margin-bottom:10px;text-align:center}
+.chart-table{width:100%;border-collapse:collapse;font-size:0.72rem}
+.chart-table th{padding:5px 3px;text-align:center;font-weight:800;border:1.5px solid #ddd}
+.chart-table td{padding:6px 3px;text-align:center;border:1.5px solid #ddd;font-size:0.9rem}
+.chart-table .step-col{text-align:left;padding-left:6px;font-weight:700}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-icon{font-size:3rem;display:block;margin-bottom:10px;opacity:0.5}
+
+/* EMOJI PICKER POPUP */
+.emoji-popup{position:absolute;background:white;border:1.5px solid var(--border);border-radius:12px;padding:10px;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:repeat(6,1fr);gap:4px;z-index:200;width:200px}
+.emoji-popup button{font-size:1.2rem;padding:4px;border-radius:6px;transition:background 0.1s}
+.emoji-popup button:hover{background:var(--surface2)}
+
+@media print{
+  body,html{background:white !important}
+  body *{visibility:hidden}
+  #printTarget,#printTarget *{visibility:visible}
+  #printTarget{position:fixed;left:0;top:0;width:100%;height:100%}
+  .no-print{display:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="header no-print">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🌿</span>
+      <h1>SendSteps <span>Printable Routines</span></h1>
+    </div>
+    <div class="header-sub">Ready-made visual routines for SEND, SEN & all learners</div>
+  </div>
+</header>
+
+<div class="app no-print">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- ROUTINE PICKER -->
+    <div class="panel">
+      <div class="panel-head"><h3>📋 Choose a routine</h3></div>
+      <div class="panel-body">
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="routine-list" id="routineList"></div>
+      </div>
+    </div>
+
+    <!-- FORMAT -->
+    <div class="panel">
+      <div class="panel-head"><h3>🖨️ Print format</h3></div>
+      <div class="panel-body">
+        <div class="format-btns" id="formatBtns">
+          <button class="fmt-btn active" data-fmt="visual" onclick="setFormat('visual',this)">
+            <span class="fmt-icon">🎨</span>Visual Schedule
+          </button>
+          <button class="fmt-btn" data-fmt="checklist" onclick="setFormat('checklist',this)">
+            <span class="fmt-icon">✅</span>Checklist
+          </button>
+          <button class="fmt-btn" data-fmt="chart" onclick="setFormat('chart',this)">
+            <span class="fmt-icon">📅</span>Weekly Chart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLOUR -->
+    <div class="panel" id="colourPanel">
+      <div class="panel-head"><h3>🎨 Colour theme</h3></div>
+      <div class="panel-body">
+        <div class="colour-swatches" id="colourSwatches"></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-area">
+
+    <!-- EDITOR -->
+    <div class="editor-panel">
+      <div class="editor-head">
+        <h2 id="editorHeading">👈 Select a routine to get started</h2>
+        <div class="print-actions" id="printActions" style="display:none">
+          <button class="print-btn primary" onclick="doPrint()">🖨️ Print</button>
+          <button class="print-btn secondary" onclick="doPDF()">📄 Download PDF</button>
+        </div>
+      </div>
+      <div class="editor-body" id="editorBody">
+        <div class="empty-state">
+          <span class="empty-icon">📄</span>
+          <p style="font-weight:700;font-size:0.95rem;margin-bottom:6px">No routine selected</p>
+          <p style="font-size:0.82rem">Pick a routine from the left to preview and customise it</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-wrap" id="previewWrap" style="display:none">
+      <div class="preview-head">
+        <h3>👁️ Print preview</h3>
+        <span class="preview-badge" id="previewBadge">Visual Schedule</span>
+      </div>
+      <div class="preview-body" id="previewBody"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PRINT TARGET (hidden, rendered to DOM for printing) -->
+<div id="printTarget" style="display:none"></div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+
+const CATEGORIES = [
+  {id:'all',    label:'All'},
+  {id:'morning',label:'Morning'},
+  {id:'evening',label:'Evening'},
+  {id:'school', label:'School'},
+  {id:'sen',    label:'SEND/SEN'},
+  {id:'calm',   label:'Calm'},
+  {id:'life',   label:'Life Skills'},
+];
+
+const ROUTINES = [
+  // MORNING
+  {id:'morning-autism',    cat:'morning', name:'Morning Routine — Autistic Children',     emoji:'🌅',
+   steps:[
+    {e:'⏰',t:'Wake Up'},
+    {e:'🚽',t:'Use the Toilet'},
+    {e:'🚿',t:'Wash Face & Hands'},
+    {e:'👕',t:'Get Dressed'},
+    {e:'🥣',t:'Eat Breakfast'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'🎒',t:'Pack School Bag'},
+    {e:'👟',t:'Put Shoes On'},
+    {e:'🚌',t:'Leave for School'},
+  ]},
+  {id:'morning-adhd',      cat:'morning', name:'Morning Routine — ADHD Children',         emoji:'⚡',
+   steps:[
+    {e:'⏰',t:'Alarm Goes Off'},
+    {e:'💡',t:'Lights On — Sit Up'},
+    {e:'🚿',t:'Shower or Wash'},
+    {e:'👕',t:'Get Dressed (clothes ready night before)'},
+    {e:'🥞',t:'Eat Breakfast'},
+    {e:'🦷',t:'Brush Teeth — 2 minutes'},
+    {e:'🎒',t:'Bag by the door?'},
+    {e:'👟',t:'Shoes On'},
+    {e:'✅',t:'Ready to Go!'},
+  ]},
+  {id:'morning-general',   cat:'morning', name:'School Morning Routine',                  emoji:'🏫',
+   steps:[
+    {e:'⏰',t:'Wake Up'},
+    {e:'🛏️',t:'Make Bed'},
+    {e:'🚿',t:'Wash or Shower'},
+    {e:'👕',t:'Get Dressed'},
+    {e:'🥣',t:'Eat Breakfast'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'🎒',t:'Pack Bag'},
+    {e:'🚌',t:'Head to School'},
+  ]},
+  {id:'morning-ks1',       cat:'morning', name:'Morning Routine — KS1 (Ages 5–7)',        emoji:'🌈',
+   steps:[
+    {e:'⏰',t:'Wake Up — Good Morning!'},
+    {e:'🚽',t:'Toilet Time'},
+    {e:'👕',t:'Get Dressed'},
+    {e:'🥣',t:'Breakfast Time'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'🎒',t:'Get My Bag'},
+    {e:'😊',t:'Ready for School!'},
+  ]},
+
+  // EVENING
+  {id:'bedtime-autism',    cat:'evening', name:'Bedtime Routine — Autistic Children',     emoji:'🌙',
+   steps:[
+    {e:'📺',t:'Screens Off'},
+    {e:'🍵',t:'Calm Drink — No Sugar'},
+    {e:'🛁',t:'Bath or Shower'},
+    {e:'👕',t:'Pyjamas On'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'📖',t:'Story or Quiet Book'},
+    {e:'💡',t:'Lights Low'},
+    {e:'🌙',t:'Sleep Time'},
+  ]},
+  {id:'bedtime-adhd',      cat:'evening', name:'Bedtime Routine — ADHD Children',         emoji:'💤',
+   steps:[
+    {e:'📵',t:'Devices Away — 1 Hour Before Bed'},
+    {e:'🛁',t:'Bath or Shower'},
+    {e:'👕',t:'Pyjamas On'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'📖',t:'Choose One Book'},
+    {e:'💡',t:'Dim Lights'},
+    {e:'😴',t:'Eyes Closed — Sleep!'},
+  ]},
+  {id:'bedtime-general',   cat:'evening', name:'Bedtime Routine — General',               emoji:'⭐',
+   steps:[
+    {e:'🧹',t:'Tidy Up Toys'},
+    {e:'🛁',t:'Bath Time'},
+    {e:'👕',t:'Pyjamas On'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'📖',t:'Story Time'},
+    {e:'🌙',t:'Lights Out'},
+  ]},
+  {id:'afterschool',       cat:'evening', name:'After School Routine',                    emoji:'🎒',
+   steps:[
+    {e:'🏠',t:'Arrive Home'},
+    {e:'🎒',t:'Unpack Bag'},
+    {e:'🍎',t:'Healthy Snack'},
+    {e:'🎮',t:'Free Time — 30 mins'},
+    {e:'📚',t:'Homework'},
+    {e:'🍽️',t:'Help with Dinner'},
+    {e:'🛁',t:'Bath or Shower'},
+  ]},
+
+  // SCHOOL
+  {id:'school-bag',        cat:'school',  name:'Packing School Bag Checklist',            emoji:'🎒',
+   steps:[
+    {e:'📚',t:'Reading Book'},
+    {e:'📓',t:'Homework Folder'},
+    {e:'✏️',t:'Pencil Case'},
+    {e:'🥪',t:'Packed Lunch (if needed)'},
+    {e:'💧',t:'Water Bottle'},
+    {e:'💰',t:'Money (if needed)'},
+    {e:'📋',t:'Letters for School'},
+    {e:'👟',t:'PE Kit (on PE days)'},
+    {e:'✅',t:'Bag Zipped Up!'},
+  ]},
+  {id:'school-homework',   cat:'school',  name:'Homework Routine',                        emoji:'📝',
+   steps:[
+    {e:'🍎',t:'Snack & Drink First'},
+    {e:'🗂️',t:'Clear a Space to Work'},
+    {e:'📋',t:'Read the Task'},
+    {e:'✏️',t:'Start — Just One Step'},
+    {e:'📚',t:'Keep Going'},
+    {e:'✅',t:'Check Your Work'},
+    {e:'🎒',t:'Pack It Away'},
+    {e:'🎮',t:'Free Time — You Did It!'},
+  ]},
+  {id:'classroom-task',    cat:'school',  name:'Classroom Task Routine',                  emoji:'🖊️',
+   steps:[
+    {e:'👀',t:'Look at the Board / Task'},
+    {e:'🗂️',t:'Clear Your Desk'},
+    {e:'✏️',t:'Write Your Name'},
+    {e:'📖',t:'Read the Instructions'},
+    {e:'🚀',t:'Start Working'},
+    {e:'✅',t:'Check When Done'},
+    {e:'🙋',t:'Put Your Hand Up'},
+  ]},
+  {id:'transition',        cat:'school',  name:'Transition / Change Routine',             emoji:'🔄',
+   steps:[
+    {e:'⏰',t:'2 Minute Warning'},
+    {e:'⏱️',t:'1 Minute Warning'},
+    {e:'✋',t:'Stop What You Are Doing'},
+    {e:'🧹',t:'Tidy Up'},
+    {e:'💭',t:'Think About What Is Next'},
+    {e:'👣',t:'Move to the Next Activity'},
+  ]},
+
+  // SEN/SEND
+  {id:'sen-morning',       cat:'sen',     name:'Morning Routine — SEN/SEND Support',      emoji:'🌟',
+   steps:[
+    {e:'⏰',t:'Wake Up Time'},
+    {e:'🚽',t:'Toilet'},
+    {e:'👀',t:'Wash Face'},
+    {e:'🙌',t:'Wash Hands'},
+    {e:'👕',t:'Get Dressed'},
+    {e:'🥣',t:'Eat Breakfast'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'✅',t:'I Am Ready!'},
+  ]},
+  {id:'sen-self-care',     cat:'sen',     name:'Self-Care Routine — SEN/SEND',            emoji:'💛',
+   steps:[
+    {e:'🚿',t:'Wash or Shower'},
+    {e:'🧴',t:'Shampoo Hair'},
+    {e:'🧼',t:'Wash Body'},
+    {e:'🧻',t:'Dry Off'},
+    {e:'👕',t:'Get Dressed'},
+    {e:'💆',t:'Brush Hair'},
+    {e:'🦷',t:'Brush Teeth'},
+    {e:'😊',t:'Looking Great!'},
+  ]},
+  {id:'sen-eating',        cat:'sen',     name:'Mealtime Routine — SEN/SEND',             emoji:'🍽️',
+   steps:[
+    {e:'🙌',t:'Wash Hands'},
+    {e:'🪑',t:'Sit at the Table'},
+    {e:'⏳',t:'Wait for Everyone'},
+    {e:'🍽️',t:'Eat Your Food'},
+    {e:'🧻',t:'Use a Napkin'},
+    {e:'🙋',t:'Ask to Leave the Table'},
+    {e:'🫧',t:'Put Plate Away'},
+  ]},
+
+  // CALM
+  {id:'calm-down',         cat:'calm',    name:'Calm Down Routine',                       emoji:'🧸',
+   steps:[
+    {e:'🧸',t:'Find a Safe Spot'},
+    {e:'💨',t:'Take 3 Big Breaths'},
+    {e:'✊',t:'Squeeze Something Soft'},
+    {e:'💧',t:'Drink Some Water'},
+    {e:'💬',t:'Tell Someone How You Feel'},
+    {e:'💛',t:'Choose What Helps You'},
+  ]},
+  {id:'calm-anxiety',      cat:'calm',    name:'Anxiety Support Routine',                 emoji:'💙',
+   steps:[
+    {e:'🛑',t:'Notice the Feeling'},
+    {e:'💨',t:'Breathe In Slowly — 4 Counts'},
+    {e:'⏸️',t:'Hold — 4 Counts'},
+    {e:'💨',t:'Breathe Out — 6 Counts'},
+    {e:'🧸',t:'Hold a Comfort Object'},
+    {e:'🌈',t:'Name 5 Things You Can See'},
+    {e:'💬',t:'Talk to a Trusted Adult'},
+  ]},
+  {id:'calm-sensory',      cat:'calm',    name:'Sensory Break Routine',                   emoji:'🌊',
+   steps:[
+    {e:'🚶',t:'Walk Away Calmly'},
+    {e:'🧘',t:'Go to the Quiet Area'},
+    {e:'🎧',t:'Headphones On (if helpful)'},
+    {e:'💨',t:'Slow Breathing'},
+    {e:'⏱️',t:'5 Minute Break'},
+    {e:'✅',t:'Ready to Go Back'},
+  ]},
+
+  // LIFE SKILLS
+  {id:'life-shopping',     cat:'life',    name:'Supermarket Trip',                        emoji:'🛒',
+   steps:[
+    {e:'📝',t:'Write the Shopping List'},
+    {e:'🛍️',t:'Bring Reusable Bags'},
+    {e:'🚗',t:'Travel to the Shop'},
+    {e:'🛒',t:'Get a Trolley or Basket'},
+    {e:'✅',t:'Follow the List'},
+    {e:'💳',t:'Pay at the Checkout'},
+    {e:'🏠',t:'Head Home'},
+  ]},
+  {id:'life-dentist',      cat:'life',    name:'Dentist Visit',                           emoji:'🦷',
+   steps:[
+    {e:'👟',t:'Get Ready to Go'},
+    {e:'🚗',t:'Travel There'},
+    {e:'💺',t:'Wait in the Waiting Room'},
+    {e:'🦷',t:'Go In with the Dentist'},
+    {e:'😮',t:'Open Wide'},
+    {e:'🏆',t:'All Done — Well Done!'},
+    {e:'⭐',t:'You Were So Brave!'},
+  ]},
+  {id:'life-exercise',     cat:'life',    name:'Exercise Routine',                        emoji:'🏃',
+   steps:[
+    {e:'👕',t:'Get Changed'},
+    {e:'💧',t:'Drink Water'},
+    {e:'🤸',t:'Warm Up — 5 Minutes'},
+    {e:'🏃',t:'Main Exercise'},
+    {e:'🧘',t:'Cool Down'},
+    {e:'💧',t:'Drink Water Again'},
+    {e:'🚿',t:'Shower and Change'},
+  ]},
+  {id:'life-leaving',      cat:'life',    name:'Leaving the House Checklist',             emoji:'🚪',
+   steps:[
+    {e:'🌤️',t:'Check the Weather'},
+    {e:'👟',t:'Shoes On'},
+    {e:'🧥',t:'Coat On'},
+    {e:'🎒',t:'Bag Packed?'},
+    {e:'🔑',t:'Keys / Phone'},
+    {e:'🚪',t:'Lock the Door'},
+  ]},
+];
+
+const COLOUR_THEMES = [
+  {id:'green',  name:'Green',   bg:'#E8FBF2', step:'#2ECC87', text:'#1C3A2F', accent:'#2ECC87'},
+  {id:'purple', name:'Purple',  bg:'#F3EEFF', step:'#7C3AED', text:'#2D1458', accent:'#7C3AED'},
+  {id:'blue',   name:'Blue',    bg:'#E0F2FE', step:'#0EA5E9', text:'#0C2B45', accent:'#0EA5E9'},
+  {id:'amber',  name:'Amber',   bg:'#FFFBEB', step:'#F59E0B', text:'#451A03', accent:'#F59E0B'},
+  {id:'rose',   name:'Rose',    bg:'#FFF1F2', step:'#F43F5E', text:'#4C0519', accent:'#F43F5E'},
+  {id:'teal',   name:'Teal',    bg:'#F0FDFA', step:'#14B8A6', text:'#042F2E', accent:'#14B8A6'},
+  {id:'mono',   name:'Mono',    bg:'#FAFAFA', step:'#374151', text:'#111827', accent:'#374151'},
+];
+
+// Step emoji options
+const STEP_EMOJIS = ['⏰','🌅','🌙','💤','🚿','🛁','🦷','👕','🥣','🥞','🍎','🍽️','🎒','📚','✏️','📖','🎮','📺','🚌','🏫','🚗','🏠','🚪','✅','⭐','🏆','💛','💙','💚','🌈','🌟','💨','🧘','💧','🙌','👟','🧥','🔑','🛒','💳','🦷','🤸','🏃','📝','💬','🎯','🎨','🎵','🧸','❤️'];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  routineId: null,
+  steps: [],
+  title: '',
+  format: 'visual',
+  theme: COLOUR_THEMES[0],
+  activeCategory: 'all',
+};
+
+// ══════════════════════════════════════════
+// INIT UI
+// ══════════════════════════════════════════
+function init() {
+  renderCatTabs();
+  renderRoutineList();
+  renderColourSwatches();
+}
+
+function renderCatTabs() {
+  const el = document.getElementById('catTabs');
+  el.innerHTML = CATEGORIES.map(c => `
+    <button class="cat-tab${c.id === state.activeCategory ? ' active' : ''}"
+      onclick="setCategory('${c.id}')">${c.label}</button>
+  `).join('');
+}
+
+function setCategory(id) {
+  state.activeCategory = id;
+  renderCatTabs();
+  renderRoutineList();
+}
+
+function renderRoutineList() {
+  const el = document.getElementById('routineList');
+  const filtered = state.activeCategory === 'all'
+    ? ROUTINES
+    : ROUTINES.filter(r => r.cat === state.activeCategory);
+
+  el.innerHTML = filtered.map(r => `
+    <div class="routine-item${state.routineId === r.id ? ' active' : ''}" onclick="selectRoutine('${r.id}')">
+      <span class="ri-emoji">${r.emoji}</span>
+      <div class="ri-info">
+        <div class="ri-name">${r.name}</div>
+        <div class="ri-cat">${CATEGORIES.find(c=>c.id===r.cat)?.label || ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderColourSwatches() {
+  const el = document.getElementById('colourSwatches');
+  el.innerHTML = COLOUR_THEMES.map(t => `
+    <div class="colour-swatch${t.id === state.theme.id ? ' active' : ''}"
+      style="background:${t.step}"
+      title="${t.name}"
+      onclick="setTheme('${t.id}')"></div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════
+// SELECT ROUTINE
+// ══════════════════════════════════════════
+function selectRoutine(id) {
+  const r = ROUTINES.find(x => x.id === id);
+  if (!r) return;
+  state.routineId = id;
+  state.title = r.name;
+  state.steps = r.steps.map(s => ({...s}));
+  renderRoutineList();
+  renderEditor();
+  renderPreview();
+}
+
+// ══════════════════════════════════════════
+// EDITOR
+// ══════════════════════════════════════════
+function renderEditor() {
+  if (!state.routineId) return;
+  document.getElementById('editorHeading').textContent = '✏️ Customise your routine';
+  document.getElementById('printActions').style.display = 'flex';
+  document.getElementById('previewWrap').style.display = 'block';
+
+  const body = document.getElementById('editorBody');
+  body.innerHTML = `
+    <input type="text" class="edit-title" id="editTitle" value="${escHtml(state.title)}"
+      placeholder="Routine title..." oninput="onTitleChange(this.value)">
+    <div class="steps-editor" id="stepsEditor"></div>
+    <button class="add-step-btn" onclick="addStep()">＋ Add a step</button>
+  `;
+  renderSteps();
+}
+
+function renderSteps() {
+  const el = document.getElementById('stepsEditor');
+  if (!el) return;
+  el.innerHTML = state.steps.map((s, i) => `
+    <div class="step-row" data-idx="${i}">
+      <span class="step-drag" title="Drag to reorder">⠿</span>
+      <button class="step-emoji-btn" onclick="openEmojiPicker(${i}, this)" title="Change emoji">${s.e}</button>
+      <input class="step-input" value="${escHtml(s.t)}" placeholder="Step description..."
+        oninput="onStepChange(${i}, this.value)">
+      <button class="step-del" onclick="deleteStep(${i})" title="Remove step">✕</button>
+    </div>
+  `).join('');
+  initDrag();
+}
+
+function onTitleChange(v) {
+  state.title = v;
+  renderPreview();
+}
+
+function onStepChange(i, v) {
+  state.steps[i].t = v;
+  renderPreview();
+}
+
+function addStep() {
+  state.steps.push({e:'⭐', t:''});
+  renderSteps();
+  renderPreview();
+  // Focus the new input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.step-input');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function deleteStep(i) {
+  state.steps.splice(i, 1);
+  renderSteps();
+  renderPreview();
+}
+
+// ══════════════════════════════════════════
+// EMOJI PICKER
+// ══════════════════════════════════════════
+let activeEmojiIdx = null;
+let activeEmojiPopup = null;
+
+function openEmojiPicker(idx, btn) {
+  closeEmojiPicker();
+  activeEmojiIdx = idx;
+  const popup = document.createElement('div');
+  popup.className = 'emoji-popup';
+  popup.style.position = 'absolute';
+  STEP_EMOJIS.forEach(e => {
+    const b = document.createElement('button');
+    b.textContent = e;
+    b.onclick = () => { state.steps[activeEmojiIdx].e = e; closeEmojiPicker(); renderSteps(); renderPreview(); };
+    popup.appendChild(b);
+  });
+  btn.style.position = 'relative';
+  btn.appendChild(popup);
+  activeEmojiPopup = popup;
+  setTimeout(() => document.addEventListener('click', outsideClickClose), 10);
+}
+
+function closeEmojiPicker() {
+  if (activeEmojiPopup) { activeEmojiPopup.remove(); activeEmojiPopup = null; }
+  document.removeEventListener('click', outsideClickClose);
+}
+
+function outsideClickClose(e) {
+  if (activeEmojiPopup && !activeEmojiPopup.contains(e.target)) closeEmojiPicker();
+}
+
+// ══════════════════════════════════════════
+// FORMAT & THEME
+// ══════════════════════════════════════════
+function setFormat(fmt, btn) {
+  state.format = fmt;
+  document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const labels = {visual:'Visual Schedule', checklist:'Checklist', chart:'Weekly Chart'};
+  document.getElementById('previewBadge').textContent = labels[fmt] || fmt;
+  renderPreview();
+}
+
+function setTheme(id) {
+  state.theme = COLOUR_THEMES.find(t => t.id === id) || COLOUR_THEMES[0];
+  renderColourSwatches();
+  renderPreview();
+}
+
+// ══════════════════════════════════════════
+// DRAG TO REORDER
+// ══════════════════════════════════════════
+function initDrag() {
+  const rows = document.querySelectorAll('.step-row');
+  let dragIdx = null;
+  rows.forEach((row, i) => {
+    row.draggable = true;
+    row.addEventListener('dragstart', () => { dragIdx = i; row.style.opacity = '0.5'; });
+    row.addEventListener('dragend', () => { row.style.opacity = '1'; });
+    row.addEventListener('dragover', e => { e.preventDefault(); });
+    row.addEventListener('drop', () => {
+      if (dragIdx === null || dragIdx === i) return;
+      const [item] = state.steps.splice(dragIdx, 1);
+      state.steps.splice(i, 0, item);
+      dragIdx = null;
+      renderSteps();
+      renderPreview();
+    });
+  });
+}
+
+// ══════════════════════════════════════════
+// PREVIEW RENDER
+// ══════════════════════════════════════════
+function renderPreview() {
+  if (!state.routineId) return;
+  const el = document.getElementById('previewBody');
+  const t = state.theme;
+
+  if (state.format === 'visual') {
+    el.innerHTML = buildVisualHTML(t, true);
+  } else if (state.format === 'checklist') {
+    el.innerHTML = buildChecklistHTML(t, true);
+  } else if (state.format === 'chart') {
+    el.innerHTML = buildChartHTML(t, true);
+  }
+}
+
+function buildVisualHTML(t, preview) {
+  const steps = state.steps.filter(s => s.t.trim());
+  const stepCards = steps.map((s, i) => `
+    <div class="vs-step" style="background:${lighten(t.step, i)};border-color:${t.step}20">
+      <div class="vs-step-num">${i+1}</div>
+      <span class="vs-step-emoji">${s.e}</span>
+      <div class="vs-step-label" style="color:${t.text}">${escHtml(s.t)}</div>
+    </div>`).join('');
+
+  return `<div class="vs-preview" style="background:${t.bg};padding:${preview?'12px':'28px'};border-radius:${preview?'8px':'0'}">
+    <div class="vs-title" style="color:${t.step};border-color:${t.step}">${escHtml(state.title)}</div>
+    <div class="vs-steps">${stepCards}</div>
+  </div>`;
+}
+
+function buildChecklistHTML(t, preview) {
+  const steps = state.steps.filter(s => s.t.trim());
+  const rows = steps.map((s, i) => `
+    <div class="cl-step">
+      <div class="cl-box" style="border-color:${t.step}"></div>
+      <span class="cl-emoji">${s.e}</span>
+      <span class="cl-label" style="color:${t.text}">${escHtml(s.t)}</span>
+    </div>`).join('');
+
+  return `<div class="cl-preview" style="background:${t.bg};padding:${preview?'12px':'28px'};border-radius:${preview?'8px':'0'}">
+    <div class="cl-title" style="color:${t.step}">✅ ${escHtml(state.title)}</div>
+    ${rows}
+    <div style="margin-top:14px;font-size:0.72rem;color:#aaa;text-align:right">sendsteps.uk</div>
+  </div>`;
+}
+
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+function buildChartHTML(t, preview) {
+  const steps = state.steps.filter(s => s.t.trim());
+  const rows = steps.map(s => `
+    <tr>
+      <td class="step-col" style="background:${t.step}18">${s.e} ${escHtml(s.t)}</td>
+      ${DAYS.map(() => `<td style="font-size:1rem">☐</td>`).join('')}
+    </tr>`).join('');
+
+  return `<div style="background:${t.bg};padding:${preview?'12px':'28px'};border-radius:${preview?'8px':'0'}">
+    <div class="chart-title" style="color:${t.step};font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;margin-bottom:10px">${escHtml(state.title)}</div>
+    <table class="chart-table">
+      <thead>
+        <tr>
+          <th style="background:${t.step};color:white;min-width:120px">Step</th>
+          ${DAYS.map(d=>`<th style="background:${t.step};color:white">${d}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:10px;font-size:0.68rem;color:#aaa;text-align:right">sendsteps.uk</div>
+  </div>`;
+}
+
+// Lighten steps for visual schedule alternating colours
+function lighten(hex, i) {
+  const alphas = ['33','22','44','11','33','22'];
+  return hex + (alphas[i % alphas.length]);
+}
+
+// ══════════════════════════════════════════
+// PRINT
+// ══════════════════════════════════════════
+function getPrintHTML() {
+  const t = state.theme;
+  let content = '';
+  if (state.format === 'visual') content = buildVisualHTML(t, false);
+  else if (state.format === 'checklist') content = buildChecklistHTML(t, false);
+  else content = buildChartHTML(t, false);
+
+  return `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<title>${escHtml(state.title)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:white;padding:20mm 16mm;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .vs-preview{padding:0}
+  .vs-title{font-family:'Baloo 2',cursive;font-size:20pt;font-weight:800;text-align:center;margin-bottom:16pt;padding-bottom:10pt;border-bottom:3px solid currentColor}
+  .vs-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10pt}
+  .vs-step{border-radius:12pt;padding:14pt 10pt;text-align:center;border:2pt solid rgba(0,0,0,0.08);page-break-inside:avoid}
+  .vs-step-emoji{font-size:28pt;display:block;margin-bottom:6pt}
+  .vs-step-num{font-size:8pt;font-weight:800;opacity:0.4;margin-bottom:4pt;text-transform:uppercase;letter-spacing:0.5pt}
+  .vs-step-label{font-size:11pt;font-weight:800;line-height:1.3}
+  .cl-preview{padding:0}
+  .cl-title{font-family:'Baloo 2',cursive;font-size:18pt;font-weight:800;margin-bottom:14pt;padding-bottom:8pt;border-bottom:2pt solid #eee;display:flex;align-items:center;gap:8pt}
+  .cl-step{display:flex;align-items:center;gap:10pt;padding:9pt 0;border-bottom:1pt solid #f0f0f0}
+  .cl-box{width:24pt;height:24pt;border-radius:5pt;border:2pt solid;flex-shrink:0}
+  .cl-emoji{font-size:14pt;flex-shrink:0}
+  .cl-label{font-size:12pt;font-weight:700}
+  .chart-title{font-family:'Baloo 2',cursive;font-size:16pt;font-weight:800;margin-bottom:10pt;text-align:center}
+  .chart-table{width:100%;border-collapse:collapse;font-size:10pt}
+  .chart-table th{padding:6pt 4pt;text-align:center;font-weight:800;border:1.5pt solid #ddd}
+  .chart-table td{padding:8pt 4pt;text-align:center;border:1.5pt solid #ddd;font-size:14pt}
+  .chart-table .step-col{text-align:left;padding-left:6pt;font-weight:700;font-size:10pt}
+  @media print{body{padding:15mm 12mm}}
+</style></head><body>${content}</body></html>`;
+}
+
+function doPrint() {
+  const html = getPrintHTML();
+  const w = window.open('', '_blank', 'width=800,height:900');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => { w.focus(); w.print(); };
+}
+
+function doPDF() {
+  const html = getPrintHTML();
+  const w = window.open('', '_blank', 'width=820,height=1000');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => {
+    w.focus();
+    setTimeout(() => { w.print(); }, 800);
+  };
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
+</script>
+</body>
+</html>
