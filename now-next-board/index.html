@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now & Next Board — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --surface2:#EDF0F7;
+  --ink:#1A2540;
+  --ink2:#46536E;
+  --muted:#8C96B0;
+  --border:#D4DAE8;
+  --border2:#B8C2D8;
+  --now:#F59E0B;
+  --now-l:#FFFBEB;
+  --now-d:#D97706;
+  --next:#3B82F6;
+  --next-l:#EFF6FF;
+  --next-d:#2563EB;
+  --green:#10B981;
+  --radius:16px;
+  --shadow:0 2px 14px rgba(26,37,64,0.09);
+  --shadow-lg:0 8px 32px rgba(26,37,64,0.16);
+  --font-display:'Baloo 2',cursive;
+  --font-body:'Nunito',sans-serif;
+}
+html{font-size:15px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 600px 400px at 0% 0%,rgba(245,158,11,0.08),transparent 55%),
+    radial-gradient(ellipse 600px 400px at 100% 100%,rgba(59,130,246,0.08),transparent 55%);
+}
+button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
+input,select{font-family:var(--font-body)}
+
+/* HEADER */
+.header{background:var(--ink);padding:14px 22px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;flex-wrap:wrap}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-back{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.6);text-decoration:none;
+  padding:5px 10px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);transition:all 0.15s}
+.header-back:hover{color:white;border-color:rgba(255,255,255,0.5)}
+.header-title{font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:white}
+.header-title .now-word{color:var(--now)}
+.header-title .next-word{color:#60A5FA}
+.header-sub{font-size:0.72rem;color:rgba(255,255,255,0.55);margin-top:1px}
+.header-actions{display:flex;gap:8px;align-items:center}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:100px;
+  font-size:0.82rem;font-weight:700;transition:all 0.15s;white-space:nowrap}
+.btn-ghost-white{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);
+  border:1px solid rgba(255,255,255,0.2)}
+.btn-ghost-white:hover{background:rgba(255,255,255,0.2)}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#059669;transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,0.3)}
+.btn-ghost{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border2)}
+.btn-ghost:hover{background:var(--border);color:var(--ink)}
+.btn-sm{padding:5px 12px;font-size:0.75rem}
+
+/* APP LAYOUT */
+.app{max-width:1100px;margin:0 auto;padding:20px 18px 60px}
+
+/* BOARD — the big visual NOW/NEXT */
+.board-wrap{margin-bottom:24px}
+.board{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;
+  background:var(--surface);border:2px solid var(--border);border-radius:22px;
+  box-shadow:var(--shadow-lg);overflow:hidden;max-width:700px;margin:0 auto}
+.board-panel{display:flex;flex-direction:column;align-items:center;padding:24px 20px;
+  text-align:center;min-height:260px;justify-content:space-between;cursor:pointer;
+  transition:filter 0.15s}
+.board-panel:hover{filter:brightness(0.97)}
+.board-panel.now{background:var(--now-l)}
+.board-panel.next{background:var(--next-l)}
+.board-panel-header{width:100%}
+.panel-badge{display:inline-block;padding:6px 22px;border-radius:100px;
+  font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:14px}
+.now .panel-badge{background:var(--now);color:white}
+.next .panel-badge{background:var(--next);color:white}
+.board-pic-wrap{flex:1;display:flex;align-items:center;justify-content:center;
+  width:100%;padding:10px 0}
+.board-pic{width:120px;height:120px;object-fit:contain;border-radius:10px}
+.board-label{font-family:var(--font-display);font-size:1.2rem;font-weight:800;
+  color:var(--ink);margin-top:8px;line-height:1.2}
+.board-empty-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:120px;height:120px;border:3px dashed var(--border2);border-radius:14px;
+  color:var(--muted);font-size:0.8rem;font-weight:700;gap:6px}
+.board-empty-slot .plus{font-size:1.8rem;opacity:0.5}
+.board-divider{width:50px;display:flex;align-items:center;justify-content:center;
+  background:var(--surface2);border-left:2px solid var(--border);border-right:2px solid var(--border)}
+.arrow-icon{font-size:1.8rem;color:var(--muted)}
+
+/* SELECTOR AREA */
+.selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:700px;margin:0 auto}
+@media(max-width:600px){.selector-grid{grid-template-columns:1fr}}
+.selector-panel{background:var(--surface);border:2px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.selector-head{padding:11px 15px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:0.95rem;font-weight:800}
+.selector-head.now-head{background:var(--now-l);color:var(--now-d);border-color:#FDE68A}
+.selector-head.next-head{background:var(--next-l);color:var(--next-d);border-color:#BFDBFE}
+.selector-body{padding:12px}
+
+/* SEARCH in selector */
+.sel-search{display:flex;gap:6px;margin-bottom:8px}
+.sel-input{flex:1;padding:8px 12px;border-radius:100px;border:1.5px solid var(--border2);
+  font-size:0.82rem;font-weight:700;color:var(--ink);outline:none;background:var(--surface2);
+  transition:border-color 0.15s}
+.sel-input:focus{border-color:var(--now);background:white}
+.sel-input.next-focus:focus{border-color:var(--next)}
+.sel-btn{padding:8px 12px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  color:white;transition:all 0.15s;white-space:nowrap}
+.sel-btn.now-btn{background:var(--now)}
+.sel-btn.now-btn:hover{background:var(--now-d)}
+.sel-btn.next-btn{background:var(--next)}
+.sel-btn.next-btn:hover{background:var(--next-d)}
+
+/* Quick words */
+.quick-words{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.qword{padding:3px 9px;border-radius:100px;font-size:0.7rem;font-weight:700;
+  border:1.5px solid var(--border2);color:var(--ink2);cursor:pointer;transition:all 0.12s}
+.qword:hover{border-color:var(--now);color:var(--now)}
+.qword.next-word-btn:hover{border-color:var(--next);color:var(--next)}
+
+/* Pictogram results */
+.pic-results{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  max-height:220px;overflow-y:auto}
+.pic-item{border-radius:9px;border:2px solid var(--border);padding:5px 4px;
+  text-align:center;cursor:pointer;transition:all 0.12s;background:var(--surface)}
+.pic-item:hover{border-color:var(--now);background:var(--now-l);transform:scale(1.04)}
+.pic-item.next-hover:hover{border-color:var(--next);background:var(--next-l)}
+.pic-item.selected-now{border-color:var(--now);background:var(--now-l)}
+.pic-item.selected-next{border-color:var(--next);background:var(--next-l)}
+.pic-img{width:44px;height:44px;object-fit:contain;display:block;margin:0 auto 3px}
+.pic-lbl{font-size:0.6rem;font-weight:700;color:var(--ink2);line-height:1.2;word-break:break-word}
+.pic-status{text-align:center;padding:16px 8px;color:var(--muted);font-size:0.78rem;font-weight:600}
+
+/* SETTINGS BAR */
+.settings-bar{max-width:700px;margin:16px auto 0;background:var(--surface);
+  border:1.5px solid var(--border);border-radius:var(--radius);padding:13px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow)}
+.setting-group{display:flex;align-items:center;gap:7px}
+.setting-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.4px;color:var(--muted);white-space:nowrap}
+.setting-select{padding:5px 9px;border-radius:9px;border:1.5px solid var(--border2);
+  font-size:0.78rem;font-weight:700;color:var(--ink);background:var(--surface2);outline:none}
+.setting-select:focus{border-color:var(--now)}
+.settings-actions{margin-left:auto;display:flex;gap:7px}
+.colour-dots{display:flex;gap:4px}
+.cdot{width:20px;height:20px;border-radius:50%;cursor:pointer;
+  border:2.5px solid transparent;transition:all 0.12s}
+.cdot:hover{transform:scale(1.15)}
+.cdot.active{border-color:var(--ink);transform:scale(1.15)}
+
+/* PRESETS STRIP */
+.presets-wrap{max-width:700px;margin:14px auto 0}
+.presets-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.4px;color:var(--muted);margin-bottom:6px}
+.presets-strip{display:flex;flex-wrap:wrap;gap:6px}
+.preset-btn{padding:5px 12px;border-radius:100px;font-size:0.75rem;font-weight:700;
+  border:1.5px solid var(--border2);color:var(--ink2);background:var(--surface);
+  cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:4px}
+.preset-btn:hover{border-color:var(--now);color:var(--now-d);background:var(--now-l)}
+
+/* ATTRIBUTION */
+.attribution{max-width:700px;margin:14px auto 0;font-size:0.68rem;color:var(--muted);text-align:center}
+.attribution a{color:#3B82F6;text-decoration:none}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:white;padding:9px 18px;border-radius:100px;
+  font-size:0.8rem;font-weight:700;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* PRINT */
+@media print{
+  .no-print{display:none!important}
+  body{background:white}
+  .app{padding:0}
+  .board{max-width:100%;box-shadow:none;border:2px solid #ccc}
+  .board-panel{min-height:220px}
+  .board-pic{width:150px;height:150px}
+  .board-label{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header no-print">
+  <div class="header-left">
+    <a href="/" class="header-back">← SendSteps</a>
+    <div>
+      <div class="header-title">
+        <span class="now-word">Now</span> &amp; <span class="next-word">Next</span> Board
+      </div>
+      <div class="header-sub">Build a printable Now / Next visual support board</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost-white btn-sm" onclick="clearBoard()">🗑️ Clear</button>
+    <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨️ Print board</button>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- THE BOARD -->
+  <div class="board-wrap">
+    <div class="board" id="mainBoard">
+
+      <!-- NOW PANEL -->
+      <div class="board-panel now" onclick="focusSearch('now')" id="nowPanel">
+        <div class="board-panel-header">
+          <div class="panel-badge">NOW</div>
+        </div>
+        <div class="board-pic-wrap" id="nowPicWrap">
+          <div class="board-empty-slot">
+            <span class="plus">＋</span>
+            <span>Choose below</span>
+          </div>
+        </div>
+        <div class="board-label" id="nowLabel"></div>
+      </div>
+
+      <!-- ARROW -->
+      <div class="board-divider">
+        <span class="arrow-icon">→</span>
+      </div>
+
+      <!-- NEXT PANEL -->
+      <div class="board-panel next" onclick="focusSearch('next')" id="nextPanel">
+        <div class="board-panel-header">
+          <div class="panel-badge">NEXT</div>
+        </div>
+        <div class="board-pic-wrap" id="nextPicWrap">
+          <div class="board-empty-slot">
+            <span class="plus">＋</span>
+            <span>Choose below</span>
+          </div>
+        </div>
+        <div class="board-label" id="nextLabel"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SETTINGS BAR -->
+  <div class="settings-bar no-print">
+    <div class="setting-group">
+      <span class="setting-label">Board size</span>
+      <select class="setting-select" id="sizeSelect" onchange="applySettings()">
+        <option value="standard" selected>Standard (A4)</option>
+        <option value="large">Large (classroom)</option>
+        <option value="small">Small (desk)</option>
+      </select>
+    </div>
+    <div class="setting-group">
+      <span class="setting-label">Label</span>
+      <select class="setting-select" id="labelSelect" onchange="applySettings()">
+        <option value="below" selected>Below picture</option>
+        <option value="above">Above picture</option>
+        <option value="none">No label</option>
+      </select>
+    </div>
+    <div class="setting-group">
+      <span class="setting-label">NOW colour</span>
+      <div class="colour-dots" id="nowColours"></div>
+    </div>
+    <div class="setting-group">
+      <span class="setting-label">NEXT colour</span>
+      <div class="colour-dots" id="nextColours"></div>
+    </div>
+    <div class="settings-actions">
+      <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <!-- PRESET COMBINATIONS -->
+  <div class="presets-wrap no-print">
+    <div class="presets-label">⚡ Quick presets</div>
+    <div class="presets-strip" id="presetsStrip"></div>
+  </div>
+
+  <!-- SELECTORS -->
+  <div class="selector-grid" style="margin-top:16px" id="selectorGrid">
+
+    <!-- NOW SELECTOR -->
+    <div class="selector-panel">
+      <div class="selector-head now-head">🟡 Choose NOW</div>
+      <div class="selector-body">
+        <div class="sel-search">
+          <input type="text" class="sel-input" id="nowSearchInput"
+            placeholder="Search e.g. maths, lunch..."
+            onkeydown="if(event.key==='Enter')doSearch('now')">
+          <button class="sel-btn now-btn" onclick="doSearch('now')">Go</button>
+        </div>
+        <div class="quick-words" id="nowQuickWords"></div>
+        <div id="nowResults"><div class="pic-status">Search above or tap a quick word</div></div>
+      </div>
+    </div>
+
+    <!-- NEXT SELECTOR -->
+    <div class="selector-panel">
+      <div class="selector-head next-head">🔵 Choose NEXT</div>
+      <div class="selector-body">
+        <div class="sel-search">
+          <input type="text" class="sel-input next-focus" id="nextSearchInput"
+            placeholder="Search e.g. break, reading..."
+            onkeydown="if(event.key==='Enter')doSearch('next')">
+          <button class="sel-btn next-btn" onclick="doSearch('next')">Go</button>
+        </div>
+        <div class="quick-words" id="nextQuickWords"></div>
+        <div id="nextResults"><div class="pic-status">Search above or tap a quick word</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="attribution no-print">
+    Pictograms by <a href="https://arasaac.org" target="_blank">ARASAAC</a> —
+    © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const QUICK_WORDS = [
+  'maths','english','reading','writing','science','art','pe','music','computing',
+  'lunch','break','assembly','homework','toilet','drink','eat','play','outside',
+  'tablet','tv','lego','drawing','swimming','tidy up','dressed','teeth','sleep'
+];
+
+const PRESETS = [
+  {label:'🔢 Maths → Break',      now:'maths',      next:'break'},
+  {label:'📖 Reading → Play',     now:'reading',    next:'play'},
+  {label:'✏️ Work → Tablet',      now:'homework',   next:'tablet'},
+  {label:'🦷 Teeth → Breakfast',  now:'teeth',      next:'eat'},
+  {label:'👕 Dressed → School',   now:'dressed',    next:'school'},
+  {label:'🍽️ Lunch → Outside',    now:'lunch',      next:'outside'},
+  {label:'📚 Homework → TV',      now:'homework',   next:'tv'},
+  {label:'🧹 Tidy Up → Lego',     now:'tidy up',    next:'lego'},
+];
+
+const NOW_COLOURS = [
+  {bg:'#FFFBEB', badge:'#F59E0B', name:'Amber'},
+  {bg:'#FFF7ED', badge:'#EA580C', name:'Orange'},
+  {bg:'#FEF2F2', badge:'#DC2626', name:'Red'},
+  {bg:'#F0FDF4', badge:'#16A34A', name:'Green'},
+];
+
+const NEXT_COLOURS = [
+  {bg:'#EFF6FF', badge:'#3B82F6', name:'Blue'},
+  {bg:'#F5F3FF', badge:'#7C3AED', name:'Purple'},
+  {bg:'#F0FDFA', badge:'#0D9488', name:'Teal'},
+  {bg:'#FDF4FF', badge:'#A21CAF', name:'Pink'},
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  now: null,   // {pictogramId, imageUrl, label}
+  next: null,
+  nowColour: 0,
+  nextColour: 0,
+  labelPos: 'below',
+  size: 'standard',
+};
+
+const STORAGE_KEY = 'sendsteps_nownext_v1';
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  loadState();
+  buildQuickWords();
+  buildPresets();
+  buildColourPickers();
+  syncSettings();
+  renderBoard();
+  // Auto-load first quick word results
+  searchAndShow('now', 'maths');
+  searchAndShow('next', 'break');
+}
+
+function buildQuickWords() {
+  const nowEl = document.getElementById('nowQuickWords');
+  const nextEl = document.getElementById('nextQuickWords');
+  const words = QUICK_WORDS.slice(0, 14);
+  nowEl.innerHTML = words.map(w =>
+    `<span class="qword" onclick="searchAndShow('now','${w}')">${w}</span>`
+  ).join('');
+  nextEl.innerHTML = words.map(w =>
+    `<span class="qword next-word-btn" onclick="searchAndShow('next','${w}')">${w}</span>`
+  ).join('');
+}
+
+function buildPresets() {
+  const el = document.getElementById('presetsStrip');
+  el.innerHTML = PRESETS.map(p =>
+    `<button class="preset-btn" onclick="loadPreset('${p.now}','${p.next}')">${p.label}</button>`
+  ).join('');
+}
+
+function buildColourPickers() {
+  document.getElementById('nowColours').innerHTML = NOW_COLOURS.map((c, i) =>
+    `<div class="cdot${state.nowColour===i?' active':''}"
+      style="background:${c.bg};box-shadow:inset 0 0 0 2px ${c.badge}"
+      title="${c.name}" onclick="setNowColour(${i})"></div>`
+  ).join('');
+  document.getElementById('nextColours').innerHTML = NEXT_COLOURS.map((c, i) =>
+    `<div class="cdot${state.nextColour===i?' active':''}"
+      style="background:${c.bg};box-shadow:inset 0 0 0 2px ${c.badge}"
+      title="${c.name}" onclick="setNextColour(${i})"></div>`
+  ).join('');
+}
+
+function syncSettings() {
+  document.getElementById('sizeSelect').value = state.size;
+  document.getElementById('labelSelect').value = state.labelPos;
+}
+
+// ══════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════
+async function doSearch(side) {
+  const input = document.getElementById(side + 'SearchInput').value.trim();
+  if (!input) return;
+  await searchAndShow(side, input);
+}
+
+async function searchAndShow(side, query) {
+  const el = document.getElementById(side + 'Results');
+  el.innerHTML = `<div class="pic-status">🔍 Searching...</div>`;
+
+  try {
+    const url = `https://api.arasaac.org/api/pictograms/en/search/${encodeURIComponent(query)}`;
+    const res = await fetch(url);
+    const data = res.ok ? await res.json() : [];
+    const results = Array.isArray(data) ? data.slice(0, 8) : [];
+
+    if (results.length === 0) {
+      el.innerHTML = `<div class="pic-status">No results for "${query}"</div>`;
+      return;
+    }
+
+    const isNext = side === 'next';
+    el.innerHTML = `<div class="pic-results">${
+      results.map(p => {
+        const imgUrl = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_500.png`;
+        const label = (p.keywords && p.keywords[0] && p.keywords[0].keyword) || query;
+        const isSelected = state[side] && state[side].pictogramId === p._id;
+        const selClass = isSelected ? (isNext ? 'selected-next' : 'selected-now') : '';
+        const hoverClass = isNext ? 'next-hover' : '';
+        return `<div class="pic-item ${hoverClass} ${selClass}"
+          onclick="selectPic('${side}', ${p._id}, '${encodeURIComponent(imgUrl)}', '${encodeURIComponent(label)}')">
+          <img class="pic-img" src="${imgUrl}" alt="${label}"
+            onerror="this.style.display='none'">
+          <div class="pic-lbl">${label}</div>
+        </div>`;
+      }).join('')
+    }</div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="pic-status">Search failed. Check your connection.</div>`;
+  }
+}
+
+// ══════════════════════════════════════════
+// SELECT PICTOGRAM
+// ══════════════════════════════════════════
+function selectPic(side, pictogramId, encodedUrl, encodedLabel) {
+  const imageUrl = decodeURIComponent(encodedUrl);
+  const label = decodeURIComponent(encodedLabel);
+  state[side] = {pictogramId, imageUrl, label};
+  renderBoard();
+  saveState();
+  // Update selected state in results
+  refreshResultSelections(side);
+  showToast(`✓ ${side === 'now' ? 'NOW' : 'NEXT'} set to "${label}"`);
+}
+
+function refreshResultSelections(side) {
+  const el = document.getElementById(side + 'Results');
+  const items = el.querySelectorAll('.pic-item');
+  items.forEach(item => {
+    item.classList.remove('selected-now', 'selected-next');
+  });
+  if (state[side]) {
+    const id = state[side].pictogramId;
+    items.forEach(item => {
+      if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(',' + id + ',')) {
+        item.classList.add(side === 'now' ? 'selected-now' : 'selected-next');
+      }
+    });
+  }
+}
+
+// ══════════════════════════════════════════
+// PRESETS
+// ══════════════════════════════════════════
+async function loadPreset(nowWord, nextWord) {
+  showToast('⏳ Loading preset...');
+  await Promise.all([
+    loadFirstResult('now', nowWord),
+    loadFirstResult('next', nextWord),
+  ]);
+  renderBoard();
+  saveState();
+  showToast('✓ Preset loaded!');
+}
+
+async function loadFirstResult(side, query) {
+  try {
+    const url = `https://api.arasaac.org/api/pictograms/en/search/${encodeURIComponent(query)}`;
+    const res = await fetch(url);
+    const data = res.ok ? await res.json() : [];
+    if (data && data.length > 0) {
+      const p = data[0];
+      const imgUrl = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_500.png`;
+      const label = (p.keywords && p.keywords[0] && p.keywords[0].keyword) || query;
+      state[side] = {pictogramId: p._id, imageUrl: imgUrl, label};
+      // Also refresh the search results panel
+      await searchAndShow(side, query);
+    }
+  } catch(e){}
+}
+
+// ══════════════════════════════════════════
+// RENDER BOARD
+// ══════════════════════════════════════════
+function renderBoard() {
+  const nowC = NOW_COLOURS[state.nowColour];
+  const nextC = NEXT_COLOURS[state.nextColour];
+  const sizeMap = {small:'80px', standard:'120px', large:'170px'};
+  const imgSize = sizeMap[state.size] || '120px';
+  const labelSizeMap = {small:'0.95rem', standard:'1.2rem', large:'1.6rem'};
+  const lblSize = labelSizeMap[state.size] || '1.2rem';
+
+  // NOW panel
+  const nowPanel = document.getElementById('nowPanel');
+  nowPanel.style.background = nowC.bg;
+  nowPanel.querySelector('.panel-badge').style.background = nowC.badge;
+
+  const nowPicWrap = document.getElementById('nowPicWrap');
+  if (state.now) {
+    nowPicWrap.innerHTML = `<img class="board-pic" src="${state.now.imageUrl}"
+      alt="${escHtml(state.now.label)}"
+      style="width:${imgSize};height:${imgSize}"
+      onerror="this.style.display='none'">`;
+  } else {
+    nowPicWrap.innerHTML = `<div class="board-empty-slot">
+      <span class="plus">＋</span><span>Choose below</span></div>`;
+  }
+
+  const nowLbl = document.getElementById('nowLabel');
+  nowLbl.style.fontSize = lblSize;
+  nowLbl.textContent = (state.labelPos !== 'none' && state.now) ? state.now.label : '';
+
+  // NEXT panel
+  const nextPanel = document.getElementById('nextPanel');
+  nextPanel.style.background = nextC.bg;
+  nextPanel.querySelector('.panel-badge').style.background = nextC.badge;
+
+  const nextPicWrap = document.getElementById('nextPicWrap');
+  if (state.next) {
+    nextPicWrap.innerHTML = `<img class="board-pic" src="${state.next.imageUrl}"
+      alt="${escHtml(state.next.label)}"
+      style="width:${imgSize};height:${imgSize}"
+      onerror="this.style.display='none'">`;
+  } else {
+    nextPicWrap.innerHTML = `<div class="board-empty-slot">
+      <span class="plus">＋</span><span>Choose below</span></div>`;
+  }
+
+  const nextLbl = document.getElementById('nextLabel');
+  nextLbl.style.fontSize = lblSize;
+  nextLbl.textContent = (state.labelPos !== 'none' && state.next) ? state.next.label : '';
+}
+
+// ══════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════
+function applySettings() {
+  state.size = document.getElementById('sizeSelect').value;
+  state.labelPos = document.getElementById('labelSelect').value;
+  renderBoard();
+  saveState();
+}
+
+function setNowColour(i) {
+  state.nowColour = i;
+  buildColourPickers();
+  renderBoard();
+  saveState();
+}
+
+function setNextColour(i) {
+  state.nextColour = i;
+  buildColourPickers();
+  renderBoard();
+  saveState();
+}
+
+function focusSearch(side) {
+  const el = document.getElementById(side + 'SearchInput');
+  if (el) { el.focus(); el.select(); }
+}
+
+// ══════════════════════════════════════════
+// CLEAR
+// ══════════════════════════════════════════
+function clearBoard() {
+  state.now = null;
+  state.next = null;
+  renderBoard();
+  saveState();
+  showToast('🗑️ Board cleared');
+}
+
+// ══════════════════════════════════════════
+// PRINT
+// ══════════════════════════════════════════
+function doPrint() {
+  if (!state.now && !state.next) {
+    showToast('⚠️ Choose a NOW and NEXT activity first');
+    return;
+  }
+
+  const nowC = NOW_COLOURS[state.nowColour];
+  const nextC = NEXT_COLOURS[state.nextColour];
+  const sizeMap = {small:'100pt', standard:'150pt', large:'210pt'};
+  const imgSize = sizeMap[state.size] || '150pt';
+  const lblSize = {small:'16pt', standard:'22pt', large:'30pt'}[state.size] || '22pt';
+
+  function panelHtml(slot, c, title) {
+    const labelHtml = state.labelPos !== 'none' && slot
+      ? `<div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:${lblSize};
+          color:#1A2540;margin-top:10pt;line-height:1.2">${escHtml(slot.label)}</div>` : '';
+    const imgHtml = slot
+      ? `<img src="${slot.imageUrl}" style="width:${imgSize};height:${imgSize};
+          object-fit:contain;display:block;margin:0 auto">`
+      : `<div style="width:${imgSize};height:${imgSize};border:3pt dashed #ccc;
+          border-radius:12pt;display:flex;align-items:center;justify-content:center;
+          margin:0 auto;color:#bbb;font-size:14pt">?</div>`;
+    return `<div style="background:${c.bg};padding:24pt 20pt;text-align:center;
+      flex:1;display:flex;flex-direction:column;align-items:center;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact">
+      <div style="display:inline-block;background:${c.badge};color:white;
+        padding:6pt 24pt;border-radius:100pt;font-family:'Baloo 2',cursive;
+        font-weight:800;font-size:24pt;margin-bottom:16pt">${title}</div>
+      ${state.labelPos === 'above' ? labelHtml : ''}
+      ${imgHtml}
+      ${state.labelPos !== 'above' ? labelHtml : ''}
+    </div>`;
+  }
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Now & Next Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Baloo 2',cursive;background:white;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .board{display:flex;border:3pt solid #D4DAE8;border-radius:16pt;
+    overflow:hidden;margin:10mm;box-shadow:none}
+  .divider{width:40pt;background:#F5F7FA;border-left:2pt solid #D4DAE8;
+    border-right:2pt solid #D4DAE8;display:flex;align-items:center;
+    justify-content:center;font-size:28pt;color:#8C96B0}
+  .credit{font-size:7pt;color:#bbb;text-align:center;padding:6pt;margin:0 10mm}
+  @media print{body{margin:0}}
+</style></head><body>
+<div class="board">
+  ${panelHtml(state.now, nowC, 'NOW')}
+  <div class="divider">→</div>
+  ${panelHtml(state.next, nextC, 'NEXT')}
+</div>
+<div class="credit">
+  Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · sendsteps.uk
+</div>
+</body></html>`;
+
+  const w = window.open('', '_blank', 'width=900,height=600');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => setTimeout(() => w.print(), 800);
+}
+
+// ══════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+}
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) Object.assign(state, JSON.parse(s));
+  } catch(e){}
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
+</script>
+</body>
+</html>
