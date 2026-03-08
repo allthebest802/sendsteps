@@ -1,689 +1,403 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SendSteps – Simple tools for SEND families</title>
-
-  <style>
-    :root{
-      --bg:#f4f8ff;
-      --panel:#ffffff;
-      --panel2:#f8fbff;
-      --text:#1b2a4a;
-      --muted:#5f6f95;
-      --line:rgba(120,170,255,.35);
-      --accent:#78aaff;
-      --radius:18px;
-      --shadow:0 12px 30px rgba(0,0,0,.12);
-      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-
-    body{
-      margin:0;
-      font-family:var(--font);
-      background:
-        radial-gradient(900px 600px at 15% 10%, rgba(120,170,255,.25), transparent 60%),
-        radial-gradient(900px 600px at 90% 20%, rgba(120,220,180,.22), transparent 60%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.5;
-    }
-
-    header{
-      max-width:1100px;
-      margin:32px auto 0;
-      padding:0 20px;
-    }
-
-    h1{
-      font-size:clamp(28px, 3vw, 38px);
-      margin:0 0 10px;
-    }
-
-    .tagline{
-      color:var(--muted);
-      max-width:70ch;
-      font-size:16px;
-    }
-
-    main{
-      max-width:1100px;
-      margin:32px auto 80px;
-      padding:0 20px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
-      gap:20px;
-    }
-
-    .card{
-      background:linear-gradient(180deg, var(--panel), var(--panel2));
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      transition:transform .15s ease, box-shadow .15s ease;
-    }
-
-    .card:hover{
-      transform:translateY(-3px);
-      box-shadow:0 16px 36px rgba(0,0,0,.16);
-    }
-
-    .card h2{
-      margin:0 0 8px;
-      font-size:18px;
-    }
-
-    .card p{
-      margin:0 0 16px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .card a{
-      align-self:flex-start;
-      text-decoration:none;
-      color:#0b1a3a;
-      border:1px solid var(--line);
-      padding:10px 16px;
-      border-radius:12px;
-      background:rgba(120,170,255,.18);
-      transition:background .15s ease, border-color .15s ease;
-      font-size:14px;
-      font-weight:600;
-    }
-
-    .card a:hover{
-      background:rgba(120,170,255,.28);
-      border-color:rgba(120,170,255,.55);
-    }
-
-
-    .card-icon{
-      font-size:2.4rem;
-      margin-bottom:12px;
-      display:block;
-      line-height:1;
-      filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-    }
-    .card h2{
-      margin:0 0 6px;
-      font-size:17px;
-      display:flex;
-      align-items:center;
-      gap:0;
-    }
-
-    .coming{
-      opacity:.7;
-    }
-
-    .info{
-      margin-top:40px;
-      max-width:80ch;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    footer{
-      border-top:1px solid var(--line);
-      margin-top:60px;
-      padding:20px;
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    footer a{
-      color:var(--muted);
-      text-decoration:none;
-    }
-
-    footer a:hover{
-      text-decoration:underline;
-    }
-  
-    /* Center Privacy + Contact sections */
-    .info-wrap{
-      max-width:1100px;
-      margin:24px auto 0;
-      padding:0 14px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-    .info h2{
-      margin:0 0 10px;
-      font-size:20px;
-      letter-spacing:.2px;
-    }
-
-  
-/* Privacy toggle */
-.privacy-toggle summary{
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding: 4px 0;
-  font-weight:900;
-  list-style:none;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SendSteps — Free Visual Tools for SEND Families</title>
+<meta name="description" content="Free printable visual routines, communication cards, Now/Next boards, trackers and more — for children with SEND. No login. No subscription.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF8F4;--ink:#181825;--ink2:#3A3A52;--muted:#7B7B9B;
+  --border:#E4E0D8;--border2:#CEC9BE;--surface:#FFFFFF;
+  --green:#2ECC87;--green-d:#1FA869;--green-l:#E6F9F1;
+  --amber:#F59E0B;--amber-l:#FFFBEB;
+  --blue:#3B82F6;--blue-l:#EFF6FF;
+  --rose:#F43F5E;--rose-l:#FFF1F2;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --teal:#0D9488;--teal-l:#F0FDFA;
+  --radius:18px;
+  --shadow:0 2px 16px rgba(24,24,37,0.07);
+  --shadow-lg:0 10px 40px rgba(24,24,37,0.13);
+  --font-head:'Fraunces',serif;--font-body:'Plus Jakarta Sans',sans-serif;
 }
-.privacy-toggle summary::-webkit-details-marker{ display:none; }
-.privacy-hint{ font-size:12px; font-weight:800; color: var(--muted); }
-.privacy-body{ padding-top:10px; }
-.privacy-body p{ margin: 0 0 10px; color: var(--text); }
-.privacy-body p:last-child{ margin-bottom:0; }
-
-/* Modal styles */
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background: rgba(2, 6, 23, .7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  z-index:9999;
-}
-.modal-backdrop.is-open{ display:flex; }
-.modal{
-  width:min(720px, 100%);
-  background:#ffffff; /* solid panel */
-  border:1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: 0 24px 60px rgba(2,6,23,.35);
-  padding: 0; /* header + body separation */
-}
-.modal-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background: linear-gradient(180deg, #0ea5e9, #0284c7);
-  color: white;
-  padding: 14px 16px;
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
-}
-.modal-head h2{ margin:0; font-size:18px; color:white; }
-.modal-close{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  border:none;
-  background: rgba(255,255,255,.15);
-  color:white;
-  font-size:24px;
-  line-height:1;
-  cursor:pointer;
-}
-.modal-sub{
-  margin:8px 0 0;
-  color: var(--muted);
-  font-size:13px;
-}
-modal-form,
-.modal-sub,
-.modal-note{
-  padding: 16px;
-}
-.modal-form{ margin-top:14px; }
-.modal-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:12px;
-}
-@media (max-width: 650px){
-  .modal-grid{ grid-template-columns: 1fr; }
-}
-.modal-form input, .modal-form textarea{
-  width:100%;
-  background:#f8fafc;
-  border:1px solid var(--line);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:12px;
-  outline:none;
-  font-family: var(--font);
-}
-.modal-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-.modal-note{
-  margin:12px 0 0;
-  font-size:12px;
-  color: var(--muted);
-}
-
-.modal-form input,
-.modal-form textarea{
-  box-sizing: border-box;
-  padding: 9px 10px;
-}
-
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden;
+  background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.1),transparent 55%),
+    radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
+a{text-decoration:none;color:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes floatA{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(-2deg)}}
+@keyframes floatB{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes floatMain{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(46,204,135,.35)}60%{box-shadow:0 0 0 10px rgba(46,204,135,0)}}
+.a1{opacity:0;animation:fadeUp .65s .05s cubic-bezier(.22,1,.36,1) forwards}
+.a2{opacity:0;animation:fadeUp .65s .18s cubic-bezier(.22,1,.36,1) forwards}
+.a3{opacity:0;animation:fadeUp .65s .30s cubic-bezier(.22,1,.36,1) forwards}
+.a4{opacity:0;animation:fadeUp .65s .42s cubic-bezier(.22,1,.36,1) forwards}
+.a5{opacity:0;animation:fadeUp .65s .54s cubic-bezier(.22,1,.36,1) forwards}
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;
+  justify-content:space-between;gap:14px}
+.nbrand{display:flex;align-items:center;gap:9px}
+.nbmark{width:32px;height:32px;background:var(--green);border-radius:9px;display:flex;
+  align-items:center;justify-content:center;font-size:1rem}
+.nbname{font-family:var(--font-head);font-size:1.18rem;font-weight:800;color:var(--ink)}
+.nlinks{display:flex;gap:4px;align-items:center}
+.nlink{font-size:.82rem;font-weight:600;color:var(--ink2);padding:7px 12px;
+  border-radius:100px;transition:all .14s}
+.nlink:hover{background:var(--green-l);color:var(--green-d)}
+.npill{background:var(--green);color:white;padding:8px 20px;border-radius:100px;
+  font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3}
+.npill:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,.4)}
+@media(max-width:620px){.nlinks .nlink{display:none}}
+/* HERO */
+.hero{max-width:1120px;margin:0 auto;padding:72px 28px 64px;
+  display:grid;grid-template-columns:1.05fr 1fr;gap:52px;align-items:center}
+@media(max-width:860px){.hero{grid-template-columns:1fr;padding:48px 22px 40px;text-align:center}.hvis{order:-1}}
+.hpill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);
+  color:var(--green-d);border:1.5px solid rgba(46,204,135,.28);padding:6px 14px;
+  border-radius:100px;font-size:.77rem;font-weight:700;margin-bottom:20px}
+.hdot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+h1{font-family:var(--font-head);font-size:clamp(2.1rem,4.2vw,3.1rem);font-weight:900;
+  line-height:1.1;letter-spacing:-.5px;color:var(--ink);margin-bottom:18px}
+h1 .hi{color:var(--green);font-style:italic}
+.hdesc{font-size:1.04rem;line-height:1.65;color:var(--ink2);margin-bottom:28px;max-width:44ch}
+@media(max-width:860px){.hdesc{margin:0 auto 28px}}
+.hbtns{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:860px){.hbtns{justify-content:center}}
+.bmain{background:var(--green);color:white;padding:13px 26px;border-radius:100px;
+  font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:7px;transition:all .18s}
+.bmain:hover{background:var(--green-d);transform:translateY(-2px);box-shadow:0 7px 22px rgba(46,204,135,.4)}
+.balt{background:var(--surface);color:var(--ink);padding:13px 24px;border-radius:100px;
+  font-size:.95rem;font-weight:700;border:2px solid var(--border);
+  display:inline-flex;align-items:center;gap:7px;transition:all .18s}
+.balt:hover{border-color:var(--green);color:var(--green-d);transform:translateY(-2px)}
+.trust{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:860px){.trust{justify-content:center}}
+.ti{font-size:.74rem;font-weight:700;color:var(--muted)}
+.ts{color:var(--border2)}
+/* HERO VISUAL */
+.hvis{position:relative;display:flex;align-items:center;justify-content:center;padding:20px 0}
+.hvwrap{position:relative;max-width:400px;width:100%;margin:0 auto}
+.hcard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);border:1.5px solid var(--border)}
+.hmain{padding:18px;animation:floatMain 4s ease-in-out infinite}
+.hfloat{position:absolute;border-radius:14px;padding:12px}
+.hf1{top:-22px;right:-14px;width:162px;animation:floatA 4.4s .4s ease-in-out infinite}
+.hf2{bottom:-22px;left:-14px;width:148px;animation:floatB 3.9s .9s ease-in-out infinite}
+@media(max-width:860px){.hf1,.hf2{display:none}}
+.rmh{font-family:var(--font-head);font-size:.85rem;font-weight:800;color:var(--ink);
+  padding-bottom:9px;border-bottom:2px solid var(--green);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px}
+.rmsteps{display:flex;flex-direction:column;gap:5px}
+.rms{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:8px;background:var(--cream)}
+.rms.g{background:var(--green-l)}.rms.b{background:var(--blue-l)}
+.rmn{font-size:.58rem;font-weight:800;color:var(--muted);width:14px;text-align:right}
+.rme{font-size:1rem}.rmt{font-size:.7rem;font-weight:700;color:var(--ink)}
+.nnw{display:flex;gap:5px}.nntit{font-size:.58rem;font-weight:800;color:var(--muted);margin-bottom:7px;text-align:center}
+.nnp{flex:1;border-radius:9px;padding:8px 6px;text-align:center}
+.nnp.n{background:var(--amber-l)}.nnp.x{background:var(--blue-l)}
+.nnb{display:inline-block;padding:2px 9px;border-radius:100px;font-size:.58rem;font-weight:800;color:white;margin-bottom:5px}
+.nnp.n .nnb{background:var(--amber)}.nnp.x .nnb{background:var(--blue)}
+.nne{font-size:1.3rem;display:block;margin-bottom:3px}.nnl{font-size:.58rem;font-weight:700;color:var(--ink)}
+.cctit{font-size:.58rem;font-weight:800;color:var(--muted);margin-bottom:7px}
+.ccg{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.ccc{border-radius:7px;padding:5px 3px;text-align:center;background:var(--cream);border:1.5px solid var(--border)}
+.cce{font-size:1rem;display:block}.ccl{font-size:.52rem;font-weight:700;color:var(--ink2)}
+/* SECTIONS */
+section{padding:76px 28px}
+.si{max-width:1120px;margin:0 auto}
+.seye{font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:1.1px;color:var(--green-d);margin-bottom:9px}
+.stit{font-family:var(--font-head);font-size:clamp(1.7rem,3.2vw,2.5rem);font-weight:800;
+  line-height:1.14;color:var(--ink);margin-bottom:12px;letter-spacing:-.3px}
+.ssub{font-size:.97rem;color:var(--ink2);line-height:1.65;max-width:54ch}
+/* WHY */
+.why{background:var(--ink)}
+.why .seye{color:#5DEDB0}.why .stit{color:white}.why .ssub{color:rgba(255,255,255,.6)}
+.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+@media(max-width:680px){.wgrid{grid-template-columns:1fr}}
+.wcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--radius);padding:26px 22px;transition:all .18s}
+.wcard:hover{background:rgba(255,255,255,.09);transform:translateY(-3px)}
+.wico{font-size:2.1rem;margin-bottom:13px;display:block}
+.wtit{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:white;margin-bottom:7px}
+.wtxt{font-size:.85rem;color:rgba(255,255,255,.58);line-height:1.65}
+/* HOW */
+.how{background:var(--surface)}
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:46px;position:relative}
+@media(max-width:860px){.srow{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.srow{grid-template-columns:1fr}}
+.scard{background:var(--cream);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:22px 18px;transition:all .18s;position:relative}
+.scard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--green)}
+.snum{width:34px;height:34px;border-radius:50%;background:var(--green);color:white;
+  font-family:var(--font-head);font-size:.95rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;margin-bottom:13px}
+.sico{font-size:1.7rem;margin-bottom:9px;display:block}
+.stitl{font-family:var(--font-head);font-size:.97rem;font-weight:800;color:var(--ink);margin-bottom:6px}
+.stxt{font-size:.8rem;color:var(--ink2);line-height:1.6}
+.stags{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}
+.stag{font-size:.63rem;font-weight:700;padding:3px 8px;border-radius:100px;background:var(--green-l);color:var(--green-d)}
+@media(min-width:861px){
+  .scard::after{content:'→';position:absolute;right:-10px;top:42%;font-size:1.1rem;font-weight:900;color:var(--green);z-index:2}
+  .scard:last-child::after{display:none}}
+/* TOOLS */
+.tools{background:var(--cream)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:38px}
+.tcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:20px;display:flex;flex-direction:column;gap:9px;transition:all .18s}
+.tcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.tico{font-size:1.9rem}.ttit{font-family:var(--font-head);font-size:.97rem;font-weight:800;color:var(--ink)}
+.tdesc{font-size:.79rem;color:var(--ink2);line-height:1.55;flex:1}
+.tlink{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;font-weight:700;
+  padding:6px 13px;border-radius:100px;transition:all .14s;align-self:flex-start;margin-top:2px}
+.tlink:hover{transform:translateX(2px)}
+.tg{border-color:rgba(46,204,135,.4)}.tg:hover{border-color:var(--green)}.tg .tlink{background:var(--green-l);color:var(--green-d)}
+.ta{border-color:rgba(245,158,11,.35)}.ta:hover{border-color:var(--amber)}.ta .tlink{background:var(--amber-l);color:#92400E}
+.tb{border-color:rgba(59,130,246,.35)}.tb:hover{border-color:var(--blue)}.tb .tlink{background:var(--blue-l);color:#1D4ED8}
+.tr{border-color:rgba(244,63,94,.3)}.tr:hover{border-color:var(--rose)}.tr .tlink{background:var(--rose-l);color:#BE123C}
+.tp{border-color:rgba(124,58,237,.3)}.tp:hover{border-color:var(--purple)}.tp .tlink{background:var(--purple-l);color:#5B21B6}
+.tt{border-color:rgba(13,148,136,.3)}.tt:hover{border-color:var(--teal)}.tt .tlink{background:var(--teal-l);color:#0F766E}
+.tcat{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding-top:6px}
+.tcatlbl{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);white-space:nowrap}
+.tcatline{flex:1;height:1px;background:var(--border)}
+/* LIBRARY */
+.lib{background:var(--surface)}
+.lpills{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.lpill{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:var(--cream);
+  border:1.5px solid var(--border);border-radius:100px;font-size:.83rem;font-weight:700;
+  color:var(--ink2);transition:all .15s;cursor:pointer}
+.lpill:hover{border-color:var(--green);color:var(--green-d);background:var(--green-l);
+  transform:translateY(-2px);box-shadow:var(--shadow)}
+/* CTA */
+.cta{background:var(--green);padding:80px 28px;text-align:center}
+.ctatit{font-family:var(--font-head);font-size:clamp(1.8rem,3.8vw,2.9rem);font-weight:900;
+  color:white;line-height:1.12;margin-bottom:13px;letter-spacing:-.3px}
+.ctasub{font-size:1rem;color:rgba(255,255,255,.82);margin-bottom:30px;max-width:46ch;
+  margin-left:auto;margin-right:auto;line-height:1.6}
+.ctabtns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.bcw{background:white;color:var(--green-d);padding:14px 30px;border-radius:100px;
+  font-size:.97rem;font-weight:700;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
+.bcw:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(0,0,0,.14)}
+.bco{background:transparent;color:white;padding:14px 26px;border-radius:100px;
+  font-size:.97rem;font-weight:700;border:2px solid rgba(255,255,255,.5);
+  transition:all .18s;display:inline-flex;align-items:center;gap:8px}
+.bco:hover{border-color:white;background:rgba(255,255,255,.1);transform:translateY(-2px)}
+/* FOOTER */
+footer{background:var(--ink);padding:38px 28px 28px}
+.fi{max-width:1120px;margin:0 auto}
+.ftop{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px}
+.fbrand{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:white;margin-bottom:7px}
+.fbrand span{color:var(--green)}
+.ftag{font-size:.77rem;color:rgba(255,255,255,.42);max-width:28ch;line-height:1.5}
+.flinks{display:flex;gap:4px;flex-wrap:wrap}
+.flink{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.45);padding:5px 9px;border-radius:6px;transition:color .13s}
+.flink:hover{color:white}
+.fcopy{font-size:.7rem;color:rgba(255,255,255,.28);text-align:center;line-height:1.65}
+.fcopy a{color:rgba(255,255,255,.35)}.fcopy a:hover{color:rgba(255,255,255,.6)}
+/* REVEAL */
+.r{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+.r.v{opacity:1;transform:none}
 </style>
 </head>
-
 <body>
-  <header>
-    <h1>SendSteps</h1>
-    <p class="tagline">
-      Simple, practical tools to help SEND children and families break tasks,
-      routines, homework, and difficult feelings into manageable steps.
-      No logins. No judgement. Just support.
-    </p>
-  </header>
 
-  <main>
-    <div class="grid">
-
-      <div class="card">
-        <div>
-          <span class="card-icon">📅</span>
-          <h2>Visual Routine Builder</h2>
-          <p>
-            Create clear, printable daily routines using simple steps and visual structure.
-            Helpful for transitions, mornings, and reducing anxiety.
-          </p>
-        </div>
-        <a href="/routine/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">🖨️</span>
-          <h2>Printable Routine Sheets</h2>
-          <p>
-            Ready-made visual schedules, checklists, and weekly charts for SEND children.
-            Covers mornings, bedtime, school, calm-down routines and more — customise and print in seconds.
-          </p>
-        </div>
-        <a href="/printable-routines/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">📊</span>
-          <h2>Meltdown Trigger Tracker</h2>
-          <p>
-            Gently track patterns to understand triggers, intensity,
-            and what helps — without blame or judgement.
-          </p>
-        </div>
-        <a href="/tracker/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">📚</span>
-          <h2>Homework Helper</h2>
-          <p>
-            Break homework into calm, manageable steps with reduced pressure,
-            clear starts, and built-in stopping points.
-          </p>
-        </div>
-        <a href="/homework/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">💛</span>
-          <h2>Feelings & Emotion Tools</h2>
-          <p>
-            Help children communicate how they feel using visual scales,
-            emotion words, and simple “what helps” prompts.
-          </p>
-        </div>
-        <a href="/feelings/">Open tool</a>
-      </div>
-
- <div class="card">
-        <div>
-          <span class="card-icon">🏠</span>
-          <h2>Sensory-Friendly Home Checklist</h2>
-          <p>
-            Parents want to make small home changes but don’t know where to start
-	    This tool can help.
-          </p>
-        </div>
-        <a href="/sensory/">Open tool</a>
-      </div>
-
-<div class="card">
-        <div>
-          <span class="card-icon">🍽️</span>
-          <h2>Safe Food List Builder</h2>
-          <p>
-            Add foods, tick the ones that are safe, and sort them into Always, Sometimes, or Not yet.
-          </p>
-        </div>
-        <a href="/safefood/">Open tool</a>
-      </div>
-
-<div class="card">
-        <div>
-          <span class="card-icon">📖</span>
-          <h2>Social Story Mini-Builder</h2>
-          <p>
-            Choose a scenario, add your child's name, and get a beautifully formatted social story — ready to read and print together.
-          </p>
-        </div>
-        <a href="/socialstory/">Open tool</a>
-      </div>
-
-<div class="card">
-        <div>
-          <span class="card-icon">🔋</span>
-          <h2>Social Battery Energy</h2>
-          <p>
-            A simple way to explain “running low” before it becomes a meltdown. Add drains and chargers, set today’s battery size, and print.
-          </p>
-        </div>
-        <a href="/battery/">Open tool</a>
-      </div>
-
-<div class="card">
-        <div>
-          <span class="card-icon">🧠</span>
-          <h2>Decompression Planner</h2>
-          <p>
-            After a day of masking and managing, your child needs the right kind of recovery. Tell us about today.
-          </p>
-        </div>
-        <a href="/decompression/">Open tool</a>
-      </div>
-
-
-      <div class="card">
-        <div>
-          <span class="card-icon">✨</span>
-          <h2>Task Helper</h2>
-          <p>
-            Type any task and get it broken into tiny, manageable steps. Knows hundreds of tasks — and uses AI for anything else.
-          </p>
-        </div>
-        <a href="/task-helper-netlify/">Open tool</a>
-      </div>
-
-
-      <div class="card">
-        <div>
-          <span class="card-icon">🔠</span>
-          <h2>Dyslexia-Friendly Text</h2>
-          <p>
-            Paste any text and instantly reformat it to be easier to read — adjustable font, spacing, and layout.
-          </p>
-        </div>
-        <a href="/dyslexia/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">📏</span>
-          <h2>Reading Ruler</h2>
-          <p>
-            A coloured strip that follows your finger or mouse to help track across the line — no losing your place.
-          </p>
-        </div>
-        <a href="/reading-ruler/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">🔡</span>
-          <h2>Word Decoder</h2>
-          <p>
-            Type a tricky word and get it broken into syllables, with a simple definition and how to say it out loud.
-          </p>
-        </div>
-        <a href="/word-decoder/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">💊</span>
-          <h2>Medication & Appointments</h2>
-          <p>
-            Track daily medications with a simple tick system, and keep upcoming appointments in one place.
-          </p>
-        </div>
-        <a href="/med-tracker/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">🌙</span>
-          <h2>Sleep Pattern Logger</h2>
-          <p>
-            Track your child's sleep each night — bedtimes, wakings, mood, and patterns over time.
-          </p>
-        </div>
-        <a href="/sleep-logger/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">📦</span>
-          <h2>Worry Box</h2>
-          <p>
-            Write down what's worrying you, take a breath, choose something that helps — then lock it away for good.
-          </p>
-        </div>
-        <a href="/worry-box/">Open tool</a>
-      </div>
-
-      <div class="card">
-        <div>
-          <span class="card-icon">⏱️</span>
-          <h2>Visual Timer</h2>
-          <p>
-            A clear visual countdown with a shrinking circle and colour bar. Presets, custom times, sound alerts, and full screen mode.
-          </p>
-        </div>
-        <a href="/visual-timer/">Open tool</a>
-      </div>
-
-		<div class="card">
-        <div>
-          <span class="card-icon">📖</span>
-          <h2>Visual Timetable</h2>
-          <p>
-            Create your own school day timetable with lesson slots, breaks, and TA support flags
-          </p>
-        </div>
-        <a href="/visual-timetable/">Open tool</a>
-      </div>
-
-		<div class="card">
-        <div>
-          <span class="card-icon">📖</span>
-          <h2>Visual Communication Cards</h2>
-          <p>
-             Visual Communication Card Generator (PECS-style) just type any word and it searches the ARASAAC database of 20,000+ pictograms live. Results show the real pictogram images instantly.
-          </p>
-        </div>
-        <a href="/comm-cards/">Open tool</a>
-      </div>
-
-		<div class="card">
-        <div>
-          <span class="card-icon">📖</span>
-          <h2>Now Next Board</h2>
-          <p>
-             The board — a big clear NOW → NEXT display at the top that updates live as you pick activities. Colour coded amber for NOW, blue for NEXT
-          </p>
-        </div>
-        <a href="/now-next-board/">Open tool</a>
-      </div>
-		
-
-    </div>
-
-    <div class="info">
-      <p>
-        SendSteps is designed for parents, carers, and SEND young people.
-        Everything runs directly in your browser — nothing is uploaded,
-        tracked, or stored on a server.
-      </p>
-      <p>
-        These tools are not medical advice. They are practical aids based on
-        lived experience and common SEND strategies.
-      </p>
-    </div>
-  </main>
-
-  
-  <div class="info-wrap">
-  <section id="privacy" class="card info">
-  <details class="privacy-toggle">
-    <summary>
-      <span>Privacy</span>
-      <span class="privacy-hint">Click to expand</span>
-    </summary>
-    <div class="privacy-body">
-      <p>
-        SendSteps is built to be simple and low-stress. Most tools run fully in your browser.
-        We don’t ask you to create accounts, and we don’t sell or share personal data.
-      </p>
-      <p>
-        Some tools may save what you type <strong>on your device only</strong> (for example in your browser storage)
-        so it’s still there when you come back. Nothing is uploaded unless a tool clearly says it is.
-      </p>
-      <p>
-        We don’t use ads. If we ever add analytics, it will be minimal and privacy-friendly.
-      </p>
-    </div>
-  </details>
-</section>
-
-  <section id="contact" class="card info">
-  <h2 style="margin:0 0 10px;">Contact</h2>
-  <p style="margin:0; color:var(--muted);">
-    Want to suggest a tool, report a bug, or share what would help your family most?
-  </p>
-  <div style="margin-top:12px;">
-    <button type="button" class="secondary" id="openContactModal">Open contact form</button>
+<nav>
+  <a href="/" class="nbrand">
+    <div class="nbmark">🌿</div>
+    <span class="nbname">SendSteps</span>
+  </a>
+  <div class="nlinks">
+    <a href="#tools" class="nlink">Tools</a>
+    <a href="#how" class="nlink">How it works</a>
+    <a href="#routines" class="nlink">Routines</a>
+    <a href="/routine/" class="npill">✨ Get started free</a>
   </div>
-</section>
-</div>
+</nav>
 
-
-  <footer>
-    <p>
-      © SendSteps · Built for SEND families<br>
-      <a href="#privacy">Privacy</a> · <a href="/terms/">Terms of Use</a> · <a href="#contact" data-open-contact="1">Contact</a>
-    </p>
-  
-      <div class="mini-privacy" style="margin-top:10px; color:var(--muted); font-size:12px;">
-        Privacy: your data stays on your device unless you choose to send it. No accounts. No ads.
-      </div>
-  </footer>
-<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="reaffaffF" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
-<!-- Contact Modal -->
-<div class="modal-backdrop" id="contactModal" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
-    <div class="modal-head">
-      <h2 id="contactTitle">Contact</h2>
-      <button type="button" class="modal-close" id="closeContactModal" aria-label="Close">×</button>
+<div class="hero">
+  <div>
+    <div class="hpill a1"><span class="hdot"></span>Free · No login · No subscription</div>
+    <h1 class="a2">Visual supports for <span class="hi">every</span> SEND child</h1>
+    <p class="hdesc a3">Routine charts, communication cards, Now/Next boards, trackers and more — all free, printable and built around real SEND family life.</p>
+    <div class="hbtns a4">
+      <a href="/routine/" class="bmain">✨ Create your first routine</a>
+      <a href="#tools" class="balt">👀 See all tools</a>
     </div>
-    <p class="modal-sub">
-      Send a message. Your email isn’t shown publicly. (Form handled by Netlify.)
-    </p>
-
-    <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field"
-          action="/message-sent.html" class="modal-form">
-      <input type="hidden" name="form-name" value="contact" />
-      <p style="display:none;">
-        <label>Don’t fill this in: <input name="bot-field" /></label>
-      </p>
-
-      <div class="modal-grid">
-        <div>
-          <label for="c_name">Name</label>
-          <input id="c_name" name="name" type="text" required />
+    <div class="trust a5">
+      <span class="ti">🔒 Nothing uploaded</span><span class="ts">·</span>
+      <span class="ti">🖨️ Print ready</span><span class="ts">·</span>
+      <span class="ti">💚 Always free</span><span class="ts">·</span>
+      <span class="ti">🚫 No ads</span>
+    </div>
+  </div>
+  <div class="hvis a3">
+    <div class="hvwrap">
+      <div class="hcard hmain">
+        <div class="rmh">🌅 Morning Routine</div>
+        <div class="rmsteps">
+          <div class="rms"><span class="rmn">1</span><span class="rme">⏰</span><span class="rmt">Wake Up</span></div>
+          <div class="rms g"><span class="rmn">2</span><span class="rme">🚿</span><span class="rmt">Wash &amp; Dress</span></div>
+          <div class="rms"><span class="rmn">3</span><span class="rme">🥣</span><span class="rmt">Breakfast</span></div>
+          <div class="rms b"><span class="rmn">4</span><span class="rme">🦷</span><span class="rmt">Brush Teeth</span></div>
+          <div class="rms"><span class="rmn">5</span><span class="rme">🎒</span><span class="rmt">Pack Bag</span></div>
+          <div class="rms g"><span class="rmn">6</span><span class="rme">🚌</span><span class="rmt">Leave for School</span></div>
         </div>
-        <div>
-          <label for="c_email">Email</label>
-          <input id="c_email" name="email" type="email" required />
+      </div>
+      <div class="hcard hfloat hf1">
+        <div class="nntit">NOW / NEXT BOARD</div>
+        <div class="nnw">
+          <div class="nnp n"><div class="nnb">NOW</div><span class="nne">📖</span><div class="nnl">Reading</div></div>
+          <div class="nnp x"><div class="nnb">NEXT</div><span class="nne">🍎</span><div class="nnl">Break</div></div>
         </div>
       </div>
-
-      <div style="margin-top:12px;">
-        <label for="c_message">Message</label>
-        <textarea id="c_message" name="message" rows="5" required></textarea>
+      <div class="hcard hfloat hf2">
+        <div class="cctit">COMMUNICATION CARDS</div>
+        <div class="ccg">
+          <div class="ccc"><span class="cce">🍽️</span><div class="ccl">Eat</div></div>
+          <div class="ccc"><span class="cce">💧</span><div class="ccl">Drink</div></div>
+          <div class="ccc"><span class="cce">🚽</span><div class="ccl">Toilet</div></div>
+          <div class="ccc"><span class="cce">🆘</span><div class="ccl">Help</div></div>
+        </div>
       </div>
-
-      <div class="modal-actions">
-        <button type="submit">Send message</button>
-        <button type="button" class="secondary" id="cancelContactModal">Cancel</button>
-      </div>
-    </form>
-
-    <p class="modal-note">
-      You’ll receive messages via Netlify form notifications to your chosen email.
-    </p>
+    </div>
   </div>
 </div>
+
+<section class="why">
+  <div class="si">
+    <div class="seye r">Why families choose SendSteps</div>
+    <h2 class="stit r">Built from lived SEND experience,<br>not a boardroom</h2>
+    <p class="ssub r">These tools exist because of real daily challenges — not because someone thought SEND families might be a market.</p>
+    <div class="wgrid">
+      <div class="wcard r"><span class="wico">🎨</span><div class="wtit">Customisable for every child</div><p class="wtxt">Every SEND child is different. Change labels, swap icons, adjust colours — make each tool fit your child, not the other way round.</p></div>
+      <div class="wcard r"><span class="wico">🖨️</span><div class="wtit">Print-ready in seconds</div><p class="wtxt">One click to print. A4 for the wall, strips for the desk, individual cards to laminate and Velcro — however you need it.</p></div>
+      <div class="wcard r"><span class="wico">🔒</span><div class="wtit">Private &amp; no login</div><p class="wtxt">Everything runs in your browser. Nothing is uploaded, nothing is tracked. No accounts, no ads, no subscription — ever.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="si">
+    <div class="seye r">How it works</div>
+    <h2 class="stit r">From blank page to printed support<br>in four steps</h2>
+    <div class="srow">
+      <div class="scard r"><div class="snum">1</div><span class="sico">📋</span><div class="stitl">Pick a tool</div><p class="stxt">Choose from routine builders, communication cards, Now/Next boards, trackers, and 20+ other tools.</p><div class="stags"><span class="stag">21 tools</span><span class="stag">Pre-built options</span></div></div>
+      <div class="scard r"><div class="snum">2</div><span class="sico">✏️</span><div class="stitl">Customise it</div><p class="stxt">Edit labels, add steps, search 20,000+ ARASAAC pictograms, change colours — make it yours.</p><div class="stags"><span class="stag">20,000+ icons</span><span class="stag">Drag &amp; drop</span></div></div>
+      <div class="scard r"><div class="snum">3</div><span class="sico">👁️</span><div class="stitl">Preview live</div><p class="stxt">See exactly how your routine chart, board or card set will look before you print — no surprises.</p><div class="stags"><span class="stag">Live preview</span><span class="stag">Auto-saves</span></div></div>
+      <div class="scard r"><div class="snum">4</div><span class="sico">🖨️</span><div class="stitl">Print &amp; use</div><p class="stxt">Print from your browser in one click. Laminate, Velcro, fridge — ready for tomorrow morning.</p><div class="stags"><span class="stag">Print or PDF</span><span class="stag">Any printer</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="tools" id="tools">
+  <div class="si">
+    <div class="seye r">All tools</div>
+    <h2 class="stit r">21 tools — all free, all in one place</h2>
+    <p class="ssub r">Covering routines, communication, emotions, learning support and daily life. No login needed for any of them.</p>
+    <div class="tgrid">
+      <div class="tcat r"><span class="tcatlbl">Routines &amp; Visual Supports</span><span class="tcatline"></span></div>
+      <div class="tcard tg r"><span class="tico">📅</span><div class="ttit">Visual Routine Builder</div><p class="tdesc">Build interactive daily routines with drag-and-drop steps, emoji, timings and a First/Then mode.</p><a href="/routine/" class="tlink">Open tool →</a></div>
+      <div class="tcard ta r"><span class="tico">🖨️</span><div class="ttit">Printable Routine Sheets</div><p class="tdesc">22 ready-made routines as visual schedules, checklists or weekly charts. Customise and print instantly.</p><a href="/printable-routines/" class="tlink">Open tool →</a></div>
+      <div class="tcard tp r"><span class="tico">🗓️</span><div class="ttit">Visual Timetable</div><p class="tdesc">Build a weekly school timetable with lesson slots, breaks, TA support flags and room notes.</p><a href="/visual-timetable/" class="tlink">Open tool →</a></div>
+      <div class="tcard tt r"><span class="tico">⏱️</span><div class="ttit">Visual Timer</div><p class="tdesc">A clear countdown with a shrinking circle and colour bar. Presets, custom times, sound alerts, full screen.</p><a href="/visual-timer/" class="tlink">Open tool →</a></div>
+
+      <div class="tcat r"><span class="tcatlbl">Communication</span><span class="tcatline"></span></div>
+      <div class="tcard tb r"><span class="tico">🃏</span><div class="ttit">Visual Communication Cards</div><p class="tdesc">Search 20,000+ ARASAAC pictograms and build a printable communication card set in seconds.</p><a href="/comm-cards/" class="tlink">Open tool →</a></div>
+      <div class="tcard ta r"><span class="tico">🔀</span><div class="ttit">Now / Next Board</div><p class="tdesc">Build a clear Now/Next visual board using real pictograms. Print, laminate and Velcro-ready.</p><a href="/now-next-board/" class="tlink">Open tool →</a></div>
+      <div class="tcard tg r"><span class="tico">📖</span><div class="ttit">Social Story Mini-Builder</div><p class="tdesc">Choose a scenario, add your child's name, and get a beautifully formatted social story to read and print.</p><a href="/socialstory/" class="tlink">Open tool →</a></div>
+
+      <div class="tcat r"><span class="tcatlbl">Feelings &amp; Emotions</span><span class="tcatline"></span></div>
+      <div class="tcard ta r"><span class="tico">💛</span><div class="ttit">Feelings &amp; Emotion Tools</div><p class="tdesc">Help children name and communicate how they feel using visual scales, emotion words and "what helps" prompts.</p><a href="/feelings/" class="tlink">Open tool →</a></div>
+      <div class="tcard tb r"><span class="tico">🔋</span><div class="ttit">Social Battery</div><p class="tdesc">Explain "running low" before it becomes a meltdown. Add drains and chargers, set today's level and print.</p><a href="/battery/" class="tlink">Open tool →</a></div>
+      <div class="tcard tp r"><span class="tico">📦</span><div class="ttit">Worry Box</div><p class="tdesc">Write down worries, take a breath, choose something that helps — then lock it away.</p><a href="/worry-box/" class="tlink">Open tool →</a></div>
+      <div class="tcard tr r"><span class="tico">📊</span><div class="ttit">Meltdown Trigger Tracker</div><p class="tdesc">Gently track triggers, intensity and what helped — without blame or judgement.</p><a href="/tracker/" class="tlink">Open tool →</a></div>
+      <div class="tcard tt r"><span class="tico">🧠</span><div class="ttit">Decompression Planner</div><p class="tdesc">After a day of masking and managing, your child needs the right recovery. Tell us about today.</p><a href="/decompression/" class="tlink">Open tool →</a></div>
+
+      <div class="tcat r"><span class="tcatlbl">Learning Support</span><span class="tcatline"></span></div>
+      <div class="tcard tg r"><span class="tico">✨</span><div class="ttit">AI Task Helper</div><p class="tdesc">Type any task and get it broken into tiny, manageable SEND-friendly steps — AI-powered.</p><a href="/task-helper-netlify/" class="tlink">Open tool →</a></div>
+      <div class="tcard tb r"><span class="tico">📚</span><div class="ttit">Homework Helper</div><p class="tdesc">Break homework into calm, manageable steps with reduced pressure, clear starts and built-in stopping points.</p><a href="/homework/" class="tlink">Open tool →</a></div>
+      <div class="tcard tp r"><span class="tico">🔡</span><div class="ttit">Word Decoder</div><p class="tdesc">Type a tricky word and get it broken into syllables, with a simple definition and how to say it out loud.</p><a href="/word-decoder/" class="tlink">Open tool →</a></div>
+      <div class="tcard ta r"><span class="tico">🔠</span><div class="ttit">Dyslexia-Friendly Text</div><p class="tdesc">Paste any text and instantly reformat it to be easier to read — adjustable font, spacing and layout.</p><a href="/dyslexia/" class="tlink">Open tool →</a></div>
+      <div class="tcard tt r"><span class="tico">📏</span><div class="ttit">Reading Ruler</div><p class="tdesc">A coloured strip that follows your mouse or finger to help track across the line — no losing your place.</p><a href="/reading-ruler/" class="tlink">Open tool →</a></div>
+
+      <div class="tcat r"><span class="tcatlbl">Daily Life</span><span class="tcatline"></span></div>
+      <div class="tcard tr r"><span class="tico">🏠</span><div class="ttit">Sensory-Friendly Home</div><p class="tdesc">Small home changes that make a big difference. A guided checklist to get started without overwhelm.</p><a href="/sensory/" class="tlink">Open tool →</a></div>
+      <div class="tcard ta r"><span class="tico">🍽️</span><div class="ttit">Safe Food List Builder</div><p class="tdesc">Add foods, tick the safe ones, sort into Always, Sometimes or Not Yet. Great for mealtimes.</p><a href="/safefood/" class="tlink">Open tool →</a></div>
+      <div class="tcard tb r"><span class="tico">💊</span><div class="ttit">Medication &amp; Appointments</div><p class="tdesc">Track daily medications with a simple tick system and keep upcoming appointments in one place.</p><a href="/med-tracker/" class="tlink">Open tool →</a></div>
+      <div class="tcard tp r"><span class="tico">🌙</span><div class="ttit">Sleep Pattern Logger</div><p class="tdesc">Track your child's sleep each night — bedtimes, wakings, mood and patterns over time.</p><a href="/sleep-logger/" class="tlink">Open tool →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="lib" id="routines">
+  <div class="si">
+    <div class="seye r">Routine library</div>
+    <h2 class="stit r">Ready-made routines — open &amp; print in one click</h2>
+    <p class="ssub r">Pre-built routines covering the most common SEND support needs. Fully customisable before printing.</p>
+    <div class="lpills r">
+      <a href="/routine/" class="lpill">🌅 Morning</a>
+      <a href="/routine/" class="lpill">🌙 Bedtime</a>
+      <a href="/routine/" class="lpill">🎒 School Bag</a>
+      <a href="/routine/" class="lpill">📚 Homework</a>
+      <a href="/routine/" class="lpill">🛁 Bath Time</a>
+      <a href="/routine/" class="lpill">🧸 Calm Down</a>
+      <a href="/routine/" class="lpill">💙 Anxiety Support</a>
+      <a href="/routine/" class="lpill">🌊 Sensory Break</a>
+      <a href="/routine/" class="lpill">🦷 Dentist Visit</a>
+      <a href="/routine/" class="lpill">🛒 Supermarket Trip</a>
+      <a href="/routine/" class="lpill">🖊️ Classroom Task</a>
+      <a href="/routine/" class="lpill">🔄 Transition &amp; Change</a>
+      <a href="/printable-routines/" class="lpill" style="border-color:var(--green);color:var(--green-d)">🖨️ See all 22 printable routines →</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="si">
+    <h2 class="ctatit r">Start helping your child today</h2>
+    <p class="ctasub r">Free forever. No login. No subscription. Just practical visual supports that work.</p>
+    <div class="ctabtns r">
+      <a href="/routine/" class="bcw">✨ Create your first routine</a>
+      <a href="/comm-cards/" class="bco">🃏 Build communication cards</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fi">
+    <div class="ftop">
+      <div>
+        <div class="fbrand">Send<span>Steps</span></div>
+        <p class="ftag">Free visual tools for SEND children and families. Built from lived experience.</p>
+      </div>
+      <div class="flinks">
+        <a href="#tools" class="flink">Tools</a>
+        <a href="#routines" class="flink">Routines</a>
+        <a href="#privacy" class="flink">Privacy</a>
+        <a href="/terms/" class="flink">Terms</a>
+        <a href="#contact" class="flink">Contact</a>
+      </div>
+    </div>
+    <p class="fcopy">
+      © SendSteps · Built for SEND families · Everything runs in your browser · No accounts · No ads ·
+      Pictograms by <a href="https://arasaac.org" target="_blank">ARASAAC</a>
+      © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao
+    </p>
+  </div>
+</footer>
 
 <script>
-  (function(){
-    const modal = document.getElementById('contactModal');
-    const openBtns = [
-      document.getElementById('openContactModal'),
-      document.getElementById('footerContactLink')
-    ].filter(Boolean);
-    const closeBtn = document.getElementById('closeContactModal');
-    const cancelBtn = document.getElementById('cancelContactModal');
-
-    function openModal(){
-      if(!modal) return;
-      modal.classList.add('is-open');
-      modal.setAttribute('aria-hidden','false');
-      // focus first input
-      const first = modal.querySelector('input, textarea, button');
-      if(first) first.focus();
-      document.addEventListener('keydown', onKey);
-    }
-
-    function closeModal(){
-      if(!modal) return;
-      modal.classList.remove('is-open');
-      modal.setAttribute('aria-hidden','true');
-      document.removeEventListener('keydown', onKey);
-    }
-
-    function onKey(e){
-      if(e.key === 'Escape') closeModal();
-    }
-
-    openBtns.forEach(btn => btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal();
-    }));
-
-    if(closeBtn) closeBtn.addEventListener('click', closeModal);
-    if(cancelBtn) cancelBtn.addEventListener('click', closeModal);
-
-    // click backdrop to close
-    if(modal){
-      modal.addEventListener('click', (e) => {
-        if(e.target === modal) closeModal();
-      });
-    }
-  })();
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target)}});
+},{threshold:0.1,rootMargin:'0px 0px -36px 0px'});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+document.querySelectorAll('.wgrid,.srow,.tgrid,.lpills').forEach(g=>{
+  g.querySelectorAll('.r').forEach((el,i)=>{el.style.transitionDelay=(i*.055)+'s'});
+});
 </script>
-
 </body>
 </html>
