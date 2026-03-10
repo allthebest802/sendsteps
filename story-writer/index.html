@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story Writer's Helper — SendSteps</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #1a1a2e;
+    --card: #16213e;
+    --card2: #0f3460;
+    --green: #2ecc87;
+    --green-d: #1a9e62;
+    --amber: #f5a623;
+    --blue: #4a9eff;
+    --rose: #ff6b6b;
+    --purple: #a78bfa;
+    --white: #f0f4ff;
+    --muted: #8892b0;
+    --border: rgba(255,255,255,0.08);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle dot grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.18;
+  }
+  .blob-1 { width: 500px; height: 500px; background: var(--green); top: -100px; right: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--blue); bottom: -80px; left: -80px; }
+  .blob-3 { width: 300px; height: 300px; background: var(--purple); top: 40%; left: 30%; }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    transition: all .2s;
+  }
+  .back-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+
+  .header-icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--green), #1ecb7c);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 4px 20px rgba(46,204,135,0.3);
+    flex-shrink: 0;
+  }
+
+  .header-text h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .header-text p { font-size: 14px; color: var(--muted); font-weight: 600; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 800;
+    border: 2px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .tab .tab-emoji { font-size: 16px; }
+  .tab:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
+  .tab.active {
+    color: var(--paper);
+    border-color: transparent;
+  }
+  .tab[data-tab="spell"].active { background: var(--green); box-shadow: 0 4px 16px rgba(46,204,135,0.4); }
+  .tab[data-tab="syllable"].active { background: var(--amber); box-shadow: 0 4px 16px rgba(245,166,35,0.4); }
+  .tab[data-tab="words"].active { background: var(--blue); box-shadow: 0 4px 16px rgba(74,158,255,0.4); }
+  .tab[data-tab="write"].active { background: var(--purple); box-shadow: 0 4px 16px rgba(167,139,250,0.4); }
+  .tab[data-tab="read"].active { background: var(--rose); box-shadow: 0 4px 16px rgba(255,107,107,0.4); }
+
+  /* Panels */
+  .panel { display: none; animation: fadeUp .3s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Inputs */
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"], textarea {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    outline: none;
+    transition: border-color .2s;
+  }
+  input[type="text"]:focus, textarea:focus {
+    border-color: var(--green);
+    background: rgba(46,204,135,0.05);
+  }
+  input::placeholder, textarea::placeholder { color: var(--muted); }
+
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 100px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .btn-green { background: var(--green); color: #0a1628; }
+  .btn-green:hover { background: #25c97a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(46,204,135,0.35); }
+  .btn-amber { background: var(--amber); color: #0a1628; }
+  .btn-amber:hover { background: #e8961a; transform: translateY(-1px); }
+  .btn-blue { background: var(--blue); color: #0a1628; }
+  .btn-blue:hover { background: #3a8ef0; transform: translateY(-1px); }
+  .btn-purple { background: var(--purple); color: #0a1628; }
+  .btn-purple:hover { transform: translateY(-1px); }
+  .btn-rose { background: var(--rose); color: #0a1628; }
+  .btn-rose:hover { transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    border: 2px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+
+  /* ── SPELL CHECKER ────────────────────────────────── */
+  .spell-result {
+    background: rgba(46,204,135,0.08);
+    border: 2px solid rgba(46,204,135,0.25);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    display: none;
+  }
+  .spell-result.show { display: block; animation: fadeUp .3s ease; }
+
+  .spell-word {
+    font-family: 'Caveat', cursive;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .spell-breakdown {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+    align-items: center;
+  }
+
+  .spell-chunk {
+    background: rgba(46,204,135,0.15);
+    border: 2px solid rgba(46,204,135,0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--green);
+    animation: popIn .3s ease backwards;
+  }
+  .spell-chunk:nth-child(2) { animation-delay: .08s; }
+  .spell-chunk:nth-child(3) { animation-delay: .16s; }
+  .spell-chunk:nth-child(4) { animation-delay: .24s; }
+  .spell-chunk:nth-child(5) { animation-delay: .32s; }
+
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .spell-divider {
+    color: var(--muted);
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .spell-tip {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .spell-tip strong { color: var(--amber); }
+
+  .bd-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,107,107,0.12);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rose);
+    margin-top: 8px;
+  }
+
+  /* ── SYLLABLE SPLITTER ────────────────────────────── */
+  .syllable-result {
+    margin-top: 20px;
+    display: none;
+  }
+  .syllable-result.show { display: block; }
+
+  .syllable-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .syl {
+    font-family: 'Caveat', cursive;
+    font-size: 38px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 12px;
+    animation: popIn .25s ease backwards;
+    cursor: pointer;
+    transition: transform .15s;
+    user-select: none;
+  }
+  .syl:hover { transform: scale(1.05); }
+  .syl.c1 { background: rgba(46,204,135,0.15); color: var(--green); border: 2px solid rgba(46,204,135,0.3); }
+  .syl.c2 { background: rgba(74,158,255,0.15); color: var(--blue); border: 2px solid rgba(74,158,255,0.3); }
+  .syl.c3 { background: rgba(167,139,250,0.15); color: var(--purple); border: 2px solid rgba(167,139,250,0.3); }
+  .syl.c4 { background: rgba(245,166,35,0.15); color: var(--amber); border: 2px solid rgba(245,166,35,0.3); }
+
+  .syl-dot {
+    width: 6px; height: 6px;
+    background: var(--muted);
+    border-radius: 50%;
+    margin: 0 2px;
+    opacity: 0.5;
+  }
+
+  .syl-count {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .syl-count span { color: var(--amber); }
+
+  .tap-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* Beat tap area */
+  .beat-area {
+    background: rgba(245,166,35,0.06);
+    border: 2px dashed rgba(245,166,35,0.2);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    margin-top: 12px;
+    user-select: none;
+  }
+  .beat-area:active { background: rgba(245,166,35,0.15); transform: scale(0.98); }
+  .beat-area .beat-count {
+    font-family: 'Caveat', cursive;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .beat-area p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+  /* ── WORD BANK ───────────────────────────────────── */
+  .topic-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .topic-btn {
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    border: 2px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .topic-btn.active, .topic-btn:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: var(--paper);
+  }
+
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .word-card {
+    background: rgba(74,158,255,0.08);
+    border: 2px solid rgba(74,158,255,0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+  }
+  .word-card:hover {
+    background: rgba(74,158,255,0.18);
+    border-color: var(--blue);
+    transform: translateY(-2px);
+  }
+  .word-card .w-word {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .word-card .w-syl {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .word-card.copied {
+    background: rgba(46,204,135,0.15);
+    border-color: var(--green);
+  }
+  .word-card.copied .w-word { color: var(--green); }
+
+  .add-word-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  /* Custom word bank */
+  .my-words {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .my-words h3 {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 10px;
+  }
+  .my-word-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple);
+    margin: 4px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .my-word-tag:hover { background: rgba(167,139,250,0.22); }
+  .my-word-tag .del { opacity: 0.5; font-size: 12px; }
+  .my-word-tag .del:hover { opacity: 1; color: var(--rose); }
+
+  /* ── WRITING PAD ─────────────────────────────────── */
+  .write-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .starter-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 2px solid rgba(167,139,250,0.25);
+    background: rgba(167,139,250,0.08);
+    color: var(--purple);
+    cursor: pointer;
+    transition: all .2s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .starter-btn:hover {
+    background: rgba(167,139,250,0.18);
+    border-color: var(--purple);
+    transform: translateY(-1px);
+  }
+
+  #story-area {
+    width: 100%;
+    min-height: 220px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.8;
+    outline: none;
+    resize: vertical;
+    transition: border-color .2s;
+  }
+  #story-area:focus { border-color: var(--purple); background: rgba(167,139,250,0.04); }
+
+  .write-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .write-stats span { color: var(--purple); }
+
+  /* BD warning in text */
+  .bd-warning-bar {
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--rose);
+    font-weight: 700;
+    margin-top: 10px;
+    display: none;
+    line-height: 1.5;
+  }
+  .bd-warning-bar.show { display: block; }
+
+  .frames-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .frame-card {
+    background: rgba(167,139,250,0.06);
+    border: 2px solid rgba(167,139,250,0.15);
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .frame-card:hover {
+    background: rgba(167,139,250,0.14);
+    border-color: var(--purple);
+    transform: translateY(-2px);
+  }
+  .frame-card .frame-title {
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .frame-card .frame-preview {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── READ BACK ───────────────────────────────────── */
+  .read-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .speed-select {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    outline: none;
+    cursor: pointer;
+  }
+
+  #read-area {
+    width: 100%;
+    min-height: 180px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.8;
+    outline: none;
+    resize: vertical;
+    transition: border-color .2s;
+  }
+  #read-area:focus { border-color: var(--rose); }
+
+  .reading-highlight {
+    background: rgba(255,107,107,0.25);
+    border-radius: 4px;
+    padding: 1px 2px;
+  }
+
+  .read-display {
+    background: rgba(255,107,107,0.06);
+    border: 2px solid rgba(255,107,107,0.15);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 16px;
+    min-height: 100px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.8;
+    color: var(--white);
+    display: none;
+  }
+  .read-display.show { display: block; }
+  .read-display .current-word {
+    background: var(--rose);
+    color: var(--paper);
+    border-radius: 6px;
+    padding: 2px 6px;
+    transition: all .15s;
+  }
+
+  /* Tips banner */
+  .tips-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tip-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .tip-pill em { color: var(--green); font-style: normal; }
+
+  /* Progress stars */
+  .stars {
+    display: flex;
+    gap: 4px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .star { font-size: 20px; cursor: pointer; transition: transform .15s; }
+  .star:hover { transform: scale(1.3); }
+  .stars-label { font-size: 13px; color: var(--muted); font-weight: 700; margin-left: 8px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: var(--paper);
+    font-weight: 800;
+    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    z-index: 999;
+    transition: transform .3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .footer a { color: var(--green); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .frames-grid { grid-template-columns: 1fr; }
+    .input-row { flex-direction: column; }
+    .syl { font-size: 28px; }
+    .spell-word { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="header">
+    <a href="https://sendsteps.uk" class="back-btn">← SendSteps</a>
+    <div class="header-icon">✏️</div>
+    <div class="header-text">
+      <h1>Story Writer's Helper</h1>
+      <p>Spelling help · Syllable splitter · Word banks · Writing frames · Read-back</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="spell"><span class="tab-emoji">🔤</span> Spell It</button>
+    <button class="tab" data-tab="syllable"><span class="tab-emoji">🥁</span> Beat It</button>
+    <button class="tab" data-tab="words"><span class="tab-emoji">📚</span> Word Bank</button>
+    <button class="tab" data-tab="write"><span class="tab-emoji">✍️</span> Write</button>
+    <button class="tab" data-tab="read"><span class="tab-emoji">🔊</span> Read Back</button>
+  </div>
+
+  <!-- ── PANEL 1: SPELL IT ──────────────────────────── -->
+  <div class="panel active" id="panel-spell">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">🔤 Type what it sounds like</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
+        Type how you think the word sounds — we'll find the real spelling for you
+      </p>
+      <div class="input-row">
+        <input type="text" id="spell-input" placeholder="e.g. skatbord, frends, waching..." maxlength="40"
+               autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn btn-green" onclick="doSpell()">✨ Check it</button>
+      </div>
+
+      <div class="tips-row">
+        <div class="tip-pill">💡 <em>b or d?</em> — if in doubt, say "bed" — b comes first, d comes last</div>
+        <div class="tip-pill">💡 <em>p or q?</em> — p has a stick going down on the right</div>
+      </div>
+    </div>
+
+    <div class="spell-result" id="spell-result">
+      <div id="spell-word" class="spell-word"></div>
+      <p style="font-size:14px;color:var(--muted);font-weight:700;margin-bottom:8px">Broken into sounds:</p>
+      <div class="spell-breakdown" id="spell-breakdown"></div>
+      <div id="bd-alert" class="bd-alert" style="display:none">
+        ⚠️ Watch out! This word has a <strong>b</strong> or <strong>d</strong> in it — say "bed" to remember which is which
+      </div>
+      <p class="spell-tip" id="spell-tip"></p>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="speakWord()">🔊 Hear it</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyWord()">📋 Copy</button>
+      </div>
+    </div>
+
+    <!-- Common tricky words for 10-year-olds with dyslexia -->
+    <div class="card" style="margin-top:0">
+      <div class="card-title" style="color:var(--amber)">⚡ Quick tricky words</div>
+      <div id="tricky-words" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 2: SYLLABLE BEAT ─────────────────────── -->
+  <div class="panel" id="panel-syllable">
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">🥁 Beat out the syllables</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
+        Type a word — we'll split it into beats to help you spell it. Click each beat to hear it!
+      </p>
+      <div class="input-row">
+        <input type="text" id="syl-input" placeholder="e.g. skateboard, because, adventure..." maxlength="40"
+               autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn btn-amber" onclick="doSyllable()">🥁 Split it</button>
+      </div>
+    </div>
+
+    <div class="syllable-result" id="syl-result">
+      <div class="card">
+        <div class="syllable-display" id="syl-display"></div>
+        <div class="syl-count" id="syl-count"></div>
+        <p class="tap-hint">👆 Click any beat to hear it · 🥁 Tap the drum pad to count your own beats</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--amber)">🥁 Tap to count beats</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:600">
+          Say the word out loud and tap once for each beat you hear
+        </p>
+        <div class="beat-area" id="beat-area" onclick="tapBeat()">
+          <div class="beat-count" id="beat-count">0</div>
+          <p>tap here — one tap per beat</p>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="resetBeats()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 3: WORD BANK ─────────────────────────── -->
+  <div class="panel" id="panel-words">
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">📚 Topic word banks</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
+        Click a word to copy it. Use these in your writing!
+      </p>
+      <div class="topic-row" id="topic-row"></div>
+      <div class="word-grid" id="word-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">⭐ My own words</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
+        Add words you use a lot so they're always easy to find
+      </p>
+      <div class="add-word-row">
+        <input type="text" id="my-word-input" placeholder="Add a word..." maxlength="30"
+               autocomplete="off" spellcheck="false">
+        <button class="btn btn-purple" onclick="addMyWord()">+ Add</button>
+      </div>
+      <div class="my-words">
+        <h3>My saved words</h3>
+        <div id="my-words-list"></div>
+        <p id="my-words-empty" style="font-size:13px;color:var(--muted);font-weight:600">
+          No words yet — add some above!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 4: WRITE ─────────────────────────────── -->
+  <div class="panel" id="panel-write">
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">✍️ Story frames — pick a starter</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
+        Stuck on how to start? Click a frame to drop it into your writing pad
+      </p>
+      <div class="frames-grid" id="frames-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">✏️ Your story</div>
+      <div class="write-toolbar" id="starter-toolbar"></div>
+      <textarea id="story-area" placeholder="Start writing here... your ideas are brilliant — don't let spelling stop you! 🚀"
+                oninput="updateStats();checkBD()"></textarea>
+      <div class="bd-warning-bar" id="bd-warning">
+        👀 b/d check — remember: say "bed" — <strong>b</strong> at the start, <strong>d</strong> at the end
+      </div>
+      <div class="write-stats">
+        <div>Words: <span id="word-count">0</span></div>
+        <div>Sentences: <span id="sent-count">0</span></div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-purple btn-sm" onclick="speakStory()">🔊 Read my story back</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearStory()">🗑️ Clear</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyStory()">📋 Copy</button>
+      </div>
+      <div class="stars">
+        <span class="star" onclick="rateStar(1)">⭐</span>
+        <span class="star" onclick="rateStar(2)">⭐</span>
+        <span class="star" onclick="rateStar(3)">⭐</span>
+        <span class="star" onclick="rateStar(4)">⭐</span>
+        <span class="star" onclick="rateStar(5)">⭐</span>
+        <span class="stars-label" id="stars-label">How are you feeling about your writing today?</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL 5: READ BACK ─────────────────────────── -->
+  <div class="panel" id="panel-read">
+    <div class="card">
+      <div class="card-title" style="color:var(--rose)">🔊 Read back — does it sound right?</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:16px;font-weight:600">
+        Paste or type any text — then hit play to hear it read aloud. Ask yourself: <em style="color:var(--rose)">does it make sense? does it sound right?</em>
+      </p>
+      <div class="read-controls">
+        <select class="speed-select" id="speed-select">
+          <option value="0.7">🐢 Slow</option>
+          <option value="1.0" selected>🚶 Normal</option>
+          <option value="1.3">🚀 Fast</option>
+        </select>
+        <button class="btn btn-rose" onclick="startReading()" id="read-btn">▶ Play</button>
+        <button class="btn btn-ghost btn-sm" onclick="stopReading()" id="stop-btn" style="display:none">⏹ Stop</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyFromStory()">📋 Copy from my story</button>
+      </div>
+      <textarea id="read-area" placeholder="Paste text here to hear it read back to you..."></textarea>
+    </div>
+
+    <div class="card" style="background:rgba(255,107,107,0.05)">
+      <div class="card-title" style="color:var(--rose)">💡 Reading check questions</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
+        After listening, ask yourself these three questions:
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2)">
+          <span style="font-size:24px">🤔</span>
+          <div>
+            <div style="font-weight:800;color:var(--rose)">Does it make sense?</div>
+            <div style="font-size:13px;color:var(--muted)">If not, re-read that bit and think about what it should say</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2)">
+          <span style="font-size:24px">👂</span>
+          <div>
+            <div style="font-weight:800;color:var(--rose)">Does it sound right?</div>
+            <div style="font-size:13px;color:var(--muted)">Read it the way you'd say it — does that sound like normal talking?</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2)">
+          <span style="font-size:24px">👁️</span>
+          <div>
+            <div style="font-weight:800;color:var(--rose)">Does it look right?</div>
+            <div style="font-size:13px;color:var(--muted)">Check the spelling — does it look like the word you meant?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <a href="https://sendsteps.uk">← SendSteps</a> · Free visual tools for SEND families · Nothing uploaded · Always free
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────
+
+const TRICKY_WORDS = [
+  {w:'because',syl:'be-cause'},{w:'friend',syl:'friend'},
+  {w:'their',syl:'their'},{w:'there',syl:'there'},
+  {w:'they\'re',syl:'they\'re'},{w:'said',syl:'said'},
+  {w:'people',syl:'peo-ple'},{w:'water',syl:'wa-ter'},
+  {w:'where',syl:'where'},{w:'again',syl:'a-gain'},
+  {w:'different',syl:'dif-fer-ent'},{w:'beautiful',syl:'beau-ti-ful'},
+  {w:'would',syl:'would'},{w:'should',syl:'should'},
+  {w:'could',syl:'could'},{w:'really',syl:'real-ly'},
+  {w:'suddenly',syl:'sud-den-ly'},{w:'through',syl:'through'},
+  {w:'thought',syl:'thought'},{w:'brought',syl:'brought'},
+];
+
+const WORD_BANKS = {
+  'Skateboarding 🛹': [
+    {w:'skateboard',s:'skate-board'},{w:'kickflip',s:'kick-flip'},{w:'halfpipe',s:'half-pipe'},
+    {w:'ramp',s:'ramp'},{w:'trick',s:'trick'},{w:'grind',s:'grind'},
+    {w:'balance',s:'bal-ance'},{w:'wheels',s:'wheels'},{w:'helmet',s:'hel-met'},
+    {w:'concrete',s:'con-crete'},{w:'ollie',s:'ol-lie'},{w:'sliding',s:'slid-ing'},
+  ],
+  'Adventure 🗺️': [
+    {w:'adventure',s:'ad-ven-ture'},{w:'dangerous',s:'dan-ger-ous'},{w:'mysterious',s:'mys-ter-ious'},
+    {w:'discovered',s:'dis-cov-ered'},{w:'treasure',s:'treas-ure'},{w:'escape',s:'es-cape'},
+    {w:'terrified',s:'ter-ri-fied'},{w:'suddenly',s:'sud-den-ly'},{w:'immediately',s:'im-med-iate-ly'},
+    {w:'enormous',s:'e-nor-mous'},{w:'whispered',s:'whis-pered'},{w:'scrambled',s:'scram-bled'},
+  ],
+  'Animals 🐾': [
+    {w:'ferocious',s:'fe-ro-cious'},{w:'creature',s:'crea-ture'},{w:'prowling',s:'prowl-ing'},
+    {w:'camouflage',s:'cam-ou-flage'},{w:'hibernate',s:'hi-ber-nate'},{w:'predator',s:'pred-a-tor'},
+    {w:'territory',s:'ter-ri-to-ry'},{w:'nocturnal',s:'noc-tur-nal'},{w:'scurried',s:'scur-ried'},
+    {w:'feathers',s:'feath-ers'},{w:'enormous',s:'e-nor-mous'},{w:'burrowed',s:'bur-rowed'},
+  ],
+  'School 🏫': [
+    {w:'library',s:'li-brar-y'},{w:'homework',s:'home-work'},{w:'calculator',s:'cal-cu-la-tor'},
+    {w:'experiment',s:'ex-per-i-ment'},{w:'remember',s:'re-mem-ber'},{w:'understand',s:'un-der-stand'},
+    {w:'paragraph',s:'par-a-graph'},{w:'question',s:'ques-tion'},{w:'answered',s:'an-swered'},
+    {w:'scissors',s:'scis-sors'},{w:'dictionary',s:'dic-tion-ar-y'},{w:'sentence',s:'sen-tence'},
+  ],
+  'Feelings 💛': [
+    {w:'excited',s:'ex-cit-ed'},{w:'nervous',s:'nerv-ous'},{w:'frustrated',s:'frus-trat-ed'},
+    {w:'confident',s:'con-fi-dent'},{w:'worried',s:'wor-ried'},{w:'relieved',s:'re-lieved'},
+    {w:'embarrassed',s:'em-bar-rassed'},{w:'furious',s:'fu-ri-ous'},{w:'surprised',s:'sur-prised'},
+    {w:'exhausted',s:'ex-haust-ed'},{w:'determined',s:'de-ter-mined'},{w:'proud',s:'proud'},
+  ],
+  'Story words ✨': [
+    {w:'meanwhile',s:'mean-while'},{w:'suddenly',s:'sud-den-ly'},{w:'eventually',s:'e-ven-tu-al-ly'},
+    {w:'however',s:'how-ev-er'},{w:'although',s:'al-though'},{w:'therefore',s:'there-fore'},
+    {w:'fortunately',s:'for-tu-nate-ly'},{w:'unfortunately',s:'un-for-tu-nate-ly'},
+    {w:'described',s:'de-scribed'},{w:'whispered',s:'whis-pered'},{w:'shouted',s:'shout-ed'},
+    {w:'atmosphere',s:'at-mos-phere'},
+  ],
+};
+
+const WRITING_FRAMES = [
+  { icon:'🛹', title:'Action story', parts:['One day, ', ' decided to try the most dangerous trick ever.\n\nEveryone watched as ', ' took a deep breath and...\n\nSuddenly, '] },
+  { icon:'🌙', title:'Night adventure', parts:['It was the middle of the night when I heard a strange noise.\n\nI crept out of bed and looked out of the window. What I saw made me...'] },
+  { icon:'🐺', title:'Animal encounter', parts:['Deep in the forest, there lived a ', ' that nobody had ever seen before.\n\nOne morning, '] },
+  { icon:'🔍', title:'Mystery', parts:['Nobody knew what had happened to the ', '.\n\nThere were three suspects:\n1. \n2. \n3. \n\nThe clue was...'] },
+  { icon:'⚡', title:'Superpower', parts:['I woke up one morning and immediately knew something was different.\n\nWhen I looked in the mirror, I could see that I had somehow gained the power to...'] },
+  { icon:'🤣', title:'Funny story', parts:['I will never forget the day that ', ' walked into school wearing ', '.\n\nEveryone stopped and stared. ', ' went bright red because...'] },
+];
+
+const SENTENCE_STARTERS = [
+  'Suddenly,', 'Meanwhile,', 'Without warning,', 'After that,',
+  'Even though', 'Unfortunately,', 'To his amazement,', 'Before long,',
+];
+
+// Simple phonetic spelling map for common dyslexic misspellings
+const PHONETIC_MAP = {
+  'skatbord':'skateboard','skateboard':'skateboard',
+  'frends':'friends','frend':'friend',
+  'waching':'watching','wachng':'watching',
+  'becaus':'because','becoz':'because','becuase':'because',
+  'peeple':'people','pepel':'people','peple':'people',
+  'sed':'said','siad':'said',
+  'ther':'there','thier':'there',
+  'thay':'they','tey':'they',
+  'wos':'was','wuz':'was',
+  'wen':'when','whn':'when',
+  'hav':'have','hve':'have',
+  'wat':'what','wt':'what',
+  'cud':'could','coud':'could',
+  'wud':'would','woud':'would',
+  'shud':'should','shoud':'should',
+  'realy':'really','relly':'really',
+  'befor':'before',
+  'agian':'again','agan':'again',
+  'difrent':'different','diffrent':'different',
+  'buetiful':'beautiful','beutiful':'beautiful',
+  'sumthing':'something','somthing':'something',
+  'evry':'every','evryone':'everyone',
+  'togther':'together','togehter':'together',
+  'anser':'answer','answr':'answer',
+  'writting':'writing','riting':'writing',
+  'runing':'running',
+  'jumpping':'jumping','juming':'jumping',
+  'rabit':'rabbit','rabitt':'rabbit','RaBit':'rabbit',
+  'plaing':'playing','palying':'playing',
+  'frends':'friends',
+};
+
+// ── STATE ──────────────────────────────────────────────────────────
+let myWords = JSON.parse(localStorage.getItem('sw-mywords') || '[]');
+let currentTopic = Object.keys(WORD_BANKS)[0];
+let beatCount = 0;
+let beatTimer = null;
+let speaking = false;
+let utterance = null;
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  // Tricky words
+  const tw = document.getElementById('tricky-words');
+  TRICKY_WORDS.forEach(({w,syl}) => {
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn';
+    btn.textContent = w;
+    btn.onclick = () => { document.getElementById('spell-input').value = w; doSpell(); };
+    tw.appendChild(btn);
+  });
+
+  // Topic buttons
+  const topicRow = document.getElementById('topic-row');
+  Object.keys(WORD_BANKS).forEach((topic, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn' + (i===0?' active':'');
+    btn.textContent = topic;
+    btn.onclick = () => {
+      document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTopic = topic;
+      renderWordGrid();
+    };
+    topicRow.appendChild(btn);
+  });
+  renderWordGrid();
+  renderMyWords();
+
+  // Writing frames
+  const fg = document.getElementById('frames-grid');
+  WRITING_FRAMES.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'frame-card';
+    el.innerHTML = `<div class="frame-title">${f.icon} ${f.title}</div>
+                    <div class="frame-preview">"${f.parts[0].substring(0,50)}..."</div>`;
+    el.onclick = () => insertFrame(f);
+    fg.appendChild(el);
+  });
+
+  // Sentence starters toolbar
+  const tb = document.getElementById('starter-toolbar');
+  SENTENCE_STARTERS.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'starter-btn';
+    btn.textContent = s;
+    btn.onclick = () => insertStarter(s);
+    tb.appendChild(btn);
+  });
+
+  // Enter key on inputs
+  document.getElementById('spell-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSpell();
+  });
+  document.getElementById('syl-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSyllable();
+  });
+  document.getElementById('my-word-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addMyWord();
+  });
+});
+
+// ── TABS ──────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+name));
+}
+
+// ── SPELL IT ──────────────────────────────────────────────────────
+function doSpell() {
+  const raw = document.getElementById('spell-input').value.trim().toLowerCase();
+  if (!raw) return;
+
+  // Try phonetic map first, then just use the word as-is
+  const word = PHONETIC_MAP[raw] || PHONETIC_MAP[raw.toLowerCase()] || raw;
+  const correct = word !== raw ? word : trySpell(raw);
+
+  document.getElementById('spell-result').classList.add('show');
+  document.getElementById('spell-word').textContent = correct;
+
+  // Break into syllables
+  const syls = syllabify(correct);
+  const breakdown = document.getElementById('spell-breakdown');
+  breakdown.innerHTML = '';
+  syls.forEach((s, i) => {
+    if (i > 0) {
+      const dot = document.createElement('span');
+      dot.className = 'spell-divider';
+      dot.textContent = '·';
+      breakdown.appendChild(dot);
+    }
+    const chunk = document.createElement('div');
+    chunk.className = 'spell-chunk';
+    chunk.style.animationDelay = (i * 0.08) + 's';
+    chunk.textContent = s;
+    chunk.onclick = () => speak(s);
+    breakdown.appendChild(chunk);
+  });
+
+  // b/d check
+  const hasBD = /[bd]/.test(correct);
+  document.getElementById('bd-alert').style.display = hasBD ? 'flex' : 'none';
+
+  // Tip
+  const tips = [
+    `Say it in beats: <strong>${syls.join(' — ')}</strong>`,
+    `There are <strong>${syls.length} beat${syls.length!==1?'s':''}</strong> in this word`,
+    `Try spelling it out loud one sound at a time`,
+  ];
+  document.getElementById('spell-tip').innerHTML = '💡 ' + tips[Math.floor(Math.random()*tips.length)];
+}
+
+function trySpell(word) {
+  // Basic phonetic normalisation — just return cleaned version
+  return word.replace(/ck$/,'ck').replace(/bb/,'b').replace(/tt/,'t');
+}
+
+function speakWord() {
+  const w = document.getElementById('spell-word').textContent;
+  if (w) speak(w);
+}
+
+function copyWord() {
+  const w = document.getElementById('spell-word').textContent;
+  if (w) { navigator.clipboard.writeText(w).catch(()=>{}); toast('Copied: ' + w); }
+}
+
+// ── SYLLABLE SPLITTER ─────────────────────────────────────────────
+function doSyllable() {
+  const word = document.getElementById('syl-input').value.trim();
+  if (!word) return;
+
+  const syls = syllabify(word.toLowerCase());
+  const colours = ['c1','c2','c3','c4'];
+
+  const display = document.getElementById('syl-display');
+  display.innerHTML = '';
+  syls.forEach((s, i) => {
+    if (i > 0) {
+      const dot = document.createElement('div');
+      dot.className = 'syl-dot';
+      display.appendChild(dot);
+    }
+    const el = document.createElement('div');
+    el.className = 'syl ' + colours[i % colours.length];
+    el.style.animationDelay = (i * 0.12) + 's';
+    el.textContent = s;
+    el.onclick = () => speak(s);
+    display.appendChild(el);
+  });
+
+  document.getElementById('syl-count').innerHTML =
+    `<span>${syls.length}</span> beat${syls.length!==1?'s':''} — tap the drum pad while you say the word`;
+  document.getElementById('syl-result').classList.add('show');
+  resetBeats();
+}
+
+// Beat tap
+function tapBeat() {
+  beatCount++;
+  document.getElementById('beat-count').textContent = beatCount;
+  clearTimeout(beatTimer);
+  beatTimer = setTimeout(() => {}, 1500);
+
+  // Pulse animation
+  const area = document.getElementById('beat-area');
+  area.style.background = 'rgba(245,166,35,0.22)';
+  setTimeout(() => { area.style.background = ''; }, 150);
+}
+
+function resetBeats() {
+  beatCount = 0;
+  document.getElementById('beat-count').textContent = '0';
+}
+
+// ── SYLLABIFIER ───────────────────────────────────────────────────
+function syllabify(word) {
+  // Pre-set common words for accuracy
+  const preset = {
+    'skateboard':['skate','board'],'because':['be','cause'],'friend':['friend'],
+    'beautiful':['beau','ti','ful'],'different':['dif','fer','ent'],
+    'adventure':['ad','ven','ture'],'remember':['re','mem','ber'],
+    'together':['to','geth','er'],'important':['im','por','tant'],
+    'interesting':['in','ter','est','ing'],'understand':['un','der','stand'],
+    'yesterday':['yes','ter','day'],'tomorrow':['to','mor','row'],
+    'suddenly':['sud','den','ly'],'everything':['eve','ry','thing'],
+    'something':['some','thing'],'everyone':['eve','ry','one'],
+    'watching':['watch','ing'],'playing':['play','ing'],
+    'running':['run','ning'],'jumping':['jump','ing'],
+    'friends':['friends'],'rabbit':['rab','bit'],
+    'writing':['writ','ing'],'reading':['read','ing'],
+    'people':['peo','ple'],'water':['wa','ter'],
+    'really':['real','ly'],'little':['lit','tle'],
+    'middle':['mid','dle'],'bottle':['bot','tle'],
+    'animal':['an','i','mal'],'family':['fam','i','ly'],
+    'history':['his','to','ry'],'library':['li','brar','y'],
+    'homework':['home','work'],'computer':['com','put','er'],
+    'dangerous':['dan','ger','ous'],'mysterious':['mys','ter','ious'],
+    'terrified':['ter','ri','fied'],'enormous':['e','nor','mous'],
+    'atmosphere':['at','mos','phere'],'paragraph':['par','a','graph'],
+    'calculator':['cal','cu','la','tor'],'excited':['ex','cit','ed'],
+    'nervous':['nerv','ous'],'confident':['con','fi','dent'],
+    'frustrated':['frus','trat','ed'],'exhausted':['ex','haust','ed'],
+    'determined':['de','ter','mined'],'meanwhile':['mean','while'],
+    'however':['how','ev','er'],'although':['al','though'],
+    'unfortunately':['un','for','tu','nate','ly'],
+    'fortunately':['for','tu','nate','ly'],
+    'eventually':['e','ven','tu','al','ly'],
+    'immediately':['im','med','iate','ly'],
+  };
+
+  const w = word.toLowerCase();
+  if (preset[w]) return preset[w];
+
+  // Algorithmic fallback: find vowel clusters
+  const vowels = 'aeiouy';
+  const result = [];
+  let syl = '';
+  let lastWasVowel = false;
+
+  for (let i = 0; i < word.length; i++) {
+    const ch = word[i].toLowerCase();
+    const isVowel = vowels.includes(ch);
+    const next = word[i+1] ? word[i+1].toLowerCase() : '';
+    const nextIsVowel = vowels.includes(next);
+
+    syl += word[i];
+
+    if (isVowel && !nextIsVowel && syl.length > 1 && i < word.length - 2) {
+      // Consonant after vowel — good split point
+      if (!vowels.includes(next) && word[i+2] && vowels.includes(word[i+2].toLowerCase())) {
+        result.push(syl);
+        syl = '';
+      }
+    }
+  }
+  if (syl) result.push(syl);
+
+  // Ensure at least one syllable
+  return result.length > 0 ? result : [word];
+}
+
+// ── WORD BANK ─────────────────────────────────────────────────────
+function renderWordGrid() {
+  const grid = document.getElementById('word-grid');
+  grid.innerHTML = '';
+  (WORD_BANKS[currentTopic] || []).forEach(({w,s}) => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerHTML = `<span class="w-word">${w}</span><span class="w-syl">${s}</span>`;
+    card.onclick = () => {
+      navigator.clipboard.writeText(w).catch(()=>{});
+      card.classList.add('copied');
+      setTimeout(() => card.classList.remove('copied'), 1200);
+      toast('Copied: ' + w);
+    };
+    grid.appendChild(card);
+  });
+}
+
+function addMyWord() {
+  const input = document.getElementById('my-word-input');
+  const w = input.value.trim();
+  if (!w) return;
+  if (!myWords.includes(w)) {
+    myWords.push(w);
+    localStorage.setItem('sw-mywords', JSON.stringify(myWords));
+  }
+  input.value = '';
+  renderMyWords();
+}
+
+function renderMyWords() {
+  const list = document.getElementById('my-words-list');
+  const empty = document.getElementById('my-words-empty');
+  list.innerHTML = '';
+  empty.style.display = myWords.length ? 'none' : 'block';
+  myWords.forEach(w => {
+    const tag = document.createElement('span');
+    tag.className = 'my-word-tag';
+    tag.innerHTML = `${w} <span class="del" onclick="removeMyWord('${w}',event)">✕</span>`;
+    tag.onclick = () => {
+      navigator.clipboard.writeText(w).catch(()=>{});
+      toast('Copied: ' + w);
+    };
+    list.appendChild(tag);
+  });
+}
+
+function removeMyWord(w, e) {
+  e.stopPropagation();
+  myWords = myWords.filter(x => x !== w);
+  localStorage.setItem('sw-mywords', JSON.stringify(myWords));
+  renderMyWords();
+}
+
+// ── WRITING PAD ───────────────────────────────────────────────────
+function insertFrame(f) {
+  switchTab('write');
+  const ta = document.getElementById('story-area');
+  const text = f.parts.join('');
+  ta.value = text;
+  ta.focus();
+  updateStats();
+  toast('Frame loaded — start writing! ✏️');
+}
+
+function insertStarter(s) {
+  const ta = document.getElementById('story-area');
+  const pos = ta.selectionStart;
+  const val = ta.value;
+  const before = val.substring(0, pos);
+  const after = val.substring(pos);
+  const insert = (before.length && !before.endsWith('\n') && !before.endsWith(' ')) ? ' ' + s + ' ' : s + ' ';
+  ta.value = before + insert + after;
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = pos + insert.length;
+  updateStats();
+}
+
+function updateStats() {
+  const text = document.getElementById('story-area').value;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const sents = (text.match(/[.!?]+/g) || []).length;
+  document.getElementById('word-count').textContent = words;
+  document.getElementById('sent-count').textContent = sents;
+}
+
+function checkBD() {
+  // Show b/d reminder occasionally when those letters are typed
+  const text = document.getElementById('story-area').value;
+  const hasBD = /[bd]/.test(text.slice(-3));
+  const bar = document.getElementById('bd-warning');
+  if (hasBD && Math.random() < 0.1) {
+    bar.classList.add('show');
+    setTimeout(() => bar.classList.remove('show'), 3000);
+  }
+}
+
+function speakStory() {
+  const text = document.getElementById('story-area').value;
+  if (text.trim()) speak(text);
+}
+
+function clearStory() {
+  if (confirm('Clear your story? This can\'t be undone.')) {
+    document.getElementById('story-area').value = '';
+    updateStats();
+  }
+}
+
+function copyStory() {
+  const text = document.getElementById('story-area').value;
+  navigator.clipboard.writeText(text).catch(()=>{});
+  toast('Story copied to clipboard!');
+}
+
+function rateStar(n) {
+  const msgs = ['','Keep going, you\'re doing great! 💪','Good effort today! ⭐','Nice work! 🌟','Really proud of that! 🎉','Amazing writing! 🚀🌟'];
+  document.getElementById('stars-label').textContent = msgs[n];
+  document.querySelectorAll('.star').forEach((s,i) => {
+    s.textContent = i < n ? '⭐' : '☆';
+  });
+}
+
+// ── READ BACK ─────────────────────────────────────────────────────
+function copyFromStory() {
+  const story = document.getElementById('story-area').value;
+  if (story) {
+    document.getElementById('read-area').value = story;
+    toast('Story copied to Read Back!');
+  }
+}
+
+function startReading() {
+  const text = document.getElementById('read-area').value.trim();
+  if (!text || !window.speechSynthesis) return;
+
+  stopReading();
+
+  const rate = parseFloat(document.getElementById('speed-select').value);
+  utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = rate;
+  utterance.lang = 'en-GB';
+
+  // Try to use a clear English voice
+  const voices = speechSynthesis.getVoices();
+  const gbVoice = voices.find(v => v.lang === 'en-GB' && v.name.includes('Female')) ||
+                  voices.find(v => v.lang === 'en-GB') ||
+                  voices.find(v => v.lang.startsWith('en'));
+  if (gbVoice) utterance.voice = gbVoice;
+
+  utterance.onstart = () => {
+    speaking = true;
+    document.getElementById('read-btn').style.display = 'none';
+    document.getElementById('stop-btn').style.display = 'inline-flex';
+  };
+  utterance.onend = utterance.onerror = () => {
+    speaking = false;
+    document.getElementById('read-btn').style.display = 'inline-flex';
+    document.getElementById('stop-btn').style.display = 'none';
+  };
+
+  speechSynthesis.speak(utterance);
+}
+
+function stopReading() {
+  speechSynthesis.cancel();
+  speaking = false;
+  document.getElementById('read-btn').style.display = 'inline-flex';
+  document.getElementById('stop-btn').style.display = 'none';
+}
+
+// ── SPEECH ───────────────────────────────────────────────────────
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB';
+  u.rate = 0.85;
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
