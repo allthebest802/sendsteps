@@ -777,14 +777,14 @@
         Type how you think the word sounds — we'll find the real spelling for you
       </p>
       <div class="input-row">
-        <input type="text" id="spell-input" placeholder="e.g. skatbord, frends, waching..." maxlength="40"
+        <input type="text" id="spell-input" placeholder="e.g. skateboard, frends, waching..." maxlength="40"
                autocomplete="off" autocorrect="off" spellcheck="false">
         <button class="btn btn-green" onclick="doSpell()">✨ Check it</button>
       </div>
 
       <div class="tips-row">
         <div class="tip-pill">💡 <em>b or d?</em> — if in doubt, say "bed" — b comes first, d comes last</div>
-        <div class="tip-pill">💡 <em>p or q?</em> — p has a stick going down on the right</div>
+        <div class="tip-pill">💡 <em>p or q?</em> — p has a stick going down on the left, q on the right</div>
       </div>
     </div>
 
@@ -1045,7 +1045,7 @@ const SENTENCE_STARTERS = [
 
 // Simple phonetic spelling map for common dyslexic misspellings
 const PHONETIC_MAP = {
-  'skatbord':'skateboard','skateboard':'skateboard',
+  'skatbord':'skateboard','skatboard':'skateboard','skateboard':'skateboard',
   'frends':'friends','frend':'friend',
   'waching':'watching','wachng':'watching',
   'becaus':'because','becoz':'because','becuase':'because',
