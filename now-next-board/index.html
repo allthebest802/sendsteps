@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Now & Next Board — SendSteps</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://static.arasaac.org" crossorigin>
+<link rel="preconnect" href="https://api.arasaac.org" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -132,7 +134,7 @@ input,select{font-family:var(--font-body)}
 /* Pictogram results */
 .pic-results{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
   max-height:220px;overflow-y:auto}
-.pic-item{border-radius:9px;border:2px solid var(--border);padding:5px 4px;
+.pic-item{border-radius:9px;border:2px solid var(--border);padding:5px 4px;min-height:72px;
   text-align:center;cursor:pointer;transition:all 0.12s;background:var(--surface)}
 .pic-item:hover{border-color:var(--now);background:var(--now-l);transform:scale(1.04)}
 .pic-item.next-hover:hover{border-color:var(--next);background:var(--next-l)}
@@ -469,7 +471,7 @@ async function searchAndShow(side, query) {
         const hoverClass = isNext ? 'next-hover' : '';
         return `<div class="pic-item ${hoverClass} ${selClass}"
           onclick="selectPic('${side}', ${p._id}, '${encodeURIComponent(imgUrl)}', '${encodeURIComponent(label)}')">
-          <img class="pic-img" src="${imgUrl}" alt="${label}"
+          <img class="pic-img" src="${imgUrl}" alt="${label}" width="44" height="44"
             onerror="this.style.display='none'">
           <div class="pic-lbl">${label}</div>
         </div>`;
@@ -560,6 +562,7 @@ function renderBoard() {
   if (state.now) {
     nowPicWrap.innerHTML = `<img class="board-pic" src="${state.now.imageUrl}"
       alt="${escHtml(state.now.label)}"
+      width="120" height="120"
       style="width:${imgSize};height:${imgSize}"
       onerror="this.style.display='none'">`;
   } else {
@@ -580,6 +583,7 @@ function renderBoard() {
   if (state.next) {
     nextPicWrap.innerHTML = `<img class="board-pic" src="${state.next.imageUrl}"
       alt="${escHtml(state.next.label)}"
+      width="120" height="120"
       style="width:${imgSize};height:${imgSize}"
       onerror="this.style.display='none'">`;
   } else {
