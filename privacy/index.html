@@ -3,34 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy - SendSteps</title>
+  <title>Privacy Policy — SendSteps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #0f1a2e;
+      --ink2:    #4a5568;
+      --bg:      #f7f9fc;
+      --surface: #ffffff;
+      --border:  #e2e8f0;
+      --green:   #10b981;
+      --green-d: #059669;
+      --font-display: 'Baloo 2', cursive;
+      --font-body:    'Nunito', sans-serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 20px;
-      background-color: #fdfdfd;
-      color: #333;
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
     }
-    h1 {
-      color: #5F7FFF;
+
+    /* ── Header ── */
+    .header {
+      background: var(--ink);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    p {
-      margin-bottom: 1em;
+    .header-back {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      transition: all 0.15s;
     }
-    .container {
-      max-width: 800px;
-      margin: auto;
+    .header-back:hover { color: white; border-color: rgba(255,255,255,0.5); }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
     }
+    .header-title span { color: var(--green); }
+
+    /* ── Page content ── */
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .page-title span { color: var(--green); }
+
+    .page-meta {
+      font-size: 0.85rem;
+      color: var(--ink2);
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .card h2 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--ink2);
+    }
+
+    .card p + p { margin-top: 10px; }
+
+    .highlight {
+      border-left: 4px solid var(--green);
+      background: #f0fdf8;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      margin-top: 60px;
+    }
+    .footer a { color: var(--green); text-decoration: none; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Privacy Policy</h1>
-    <p>SendSteps is built to be simple and low-stress. Most tools run fully in your browser. We don’t ask you to create accounts, and we don’t sell or share personal data.</p>
-    <p>Some tools may save what you type on your device only (for example in your browser storage) so it’s still there when you come back. Nothing is uploaded unless a tool clearly says it is.</p>
-    <p>We don’t use ads. If we ever add analytics, it will be minimal and privacy-friendly.</p>
-  </div>
+
+  <header class="header">
+    <a href="/" class="header-back">← SendSteps</a>
+    <span class="header-title">Send<span>Steps</span></span>
+  </header>
+
+  <main class="page">
+
+    <h1 class="page-title">Privacy <span>Policy</span></h1>
+    <p class="page-meta">Last updated: March 2026</p>
+
+    <div class="card highlight">
+      <span class="card-icon">🔒</span>
+      <h2>The short version</h2>
+      <p>SendSteps is built to be simple and low-stress. Most tools run fully in your browser. We don't ask you to create accounts, and we don't sell or share personal data.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-icon">💾</span>
+      <h2>What gets saved</h2>
+      <p>Some tools may save what you type on your device only — for example in your browser's local storage — so it's still there when you come back. Nothing is uploaded to any server unless a tool clearly says it is.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-icon">🚫</span>
+      <h2>No ads. No tracking.</h2>
+      <p>We don't use advertising. If we ever add analytics, it will be minimal and privacy-friendly — and we'll update this page to say so clearly.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-icon">✉️</span>
+      <h2>Contact</h2>
+      <p>If you have any questions about privacy on SendSteps, you can get in touch via the <a href="/#contact" style="color:var(--green);font-weight:700;">contact form</a> on the homepage.</p>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    © SendSteps · Built for SEND families · Everything runs in your browser · No accounts · No ads
+  </footer>
+
 </body>
 </html>
