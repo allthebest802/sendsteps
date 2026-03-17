@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SendSteps — Free Visual Tools for SEND Families</title>
 <meta name="description" content="Free printable visual routines, communication cards, Now/Next boards, trackers and more — for children with SEND. No login. No subscription.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -27,10 +29,10 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overf
   background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.1),transparent 55%),
     radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
 a{text-decoration:none;color:inherit}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes floatA{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(-2deg)}}
-@keyframes floatB{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
-@keyframes floatMain{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes fadeUp{from{opacity:0}to{opacity:1}}
+@keyframes floatA{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(-2deg)}}
+@keyframes floatB{0%,100%{transform:rotate(2deg)}50%{transform:rotate(2deg)}}
+@keyframes floatMain{0%,100%{transform:none}50%{transform:none}}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(46,204,135,.35)}60%{box-shadow:0 0 0 10px rgba(46,204,135,0)}}
 .a1{opacity:0;animation:fadeUp .65s .05s cubic-bezier(.22,1,.36,1) forwards}
 .a2{opacity:0;animation:fadeUp .65s .18s cubic-bezier(.22,1,.36,1) forwards}
@@ -199,8 +201,8 @@ footer{background:var(--ink);padding:38px 28px 28px}
 .fcopy{font-size:.7rem;color:rgba(255,255,255,.28);text-align:center;line-height:1.65}
 .fcopy a{color:rgba(255,255,255,.35)}.fcopy a:hover{color:rgba(255,255,255,.6)}
 /* REVEAL */
-.r{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
-.r.v{opacity:1;transform:none}
+.r{opacity:0;transition:opacity .6s cubic-bezier(.22,1,.36,1)}
+.r.v{opacity:1}
 /* CONTACT MODAL */
 .modal-backdrop{position:fixed;inset:0;background:rgba(24,24,37,.55);z-index:500;
   display:none;align-items:center;justify-content:center;padding:20px;
