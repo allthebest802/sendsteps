@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body Doubling Timer — SendSteps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:      #0f1a2e;
+      --ink2:     #4a5568;
+      --ink3:     #7a8fa6;
+      --bg:       #f0f4f8;
+      --surface:  #ffffff;
+      --border:   #e2e8f0;
+      --border2:  #cbd5e1;
+      --green:    #10b981;
+      --green-d:  #059669;
+      --green-l:  #d1fae5;
+      --amber:    #f59e0b;
+      --amber-l:  #fef3c7;
+      --blue:     #3b82f6;
+      --blue-l:   #dbeafe;
+      --purple:   #8b5cf6;
+      --purple-l: #ede9fe;
+      --rose:     #f43f5e;
+      --font-display: 'Baloo 2', cursive;
+      --font-body:    'Nunito', system-ui, sans-serif;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(15,26,46,0.08);
+      --shadow-lg: 0 8px 32px rgba(15,26,46,0.13);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--ink);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-back {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .header-back:hover { color: white; border-color: rgba(255,255,255,0.5); }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+    }
+    .header-sub {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 1px;
+    }
+
+    /* ── Layout ── */
+    .app {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    /* ── Intro ── */
+    .intro {
+      background: var(--ink);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .intro-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+    .intro h1 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .intro p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+    }
+    .intro strong { color: var(--green); }
+
+    /* ── Setup card ── */
+    .setup-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .setup-card.hidden { display: none; }
+
+    .field-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--ink3);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .task-input {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 18px;
+    }
+    .task-input:focus { border-color: var(--green); background: white; }
+    .task-input::placeholder { color: var(--ink3); font-weight: 400; }
+
+    /* Duration picker */
+    .duration-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    @media(max-width:480px) { .duration-grid { grid-template-columns: repeat(3,1fr); } }
+
+    .dur-btn {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 800;
+      background: var(--bg);
+      color: var(--ink2);
+      border: 2px solid var(--border2);
+      border-radius: 10px;
+      padding: 10px 6px;
+      cursor: pointer;
+      transition: all 0.14s;
+      text-align: center;
+    }
+    .dur-btn:hover { border-color: var(--green); color: var(--green-d); }
+    .dur-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+    .dur-btn .dur-min { font-size: 1.1rem; display: block; }
+    .dur-btn .dur-lbl { font-size: 0.65rem; color: inherit; opacity: 0.75; }
+
+    /* Vibe picker */
+    .vibe-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .vibe-btn {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--bg);
+      color: var(--ink2);
+      border: 2px solid var(--border2);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.14s;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vibe-btn:hover { border-color: var(--blue); }
+    .vibe-btn.active { border-color: var(--blue); background: var(--blue-l); color: #1e40af; }
+    .vibe-icon { font-size: 1.1rem; }
+
+    .start-btn {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 800;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .start-btn:hover { background: var(--green-d); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.3); }
+    .start-btn:disabled { background: var(--border2); color: var(--ink3); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ── Timer card ── */
+    .timer-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      display: none;
+    }
+    .timer-card.show { display: block; }
+
+    .timer-task {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .timer-task-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--ink3);
+      margin-bottom: 24px;
+    }
+
+    /* Circle timer */
+    .circle-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 24px;
+    }
+    .circle-svg {
+      width: 220px;
+      height: 220px;
+      transform: rotate(-90deg);
+    }
+    .circle-bg {
+      fill: none;
+      stroke: var(--bg);
+      stroke-width: 14;
+    }
+    .circle-prog {
+      fill: none;
+      stroke: var(--green);
+      stroke-width: 14;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear, stroke 0.5s;
+    }
+    .circle-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-display {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .timer-status {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink3);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    /* Progress bar */
+    .progress-bar-wrap {
+      background: var(--bg);
+      border-radius: 100px;
+      height: 8px;
+      margin: 0 0 20px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 100px;
+      transition: width 1s linear;
+    }
+
+    /* Break warnings */
+    .break-warning {
+      background: var(--amber-l);
+      border: 2px solid var(--amber);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #92400e;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .break-warning.show { display: flex; }
+
+    /* Timer controls */
+    .timer-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .ctrl-btn {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.14s;
+      border: 2px solid transparent;
+    }
+    .ctrl-pause {
+      background: var(--amber);
+      color: white;
+      border-color: var(--amber);
+    }
+    .ctrl-pause:hover { filter: brightness(0.92); }
+    .ctrl-resume {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+    .ctrl-resume:hover { background: var(--green-d); }
+    .ctrl-stop {
+      background: var(--surface);
+      color: var(--ink2);
+      border-color: var(--border2);
+    }
+    .ctrl-stop:hover { border-color: var(--rose); color: var(--rose); }
+    .ctrl-fs {
+      background: var(--surface);
+      color: var(--ink2);
+      border-color: var(--border2);
+    }
+    .ctrl-fs:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Done card ── */
+    .done-card {
+      background: var(--surface);
+      border: 2px solid var(--green);
+      border-radius: var(--radius);
+      padding: 32px 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      display: none;
+    }
+    .done-card.show { display: block; }
+    .done-icon { font-size: 3.5rem; margin-bottom: 12px; display: block; }
+    .done-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .done-task {
+      font-size: 1rem;
+      color: var(--ink2);
+      margin-bottom: 20px;
+    }
+    .done-task strong { color: var(--green-d); }
+    .done-btn {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 800;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 28px;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin: 0 6px 8px;
+    }
+    .done-btn:hover { background: var(--green-d); transform: translateY(-1px); }
+    .done-btn-ghost {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: var(--surface);
+      color: var(--ink2);
+      border: 2px solid var(--border2);
+      border-radius: 12px;
+      padding: 11px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin: 0 6px 8px;
+    }
+    .done-btn-ghost:hover { border-color: var(--ink2); }
+
+    /* Streak */
+    .streak-bar {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+    .streak-icon { font-size: 1.4rem; }
+    .streak-text { flex: 1; }
+    .streak-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .streak-sub { font-size: 0.78rem; color: var(--ink3); margin-top: 1px; }
+    .streak-count {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--amber);
+    }
+
+    /* ── Tips ── */
+    .tips {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .tips-head {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 10px;
+    }
+    @media(max-width:520px) { .tips-grid { grid-template-columns: 1fr; } }
+    .tip {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 11px 13px;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+    }
+    .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-text { font-size: 0.81rem; color: var(--ink2); line-height: 1.5; }
+    .tip-text strong { color: var(--ink); font-weight: 700; }
+
+    /* ── Fullscreen mode ── */
+    .fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .fullscreen-overlay.show { display: flex; }
+    .fs-task {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      padding: 0 40px;
+      opacity: 0.7;
+    }
+    .fs-time {
+      font-family: var(--font-display);
+      font-size: 7rem;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+    }
+    .fs-status {
+      font-size: 1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .fs-exit {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      background: none;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .fs-exit:hover { color: white; border-color: rgba(255,255,255,0.5); }
+    .fs-prog-wrap {
+      width: min(400px, 80vw);
+      background: rgba(255,255,255,0.1);
+      border-radius: 100px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .fs-prog-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 100px;
+      transition: width 1s linear;
+    }
+
+    @keyframes pulse-green {
+      0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+      50%      { box-shadow: 0 0 0 16px rgba(16,185,129,0); }
+    }
+    .timer-card.running .circle-wrap { animation: none; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="header-back">← SendSteps</a>
+  <div>
+    <div class="header-title">Body Doubling Timer</div>
+    <div class="header-sub">Focus better · work alongside someone · get it done</div>
+  </div>
+</header>
+
+<main class="app">
+
+  <!-- Intro -->
+  <div class="intro">
+    <div class="intro-icon">👥</div>
+    <div>
+      <h1>It's easier to focus when you're not alone.</h1>
+      <p>Body doubling means working <strong>alongside someone else</strong> — even virtually. ADHD brains focus better when they feel accompanied. Set your task, pick your time, and this timer sits with you while you work.</p>
+    </div>
+  </div>
+
+  <!-- Streak bar -->
+  <div class="streak-bar" id="streakBar">
+    <span class="streak-icon">🔥</span>
+    <div class="streak-text">
+      <div class="streak-title">Sessions today</div>
+      <div class="streak-sub" id="streakSub">Complete a session to start your streak</div>
+    </div>
+    <div class="streak-count" id="streakCount">0</div>
+  </div>
+
+  <!-- Setup card -->
+  <div class="setup-card" id="setupCard">
+
+    <label class="field-label" for="taskInput">What are you working on?</label>
+    <input
+      type="text"
+      class="task-input"
+      id="taskInput"
+      placeholder="e.g. Maths homework, tidy my room, read chapter 3…"
+      maxlength="80"
+    >
+
+    <label class="field-label">How long?</label>
+    <div class="duration-grid" id="durationGrid">
+      <button class="dur-btn" data-mins="5" onclick="selectDur(5)">
+        <span class="dur-min">5</span>
+        <span class="dur-lbl">mins</span>
+      </button>
+      <button class="dur-btn" data-mins="10" onclick="selectDur(10)">
+        <span class="dur-min">10</span>
+        <span class="dur-lbl">mins</span>
+      </button>
+      <button class="dur-btn active" data-mins="15" onclick="selectDur(15)">
+        <span class="dur-min">15</span>
+        <span class="dur-lbl">mins — good start</span>
+      </button>
+      <button class="dur-btn" data-mins="20" onclick="selectDur(20)">
+        <span class="dur-min">20</span>
+        <span class="dur-lbl">mins</span>
+      </button>
+      <button class="dur-btn" data-mins="25" onclick="selectDur(25)">
+        <span class="dur-min">25</span>
+        <span class="dur-lbl">mins — Pomodoro</span>
+      </button>
+      <button class="dur-btn" data-mins="30" onclick="selectDur(30)">
+        <span class="dur-min">30</span>
+        <span class="dur-lbl">mins</span>
+      </button>
+      <button class="dur-btn" data-mins="45" onclick="selectDur(45)">
+        <span class="dur-min">45</span>
+        <span class="dur-lbl">mins</span>
+      </button>
+      <button class="dur-btn" data-mins="60" onclick="selectDur(60)">
+        <span class="dur-min">60</span>
+        <span class="dur-lbl">mins</span>
+      </button>
+    </div>
+
+    <label class="field-label">Break reminder?</label>
+    <div class="vibe-grid" id="vibeGrid">
+      <button class="vibe-btn" data-vibe="none" onclick="selectVibe('none')">
+        <span class="vibe-icon">🔕</span>No break reminders
+      </button>
+      <button class="vibe-btn active" data-vibe="halfway" onclick="selectVibe('halfway')">
+        <span class="vibe-icon">⏸️</span>Remind me halfway
+      </button>
+      <button class="vibe-btn" data-vibe="every10" onclick="selectVibe('every10')">
+        <span class="vibe-icon">🔔</span>Every 10 minutes
+      </button>
+      <button class="vibe-btn" data-vibe="end5" onclick="selectVibe('end5')">
+        <span class="vibe-icon">⏰</span>5 mins before end
+      </button>
+    </div>
+
+    <button class="start-btn" id="startBtn" onclick="startSession()">
+      👥 Start working together
+    </button>
+
+  </div>
+
+  <!-- Timer card -->
+  <div class="timer-card" id="timerCard">
+
+    <div class="timer-task-label">Working on</div>
+    <div class="timer-task" id="timerTask">—</div>
+
+    <div class="circle-wrap">
+      <svg class="circle-svg" viewBox="0 0 220 220">
+        <circle class="circle-bg" cx="110" cy="110" r="96"/>
+        <circle class="circle-prog" id="circleProgress" cx="110" cy="110" r="96"
+          stroke-dasharray="603.2"
+          stroke-dashoffset="0"/>
+      </svg>
+      <div class="circle-inner">
+        <div class="timer-display" id="timerDisplay">15:00</div>
+        <div class="timer-status" id="timerStatus">Let's go 💪</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:100%"></div>
+    </div>
+
+    <div class="break-warning" id="breakWarning">
+      <span>⏸️</span>
+      <span id="breakWarningText">Time for a quick break — stand up, stretch, get water.</span>
+    </div>
+
+    <div class="timer-controls">
+      <button class="ctrl-btn ctrl-pause" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+      <button class="ctrl-btn ctrl-stop" onclick="stopSession()">⏹ Stop</button>
+      <button class="ctrl-btn ctrl-fs" onclick="enterFullscreen()">⛶ Full screen</button>
+    </div>
+
+  </div>
+
+  <!-- Done card -->
+  <div class="done-card" id="doneCard">
+    <span class="done-icon">🎉</span>
+    <div class="done-title">Session complete!</div>
+    <div class="done-task" id="doneTask">You finished <strong>15 minutes</strong> on <strong>your task</strong></div>
+    <div style="margin-bottom:20px">
+      <button class="done-btn" onclick="startAgain()">🔁 Do another session</button>
+      <button class="done-btn-ghost" onclick="resetToSetup()">✏️ Change task</button>
+    </div>
+    <div style="font-size:0.82rem;color:var(--ink3)">Take a proper break before your next session 🌿</div>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips" id="tipsSection">
+    <div class="tips-head">💡 About body doubling</div>
+    <div class="tips-grid">
+      <div class="tip">
+        <span class="tip-icon">🧠</span>
+        <div class="tip-text"><strong>Why it works.</strong> ADHD brains have lower dopamine — having someone present (even virtually) activates focus and reduces procrastination.</div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">📵</span>
+        <div class="tip-text"><strong>Put your phone face down.</strong> The timer is here — you don't need your phone. Notifications are the enemy of the next 15 minutes.</div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🎯</span>
+        <div class="tip-text"><strong>One task only.</strong> Don't switch halfway through. Even if another task feels more urgent — finish this one first.</div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🌿</span>
+        <div class="tip-text"><strong>Short sessions beat long ones.</strong> 3 × 15 minutes with breaks gets more done than 1 × 45 minutes of struggling.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Fullscreen overlay -->
+<div class="fullscreen-overlay" id="fsOverlay">
+  <button class="fs-exit" onclick="exitFullscreen()">✕ Exit full screen</button>
+  <div class="fs-task" id="fsTask">Your task</div>
+  <div class="fs-time" id="fsTime">15:00</div>
+  <div class="fs-status" id="fsStatus">Working together 👥</div>
+  <div class="fs-prog-wrap">
+    <div class="fs-prog-fill" id="fsProgFill" style="width:100%"></div>
+  </div>
+</div>
+
+<script>
+  const CIRCUMFERENCE = 2 * Math.PI * 96; // 603.19
+
+  const state = {
+    phase: 'setup',       // setup | running | paused | done
+    task: '',
+    totalSecs: 15 * 60,
+    remainingSecs: 15 * 60,
+    selectedMins: 15,
+    vibe: 'halfway',
+    interval: null,
+    sessionsToday: 0,
+    breakShown: false,
+    fullscreen: false,
+  };
+
+  // ── Duration & vibe selection ──
+  function selectDur(mins) {
+    state.selectedMins = mins;
+    document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', +b.dataset.mins === mins));
+    updateStartBtn();
+  }
+
+  function selectVibe(v) {
+    state.vibe = v;
+    document.querySelectorAll('.vibe-btn').forEach(b => b.classList.toggle('active', b.dataset.vibe === v));
+  }
+
+  function updateStartBtn() {
+    const btn = document.getElementById('startBtn');
+    const task = document.getElementById('taskInput').value.trim();
+    btn.disabled = false;
+    btn.textContent = task
+      ? `👥 Start ${state.selectedMins} minutes on "${shorten(task, 28)}"`
+      : `👥 Start ${state.selectedMins} minute session`;
+  }
+
+  document.getElementById('taskInput').addEventListener('input', updateStartBtn);
+
+  function shorten(str, max) {
+    return str.length > max ? str.slice(0, max) + '…' : str;
+  }
+
+  // ── Start ──
+  function startSession() {
+    const taskVal = document.getElementById('taskInput').value.trim();
+    state.task = taskVal || 'Your focus session';
+    state.totalSecs = state.selectedMins * 60;
+    state.remainingSecs = state.totalSecs;
+    state.breakShown = false;
+    state.phase = 'running';
+
+    document.getElementById('setupCard').classList.add('hidden');
+    document.getElementById('doneCard').classList.remove('show');
+    document.getElementById('timerCard').classList.add('show');
+    document.getElementById('timerTask').textContent = state.task;
+    document.getElementById('breakWarning').classList.remove('show');
+
+    renderTimer();
+    state.interval = setInterval(tick, 1000);
+  }
+
+  // ── Tick ──
+  function tick() {
+    if (state.phase !== 'running') return;
+    state.remainingSecs--;
+
+    // Break reminders
+    checkBreakWarning();
+
+    if (state.remainingSecs <= 0) {
+      state.remainingSecs = 0;
+      renderTimer();
+      finishSession();
+      return;
+    }
+    renderTimer();
+  }
+
+  function checkBreakWarning() {
+    if (state.breakShown) return;
+    const elapsed = state.totalSecs - state.remainingSecs;
+    const pct = elapsed / state.totalSecs;
+    let show = false;
+    let msg = '';
+
+    if (state.vibe === 'halfway' && pct >= 0.5) {
+      show = true;
+      msg = "Halfway there — quick stretch? Then keep going 💪";
+    } else if (state.vibe === 'every10' && elapsed > 0 && elapsed % 600 === 0) {
+      show = true;
+      msg = "10 minutes done — stand up, take a breath, then back to it.";
+    } else if (state.vibe === 'end5' && state.remainingSecs <= 300 && state.remainingSecs > 299) {
+      show = true;
+      msg = "5 minutes left — you're nearly there, keep going!";
+    }
+
+    if (show) {
+      state.breakShown = true;
+      const el = document.getElementById('breakWarning');
+      document.getElementById('breakWarningText').textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => { el.classList.remove('show'); state.breakShown = false; }, 8000);
+      // Sound
+      playBeep(440, 0.15);
+    }
+  }
+
+  // ── Render timer ──
+  function renderTimer() {
+    const mins = Math.floor(state.remainingSecs / 60);
+    const secs = state.remainingSecs % 60;
+    const timeStr = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+    document.getElementById('timerDisplay').textContent = timeStr;
+    document.getElementById('fsTime').textContent = timeStr;
+
+    const pct = state.remainingSecs / state.totalSecs;
+    const offset = CIRCUMFERENCE * (1 - pct);
+    const circ = document.getElementById('circleProgress');
+    circ.style.strokeDashoffset = offset;
+
+    // Colour shift as time runs low
+    if (state.remainingSecs <= 60) {
+      circ.style.stroke = '#f43f5e';
+    } else if (state.remainingSecs <= state.totalSecs * 0.25) {
+      circ.style.stroke = '#f59e0b';
+    } else {
+      circ.style.stroke = 'var(--green)';
+    }
+
+    // Progress bar
+    document.getElementById('progressFill').style.width = (pct * 100) + '%';
+    document.getElementById('fsProgFill').style.width = (pct * 100) + '%';
+
+    // Status text
+    let status = 'Working together 👥';
+    if (state.phase === 'paused') status = 'Paused ⏸️';
+    else if (state.remainingSecs <= 60) status = 'Almost done! 🏁';
+    else if (state.remainingSecs <= state.totalSecs * 0.25) status = 'Great progress 🌟';
+    document.getElementById('timerStatus').textContent = status;
+    document.getElementById('fsStatus').textContent = status;
+  }
+
+  // ── Pause / resume ──
+  function togglePause() {
+    const btn = document.getElementById('pauseBtn');
+    if (state.phase === 'running') {
+      state.phase = 'paused';
+      clearInterval(state.interval);
+      btn.textContent = '▶ Resume';
+      btn.className = 'ctrl-btn ctrl-resume';
+    } else {
+      state.phase = 'running';
+      state.interval = setInterval(tick, 1000);
+      btn.textContent = '⏸ Pause';
+      btn.className = 'ctrl-btn ctrl-pause';
+    }
+    renderTimer();
+  }
+
+  // ── Stop ──
+  function stopSession() {
+    if (!confirm('Stop this session?')) return;
+    clearInterval(state.interval);
+    state.phase = 'setup';
+    document.getElementById('timerCard').classList.remove('show');
+    document.getElementById('setupCard').classList.remove('hidden');
+    exitFullscreen();
+  }
+
+  // ── Finish ──
+  function finishSession() {
+    clearInterval(state.interval);
+    state.phase = 'done';
+    state.sessionsToday++;
+
+    document.getElementById('timerCard').classList.remove('show');
+    exitFullscreen();
+
+    const doneCard = document.getElementById('doneCard');
+    doneCard.classList.add('show');
+    document.getElementById('doneTask').innerHTML =
+      `You focused for <strong>${state.selectedMins} minutes</strong> on <strong>${esc(state.task)}</strong>`;
+
+    updateStreak();
+    playFinish();
+  }
+
+  function updateStreak() {
+    document.getElementById('streakCount').textContent = state.sessionsToday;
+    document.getElementById('streakSub').textContent =
+      state.sessionsToday === 1 ? 'First session done — great start!' :
+      state.sessionsToday === 2 ? 'Two sessions — you\'re on a roll!' :
+      state.sessionsToday === 3 ? 'Three sessions — incredible focus!' :
+      `${state.sessionsToday} sessions — outstanding! 🌟`;
+  }
+
+  // ── Do another / reset ──
+  function startAgain() {
+    document.getElementById('doneCard').classList.remove('show');
+    startSession(); // same task, same duration
+  }
+
+  function resetToSetup() {
+    document.getElementById('doneCard').classList.remove('show');
+    document.getElementById('setupCard').classList.remove('hidden');
+    state.phase = 'setup';
+  }
+
+  // ── Fullscreen ──
+  function enterFullscreen() {
+    state.fullscreen = true;
+    document.getElementById('fsOverlay').classList.add('show');
+    document.getElementById('fsTask').textContent = state.task;
+    renderTimer();
+  }
+
+  function exitFullscreen() {
+    state.fullscreen = false;
+    document.getElementById('fsOverlay').classList.remove('show');
+  }
+
+  // ── Sound ──
+  function playBeep(freq, vol) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(vol, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+    } catch(e) {}
+  }
+
+  function playFinish() {
+    // Three rising tones
+    [523, 659, 784].forEach((freq, i) => {
+      setTimeout(() => playBeep(freq, 0.2), i * 200);
+    });
+  }
+
+  function esc(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Init
+  updateStartBtn();
+</script>
+
+</body>
+</html>

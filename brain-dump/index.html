@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brain Dump Pad — SendSteps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:      #0f1a2e;
+      --ink2:     #4a5568;
+      --ink3:     #7a8fa6;
+      --bg:       #f0f4f8;
+      --surface:  #ffffff;
+      --border:   #e2e8f0;
+      --border2:  #cbd5e1;
+      --green:    #10b981;
+      --green-d:  #059669;
+      --green-l:  #d1fae5;
+      --amber:    #f59e0b;
+      --amber-l:  #fef3c7;
+      --rose:     #f43f5e;
+      --rose-l:   #ffe4e6;
+      --blue:     #3b82f6;
+      --blue-l:   #dbeafe;
+      --purple:   #8b5cf6;
+      --purple-l: #ede9fe;
+      --font-display: 'Baloo 2', cursive;
+      --font-body:    'Nunito', system-ui, sans-serif;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(15,26,46,0.08);
+      --shadow-lg: 0 8px 32px rgba(15,26,46,0.13);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--ink);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-back {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .header-back:hover { color: white; border-color: rgba(255,255,255,0.5); }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1;
+    }
+    .header-sub {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 1px;
+    }
+
+    /* ── Layout ── */
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    /* ── Intro ── */
+    .intro {
+      background: var(--ink);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .intro-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+    .intro h1 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 5px;
+    }
+    .intro p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+    .intro strong { color: var(--green); }
+
+    /* ── Dump zone ── */
+    .dump-section {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+    .dump-head {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dump-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .dump-input {
+      flex: 1;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      outline: none;
+      resize: none;
+      min-height: 52px;
+      max-height: 120px;
+      transition: border-color 0.15s;
+      line-height: 1.5;
+    }
+    .dump-input:focus { border-color: var(--green); background: white; }
+    .dump-input::placeholder { color: var(--ink3); font-weight: 400; }
+    .dump-btn {
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 0.9rem;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .dump-btn:hover { background: var(--green-d); transform: translateY(-1px); }
+    .dump-btn:active { transform: none; }
+    .dump-hint {
+      font-size: 0.75rem;
+      color: var(--ink3);
+      margin-top: 8px;
+    }
+
+    /* ── Unsorted pile ── */
+    .pile {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+    .pile-empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--ink3);
+      font-size: 0.88rem;
+      border: 2px dashed var(--border2);
+      border-radius: 10px;
+      display: none;
+    }
+    .pile-empty.show { display: block; }
+
+    .thought {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 14px;
+      animation: slideIn 0.2s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .thought-text {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .thought-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .sort-btn {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 20px;
+      padding: 5px 11px;
+      cursor: pointer;
+      transition: all 0.13s;
+      white-space: nowrap;
+    }
+    .sort-btn:hover { transform: translateY(-1px); filter: brightness(0.92); }
+    .sort-now   { background: var(--green-l);  color: #065f46; }
+    .sort-later { background: var(--amber-l);  color: #92400e; }
+    .sort-drop  { background: var(--rose-l);   color: #9f1239; }
+    .del-btn {
+      background: none;
+      border: none;
+      color: var(--ink3);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.13s;
+      line-height: 1;
+    }
+    .del-btn:hover { color: var(--rose); }
+
+    /* ── Sorted columns ── */
+    .sorted-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    @media(max-width: 640px) { .sorted-grid { grid-template-columns: 1fr; } }
+
+    .col {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .col-head {
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .col-head-icon { font-size: 1.1rem; }
+    .col-head-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+    .col-head-count {
+      margin-left: auto;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border-radius: 20px;
+      padding: 2px 9px;
+    }
+    .col-now  .col-head { background: var(--green-l); }
+    .col-now  .col-head-title { color: #065f46; }
+    .col-now  .col-head-count { background: var(--green); color: white; }
+    .col-later .col-head { background: var(--amber-l); }
+    .col-later .col-head-title { color: #92400e; }
+    .col-later .col-head-count { background: var(--amber); color: white; }
+    .col-drop .col-head { background: var(--rose-l); }
+    .col-drop .col-head-title { color: #9f1239; }
+    .col-drop .col-head-count { background: var(--rose); color: white; }
+
+    .col-body {
+      padding: 10px;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .col-empty {
+      text-align: center;
+      padding: 16px 10px;
+      color: var(--ink3);
+      font-size: 0.78rem;
+    }
+    .sorted-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: var(--bg);
+      border-radius: 9px;
+      padding: 9px 11px;
+      animation: slideIn 0.2s cubic-bezier(0.22,1,0.36,1);
+    }
+    .col-drop .sorted-item { opacity: 0.65; }
+    .sorted-item-text {
+      flex: 1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .col-drop .sorted-item-text { text-decoration: line-through; color: var(--ink3); }
+    .unsort-btn {
+      background: none;
+      border: none;
+      color: var(--ink3);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: color 0.13s;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .unsort-btn:hover { color: var(--ink); }
+
+    /* ── Actions bar ── */
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: var(--surface);
+      color: var(--ink2);
+      border: 2px solid var(--border2);
+      border-radius: 10px;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+    .btn-ghost:hover { border-color: var(--green); color: var(--green-d); }
+    .btn-print {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 800;
+      background: var(--ink);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 18px;
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+    .btn-print:hover { background: #1e2d45; transform: translateY(-1px); }
+
+    /* ── Tips panel ── */
+    .tips {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      box-shadow: var(--shadow);
+    }
+    .tips-head {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media(max-width: 560px) { .tips-grid { grid-template-columns: 1fr; } }
+    .tip {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 11px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .tip-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .tip-text { font-size: 0.82rem; color: var(--ink2); line-height: 1.5; }
+    .tip-text strong { color: var(--ink); font-weight: 700; }
+
+    /* ── Print styles ── */
+    @media print {
+      .header, .intro, .dump-section, .actions, .tips, .unsort-btn { display: none !important; }
+      body { background: white; }
+      .app { padding: 0; max-width: 100%; }
+      .sorted-grid { grid-template-columns: repeat(3,1fr); gap: 12px; }
+      .col { box-shadow: none; border: 2px solid #ccc; break-inside: avoid; }
+      .col-head { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .sorted-item { background: #f8f8f8; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="header-back">← SendSteps</a>
+  <div>
+    <div class="header-title">Brain Dump Pad</div>
+    <div class="header-sub">Get it out of your head · sort it out · feel calmer</div>
+  </div>
+</header>
+
+<main class="app">
+
+  <!-- Intro -->
+  <div class="intro">
+    <div class="intro-icon">🧠</div>
+    <div>
+      <h1>Too many thoughts? Dump them all out.</h1>
+      <p>When your brain feels full and noisy, the first step is getting everything <strong>out of your head</strong> and onto the screen. Don't worry about order. Don't worry about importance. Just type everything you're thinking about — one thought at a time. Then we'll sort it out together.</p>
+    </div>
+  </div>
+
+  <!-- Dump input -->
+  <div class="dump-section">
+    <div class="dump-head">💭 What's in your head right now?</div>
+    <div class="dump-input-row">
+      <textarea
+        class="dump-input"
+        id="dumpInput"
+        placeholder="Type anything… homework, worries, things to do, random thoughts…"
+        rows="1"
+      ></textarea>
+      <button class="dump-btn" onclick="addThought()">Add it</button>
+    </div>
+    <div class="dump-hint">Press Enter or click Add it. Just keep going until your head feels emptier.</div>
+
+    <!-- Unsorted pile -->
+    <div class="pile" id="pile">
+      <div class="pile-empty" id="pileEmpty">
+        Nothing dumped yet — start typing above 👆
+      </div>
+    </div>
+  </div>
+
+  <!-- Sorted columns -->
+  <div class="sorted-grid">
+    <div class="col col-now">
+      <div class="col-head">
+        <span class="col-head-icon">✅</span>
+        <span class="col-head-title">Do Now</span>
+        <span class="col-head-count" id="nowCount">0</span>
+      </div>
+      <div class="col-body" id="colNow">
+        <div class="col-empty" id="emptyNow">Things that actually need doing today</div>
+      </div>
+    </div>
+    <div class="col col-later">
+      <div class="col-head">
+        <span class="col-head-icon">🕐</span>
+        <span class="col-head-title">Do Later</span>
+        <span class="col-head-count" id="laterCount">0</span>
+      </div>
+      <div class="col-body" id="colLater">
+        <div class="col-empty" id="emptyLater">Things that can wait — not today's problem</div>
+      </div>
+    </div>
+    <div class="col col-drop">
+      <div class="col-head">
+        <span class="col-head-icon">🗑️</span>
+        <span class="col-head-title">Let It Go</span>
+        <span class="col-head-count" id="dropCount">0</span>
+      </div>
+      <div class="col-body" id="colDrop">
+        <div class="col-empty" id="emptyDrop">Worries, things you can't control, not your job</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn-ghost" onclick="clearAll()">🗑️ Clear everything</button>
+    <button class="btn-ghost" onclick="clearSorted()">↩️ Unsort all</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print my sorted list</button>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips">
+    <div class="tips-head">💡 ADHD brain tips</div>
+    <div class="tips-grid">
+      <div class="tip">
+        <span class="tip-icon">🌊</span>
+        <div class="tip-text"><strong>Just keep dumping.</strong> Don't sort while you type. Get everything out first — even if it feels random or silly.</div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">✅</span>
+        <div class="tip-text"><strong>Do Now = today only.</strong> If it doesn't absolutely need doing today, it goes in Do Later. Be strict.</div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🗑️</span>
+        <div class="tip-text"><strong>Let It Go is powerful.</strong> Worries, things other people need to sort, things you can't control — these belong here.</div>
+      </div>
+      <div class="tip">
+        <span class="tip-icon">🔁</span>
+        <div class="tip-text"><strong>Do this regularly.</strong> Many ADHD brains feel better doing a brain dump first thing in the morning or before bed.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const state = {
+    thoughts: [],   // {id, text, bucket: null|'now'|'later'|'drop'}
+    nextId: 1
+  };
+
+  const input = document.getElementById('dumpInput');
+
+  // Auto-resize textarea
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  });
+
+  // Enter to add
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      addThought();
+    }
+  });
+
+  function addThought() {
+    const text = input.value.trim();
+    if (!text) return;
+    state.thoughts.unshift({ id: state.nextId++, text, bucket: null });
+    input.value = '';
+    input.style.height = 'auto';
+    input.focus();
+    render();
+  }
+
+  function sortThought(id, bucket) {
+    const t = state.thoughts.find(t => t.id === id);
+    if (t) t.bucket = bucket;
+    render();
+  }
+
+  function unsortThought(id) {
+    const t = state.thoughts.find(t => t.id === id);
+    if (t) t.bucket = null;
+    render();
+  }
+
+  function deleteThought(id) {
+    state.thoughts = state.thoughts.filter(t => t.id !== id);
+    render();
+  }
+
+  function clearAll() {
+    if (state.thoughts.length === 0) return;
+    if (confirm('Clear everything and start fresh?')) {
+      state.thoughts = [];
+      render();
+    }
+  }
+
+  function clearSorted() {
+    state.thoughts.forEach(t => t.bucket = null);
+    render();
+  }
+
+  function esc(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function render() {
+    const unsorted = state.thoughts.filter(t => t.bucket === null);
+    const nowItems = state.thoughts.filter(t => t.bucket === 'now');
+    const laterItems = state.thoughts.filter(t => t.bucket === 'later');
+    const dropItems = state.thoughts.filter(t => t.bucket === 'drop');
+
+    // Pile
+    const pile = document.getElementById('pile');
+    const pileEmpty = document.getElementById('pileEmpty');
+
+    // Remove old thought elements
+    pile.querySelectorAll('.thought').forEach(el => el.remove());
+
+    if (unsorted.length === 0) {
+      pileEmpty.classList.add('show');
+      if (state.thoughts.length > 0) {
+        pileEmpty.textContent = '✨ Everything sorted — nice work!';
+      } else {
+        pileEmpty.textContent = 'Nothing dumped yet — start typing above 👆';
+      }
+    } else {
+      pileEmpty.classList.remove('show');
+      unsorted.forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'thought';
+        el.dataset.id = t.id;
+        el.innerHTML = `
+          <div class="thought-text">${esc(t.text)}</div>
+          <div class="thought-actions">
+            <button class="sort-btn sort-now"  onclick="sortThought(${t.id},'now')">✅ Now</button>
+            <button class="sort-btn sort-later" onclick="sortThought(${t.id},'later')">🕐 Later</button>
+            <button class="sort-btn sort-drop"  onclick="sortThought(${t.id},'drop')">🗑️ Let go</button>
+            <button class="del-btn" onclick="deleteThought(${t.id})" title="Delete">✕</button>
+          </div>`;
+        pile.appendChild(el);
+      });
+    }
+
+    // Columns
+    renderCol('colNow', 'emptyNow', nowItems, 'nowCount', 'Things that actually need doing today');
+    renderCol('colLater', 'emptyLater', laterItems, 'laterCount', "Things that can wait — not today's problem");
+    renderCol('colDrop', 'emptyDrop', dropItems, 'dropCount', "Worries, things you can't control, not your job");
+  }
+
+  function renderCol(colId, emptyId, items, countId, emptyText) {
+    const col = document.getElementById(colId);
+    const empty = document.getElementById(emptyId);
+    const countEl = document.getElementById(countId);
+
+    col.querySelectorAll('.sorted-item').forEach(el => el.remove());
+    countEl.textContent = items.length;
+
+    if (items.length === 0) {
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      items.forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'sorted-item';
+        el.innerHTML = `
+          <div class="sorted-item-text">${esc(t.text)}</div>
+          <button class="unsort-btn" onclick="unsortThought(${t.id})" title="Move back">↩</button>`;
+        col.appendChild(el);
+      });
+    }
+  }
+
+  // Init
+  render();
+</script>
+
+</body>
+</html>
