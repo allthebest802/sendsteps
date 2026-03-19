@@ -9,557 +9,226 @@
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --ink:      #0f1a2e;
-      --ink2:     #4a5568;
-      --ink3:     #7a8fa6;
-      --bg:       #f0f4f8;
-      --surface:  #ffffff;
-      --border:   #e2e8f0;
-      --border2:  #cbd5e1;
-      --green:    #10b981;
-      --green-d:  #059669;
-      --green-l:  #d1fae5;
-      --amber:    #f59e0b;
-      --amber-l:  #fef3c7;
-      --blue:     #3b82f6;
-      --blue-l:   #dbeafe;
-      --purple:   #8b5cf6;
-      --purple-l: #ede9fe;
-      --rose:     #f43f5e;
-      --font-display: 'Baloo 2', cursive;
-      --font-body:    'Nunito', system-ui, sans-serif;
-      --radius: 14px;
-      --shadow: 0 2px 12px rgba(15,26,46,0.08);
-      --shadow-lg: 0 8px 32px rgba(15,26,46,0.13);
+      --ink:#0f1a2e; --ink2:#4a5568; --ink3:#7a8fa6;
+      --bg:#f0f4f8; --surface:#fff; --border:#e2e8f0; --border2:#cbd5e1;
+      --green:#10b981; --green-d:#059669; --green-l:#d1fae5;
+      --amber:#f59e0b; --amber-l:#fef3c7;
+      --blue:#3b82f6; --blue-l:#dbeafe;
+      --purple:#8b5cf6; --rose:#f43f5e;
+      --font-display:'Baloo 2',cursive;
+      --font-body:'Nunito',system-ui,sans-serif;
+      --radius:14px; --shadow:0 2px 12px rgba(15,26,46,.08);
+      --shadow-lg:0 8px 32px rgba(15,26,46,.14);
     }
+    body { font-family:var(--font-body); background:var(--bg); color:var(--ink); min-height:100vh; }
 
-    body {
-      font-family: var(--font-body);
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-    }
+    /* Header */
+    .header { background:var(--ink); padding:14px 22px; display:flex; align-items:center; gap:14px; }
+    .header-back { font-size:.75rem; font-weight:700; color:rgba(255,255,255,.6); text-decoration:none;
+      border:1.5px solid rgba(255,255,255,.2); border-radius:20px; padding:4px 12px; transition:all .15s; }
+    .header-back:hover { color:white; border-color:rgba(255,255,255,.5); }
+    .header-title { font-family:var(--font-display); font-size:1.1rem; font-weight:800; color:white; line-height:1; }
+    .header-sub { font-size:.72rem; color:rgba(255,255,255,.45); margin-top:1px; }
 
-    /* ── Header ── */
-    .header {
-      background: var(--ink);
-      padding: 14px 22px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .header-back {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      border-radius: 20px;
-      padding: 4px 12px;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .header-back:hover { color: white; border-color: rgba(255,255,255,0.5); }
-    .header-title {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: white;
-      line-height: 1;
-    }
-    .header-sub {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.45);
-      margin-top: 1px;
-    }
+    .app { max-width:720px; margin:0 auto; padding:24px 18px 80px; }
 
-    /* ── Layout ── */
-    .app {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 28px 18px 80px;
-    }
-
-    /* ── Intro ── */
-    .intro {
-      background: var(--ink);
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-    }
-    .intro-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
-    .intro h1 {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: white;
-      margin-bottom: 4px;
-    }
-    .intro p {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.6;
-    }
-    .intro strong { color: var(--green); }
-
-    /* ── Setup card ── */
-    .setup-card {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-    .setup-card.hidden { display: none; }
-
-    .field-label {
-      font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--ink3);
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .task-input {
-      width: 100%;
-      font-family: var(--font-body);
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--ink);
-      background: var(--bg);
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 13px 16px;
-      outline: none;
-      transition: border-color 0.15s;
-      margin-bottom: 18px;
-    }
-    .task-input:focus { border-color: var(--green); background: white; }
-    .task-input::placeholder { color: var(--ink3); font-weight: 400; }
-
-    /* Duration picker */
-    .duration-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-    @media(max-width:480px) { .duration-grid { grid-template-columns: repeat(3,1fr); } }
-
-    .dur-btn {
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      font-weight: 800;
-      background: var(--bg);
-      color: var(--ink2);
-      border: 2px solid var(--border2);
-      border-radius: 10px;
-      padding: 10px 6px;
-      cursor: pointer;
-      transition: all 0.14s;
-      text-align: center;
-    }
-    .dur-btn:hover { border-color: var(--green); color: var(--green-d); }
-    .dur-btn.active {
-      background: var(--green);
-      border-color: var(--green);
-      color: white;
-    }
-    .dur-btn .dur-min { font-size: 1.1rem; display: block; }
-    .dur-btn .dur-lbl { font-size: 0.65rem; color: inherit; opacity: 0.75; }
-
-    /* Vibe picker */
-    .vibe-grid {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .vibe-btn {
-      font-family: var(--font-body);
-      font-size: 0.82rem;
-      font-weight: 700;
-      background: var(--bg);
-      color: var(--ink2);
-      border: 2px solid var(--border2);
-      border-radius: 10px;
-      padding: 10px 12px;
-      cursor: pointer;
-      transition: all 0.14s;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .vibe-btn:hover { border-color: var(--blue); }
-    .vibe-btn.active { border-color: var(--blue); background: var(--blue-l); color: #1e40af; }
-    .vibe-icon { font-size: 1.1rem; }
-
-    .start-btn {
-      width: 100%;
-      font-family: var(--font-body);
-      font-size: 1rem;
-      font-weight: 800;
-      background: var(--green);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 15px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .start-btn:hover { background: var(--green-d); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.3); }
-    .start-btn:disabled { background: var(--border2); color: var(--ink3); cursor: not-allowed; transform: none; box-shadow: none; }
-
-    /* ── Timer card ── */
-    .timer-card {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 22px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      display: none;
-    }
-    .timer-card.show { display: block; }
-
-    .timer-task {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--ink);
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .timer-task-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--ink3);
-      margin-bottom: 24px;
-    }
-
-    /* Circle timer */
-    .circle-wrap {
-      position: relative;
-      width: 220px;
-      height: 220px;
-      margin: 0 auto 24px;
-    }
-    .circle-svg {
-      width: 220px;
-      height: 220px;
-      transform: rotate(-90deg);
-    }
-    .circle-bg {
-      fill: none;
-      stroke: var(--bg);
-      stroke-width: 14;
-    }
-    .circle-prog {
-      fill: none;
-      stroke: var(--green);
-      stroke-width: 14;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 1s linear, stroke 0.5s;
-    }
-    .circle-inner {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .timer-display {
-      font-family: var(--font-display);
-      font-size: 2.8rem;
-      font-weight: 800;
-      color: var(--ink);
-      line-height: 1;
-    }
-    .timer-status {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--ink3);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    /* Progress bar */
-    .progress-bar-wrap {
-      background: var(--bg);
-      border-radius: 100px;
-      height: 8px;
-      margin: 0 0 20px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--green);
-      border-radius: 100px;
-      transition: width 1s linear;
-    }
-
-    /* Break warnings */
-    .break-warning {
-      background: var(--amber-l);
-      border: 2px solid var(--amber);
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 16px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #92400e;
-      display: none;
-      align-items: center;
-      gap: 10px;
-    }
-    .break-warning.show { display: flex; }
-
-    /* Timer controls */
-    .timer-controls {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .ctrl-btn {
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      font-weight: 800;
-      border-radius: 10px;
-      padding: 10px 20px;
-      cursor: pointer;
-      transition: all 0.14s;
-      border: 2px solid transparent;
-    }
-    .ctrl-pause {
-      background: var(--amber);
-      color: white;
-      border-color: var(--amber);
-    }
-    .ctrl-pause:hover { filter: brightness(0.92); }
-    .ctrl-resume {
-      background: var(--green);
-      color: white;
-      border-color: var(--green);
-    }
-    .ctrl-resume:hover { background: var(--green-d); }
-    .ctrl-stop {
-      background: var(--surface);
-      color: var(--ink2);
-      border-color: var(--border2);
-    }
-    .ctrl-stop:hover { border-color: var(--rose); color: var(--rose); }
-    .ctrl-fs {
-      background: var(--surface);
-      color: var(--ink2);
-      border-color: var(--border2);
-    }
-    .ctrl-fs:hover { border-color: var(--blue); color: var(--blue); }
-
-    /* ── Done card ── */
-    .done-card {
-      background: var(--surface);
-      border: 2px solid var(--green);
-      border-radius: var(--radius);
-      padding: 32px 22px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      display: none;
-    }
-    .done-card.show { display: block; }
-    .done-icon { font-size: 3.5rem; margin-bottom: 12px; display: block; }
-    .done-title {
-      font-family: var(--font-display);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--ink);
-      margin-bottom: 8px;
-    }
-    .done-task {
-      font-size: 1rem;
-      color: var(--ink2);
-      margin-bottom: 20px;
-    }
-    .done-task strong { color: var(--green-d); }
-    .done-btn {
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      font-weight: 800;
-      background: var(--green);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 13px 28px;
-      cursor: pointer;
-      transition: all 0.15s;
-      margin: 0 6px 8px;
-    }
-    .done-btn:hover { background: var(--green-d); transform: translateY(-1px); }
-    .done-btn-ghost {
-      font-family: var(--font-body);
-      font-size: 0.88rem;
-      font-weight: 700;
-      background: var(--surface);
-      color: var(--ink2);
-      border: 2px solid var(--border2);
-      border-radius: 12px;
-      padding: 11px 20px;
-      cursor: pointer;
-      transition: all 0.15s;
-      margin: 0 6px 8px;
-    }
-    .done-btn-ghost:hover { border-color: var(--ink2); }
+    /* Intro */
+    .intro { background:var(--ink); border-radius:var(--radius); padding:18px 22px; margin-bottom:18px;
+      display:flex; gap:13px; align-items:flex-start; }
+    .intro-icon { font-size:1.7rem; flex-shrink:0; margin-top:2px; }
+    .intro h1 { font-family:var(--font-display); font-size:1.1rem; font-weight:800; color:white; margin-bottom:4px; }
+    .intro p { font-size:.84rem; color:rgba(255,255,255,.55); line-height:1.6; }
+    .intro strong { color:var(--green); }
 
     /* Streak */
-    .streak-bar {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 18px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: var(--shadow);
-    }
-    .streak-icon { font-size: 1.4rem; }
-    .streak-text { flex: 1; }
-    .streak-title {
-      font-family: var(--font-display);
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--ink);
-    }
-    .streak-sub { font-size: 0.78rem; color: var(--ink3); margin-top: 1px; }
-    .streak-count {
-      font-family: var(--font-display);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--amber);
-    }
+    .streak-bar { background:var(--surface); border:2px solid var(--border); border-radius:var(--radius);
+      padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; gap:12px; box-shadow:var(--shadow); }
+    .streak-icon { font-size:1.3rem; }
+    .streak-text { flex:1; }
+    .streak-title { font-family:var(--font-display); font-size:.92rem; font-weight:800; color:var(--ink); }
+    .streak-sub { font-size:.76rem; color:var(--ink3); margin-top:1px; }
+    .streak-count { font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--amber); }
 
-    /* ── Tips ── */
-    .tips {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-      box-shadow: var(--shadow);
-    }
-    .tips-head {
-      font-family: var(--font-display);
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--ink);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tips-grid {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 10px;
-    }
-    @media(max-width:520px) { .tips-grid { grid-template-columns: 1fr; } }
-    .tip {
-      background: var(--bg);
-      border-radius: 10px;
-      padding: 11px 13px;
-      display: flex;
-      gap: 9px;
-      align-items: flex-start;
-    }
-    .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-    .tip-text { font-size: 0.81rem; color: var(--ink2); line-height: 1.5; }
-    .tip-text strong { color: var(--ink); font-weight: 700; }
+    /* Setup card */
+    .setup-card { background:var(--surface); border:2px solid var(--border); border-radius:var(--radius);
+      padding:22px; margin-bottom:16px; box-shadow:var(--shadow); }
+    .setup-card.hidden { display:none; }
+    .field-label { font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.8px;
+      color:var(--ink3); margin-bottom:7px; display:block; }
+    .task-input { width:100%; font-family:var(--font-body); font-size:1rem; font-weight:700; color:var(--ink);
+      background:var(--bg); border:2px solid var(--border); border-radius:11px; padding:12px 15px;
+      outline:none; transition:border-color .15s; margin-bottom:18px; }
+    .task-input:focus { border-color:var(--green); background:white; }
+    .task-input::placeholder { color:var(--ink3); font-weight:400; }
 
-    /* ── Fullscreen mode ── */
-    .fullscreen-overlay {
-      position: fixed;
-      inset: 0;
-      background: var(--ink);
-      z-index: 1000;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-    }
-    .fullscreen-overlay.show { display: flex; }
-    .fs-task {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: white;
-      text-align: center;
-      padding: 0 40px;
-      opacity: 0.7;
-    }
-    .fs-time {
-      font-family: var(--font-display);
-      font-size: 7rem;
-      font-weight: 800;
-      color: var(--green);
-      line-height: 1;
-    }
-    .fs-status {
-      font-size: 1rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .fs-exit {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-family: var(--font-body);
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: rgba(255,255,255,0.4);
-      background: none;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      border-radius: 20px;
-      padding: 6px 14px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .fs-exit:hover { color: white; border-color: rgba(255,255,255,0.5); }
-    .fs-prog-wrap {
-      width: min(400px, 80vw);
-      background: rgba(255,255,255,0.1);
-      border-radius: 100px;
-      height: 6px;
-      overflow: hidden;
-    }
-    .fs-prog-fill {
-      height: 100%;
-      background: var(--green);
-      border-radius: 100px;
-      transition: width 1s linear;
-    }
+    /* Character picker */
+    .char-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:18px; }
+    @media(max-width:540px) { .char-grid { grid-template-columns:repeat(3,1fr); } }
+    .char-btn { border:2px solid var(--border2); border-radius:12px; background:var(--bg);
+      padding:10px 6px 8px; cursor:pointer; transition:all .15s; text-align:center; }
+    .char-btn:hover { border-color:var(--green); transform:translateY(-2px); }
+    .char-btn.active { border-color:var(--green); background:var(--green-l);
+      box-shadow:0 0 0 3px rgba(16,185,129,.2); }
+    .char-btn svg { display:block; margin:0 auto 5px; width:52px; height:52px; }
+    .char-btn .char-name { font-size:.68rem; font-weight:800; color:var(--ink2); }
+    .char-btn.active .char-name { color:#065f46; }
 
-    @keyframes pulse-green {
-      0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
-      50%      { box-shadow: 0 0 0 16px rgba(16,185,129,0); }
+    /* Duration */
+    .dur-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-bottom:18px; }
+    @media(max-width:440px) { .dur-grid { grid-template-columns:repeat(3,1fr); } }
+    .dur-btn { font-family:var(--font-body); font-size:.85rem; font-weight:800; background:var(--bg);
+      color:var(--ink2); border:2px solid var(--border2); border-radius:10px; padding:9px 5px;
+      cursor:pointer; transition:all .14s; text-align:center; }
+    .dur-btn:hover { border-color:var(--green); color:var(--green-d); }
+    .dur-btn.active { background:var(--green); border-color:var(--green); color:white; }
+    .dur-btn .dur-min { font-size:1.05rem; display:block; }
+    .dur-btn .dur-lbl { font-size:.62rem; opacity:.8; }
+
+    /* Vibe */
+    .vibe-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:20px; }
+    .vibe-btn { font-family:var(--font-body); font-size:.8rem; font-weight:700; background:var(--bg);
+      color:var(--ink2); border:2px solid var(--border2); border-radius:10px; padding:9px 11px;
+      cursor:pointer; transition:all .14s; text-align:left; display:flex; align-items:center; gap:7px; }
+    .vibe-btn:hover { border-color:var(--blue); }
+    .vibe-btn.active { border-color:var(--blue); background:var(--blue-l); color:#1e40af; }
+
+    .start-btn { width:100%; font-family:var(--font-body); font-size:1rem; font-weight:800;
+      background:var(--green); color:white; border:none; border-radius:12px; padding:14px;
+      cursor:pointer; transition:all .15s; }
+    .start-btn:hover { background:var(--green-d); transform:translateY(-1px); box-shadow:0 6px 20px rgba(16,185,129,.3); }
+    .start-btn:disabled { background:var(--border2); color:var(--ink3); cursor:not-allowed; transform:none; box-shadow:none; }
+
+    /* Timer card */
+    .timer-card { background:var(--surface); border:2px solid var(--border); border-radius:var(--radius);
+      padding:24px 20px; margin-bottom:16px; box-shadow:var(--shadow-lg); display:none; }
+    .timer-card.show { display:block; }
+
+    /* Character + timer layout */
+    .timer-main { display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; margin-bottom:20px; }
+    @media(max-width:480px) { .timer-main { grid-template-columns:1fr; } }
+
+    /* Companion area */
+    .companion-area { display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .companion-svg-wrap { position:relative; width:140px; height:140px; }
+    .companion-svg-wrap svg { width:140px; height:140px; }
+    .companion-bubble { background:white; border:2px solid var(--border); border-radius:14px;
+      padding:8px 12px; font-size:.78rem; font-weight:700; color:var(--ink2);
+      text-align:center; max-width:140px; line-height:1.4; position:relative; }
+    .companion-bubble::before { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+      border:5px solid transparent; border-bottom-color:var(--border); }
+    .companion-bubble::after { content:''; position:absolute; top:-7px; left:50%; transform:translateX(-50%);
+      border:5px solid transparent; border-bottom-color:white; }
+    .companion-name { font-family:var(--font-display); font-size:.82rem; font-weight:800; color:var(--ink3); }
+
+    /* Breathing animation */
+    @keyframes breathe {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.04); }
     }
-    .timer-card.running .circle-wrap { animation: none; }
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(-3deg); }
+      75%      { transform: rotate(3deg); }
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    @keyframes celebrate {
+      0%,100% { transform: scale(1) rotate(0); }
+      25%      { transform: scale(1.15) rotate(-5deg); }
+      75%      { transform: scale(1.15) rotate(5deg); }
+    }
+    .anim-breathe { animation: breathe 4s ease-in-out infinite; }
+    .anim-wiggle  { animation: wiggle 0.5s ease-in-out 3; }
+    .anim-bounce  { animation: bounce 0.6s ease-in-out infinite; }
+    .anim-celebrate { animation: celebrate 0.4s ease-in-out infinite; }
+
+    /* Timer side */
+    .timer-side { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .timer-task-label { font-size:.7rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:.8px; color:var(--ink3); }
+    .timer-task { font-family:var(--font-display); font-size:1rem; font-weight:800;
+      color:var(--ink); text-align:center; line-height:1.3; max-width:220px; }
+    .circle-wrap { position:relative; width:170px; height:170px; }
+    .circle-svg { width:170px; height:170px; transform:rotate(-90deg); }
+    .circle-bg { fill:none; stroke:var(--bg); stroke-width:13; }
+    .circle-prog { fill:none; stroke:var(--green); stroke-width:13; stroke-linecap:round;
+      transition:stroke-dashoffset 1s linear, stroke .5s; }
+    .circle-inner { position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; }
+    .timer-display { font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:var(--ink); line-height:1; }
+    .timer-status { font-size:.72rem; font-weight:700; color:var(--ink3); margin-top:3px;
+      text-transform:uppercase; letter-spacing:.5px; }
+
+    /* Progress */
+    .progress-bar-wrap { background:var(--bg); border-radius:100px; height:8px; margin-bottom:16px; overflow:hidden; }
+    .progress-bar-fill { height:100%; background:var(--green); border-radius:100px; transition:width 1s linear; }
+
+    /* Break warning */
+    .break-warning { background:var(--amber-l); border:2px solid var(--amber); border-radius:10px;
+      padding:11px 15px; margin-bottom:14px; font-size:.86rem; font-weight:700; color:#92400e;
+      display:none; align-items:center; gap:10px; }
+    .break-warning.show { display:flex; }
+
+    /* Controls */
+    .timer-controls { display:flex; gap:9px; flex-wrap:wrap; justify-content:center; }
+    .ctrl-btn { font-family:var(--font-body); font-size:.86rem; font-weight:800; border-radius:10px;
+      padding:9px 18px; cursor:pointer; transition:all .14s; border:2px solid transparent; }
+    .ctrl-pause  { background:var(--amber); color:white; border-color:var(--amber); }
+    .ctrl-pause:hover { filter:brightness(.92); }
+    .ctrl-resume { background:var(--green); color:white; border-color:var(--green); }
+    .ctrl-resume:hover { background:var(--green-d); }
+    .ctrl-stop   { background:var(--surface); color:var(--ink2); border-color:var(--border2); }
+    .ctrl-stop:hover { border-color:var(--rose); color:var(--rose); }
+    .ctrl-fs     { background:var(--surface); color:var(--ink2); border-color:var(--border2); }
+    .ctrl-fs:hover { border-color:var(--blue); color:var(--blue); }
+
+    /* Done */
+    .done-card { background:var(--surface); border:2px solid var(--green); border-radius:var(--radius);
+      padding:28px 20px; margin-bottom:16px; box-shadow:var(--shadow-lg); text-align:center; display:none; }
+    .done-card.show { display:block; }
+    .done-char { width:120px; height:120px; margin:0 auto 12px; }
+    .done-title { font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--ink); margin-bottom:6px; }
+    .done-task  { font-size:.95rem; color:var(--ink2); margin-bottom:18px; }
+    .done-task strong { color:var(--green-d); }
+    .done-btn { font-family:var(--font-body); font-size:.92rem; font-weight:800; background:var(--green);
+      color:white; border:none; border-radius:11px; padding:12px 24px; cursor:pointer; transition:all .15s; margin:0 5px 8px; }
+    .done-btn:hover { background:var(--green-d); transform:translateY(-1px); }
+    .done-btn-ghost { font-family:var(--font-body); font-size:.85rem; font-weight:700; background:var(--surface);
+      color:var(--ink2); border:2px solid var(--border2); border-radius:11px; padding:10px 18px;
+      cursor:pointer; transition:all .15s; margin:0 5px 8px; }
+    .done-btn-ghost:hover { border-color:var(--ink2); }
+
+    /* Tips */
+    .tips { background:var(--surface); border:2px solid var(--border); border-radius:var(--radius);
+      padding:16px 18px; box-shadow:var(--shadow); }
+    .tips-head { font-family:var(--font-display); font-size:.92rem; font-weight:800;
+      color:var(--ink); margin-bottom:11px; display:flex; align-items:center; gap:7px; }
+    .tips-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+    @media(max-width:500px) { .tips-grid { grid-template-columns:1fr; } }
+    .tip { background:var(--bg); border-radius:10px; padding:10px 13px; display:flex; gap:9px; }
+    .tip-icon { font-size:.95rem; flex-shrink:0; margin-top:1px; }
+    .tip-text { font-size:.79rem; color:var(--ink2); line-height:1.5; }
+    .tip-text strong { color:var(--ink); font-weight:700; }
+
+    /* Fullscreen */
+    .fs-overlay { position:fixed; inset:0; background:var(--ink); z-index:1000;
+      display:none; flex-direction:column; align-items:center; justify-content:center; gap:16px; }
+    .fs-overlay.show { display:flex; }
+    .fs-char { width:180px; height:180px; }
+    .fs-bubble { background:rgba(255,255,255,.1); border-radius:14px; padding:9px 16px;
+      font-size:.85rem; font-weight:700; color:rgba(255,255,255,.7); text-align:center; }
+    .fs-task { font-family:var(--font-display); font-size:1.2rem; font-weight:800; color:white; opacity:.7; text-align:center; padding:0 30px; }
+    .fs-time { font-family:var(--font-display); font-size:6rem; font-weight:800; color:var(--green); line-height:1; }
+    .fs-status { font-size:.9rem; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:1px; }
+    .fs-prog-wrap { width:min(360px,80vw); background:rgba(255,255,255,.1); border-radius:100px; height:6px; overflow:hidden; }
+    .fs-prog-fill { height:100%; background:var(--green); border-radius:100px; transition:width 1s linear; }
+    .fs-exit { position:absolute; top:18px; right:18px; font-family:var(--font-body); font-size:.8rem;
+      font-weight:700; color:rgba(255,255,255,.4); background:none; border:1.5px solid rgba(255,255,255,.2);
+      border-radius:20px; padding:5px 13px; cursor:pointer; transition:all .15s; }
+    .fs-exit:hover { color:white; border-color:rgba(255,255,255,.5); }
   </style>
 </head>
 <body>
@@ -568,23 +237,21 @@
   <a href="/" class="header-back">← SendSteps</a>
   <div>
     <div class="header-title">Body Doubling Timer</div>
-    <div class="header-sub">Focus better · work alongside someone · get it done</div>
+    <div class="header-sub">Pick a companion · set your task · work together</div>
   </div>
 </header>
 
 <main class="app">
 
-  <!-- Intro -->
   <div class="intro">
     <div class="intro-icon">👥</div>
     <div>
       <h1>It's easier to focus when you're not alone.</h1>
-      <p>Body doubling means working <strong>alongside someone else</strong> — even virtually. ADHD brains focus better when they feel accompanied. Set your task, pick your time, and this timer sits with you while you work.</p>
+      <p>Pick a companion to work alongside you. They'll <strong>sit with you</strong> while you focus, <strong>react when you're halfway</strong>, and <strong>celebrate with you</strong> when you're done.</p>
     </div>
   </div>
 
-  <!-- Streak bar -->
-  <div class="streak-bar" id="streakBar">
+  <div class="streak-bar">
     <span class="streak-icon">🔥</span>
     <div class="streak-text">
       <div class="streak-title">Sessions today</div>
@@ -593,412 +260,1012 @@
     <div class="streak-count" id="streakCount">0</div>
   </div>
 
-  <!-- Setup card -->
+  <!-- Setup -->
   <div class="setup-card" id="setupCard">
 
+    <label class="field-label">Choose your companion</label>
+    <div class="char-grid" id="charGrid"></div>
+
     <label class="field-label" for="taskInput">What are you working on?</label>
-    <input
-      type="text"
-      class="task-input"
-      id="taskInput"
-      placeholder="e.g. Maths homework, tidy my room, read chapter 3…"
-      maxlength="80"
-    >
+    <input type="text" class="task-input" id="taskInput"
+      placeholder="e.g. Maths homework, tidy my room, read chapter 3…" maxlength="80">
 
     <label class="field-label">How long?</label>
-    <div class="duration-grid" id="durationGrid">
-      <button class="dur-btn" data-mins="5" onclick="selectDur(5)">
-        <span class="dur-min">5</span>
-        <span class="dur-lbl">mins</span>
-      </button>
-      <button class="dur-btn" data-mins="10" onclick="selectDur(10)">
-        <span class="dur-min">10</span>
-        <span class="dur-lbl">mins</span>
-      </button>
-      <button class="dur-btn active" data-mins="15" onclick="selectDur(15)">
-        <span class="dur-min">15</span>
-        <span class="dur-lbl">mins — good start</span>
-      </button>
-      <button class="dur-btn" data-mins="20" onclick="selectDur(20)">
-        <span class="dur-min">20</span>
-        <span class="dur-lbl">mins</span>
-      </button>
-      <button class="dur-btn" data-mins="25" onclick="selectDur(25)">
-        <span class="dur-min">25</span>
-        <span class="dur-lbl">mins — Pomodoro</span>
-      </button>
-      <button class="dur-btn" data-mins="30" onclick="selectDur(30)">
-        <span class="dur-min">30</span>
-        <span class="dur-lbl">mins</span>
-      </button>
-      <button class="dur-btn" data-mins="45" onclick="selectDur(45)">
-        <span class="dur-min">45</span>
-        <span class="dur-lbl">mins</span>
-      </button>
-      <button class="dur-btn" data-mins="60" onclick="selectDur(60)">
-        <span class="dur-min">60</span>
-        <span class="dur-lbl">mins</span>
-      </button>
+    <div class="dur-grid">
+      <button class="dur-btn" data-mins="5"  onclick="selectDur(5)"><span class="dur-min">5</span><span class="dur-lbl">mins</span></button>
+      <button class="dur-btn" data-mins="10" onclick="selectDur(10)"><span class="dur-min">10</span><span class="dur-lbl">mins</span></button>
+      <button class="dur-btn active" data-mins="15" onclick="selectDur(15)"><span class="dur-min">15</span><span class="dur-lbl">mins</span></button>
+      <button class="dur-btn" data-mins="20" onclick="selectDur(20)"><span class="dur-min">20</span><span class="dur-lbl">mins</span></button>
+      <button class="dur-btn" data-mins="25" onclick="selectDur(25)"><span class="dur-min">25</span><span class="dur-lbl">Pomodoro</span></button>
+      <button class="dur-btn" data-mins="30" onclick="selectDur(30)"><span class="dur-min">30</span><span class="dur-lbl">mins</span></button>
+      <button class="dur-btn" data-mins="45" onclick="selectDur(45)"><span class="dur-min">45</span><span class="dur-lbl">mins</span></button>
+      <button class="dur-btn" data-mins="60" onclick="selectDur(60)"><span class="dur-min">60</span><span class="dur-lbl">mins</span></button>
     </div>
 
     <label class="field-label">Break reminder?</label>
-    <div class="vibe-grid" id="vibeGrid">
-      <button class="vibe-btn" data-vibe="none" onclick="selectVibe('none')">
-        <span class="vibe-icon">🔕</span>No break reminders
-      </button>
-      <button class="vibe-btn active" data-vibe="halfway" onclick="selectVibe('halfway')">
-        <span class="vibe-icon">⏸️</span>Remind me halfway
-      </button>
-      <button class="vibe-btn" data-vibe="every10" onclick="selectVibe('every10')">
-        <span class="vibe-icon">🔔</span>Every 10 minutes
-      </button>
-      <button class="vibe-btn" data-vibe="end5" onclick="selectVibe('end5')">
-        <span class="vibe-icon">⏰</span>5 mins before end
-      </button>
+    <div class="vibe-grid">
+      <button class="vibe-btn" data-vibe="none"    onclick="selectVibe('none')">🔕 No reminders</button>
+      <button class="vibe-btn active" data-vibe="halfway" onclick="selectVibe('halfway')">⏸️ Halfway reminder</button>
+      <button class="vibe-btn" data-vibe="every10" onclick="selectVibe('every10')">🔔 Every 10 minutes</button>
+      <button class="vibe-btn" data-vibe="end5"    onclick="selectVibe('end5')">⏰ 5 mins before end</button>
     </div>
 
-    <button class="start-btn" id="startBtn" onclick="startSession()">
-      👥 Start working together
-    </button>
+    <button class="start-btn" id="startBtn" onclick="startSession()">👥 Start working together</button>
 
   </div>
 
-  <!-- Timer card -->
+  <!-- Timer -->
   <div class="timer-card" id="timerCard">
+    <div class="timer-main">
 
-    <div class="timer-task-label">Working on</div>
-    <div class="timer-task" id="timerTask">—</div>
-
-    <div class="circle-wrap">
-      <svg class="circle-svg" viewBox="0 0 220 220">
-        <circle class="circle-bg" cx="110" cy="110" r="96"/>
-        <circle class="circle-prog" id="circleProgress" cx="110" cy="110" r="96"
-          stroke-dasharray="603.2"
-          stroke-dashoffset="0"/>
-      </svg>
-      <div class="circle-inner">
-        <div class="timer-display" id="timerDisplay">15:00</div>
-        <div class="timer-status" id="timerStatus">Let's go 💪</div>
+      <div class="companion-area">
+        <div class="companion-svg-wrap" id="companionWrap"></div>
+        <div class="companion-bubble" id="companionBubble">Let's do this! 💪</div>
+        <div class="companion-name" id="companionName">Buddy</div>
       </div>
+
+      <div class="timer-side">
+        <div class="timer-task-label">Working on</div>
+        <div class="timer-task" id="timerTask">—</div>
+        <div class="circle-wrap">
+          <svg class="circle-svg" viewBox="0 0 170 170">
+            <circle class="circle-bg"   cx="85" cy="85" r="72"/>
+            <circle class="circle-prog" id="circProg" cx="85" cy="85" r="72"
+              stroke-dasharray="452.4" stroke-dashoffset="0"/>
+          </svg>
+          <div class="circle-inner">
+            <div class="timer-display" id="timerDisplay">15:00</div>
+            <div class="timer-status"  id="timerStatus">Let's go 💪</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progressFill" style="width:100%"></div>
+      <div class="progress-bar-fill" id="progFill" style="width:100%"></div>
     </div>
 
     <div class="break-warning" id="breakWarning">
-      <span>⏸️</span>
-      <span id="breakWarningText">Time for a quick break — stand up, stretch, get water.</span>
+      <span>⏸️</span><span id="breakMsg">Halfway — quick stretch, then keep going!</span>
     </div>
 
     <div class="timer-controls">
-      <button class="ctrl-btn ctrl-pause" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
-      <button class="ctrl-btn ctrl-stop" onclick="stopSession()">⏹ Stop</button>
-      <button class="ctrl-btn ctrl-fs" onclick="enterFullscreen()">⛶ Full screen</button>
+      <button class="ctrl-btn ctrl-pause"  id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+      <button class="ctrl-btn ctrl-stop"   onclick="stopSession()">⏹ Stop</button>
+      <button class="ctrl-btn ctrl-fs"     onclick="enterFs()">⛶ Full screen</button>
     </div>
-
   </div>
 
-  <!-- Done card -->
+  <!-- Done -->
   <div class="done-card" id="doneCard">
-    <span class="done-icon">🎉</span>
-    <div class="done-title">Session complete!</div>
-    <div class="done-task" id="doneTask">You finished <strong>15 minutes</strong> on <strong>your task</strong></div>
-    <div style="margin-bottom:20px">
-      <button class="done-btn" onclick="startAgain()">🔁 Do another session</button>
-      <button class="done-btn-ghost" onclick="resetToSetup()">✏️ Change task</button>
+    <div class="done-char" id="doneChar"></div>
+    <div class="done-title">Session complete! 🎉</div>
+    <div class="done-task" id="doneTask">You focused for <strong>15 minutes</strong>!</div>
+    <div>
+      <button class="done-btn" onclick="startAgain()">🔁 Another session</button>
+      <button class="done-btn-ghost" onclick="resetSetup()">✏️ Change task</button>
     </div>
-    <div style="font-size:0.82rem;color:var(--ink3)">Take a proper break before your next session 🌿</div>
+    <div style="font-size:.8rem;color:var(--ink3);margin-top:14px">Take a proper break before your next session 🌿</div>
   </div>
 
-  <!-- Tips -->
-  <div class="tips" id="tipsSection">
+  <div class="tips">
     <div class="tips-head">💡 About body doubling</div>
     <div class="tips-grid">
-      <div class="tip">
-        <span class="tip-icon">🧠</span>
-        <div class="tip-text"><strong>Why it works.</strong> ADHD brains have lower dopamine — having someone present (even virtually) activates focus and reduces procrastination.</div>
-      </div>
-      <div class="tip">
-        <span class="tip-icon">📵</span>
-        <div class="tip-text"><strong>Put your phone face down.</strong> The timer is here — you don't need your phone. Notifications are the enemy of the next 15 minutes.</div>
-      </div>
-      <div class="tip">
-        <span class="tip-icon">🎯</span>
-        <div class="tip-text"><strong>One task only.</strong> Don't switch halfway through. Even if another task feels more urgent — finish this one first.</div>
-      </div>
-      <div class="tip">
-        <span class="tip-icon">🌿</span>
-        <div class="tip-text"><strong>Short sessions beat long ones.</strong> 3 × 15 minutes with breaks gets more done than 1 × 45 minutes of struggling.</div>
-      </div>
+      <div class="tip"><span class="tip-icon">🧠</span><div class="tip-text"><strong>Why it works.</strong> ADHD brains focus better when someone else is present — even a virtual companion activates the same effect.</div></div>
+      <div class="tip"><span class="tip-icon">📵</span><div class="tip-text"><strong>Phone face down.</strong> The timer is here. Notifications are the enemy of the next 15 minutes.</div></div>
+      <div class="tip"><span class="tip-icon">🎯</span><div class="tip-text"><strong>One task only.</strong> Even if something else feels urgent — finish this session first.</div></div>
+      <div class="tip"><span class="tip-icon">🌿</span><div class="tip-text"><strong>Short beats long.</strong> 3 × 15 minutes with breaks gets more done than 1 × 45 minutes of struggling.</div></div>
     </div>
   </div>
 
 </main>
 
 <!-- Fullscreen overlay -->
-<div class="fullscreen-overlay" id="fsOverlay">
-  <button class="fs-exit" onclick="exitFullscreen()">✕ Exit full screen</button>
-  <div class="fs-task" id="fsTask">Your task</div>
-  <div class="fs-time" id="fsTime">15:00</div>
-  <div class="fs-status" id="fsStatus">Working together 👥</div>
-  <div class="fs-prog-wrap">
-    <div class="fs-prog-fill" id="fsProgFill" style="width:100%"></div>
-  </div>
+<div class="fs-overlay" id="fsOverlay">
+  <button class="fs-exit" onclick="exitFs()">✕ Exit</button>
+  <div class="fs-char" id="fsChar"></div>
+  <div class="fs-bubble" id="fsBubble">Working together 👥</div>
+  <div class="fs-task"  id="fsTask"></div>
+  <div class="fs-time"  id="fsTime">15:00</div>
+  <div class="fs-status" id="fsStatus">LET'S GO</div>
+  <div class="fs-prog-wrap"><div class="fs-prog-fill" id="fsProgFill" style="width:100%"></div></div>
 </div>
 
 <script>
-  const CIRCUMFERENCE = 2 * Math.PI * 96; // 603.19
-
-  const state = {
-    phase: 'setup',       // setup | running | paused | done
-    task: '',
-    totalSecs: 15 * 60,
-    remainingSecs: 15 * 60,
-    selectedMins: 15,
-    vibe: 'halfway',
-    interval: null,
-    sessionsToday: 0,
-    breakShown: false,
-    fullscreen: false,
-  };
-
-  // ── Duration & vibe selection ──
-  function selectDur(mins) {
-    state.selectedMins = mins;
-    document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', +b.dataset.mins === mins));
-    updateStartBtn();
-  }
-
-  function selectVibe(v) {
-    state.vibe = v;
-    document.querySelectorAll('.vibe-btn').forEach(b => b.classList.toggle('active', b.dataset.vibe === v));
-  }
-
-  function updateStartBtn() {
-    const btn = document.getElementById('startBtn');
-    const task = document.getElementById('taskInput').value.trim();
-    btn.disabled = false;
-    btn.textContent = task
-      ? `👥 Start ${state.selectedMins} minutes on "${shorten(task, 28)}"`
-      : `👥 Start ${state.selectedMins} minute session`;
-  }
-
-  document.getElementById('taskInput').addEventListener('input', updateStartBtn);
-
-  function shorten(str, max) {
-    return str.length > max ? str.slice(0, max) + '…' : str;
-  }
-
-  // ── Start ──
-  function startSession() {
-    const taskVal = document.getElementById('taskInput').value.trim();
-    state.task = taskVal || 'Your focus session';
-    state.totalSecs = state.selectedMins * 60;
-    state.remainingSecs = state.totalSecs;
-    state.breakShown = false;
-    state.phase = 'running';
-
-    document.getElementById('setupCard').classList.add('hidden');
-    document.getElementById('doneCard').classList.remove('show');
-    document.getElementById('timerCard').classList.add('show');
-    document.getElementById('timerTask').textContent = state.task;
-    document.getElementById('breakWarning').classList.remove('show');
-
-    renderTimer();
-    state.interval = setInterval(tick, 1000);
-  }
-
-  // ── Tick ──
-  function tick() {
-    if (state.phase !== 'running') return;
-    state.remainingSecs--;
-
-    // Break reminders
-    checkBreakWarning();
-
-    if (state.remainingSecs <= 0) {
-      state.remainingSecs = 0;
-      renderTimer();
-      finishSession();
-      return;
+// ══════════════════════════════════════════════
+// CHARACTER DEFINITIONS — SVG faces
+// ══════════════════════════════════════════════
+const CHARS = [
+  {
+    id:'dog', name:'Biscuit', emoji:'🐶',
+    say:{ focus:'Woof! Let\'s go!', half:'You\'re halfway! Good boy!', done:'WOOF WOOF! Amazing!!', pause:'Taking a breather?' },
+    svg: {
+      base:`<ellipse cx="70" cy="78" rx="42" ry="44" fill="#C8955C"/>
+            <ellipse cx="70" cy="60" rx="34" ry="32" fill="#D4A574"/>
+            <ellipse cx="42" cy="44" rx="14" ry="18" fill="#C8955C" transform="rotate(-15 42 44)"/>
+            <ellipse cx="98" cy="44" rx="14" ry="18" fill="#C8955C" transform="rotate(15 98 44)"/>
+            <ellipse cx="58" cy="62" rx="7" ry="8" fill="#2D2417"/>
+            <ellipse cx="82" cy="62" rx="7" ry="8" fill="#2D2417"/>
+            <ellipse cx="59" cy="60" rx="2.5" ry="3" fill="white"/>
+            <ellipse cx="83" cy="60" rx="2.5" ry="3" fill="white"/>
+            <ellipse cx="70" cy="74" rx="10" ry="8" fill="#C67BA0"/>
+            <path d="M62 78 Q70 85 78 78" stroke="#2D2417" stroke-width="2" fill="none" stroke-linecap="round"/>`,
+      happy:`<ellipse cx="70" cy="78" rx="42" ry="44" fill="#C8955C"/>
+             <ellipse cx="70" cy="60" rx="34" ry="32" fill="#D4A574"/>
+             <ellipse cx="42" cy="44" rx="14" ry="18" fill="#C8955C" transform="rotate(-15 42 44)"/>
+             <ellipse cx="98" cy="44" rx="14" ry="18" fill="#C8955C" transform="rotate(15 98 44)"/>
+             <ellipse cx="58" cy="60" rx="7" ry="9" fill="#2D2417"/>
+             <ellipse cx="82" cy="60" rx="7" ry="9" fill="#2D2417"/>
+             <ellipse cx="59" cy="58" rx="2.5" ry="3" fill="white"/>
+             <ellipse cx="83" cy="58" rx="2.5" ry="3" fill="white"/>
+             <ellipse cx="70" cy="74" rx="10" ry="8" fill="#C67BA0"/>
+             <path d="M58 76 Q70 88 82 76" stroke="#2D2417" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+             <ellipse cx="54" cy="66" rx="6" ry="4" fill="#E8A080" opacity=".6"/>
+             <ellipse cx="86" cy="66" rx="6" ry="4" fill="#E8A080" opacity=".6"/>`,
+      pause:`<ellipse cx="70" cy="78" rx="42" ry="44" fill="#C8955C"/>
+             <ellipse cx="70" cy="60" rx="34" ry="32" fill="#D4A574"/>
+             <ellipse cx="42" cy="44" rx="14" ry="18" fill="#C8955C" transform="rotate(-15 42 44)"/>
+             <ellipse cx="98" cy="44" rx="14" ry="18" fill="#C8955C" transform="rotate(15 98 44)"/>
+             <path d="M54 60 Q58 56 62 60" stroke="#2D2417" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+             <path d="M78 60 Q82 56 86 60" stroke="#2D2417" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+             <ellipse cx="70" cy="74" rx="10" ry="8" fill="#C67BA0"/>
+             <path d="M64 78 Q70 81 76 78" stroke="#2D2417" stroke-width="2" fill="none" stroke-linecap="round"/>`
     }
-    renderTimer();
-  }
-
-  function checkBreakWarning() {
-    if (state.breakShown) return;
-    const elapsed = state.totalSecs - state.remainingSecs;
-    const pct = elapsed / state.totalSecs;
-    let show = false;
-    let msg = '';
-
-    if (state.vibe === 'halfway' && pct >= 0.5) {
-      show = true;
-      msg = "Halfway there — quick stretch? Then keep going 💪";
-    } else if (state.vibe === 'every10' && elapsed > 0 && elapsed % 600 === 0) {
-      show = true;
-      msg = "10 minutes done — stand up, take a breath, then back to it.";
-    } else if (state.vibe === 'end5' && state.remainingSecs <= 300 && state.remainingSecs > 299) {
-      show = true;
-      msg = "5 minutes left — you're nearly there, keep going!";
+  },
+  {
+    id:'cat', name:'Luna', emoji:'🐱',
+    say:{ focus:'Purr... focus time.', half:'Halfway there, human 😼', done:'Meow! You did it!', pause:'*yawns and stretches*' },
+    svg: {
+      base:`<ellipse cx="70" cy="75" rx="40" ry="42" fill="#8B7355"/>
+            <ellipse cx="70" cy="58" rx="32" ry="30" fill="#A08060"/>
+            <polygon points="38,38 50,58 26,58" fill="#8B7355"/>
+            <polygon points="102,38 90,58 114,58" fill="#8B7355"/>
+            <polygon points="40,40 50,56 30,56" fill="#FFB6C1"/>
+            <polygon points="100,40 90,56 110,56" fill="#FFB6C1"/>
+            <ellipse cx="58" cy="60" rx="8" ry="9" fill="#1A1A2E"/>
+            <ellipse cx="82" cy="60" rx="8" ry="9" fill="#1A1A2E"/>
+            <ellipse cx="59" cy="58" rx="3" ry="4" fill="#4CAF50"/>
+            <ellipse cx="83" cy="58" rx="3" ry="4" fill="#4CAF50"/>
+            <ellipse cx="60" cy="57" rx="1.5" ry="2.5" fill="#1A1A2E"/>
+            <ellipse cx="84" cy="57" rx="1.5" ry="2.5" fill="#1A1A2E"/>
+            <ellipse cx="70" cy="70" rx="7" ry="6" fill="#FFB6C1"/>
+            <path d="M63 73 Q70 79 77 73" stroke="#5A3E2B" stroke-width="1.8" fill="none"/>
+            <line x1="46" y1="68" x2="30" y2="64" stroke="#5A3E2B" stroke-width="1.5"/>
+            <line x1="46" y1="71" x2="28" y2="71" stroke="#5A3E2B" stroke-width="1.5"/>
+            <line x1="94" y1="68" x2="110" y2="64" stroke="#5A3E2B" stroke-width="1.5"/>
+            <line x1="94" y1="71" x2="112" y2="71" stroke="#5A3E2B" stroke-width="1.5"/>`,
+      happy:`<ellipse cx="70" cy="75" rx="40" ry="42" fill="#8B7355"/>
+             <ellipse cx="70" cy="58" rx="32" ry="30" fill="#A08060"/>
+             <polygon points="38,38 50,58 26,58" fill="#8B7355"/>
+             <polygon points="102,38 90,58 114,58" fill="#8B7355"/>
+             <polygon points="40,40 50,56 30,56" fill="#FFB6C1"/>
+             <polygon points="100,40 90,56 110,56" fill="#FFB6C1"/>
+             <path d="M52 58 Q58 50 64 58" stroke="#1A1A2E" stroke-width="2" fill="none"/>
+             <path d="M76 58 Q82 50 88 58" stroke="#1A1A2E" stroke-width="2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="7" ry="6" fill="#FFB6C1"/>
+             <path d="M60 72 Q70 82 80 72" stroke="#5A3E2B" stroke-width="2" fill="none"/>
+             <ellipse cx="54" cy="64" rx="6" ry="4" fill="#E8A0A0" opacity=".5"/>
+             <ellipse cx="86" cy="64" rx="6" ry="4" fill="#E8A0A0" opacity=".5"/>
+             <line x1="46" y1="68" x2="30" y2="64" stroke="#5A3E2B" stroke-width="1.5"/>
+             <line x1="94" y1="68" x2="110" y2="64" stroke="#5A3E2B" stroke-width="1.5"/>`,
+      pause:`<ellipse cx="70" cy="75" rx="40" ry="42" fill="#8B7355"/>
+             <ellipse cx="70" cy="58" rx="32" ry="30" fill="#A08060"/>
+             <polygon points="38,38 50,58 26,58" fill="#8B7355"/>
+             <polygon points="102,38 90,58 114,58" fill="#8B7355"/>
+             <polygon points="40,40 50,56 30,56" fill="#FFB6C1"/>
+             <polygon points="100,40 90,56 110,56" fill="#FFB6C1"/>
+             <path d="M54 62 Q58 58 62 62" stroke="#1A1A2E" stroke-width="2" fill="none"/>
+             <path d="M78 62 Q82 58 86 62" stroke="#1A1A2E" stroke-width="2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="7" ry="6" fill="#FFB6C1"/>
+             <path d="M65 73 Q70 76 75 73" stroke="#5A3E2B" stroke-width="1.8" fill="none"/>
+             <line x1="46" y1="68" x2="30" y2="64" stroke="#5A3E2B" stroke-width="1.5"/>
+             <line x1="94" y1="68" x2="110" y2="64" stroke="#5A3E2B" stroke-width="1.5"/>`
     }
-
-    if (show) {
-      state.breakShown = true;
-      const el = document.getElementById('breakWarning');
-      document.getElementById('breakWarningText').textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => { el.classList.remove('show'); state.breakShown = false; }, 8000);
-      // Sound
-      playBeep(440, 0.15);
+  },
+  {
+    id:'lion', name:'Leo', emoji:'🦁',
+    say:{ focus:'ROAR! You\'ve got this!', half:'Halfway — stay strong!', done:'ROAAAR! Champion!!', pause:'Even lions rest 🦁' },
+    svg: {
+      base:`<circle cx="70" cy="70" r="50" fill="#E8A020" opacity=".4"/>
+            <circle cx="70" cy="70" r="42" fill="#D4800A" opacity=".6"/>
+            <circle cx="70" cy="70" r="34" fill="#D4800A"/>
+            <ellipse cx="70" cy="64" rx="26" ry="24" fill="#F0C060"/>
+            <ellipse cx="58" cy="63" rx="6" ry="7" fill="#3D2B1A"/>
+            <ellipse cx="82" cy="63" rx="6" ry="7" fill="#3D2B1A"/>
+            <ellipse cx="59" cy="61" rx="2" ry="3" fill="white"/>
+            <ellipse cx="83" cy="61" rx="2" ry="3" fill="white"/>
+            <ellipse cx="70" cy="73" rx="9" ry="7" fill="#E07050"/>
+            <path d="M62 77 Q70 84 78 77" stroke="#3D2B1A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <line x1="50" y1="70" x2="36" y2="66" stroke="#3D2B1A" stroke-width="1.5"/>
+            <line x1="50" y1="73" x2="34" y2="74" stroke="#3D2B1A" stroke-width="1.5"/>
+            <line x1="90" y1="70" x2="104" y2="66" stroke="#3D2B1A" stroke-width="1.5"/>
+            <line x1="90" y1="73" x2="106" y2="74" stroke="#3D2B1A" stroke-width="1.5"/>`,
+      happy:`<circle cx="70" cy="70" r="50" fill="#E8A020" opacity=".4"/>
+             <circle cx="70" cy="70" r="42" fill="#D4800A" opacity=".6"/>
+             <circle cx="70" cy="70" r="34" fill="#D4800A"/>
+             <ellipse cx="70" cy="64" rx="26" ry="24" fill="#F0C060"/>
+             <path d="M54 61 Q58 53 64 61" stroke="#3D2B1A" stroke-width="2.2" fill="none"/>
+             <path d="M76 61 Q80 53 86 61" stroke="#3D2B1A" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="73" rx="9" ry="7" fill="#E07050"/>
+             <path d="M60 75 Q70 86 80 75" stroke="#3D2B1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+             <ellipse cx="54" cy="67" rx="7" ry="5" fill="#F0A060" opacity=".5"/>
+             <ellipse cx="86" cy="67" rx="7" ry="5" fill="#F0A060" opacity=".5"/>
+             <line x1="50" y1="70" x2="36" y2="66" stroke="#3D2B1A" stroke-width="1.5"/>
+             <line x1="90" y1="70" x2="104" y2="66" stroke="#3D2B1A" stroke-width="1.5"/>`,
+      pause:`<circle cx="70" cy="70" r="50" fill="#E8A020" opacity=".4"/>
+             <circle cx="70" cy="70" r="42" fill="#D4800A" opacity=".6"/>
+             <circle cx="70" cy="70" r="34" fill="#D4800A"/>
+             <ellipse cx="70" cy="64" rx="26" ry="24" fill="#F0C060"/>
+             <path d="M54 65 Q58 61 62 65" stroke="#3D2B1A" stroke-width="2.2" fill="none"/>
+             <path d="M78 65 Q82 61 86 65" stroke="#3D2B1A" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="73" rx="9" ry="7" fill="#E07050"/>
+             <path d="M64 77 Q70 80 76 77" stroke="#3D2B1A" stroke-width="2" fill="none"/>
+             <line x1="50" y1="70" x2="36" y2="66" stroke="#3D2B1A" stroke-width="1.5"/>
+             <line x1="90" y1="70" x2="104" y2="66" stroke="#3D2B1A" stroke-width="1.5"/>`
+    }
+  },
+  {
+    id:'fox', name:'Ember', emoji:'🦊',
+    say:{ focus:'Clever fox ready!', half:'Halfway — sly and steady!', done:'Fantastic! You\'re foxy!', pause:'Even foxes need a pause 🦊' },
+    svg: {
+      base:`<ellipse cx="70" cy="76" rx="40" ry="42" fill="#E8622A"/>
+            <ellipse cx="70" cy="60" rx="30" ry="28" fill="#F08040"/>
+            <polygon points="38,36 28,60 50,56" fill="#E8622A"/>
+            <polygon points="102,36 112,60 90,56" fill="#E8622A"/>
+            <polygon points="40,38 32,58 50,54" fill="white"/>
+            <polygon points="100,38 108,58 90,54" fill="white"/>
+            <ellipse cx="70" cy="68" rx="18" ry="14" fill="#F5E6D0"/>
+            <ellipse cx="58" cy="58" rx="7" ry="8" fill="#2D1A0E"/>
+            <ellipse cx="82" cy="58" rx="7" ry="8" fill="#2D1A0E"/>
+            <ellipse cx="59" cy="56" rx="2.5" ry="3.5" fill="#F4A020"/>
+            <ellipse cx="83" cy="56" rx="2.5" ry="3.5" fill="#F4A020"/>
+            <ellipse cx="70" cy="70" rx="8" ry="6" fill="#E87878"/>
+            <path d="M63 74 Q70 81 77 74" stroke="#2D1A0E" stroke-width="2" fill="none"/>
+            <line x1="48" y1="66" x2="32" y2="62" stroke="#2D1A0E" stroke-width="1.5"/>
+            <line x1="48" y1="69" x2="30" y2="70" stroke="#2D1A0E" stroke-width="1.5"/>
+            <line x1="92" y1="66" x2="108" y2="62" stroke="#2D1A0E" stroke-width="1.5"/>
+            <line x1="92" y1="69" x2="110" y2="70" stroke="#2D1A0E" stroke-width="1.5"/>`,
+      happy:`<ellipse cx="70" cy="76" rx="40" ry="42" fill="#E8622A"/>
+             <ellipse cx="70" cy="60" rx="30" ry="28" fill="#F08040"/>
+             <polygon points="38,36 28,60 50,56" fill="#E8622A"/>
+             <polygon points="102,36 112,60 90,56" fill="#E8622A"/>
+             <polygon points="40,38 32,58 50,54" fill="white"/>
+             <polygon points="100,38 108,58 90,54" fill="white"/>
+             <ellipse cx="70" cy="68" rx="18" ry="14" fill="#F5E6D0"/>
+             <path d="M52 56 Q58 48 64 56" stroke="#2D1A0E" stroke-width="2.2" fill="none"/>
+             <path d="M76 56 Q82 48 88 56" stroke="#2D1A0E" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="8" ry="6" fill="#E87878"/>
+             <path d="M60 73 Q70 84 80 73" stroke="#2D1A0E" stroke-width="2.5" fill="none"/>
+             <ellipse cx="53" cy="63" rx="6" ry="4" fill="#F0A070" opacity=".5"/>
+             <ellipse cx="87" cy="63" rx="6" ry="4" fill="#F0A070" opacity=".5"/>
+             <line x1="48" y1="66" x2="32" y2="62" stroke="#2D1A0E" stroke-width="1.5"/>
+             <line x1="92" y1="66" x2="108" y2="62" stroke="#2D1A0E" stroke-width="1.5"/>`,
+      pause:`<ellipse cx="70" cy="76" rx="40" ry="42" fill="#E8622A"/>
+             <ellipse cx="70" cy="60" rx="30" ry="28" fill="#F08040"/>
+             <polygon points="38,36 28,60 50,56" fill="#E8622A"/>
+             <polygon points="102,36 112,60 90,56" fill="#E8622A"/>
+             <polygon points="40,38 32,58 50,54" fill="white"/>
+             <polygon points="100,38 108,58 90,54" fill="white"/>
+             <ellipse cx="70" cy="68" rx="18" ry="14" fill="#F5E6D0"/>
+             <path d="M54 60 Q58 56 62 60" stroke="#2D1A0E" stroke-width="2" fill="none"/>
+             <path d="M78 60 Q82 56 86 60" stroke="#2D1A0E" stroke-width="2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="8" ry="6" fill="#E87878"/>
+             <path d="M65 74 Q70 77 75 74" stroke="#2D1A0E" stroke-width="2" fill="none"/>
+             <line x1="48" y1="66" x2="32" y2="62" stroke="#2D1A0E" stroke-width="1.5"/>
+             <line x1="92" y1="66" x2="108" y2="62" stroke="#2D1A0E" stroke-width="1.5"/>`
+    }
+  },
+  {
+    id:'owl', name:'Sage', emoji:'🦉',
+    say:{ focus:'Hoo! Wisdom begins now.', half:'Halfway — you\'re wise to keep going!', done:'Hoo HOO! Brilliant!', pause:'*wise blink*' },
+    svg: {
+      base:`<ellipse cx="70" cy="76" rx="36" ry="42" fill="#8B6914"/>
+            <ellipse cx="70" cy="60" rx="28" ry="26" fill="#C4A44C"/>
+            <ellipse cx="56" cy="56" rx="14" ry="16" fill="#F5F0E0"/>
+            <ellipse cx="84" cy="56" rx="14" ry="16" fill="#F5F0E0"/>
+            <ellipse cx="56" cy="56" rx="9" ry="11" fill="#4A3010"/>
+            <ellipse cx="84" cy="56" rx="9" ry="11" fill="#4A3010"/>
+            <ellipse cx="57" cy="53" rx="3" ry="4" fill="#F4C020"/>
+            <ellipse cx="85" cy="53" rx="3" ry="4" fill="#F4C020"/>
+            <ellipse cx="58" cy="53" rx="1.5" ry="2.5" fill="#1A1A1A"/>
+            <ellipse cx="86" cy="53" rx="1.5" ry="2.5" fill="#1A1A1A"/>
+            <ellipse cx="70" cy="68" rx="8" ry="6" fill="#F4A020"/>
+            <polygon points="66,66 74,66 70,74" fill="#E87820"/>
+            <ellipse cx="44" cy="40" rx="8" ry="10" fill="#8B6914" transform="rotate(-20 44 40)"/>
+            <ellipse cx="96" cy="40" rx="8" ry="10" fill="#8B6914" transform="rotate(20 96 40)"/>`,
+      happy:`<ellipse cx="70" cy="76" rx="36" ry="42" fill="#8B6914"/>
+             <ellipse cx="70" cy="60" rx="28" ry="26" fill="#C4A44C"/>
+             <ellipse cx="56" cy="56" rx="14" ry="16" fill="#F5F0E0"/>
+             <ellipse cx="84" cy="56" rx="14" ry="16" fill="#F5F0E0"/>
+             <path d="M48 54 Q56 44 64 54" stroke="#4A3010" stroke-width="2.5" fill="none"/>
+             <path d="M76 54 Q84 44 92 54" stroke="#4A3010" stroke-width="2.5" fill="none"/>
+             <ellipse cx="70" cy="68" rx="8" ry="6" fill="#F4A020"/>
+             <polygon points="66,66 74,66 70,74" fill="#E87820"/>
+             <path d="M62 74 Q70 82 78 74" stroke="#4A3010" stroke-width="2" fill="none"/>
+             <ellipse cx="44" cy="40" rx="8" ry="10" fill="#8B6914" transform="rotate(-20 44 40)"/>
+             <ellipse cx="96" cy="40" rx="8" ry="10" fill="#8B6914" transform="rotate(20 96 40)"/>
+             <ellipse cx="50" cy="62" rx="5" ry="3.5" fill="#E0C060" opacity=".5"/>
+             <ellipse cx="90" cy="62" rx="5" ry="3.5" fill="#E0C060" opacity=".5"/>`,
+      pause:`<ellipse cx="70" cy="76" rx="36" ry="42" fill="#8B6914"/>
+             <ellipse cx="70" cy="60" rx="28" ry="26" fill="#C4A44C"/>
+             <ellipse cx="56" cy="56" rx="14" ry="16" fill="#F5F0E0"/>
+             <ellipse cx="84" cy="56" rx="14" ry="16" fill="#F5F0E0"/>
+             <ellipse cx="56" cy="57" rx="6" ry="3" fill="#4A3010"/>
+             <ellipse cx="84" cy="57" rx="6" ry="3" fill="#4A3010"/>
+             <ellipse cx="70" cy="68" rx="8" ry="6" fill="#F4A020"/>
+             <polygon points="66,66 74,66 70,74" fill="#E87820"/>
+             <path d="M65 74 Q70 77 75 74" stroke="#4A3010" stroke-width="2" fill="none"/>
+             <ellipse cx="44" cy="40" rx="8" ry="10" fill="#8B6914" transform="rotate(-20 44 40)"/>
+             <ellipse cx="96" cy="40" rx="8" ry="10" fill="#8B6914" transform="rotate(20 96 40)"/>`
+    }
+  },
+  {
+    id:'panda', name:'Mochi', emoji:'🐼',
+    say:{ focus:'Bamboo later. Focus now!', half:'Halfway! Keep munching... I mean, working!', done:'YAY! Bamboo time!!', pause:'Quick bamboo break? 🎋' },
+    svg: {
+      base:`<ellipse cx="70" cy="74" rx="42" ry="44" fill="white"/>
+            <ellipse cx="70" cy="58" rx="32" ry="30" fill="white"/>
+            <ellipse cx="48" cy="46" rx="15" ry="16" fill="#2D2D2D"/>
+            <ellipse cx="92" cy="46" rx="15" ry="16" fill="#2D2D2D"/>
+            <ellipse cx="56" cy="58" rx="10" ry="11" fill="#2D2D2D"/>
+            <ellipse cx="84" cy="58" rx="10" ry="11" fill="#2D2D2D"/>
+            <ellipse cx="57" cy="56" rx="4" ry="5" fill="white"/>
+            <ellipse cx="85" cy="56" rx="4" ry="5" fill="white"/>
+            <ellipse cx="58" cy="55" rx="2" ry="3" fill="#1A1A1A"/>
+            <ellipse cx="86" cy="55" rx="2" ry="3" fill="#1A1A1A"/>
+            <ellipse cx="70" cy="70" rx="10" ry="8" fill="#FFB6C1"/>
+            <path d="M63 74 Q70 81 77 74" stroke="#2D2D2D" stroke-width="2" fill="none"/>`,
+      happy:`<ellipse cx="70" cy="74" rx="42" ry="44" fill="white"/>
+             <ellipse cx="70" cy="58" rx="32" ry="30" fill="white"/>
+             <ellipse cx="48" cy="46" rx="15" ry="16" fill="#2D2D2D"/>
+             <ellipse cx="92" cy="46" rx="15" ry="16" fill="#2D2D2D"/>
+             <ellipse cx="56" cy="58" rx="10" ry="11" fill="#2D2D2D"/>
+             <ellipse cx="84" cy="58" rx="10" ry="11" fill="#2D2D2D"/>
+             <path d="M50 56 Q57 46 64 56" stroke="white" stroke-width="3" fill="none"/>
+             <path d="M76 56 Q83 46 90 56" stroke="white" stroke-width="3" fill="none"/>
+             <ellipse cx="70" cy="70" rx="10" ry="8" fill="#FFB6C1"/>
+             <path d="M60 73 Q70 84 80 73" stroke="#2D2D2D" stroke-width="2.5" fill="none"/>
+             <ellipse cx="52" cy="65" rx="7" ry="5" fill="#FFB0B0" opacity=".5"/>
+             <ellipse cx="88" cy="65" rx="7" ry="5" fill="#FFB0B0" opacity=".5"/>`,
+      pause:`<ellipse cx="70" cy="74" rx="42" ry="44" fill="white"/>
+             <ellipse cx="70" cy="58" rx="32" ry="30" fill="white"/>
+             <ellipse cx="48" cy="46" rx="15" ry="16" fill="#2D2D2D"/>
+             <ellipse cx="92" cy="46" rx="15" ry="16" fill="#2D2D2D"/>
+             <ellipse cx="56" cy="58" rx="10" ry="11" fill="#2D2D2D"/>
+             <ellipse cx="84" cy="58" rx="10" ry="11" fill="#2D2D2D"/>
+             <ellipse cx="57" cy="59" rx="5" ry="3" fill="white"/>
+             <ellipse cx="85" cy="59" rx="5" ry="3" fill="white"/>
+             <ellipse cx="70" cy="70" rx="10" ry="8" fill="#FFB6C1"/>
+             <path d="M64 75 Q70 78 76 75" stroke="#2D2D2D" stroke-width="2" fill="none"/>`
+    }
+  },
+  {
+    id:'rabbit', name:'Pip', emoji:'🐰',
+    say:{ focus:'Hop to it!', half:'Halfway — quick as a bunny!', done:'Wheee! We did it!!', pause:'*wiggles nose*' },
+    svg: {
+      base:`<ellipse cx="70" cy="78" rx="36" ry="40" fill="#F0E8E0"/>
+            <ellipse cx="70" cy="62" rx="28" ry="26" fill="#F8F4F0"/>
+            <ellipse cx="52" cy="28" rx="10" ry="24" fill="#F0E8E0"/>
+            <ellipse cx="88" cy="28" rx="10" ry="24" fill="#F0E8E0"/>
+            <ellipse cx="52" cy="28" rx="6" ry="20" fill="#FFB6C1"/>
+            <ellipse cx="88" cy="28" rx="6" ry="20" fill="#FFB6C1"/>
+            <ellipse cx="59" cy="60" rx="7" ry="8" fill="#3D2B40"/>
+            <ellipse cx="81" cy="60" rx="7" ry="8" fill="#3D2B40"/>
+            <ellipse cx="60" cy="58" rx="2.5" ry="3.5" fill="#A0C8FF"/>
+            <ellipse cx="82" cy="58" rx="2.5" ry="3.5" fill="#A0C8FF"/>
+            <ellipse cx="61" cy="57" rx="1.2" ry="2" fill="#1A1A2E"/>
+            <ellipse cx="83" cy="57" rx="1.2" ry="2" fill="#1A1A2E"/>
+            <ellipse cx="70" cy="70" rx="8" ry="6" fill="#FFB6C1"/>
+            <path d="M64 74 Q70 80 76 74" stroke="#3D2B40" stroke-width="1.8" fill="none"/>
+            <line x1="52" y1="68" x2="36" y2="63" stroke="#C0A0B0" stroke-width="1.2"/>
+            <line x1="52" y1="71" x2="34" y2="71" stroke="#C0A0B0" stroke-width="1.2"/>
+            <line x1="88" y1="68" x2="104" y2="63" stroke="#C0A0B0" stroke-width="1.2"/>
+            <line x1="88" y1="71" x2="106" y2="71" stroke="#C0A0B0" stroke-width="1.2"/>`,
+      happy:`<ellipse cx="70" cy="78" rx="36" ry="40" fill="#F0E8E0"/>
+             <ellipse cx="70" cy="62" rx="28" ry="26" fill="#F8F4F0"/>
+             <ellipse cx="52" cy="28" rx="10" ry="24" fill="#F0E8E0"/>
+             <ellipse cx="88" cy="28" rx="10" ry="24" fill="#F0E8E0"/>
+             <ellipse cx="52" cy="28" rx="6" ry="20" fill="#FFB6C1"/>
+             <ellipse cx="88" cy="28" rx="6" ry="20" fill="#FFB6C1"/>
+             <path d="M53 58 Q59 50 65 58" stroke="#3D2B40" stroke-width="2" fill="none"/>
+             <path d="M75 58 Q81 50 87 58" stroke="#3D2B40" stroke-width="2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="8" ry="6" fill="#FFB6C1"/>
+             <path d="M61 72 Q70 83 79 72" stroke="#3D2B40" stroke-width="2.2" fill="none"/>
+             <ellipse cx="54" cy="65" rx="6" ry="4" fill="#FFB6C1" opacity=".6"/>
+             <ellipse cx="86" cy="65" rx="6" ry="4" fill="#FFB6C1" opacity=".6"/>
+             <line x1="52" y1="68" x2="36" y2="63" stroke="#C0A0B0" stroke-width="1.2"/>
+             <line x1="88" y1="68" x2="104" y2="63" stroke="#C0A0B0" stroke-width="1.2"/>`,
+      pause:`<ellipse cx="70" cy="78" rx="36" ry="40" fill="#F0E8E0"/>
+             <ellipse cx="70" cy="62" rx="28" ry="26" fill="#F8F4F0"/>
+             <ellipse cx="52" cy="28" rx="10" ry="24" fill="#F0E8E0"/>
+             <ellipse cx="88" cy="28" rx="10" ry="24" fill="#F0E8E0"/>
+             <ellipse cx="52" cy="28" rx="6" ry="20" fill="#FFB6C1"/>
+             <ellipse cx="88" cy="28" rx="6" ry="20" fill="#FFB6C1"/>
+             <ellipse cx="59" cy="62" rx="5" ry="3" fill="#3D2B40"/>
+             <ellipse cx="81" cy="62" rx="5" ry="3" fill="#3D2B40"/>
+             <ellipse cx="70" cy="70" rx="8" ry="6" fill="#FFB6C1"/>
+             <path d="M65 74 Q70 77 75 74" stroke="#3D2B40" stroke-width="1.8" fill="none"/>
+             <line x1="52" y1="68" x2="36" y2="63" stroke="#C0A0B0" stroke-width="1.2"/>
+             <line x1="88" y1="68" x2="104" y2="63" stroke="#C0A0B0" stroke-width="1.2"/>`
+    }
+  },
+  {
+    id:'dragon', name:'Spark', emoji:'🐲',
+    say:{ focus:'Dragon fire... FOCUS!', half:'Halfway — blaze on!', done:'FIRE! You\'re legendary!!', pause:'Even dragons catch their breath 🔥' },
+    svg: {
+      base:`<ellipse cx="70" cy="74" rx="40" ry="44" fill="#2D7A2D"/>
+            <ellipse cx="70" cy="58" rx="30" ry="28" fill="#40A040"/>
+            <polygon points="44,28 38,54 56,46" fill="#2D7A2D"/>
+            <polygon points="96,28 102,54 84,46" fill="#2D7A2D"/>
+            <polygon points="46,30 40,52 56,46" fill="#60C060"/>
+            <polygon points="94,30 100,52 84,46" fill="#60C060"/>
+            <ellipse cx="58" cy="58" rx="8" ry="9" fill="#1A3010"/>
+            <ellipse cx="82" cy="58" rx="8" ry="9" fill="#1A3010"/>
+            <ellipse cx="59" cy="56" rx="3" ry="4" fill="#F4E020"/>
+            <ellipse cx="83" cy="56" rx="3" ry="4" fill="#F4E020"/>
+            <ellipse cx="60" cy="55" rx="1.5" ry="2.5" fill="#1A1A0A"/>
+            <ellipse cx="84" cy="55" rx="1.5" ry="2.5" fill="#1A1A0A"/>
+            <ellipse cx="70" cy="70" rx="9" ry="7" fill="#60C060"/>
+            <path d="M63 73 Q70 80 77 73" stroke="#1A3010" stroke-width="2" fill="none"/>
+            <circle cx="46" cy="54" r="4" fill="#F04020" opacity=".7"/>
+            <circle cx="94" cy="54" r="4" fill="#F04020" opacity=".7"/>`,
+      happy:`<ellipse cx="70" cy="74" rx="40" ry="44" fill="#2D7A2D"/>
+             <ellipse cx="70" cy="58" rx="30" ry="28" fill="#40A040"/>
+             <polygon points="44,28 38,54 56,46" fill="#2D7A2D"/>
+             <polygon points="96,28 102,54 84,46" fill="#2D7A2D"/>
+             <polygon points="46,30 40,52 56,46" fill="#60C060"/>
+             <polygon points="94,30 100,52 84,46" fill="#60C060"/>
+             <path d="M52 56 Q58 46 64 56" stroke="#1A3010" stroke-width="2.5" fill="none"/>
+             <path d="M76 56 Q82 46 88 56" stroke="#1A3010" stroke-width="2.5" fill="none"/>
+             <ellipse cx="70" cy="70" rx="9" ry="7" fill="#60C060"/>
+             <path d="M60 72 Q70 84 80 72" stroke="#1A3010" stroke-width="2.5" fill="none"/>
+             <circle cx="46" cy="54" r="5" fill="#F04020" opacity=".8"/>
+             <circle cx="94" cy="54" r="5" fill="#F04020" opacity=".8"/>
+             <ellipse cx="53" cy="65" rx="7" ry="4" fill="#80E060" opacity=".4"/>
+             <ellipse cx="87" cy="65" rx="7" ry="4" fill="#80E060" opacity=".4"/>`,
+      pause:`<ellipse cx="70" cy="74" rx="40" ry="44" fill="#2D7A2D"/>
+             <ellipse cx="70" cy="58" rx="30" ry="28" fill="#40A040"/>
+             <polygon points="44,28 38,54 56,46" fill="#2D7A2D"/>
+             <polygon points="96,28 102,54 84,46" fill="#2D7A2D"/>
+             <polygon points="46,30 40,52 56,46" fill="#60C060"/>
+             <polygon points="94,30 100,52 84,46" fill="#60C060"/>
+             <path d="M54 61 Q58 57 62 61" stroke="#1A3010" stroke-width="2.2" fill="none"/>
+             <path d="M78 61 Q82 57 86 61" stroke="#1A3010" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="9" ry="7" fill="#60C060"/>
+             <path d="M65 74 Q70 77 75 74" stroke="#1A3010" stroke-width="2" fill="none"/>
+             <circle cx="46" cy="54" r="4" fill="#F04020" opacity=".5"/>
+             <circle cx="94" cy="54" r="4" fill="#F04020" opacity=".5"/>`
+    }
+  },
+  {
+    id:'meerkat', name:'Scout', emoji:'🦡',
+    say:{ focus:'On watch! Let\'s GO!', half:'Halfway — standing guard!', done:'ALL CLEAR! You did it!!', pause:'*stands up on hind legs to look around*' },
+    svg: {
+      base:`<ellipse cx="70" cy="80" rx="32" ry="38" fill="#C4A060"/>
+            <ellipse cx="70" cy="62" rx="24" ry="26" fill="#D4B070"/>
+            <ellipse cx="70" cy="58" rx="16" ry="15" fill="#E8D0A0"/>
+            <ellipse cx="52" cy="44" rx="10" ry="14" fill="#C4A060"/>
+            <ellipse cx="88" cy="44" rx="10" ry="14" fill="#C4A060"/>
+            <ellipse cx="58" cy="58" rx="8" ry="9" fill="#2D1A08"/>
+            <ellipse cx="82" cy="58" rx="8" ry="9" fill="#2D1A08"/>
+            <ellipse cx="59" cy="56" rx="3" ry="4" fill="#8B6030"/>
+            <ellipse cx="83" cy="56" rx="3" ry="4" fill="#8B6030"/>
+            <ellipse cx="60" cy="55" rx="1.5" ry="2.5" fill="#1A0A00"/>
+            <ellipse cx="84" cy="55" rx="1.5" ry="2.5" fill="#1A0A00"/>
+            <ellipse cx="60" cy="52" rx="5" ry="3" fill="#6B4020" opacity=".5"/>
+            <ellipse cx="80" cy="52" rx="5" ry="3" fill="#6B4020" opacity=".5"/>
+            <ellipse cx="70" cy="70" rx="7" ry="5" fill="#C07040"/>
+            <path d="M65 73 Q70 79 75 73" stroke="#2D1A08" stroke-width="2" fill="none"/>
+            <line x1="52" y1="67" x2="36" y2="62" stroke="#A08040" stroke-width="1.3"/>
+            <line x1="52" y1="70" x2="34" y2="71" stroke="#A08040" stroke-width="1.3"/>
+            <line x1="88" y1="67" x2="104" y2="62" stroke="#A08040" stroke-width="1.3"/>
+            <line x1="88" y1="70" x2="106" y2="71" stroke="#A08040" stroke-width="1.3"/>`,
+      happy:`<ellipse cx="70" cy="80" rx="32" ry="38" fill="#C4A060"/>
+             <ellipse cx="70" cy="62" rx="24" ry="26" fill="#D4B070"/>
+             <ellipse cx="70" cy="58" rx="16" ry="15" fill="#E8D0A0"/>
+             <ellipse cx="52" cy="44" rx="10" ry="14" fill="#C4A060"/>
+             <ellipse cx="88" cy="44" rx="10" ry="14" fill="#C4A060"/>
+             <path d="M52 56 Q58 47 64 56" stroke="#2D1A08" stroke-width="2.2" fill="none"/>
+             <path d="M76 56 Q82 47 88 56" stroke="#2D1A08" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="7" ry="5" fill="#C07040"/>
+             <path d="M61 72 Q70 82 79 72" stroke="#2D1A08" stroke-width="2.5" fill="none"/>
+             <ellipse cx="53" cy="64" rx="6" ry="4" fill="#E0A060" opacity=".5"/>
+             <ellipse cx="87" cy="64" rx="6" ry="4" fill="#E0A060" opacity=".5"/>
+             <line x1="52" y1="67" x2="36" y2="62" stroke="#A08040" stroke-width="1.3"/>
+             <line x1="88" y1="67" x2="104" y2="62" stroke="#A08040" stroke-width="1.3"/>`,
+      pause:`<ellipse cx="70" cy="80" rx="32" ry="38" fill="#C4A060"/>
+             <ellipse cx="70" cy="62" rx="24" ry="26" fill="#D4B070"/>
+             <ellipse cx="70" cy="58" rx="16" ry="15" fill="#E8D0A0"/>
+             <ellipse cx="52" cy="44" rx="10" ry="14" fill="#C4A060"/>
+             <ellipse cx="88" cy="44" rx="10" ry="14" fill="#C4A060"/>
+             <ellipse cx="58" cy="60" rx="6" ry="3" fill="#2D1A08"/>
+             <ellipse cx="82" cy="60" rx="6" ry="3" fill="#2D1A08"/>
+             <ellipse cx="70" cy="70" rx="7" ry="5" fill="#C07040"/>
+             <path d="M65 73 Q70 76 75 73" stroke="#2D1A08" stroke-width="2" fill="none"/>
+             <line x1="52" y1="67" x2="36" y2="62" stroke="#A08040" stroke-width="1.3"/>
+             <line x1="88" y1="67" x2="104" y2="62" stroke="#A08040" stroke-width="1.3"/>`
+    }
+  },
+  {
+    id:'penguin', name:'Waddles', emoji:'🐧',
+    say:{ focus:'Waddle waddle — let\'s go!', half:'Halfway — keep marching!', done:'SQUAWK! You legend!!', pause:'*waddles in place*' },
+    svg: {
+      base:`<ellipse cx="70" cy="76" rx="36" ry="42" fill="#1A1A2E"/>
+            <ellipse cx="70" cy="72" rx="22" ry="28" fill="#F5F0E8"/>
+            <ellipse cx="70" cy="52" rx="28" ry="26" fill="#1A1A2E"/>
+            <ellipse cx="48" cy="44" rx="12" ry="14" fill="#1A1A2E"/>
+            <ellipse cx="92" cy="44" rx="12" ry="14" fill="#1A1A2E"/>
+            <ellipse cx="70" cy="54" rx="16" ry="14" fill="#F5F0E8"/>
+            <ellipse cx="59" cy="50" rx="7" ry="8" fill="#F5F0E8"/>
+            <ellipse cx="81" cy="50" rx="7" ry="8" fill="#F5F0E8"/>
+            <ellipse cx="59" cy="50" rx="5" ry="6" fill="#1A1A2E"/>
+            <ellipse cx="81" cy="50" rx="5" ry="6" fill="#1A1A2E"/>
+            <ellipse cx="60" cy="48" rx="2" ry="3" fill="white"/>
+            <ellipse cx="82" cy="48" rx="2" ry="3" fill="white"/>
+            <polygon points="65,62 75,62 70,70" fill="#F4A020"/>
+            <ellipse cx="50" cy="82" rx="8" ry="5" fill="#F4A020" transform="rotate(-20 50 82)"/>
+            <ellipse cx="90" cy="82" rx="8" ry="5" fill="#F4A020" transform="rotate(20 90 82)"/>`,
+      happy:`<ellipse cx="70" cy="76" rx="36" ry="42" fill="#1A1A2E"/>
+             <ellipse cx="70" cy="72" rx="22" ry="28" fill="#F5F0E8"/>
+             <ellipse cx="70" cy="52" rx="28" ry="26" fill="#1A1A2E"/>
+             <ellipse cx="48" cy="44" rx="12" ry="14" fill="#1A1A2E"/>
+             <ellipse cx="92" cy="44" rx="12" ry="14" fill="#1A1A2E"/>
+             <ellipse cx="70" cy="54" rx="16" ry="14" fill="#F5F0E8"/>
+             <ellipse cx="59" cy="50" rx="7" ry="8" fill="#F5F0E8"/>
+             <ellipse cx="81" cy="50" rx="7" ry="8" fill="#F5F0E8"/>
+             <path d="M54 48 Q59 40 64 48" stroke="#1A1A2E" stroke-width="2.5" fill="none"/>
+             <path d="M76 48 Q81 40 86 48" stroke="#1A1A2E" stroke-width="2.5" fill="none"/>
+             <polygon points="65,62 75,62 70,70" fill="#F4A020"/>
+             <path d="M60 68 Q70 78 80 68" stroke="#1A1A2E" stroke-width="2.5" fill="none"/>
+             <ellipse cx="54" cy="56" rx="6" ry="4" fill="#F4A0A0" opacity=".5"/>
+             <ellipse cx="86" cy="56" rx="6" ry="4" fill="#F4A0A0" opacity=".5"/>
+             <ellipse cx="50" cy="82" rx="8" ry="5" fill="#F4A020" transform="rotate(-20 50 82)"/>
+             <ellipse cx="90" cy="82" rx="8" ry="5" fill="#F4A020" transform="rotate(20 90 82)"/>`,
+      pause:`<ellipse cx="70" cy="76" rx="36" ry="42" fill="#1A1A2E"/>
+             <ellipse cx="70" cy="72" rx="22" ry="28" fill="#F5F0E8"/>
+             <ellipse cx="70" cy="52" rx="28" ry="26" fill="#1A1A2E"/>
+             <ellipse cx="48" cy="44" rx="12" ry="14" fill="#1A1A2E"/>
+             <ellipse cx="92" cy="44" rx="12" ry="14" fill="#1A1A2E"/>
+             <ellipse cx="70" cy="54" rx="16" ry="14" fill="#F5F0E8"/>
+             <ellipse cx="59" cy="50" rx="7" ry="8" fill="#F5F0E8"/>
+             <ellipse cx="81" cy="50" rx="7" ry="8" fill="#F5F0E8"/>
+             <ellipse cx="59" cy="52" rx="5" ry="3" fill="#1A1A2E"/>
+             <ellipse cx="81" cy="52" rx="5" ry="3" fill="#1A1A2E"/>
+             <polygon points="65,62 75,62 70,70" fill="#F4A020"/>
+             <path d="M65 68 Q70 71 75 68" stroke="#1A1A2E" stroke-width="2" fill="none"/>
+             <ellipse cx="50" cy="82" rx="8" ry="5" fill="#F4A020" transform="rotate(-20 50 82)"/>
+             <ellipse cx="90" cy="82" rx="8" ry="5" fill="#F4A020" transform="rotate(20 90 82)"/>`
+    }
+  },
+  {
+    id:'guineapig', name:'Biscotti', emoji:'🐹',
+    say:{ focus:'Squeak squeak — focus!', half:'Halfway! Squeeeak!', done:'SQUEEEAK!! You did it!!', pause:'*puffs up cheeks*' },
+    svg: {
+      base:`<ellipse cx="70" cy="80" rx="44" ry="38" fill="#C8A878"/>
+            <ellipse cx="70" cy="62" rx="36" ry="30" fill="#D4B888"/>
+            <ellipse cx="38" cy="52" rx="14" ry="10" fill="#C8A878" transform="rotate(-15 38 52)"/>
+            <ellipse cx="102" cy="52" rx="14" ry="10" fill="#C8A878" transform="rotate(15 102 52)"/>
+            <ellipse cx="70" cy="62" rx="20" ry="16" fill="#E8D4B0"/>
+            <ellipse cx="56" cy="58" rx="8" ry="9" fill="#2D1A0E"/>
+            <ellipse cx="84" cy="58" rx="8" ry="9" fill="#2D1A0E"/>
+            <ellipse cx="57" cy="56" rx="3" ry="3.5" fill="#8B4060"/>
+            <ellipse cx="85" cy="56" rx="3" ry="3.5" fill="#8B4060"/>
+            <ellipse cx="58" cy="55" rx="1.5" ry="2" fill="#1A0A00"/>
+            <ellipse cx="86" cy="55" rx="1.5" ry="2" fill="#1A0A00"/>
+            <ellipse cx="56" cy="72" rx="8" ry="6" fill="#E8C8B0"/>
+            <ellipse cx="84" cy="72" rx="8" ry="6" fill="#E8C8B0"/>
+            <ellipse cx="70" cy="70" rx="7" ry="5" fill="#E8A0A0"/>
+            <path d="M65 73 Q70 78 75 73" stroke="#2D1A0E" stroke-width="2" fill="none"/>
+            <line x1="50" y1="66" x2="32" y2="60" stroke="#A08060" stroke-width="1.2"/>
+            <line x1="50" y1="69" x2="30" y2="70" stroke="#A08060" stroke-width="1.2"/>
+            <line x1="90" y1="66" x2="108" y2="60" stroke="#A08060" stroke-width="1.2"/>
+            <line x1="90" y1="69" x2="110" y2="70" stroke="#A08060" stroke-width="1.2"/>`,
+      happy:`<ellipse cx="70" cy="80" rx="44" ry="38" fill="#C8A878"/>
+             <ellipse cx="70" cy="62" rx="36" ry="30" fill="#D4B888"/>
+             <ellipse cx="38" cy="52" rx="14" ry="10" fill="#C8A878" transform="rotate(-15 38 52)"/>
+             <ellipse cx="102" cy="52" rx="14" ry="10" fill="#C8A878" transform="rotate(15 102 52)"/>
+             <ellipse cx="70" cy="62" rx="20" ry="16" fill="#E8D4B0"/>
+             <path d="M50 56 Q56 46 62 56" stroke="#2D1A0E" stroke-width="2.2" fill="none"/>
+             <path d="M78 56 Q84 46 90 56" stroke="#2D1A0E" stroke-width="2.2" fill="none"/>
+             <ellipse cx="56" cy="72" rx="10" ry="7" fill="#F0D0B8"/>
+             <ellipse cx="84" cy="72" rx="10" ry="7" fill="#F0D0B8"/>
+             <ellipse cx="70" cy="70" rx="7" ry="5" fill="#E8A0A0"/>
+             <path d="M60 72 Q70 83 80 72" stroke="#2D1A0E" stroke-width="2.5" fill="none"/>
+             <ellipse cx="52" cy="65" rx="7" ry="5" fill="#F4B0A0" opacity=".5"/>
+             <ellipse cx="88" cy="65" rx="7" ry="5" fill="#F4B0A0" opacity=".5"/>
+             <line x1="50" y1="66" x2="32" y2="60" stroke="#A08060" stroke-width="1.2"/>
+             <line x1="90" y1="66" x2="108" y2="60" stroke="#A08060" stroke-width="1.2"/>`,
+      pause:`<ellipse cx="70" cy="80" rx="44" ry="38" fill="#C8A878"/>
+             <ellipse cx="70" cy="62" rx="36" ry="30" fill="#D4B888"/>
+             <ellipse cx="38" cy="52" rx="14" ry="10" fill="#C8A878" transform="rotate(-15 38 52)"/>
+             <ellipse cx="102" cy="52" rx="14" ry="10" fill="#C8A878" transform="rotate(15 102 52)"/>
+             <ellipse cx="70" cy="62" rx="20" ry="16" fill="#E8D4B0"/>
+             <ellipse cx="56" cy="60" rx="6" ry="3.5" fill="#2D1A0E"/>
+             <ellipse cx="84" cy="60" rx="6" ry="3.5" fill="#2D1A0E"/>
+             <ellipse cx="56" cy="72" rx="8" ry="6" fill="#E8C8B0"/>
+             <ellipse cx="84" cy="72" rx="8" ry="6" fill="#E8C8B0"/>
+             <ellipse cx="70" cy="70" rx="7" ry="5" fill="#E8A0A0"/>
+             <path d="M65 74 Q70 77 75 74" stroke="#2D1A0E" stroke-width="2" fill="none"/>
+             <line x1="50" y1="66" x2="32" y2="60" stroke="#A08060" stroke-width="1.2"/>
+             <line x1="90" y1="66" x2="108" y2="60" stroke="#A08060" stroke-width="1.2"/>`
+    }
+  },
+  {
+    id:'koala', name:'Gumleaf', emoji:'🐨',
+    say:{ focus:'No napping — focus time!', half:'Halfway! Eucalyptus later.', done:'CRIKEY! You did it!!', pause:'Just a tiny nap... no! Stay awake!' },
+    svg: {
+      base:`<ellipse cx="70" cy="74" rx="40" ry="44" fill="#8B9BAB"/>
+            <ellipse cx="70" cy="58" rx="30" ry="28" fill="#A0B0C0"/>
+            <ellipse cx="36" cy="48" rx="20" ry="18" fill="#8B9BAB"/>
+            <ellipse cx="104" cy="48" rx="20" ry="18" fill="#8B9BAB"/>
+            <ellipse cx="36" cy="48" rx="14" ry="12" fill="#A0B0C0"/>
+            <ellipse cx="104" cy="48" rx="14" ry="12" fill="#A0B0C0"/>
+            <ellipse cx="70" cy="64" rx="18" ry="14" fill="#C0CDD8"/>
+            <ellipse cx="58" cy="57" rx="7" ry="8" fill="#2D3540"/>
+            <ellipse cx="82" cy="57" rx="7" ry="8" fill="#2D3540"/>
+            <ellipse cx="59" cy="55" rx="2.5" ry="3.5" fill="#8080A0"/>
+            <ellipse cx="83" cy="55" rx="2.5" ry="3.5" fill="#8080A0"/>
+            <ellipse cx="60" cy="54" rx="1.2" ry="2" fill="#1A1A2A"/>
+            <ellipse cx="84" cy="54" rx="1.2" ry="2" fill="#1A1A2A"/>
+            <ellipse cx="70" cy="70" rx="11" ry="9" fill="#6B7B8B"/>
+            <ellipse cx="70" cy="72" rx="8" ry="6" fill="#4A5A6A"/>
+            <path d="M63 76 Q70 82 77 76" stroke="#2D3540" stroke-width="2" fill="none"/>`,
+      happy:`<ellipse cx="70" cy="74" rx="40" ry="44" fill="#8B9BAB"/>
+             <ellipse cx="70" cy="58" rx="30" ry="28" fill="#A0B0C0"/>
+             <ellipse cx="36" cy="48" rx="20" ry="18" fill="#8B9BAB"/>
+             <ellipse cx="104" cy="48" rx="20" ry="18" fill="#8B9BAB"/>
+             <ellipse cx="36" cy="48" rx="14" ry="12" fill="#A0B0C0"/>
+             <ellipse cx="104" cy="48" rx="14" ry="12" fill="#A0B0C0"/>
+             <ellipse cx="70" cy="64" rx="18" ry="14" fill="#C0CDD8"/>
+             <path d="M52 55 Q58 46 64 55" stroke="#2D3540" stroke-width="2.2" fill="none"/>
+             <path d="M76 55 Q82 46 88 55" stroke="#2D3540" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="11" ry="9" fill="#6B7B8B"/>
+             <ellipse cx="70" cy="72" rx="8" ry="6" fill="#4A5A6A"/>
+             <path d="M60 75 Q70 86 80 75" stroke="#2D3540" stroke-width="2.5" fill="none"/>
+             <ellipse cx="53" cy="63" rx="7" ry="5" fill="#B0C0D0" opacity=".5"/>
+             <ellipse cx="87" cy="63" rx="7" ry="5" fill="#B0C0D0" opacity=".5"/>`,
+      pause:`<ellipse cx="70" cy="74" rx="40" ry="44" fill="#8B9BAB"/>
+             <ellipse cx="70" cy="58" rx="30" ry="28" fill="#A0B0C0"/>
+             <ellipse cx="36" cy="48" rx="20" ry="18" fill="#8B9BAB"/>
+             <ellipse cx="104" cy="48" rx="20" ry="18" fill="#8B9BAB"/>
+             <ellipse cx="36" cy="48" rx="14" ry="12" fill="#A0B0C0"/>
+             <ellipse cx="104" cy="48" rx="14" ry="12" fill="#A0B0C0"/>
+             <ellipse cx="70" cy="64" rx="18" ry="14" fill="#C0CDD8"/>
+             <ellipse cx="58" cy="59" rx="6" ry="3.5" fill="#2D3540"/>
+             <ellipse cx="82" cy="59" rx="6" ry="3.5" fill="#2D3540"/>
+             <ellipse cx="70" cy="70" rx="11" ry="9" fill="#6B7B8B"/>
+             <ellipse cx="70" cy="72" rx="8" ry="6" fill="#4A5A6A"/>
+             <path d="M65 77 Q70 80 75 77" stroke="#2D3540" stroke-width="2" fill="none"/>`
+    }
+  },
+  {
+    id:'monkey', name:'Coco', emoji:'🐒',
+    say:{ focus:'Oo oo! Banana after!', half:'Halfway — oo oo aa aa!', done:'OO OO AA AA!! YES!!', pause:'*scratches head thoughtfully*' },
+    svg: {
+      base:`<ellipse cx="70" cy="74" rx="38" ry="42" fill="#8B5E3C"/>
+            <ellipse cx="70" cy="58" rx="30" ry="28" fill="#A0714A"/>
+            <ellipse cx="44" cy="44" rx="13" ry="15" fill="#8B5E3C"/>
+            <ellipse cx="96" cy="44" rx="13" ry="15" fill="#8B5E3C"/>
+            <ellipse cx="44" cy="48" rx="9" ry="10" fill="#C09070"/>
+            <ellipse cx="96" cy="48" rx="9" ry="10" fill="#C09070"/>
+            <ellipse cx="70" cy="64" rx="20" ry="16" fill="#D4A87A"/>
+            <ellipse cx="58" cy="57" rx="7" ry="8" fill="#2D1408"/>
+            <ellipse cx="82" cy="57" rx="7" ry="8" fill="#2D1408"/>
+            <ellipse cx="59" cy="55" rx="2.5" ry="3.5" fill="#6B3A20"/>
+            <ellipse cx="83" cy="55" rx="2.5" ry="3.5" fill="#6B3A20"/>
+            <ellipse cx="60" cy="54" rx="1.2" ry="2.2" fill="#0A0600"/>
+            <ellipse cx="84" cy="54" rx="1.2" ry="2.2" fill="#0A0600"/>
+            <ellipse cx="70" cy="70" rx="9" ry="7" fill="#C09070"/>
+            <ellipse cx="70" cy="72" rx="6" ry="5" fill="#B07858"/>
+            <path d="M63 75 Q70 82 77 75" stroke="#2D1408" stroke-width="2" fill="none"/>
+            <line x1="52" y1="65" x2="36" y2="59" stroke="#7A4E2C" stroke-width="1.3"/>
+            <line x1="52" y1="68" x2="34" y2="69" stroke="#7A4E2C" stroke-width="1.3"/>
+            <line x1="88" y1="65" x2="104" y2="59" stroke="#7A4E2C" stroke-width="1.3"/>
+            <line x1="88" y1="68" x2="106" y2="69" stroke="#7A4E2C" stroke-width="1.3"/>`,
+      happy:`<ellipse cx="70" cy="74" rx="38" ry="42" fill="#8B5E3C"/>
+             <ellipse cx="70" cy="58" rx="30" ry="28" fill="#A0714A"/>
+             <ellipse cx="44" cy="44" rx="13" ry="15" fill="#8B5E3C"/>
+             <ellipse cx="96" cy="44" rx="13" ry="15" fill="#8B5E3C"/>
+             <ellipse cx="44" cy="48" rx="9" ry="10" fill="#C09070"/>
+             <ellipse cx="96" cy="48" rx="9" ry="10" fill="#C09070"/>
+             <ellipse cx="70" cy="64" rx="20" ry="16" fill="#D4A87A"/>
+             <path d="M52 55 Q58 46 64 55" stroke="#2D1408" stroke-width="2.2" fill="none"/>
+             <path d="M76 55 Q82 46 88 55" stroke="#2D1408" stroke-width="2.2" fill="none"/>
+             <ellipse cx="70" cy="70" rx="9" ry="7" fill="#C09070"/>
+             <ellipse cx="70" cy="72" rx="6" ry="5" fill="#B07858"/>
+             <path d="M61 74 Q70 85 79 74" stroke="#2D1408" stroke-width="2.5" fill="none"/>
+             <ellipse cx="52" cy="64" rx="7" ry="5" fill="#D08060" opacity=".5"/>
+             <ellipse cx="88" cy="64" rx="7" ry="5" fill="#D08060" opacity=".5"/>
+             <line x1="52" y1="65" x2="36" y2="59" stroke="#7A4E2C" stroke-width="1.3"/>
+             <line x1="88" y1="65" x2="104" y2="59" stroke="#7A4E2C" stroke-width="1.3"/>`,
+      pause:`<ellipse cx="70" cy="74" rx="38" ry="42" fill="#8B5E3C"/>
+             <ellipse cx="70" cy="58" rx="30" ry="28" fill="#A0714A"/>
+             <ellipse cx="44" cy="44" rx="13" ry="15" fill="#8B5E3C"/>
+             <ellipse cx="96" cy="44" rx="13" ry="15" fill="#8B5E3C"/>
+             <ellipse cx="44" cy="48" rx="9" ry="10" fill="#C09070"/>
+             <ellipse cx="96" cy="48" rx="9" ry="10" fill="#C09070"/>
+             <ellipse cx="70" cy="64" rx="20" ry="16" fill="#D4A87A"/>
+             <ellipse cx="58" cy="59" rx="6" ry="3.5" fill="#2D1408"/>
+             <ellipse cx="82" cy="59" rx="6" ry="3.5" fill="#2D1408"/>
+             <ellipse cx="70" cy="70" rx="9" ry="7" fill="#C09070"/>
+             <ellipse cx="70" cy="72" rx="6" ry="5" fill="#B07858"/>
+             <path d="M65 76 Q70 79 75 76" stroke="#2D1408" stroke-width="2" fill="none"/>
+             <line x1="52" y1="65" x2="36" y2="59" stroke="#7A4E2C" stroke-width="1.3"/>
+             <line x1="88" y1="65" x2="104" y2="59" stroke="#7A4E2C" stroke-width="1.3"/>`
     }
   }
+];
 
-  // ── Render timer ──
-  function renderTimer() {
-    const mins = Math.floor(state.remainingSecs / 60);
-    const secs = state.remainingSecs % 60;
-    const timeStr = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+const CIRC = 2 * Math.PI * 72; // 452.4
 
-    document.getElementById('timerDisplay').textContent = timeStr;
-    document.getElementById('fsTime').textContent = timeStr;
+const state = {
+  phase: 'setup',
+  charId: 'dog',
+  task: '',
+  totalSecs: 15*60,
+  remainingSecs: 15*60,
+  selectedMins: 15,
+  vibe: 'halfway',
+  interval: null,
+  sessionsToday: 0,
+  breakShown: false,
+  currentMood: 'base', // base | happy | pause
+};
 
-    const pct = state.remainingSecs / state.totalSecs;
-    const offset = CIRCUMFERENCE * (1 - pct);
-    const circ = document.getElementById('circleProgress');
-    circ.style.strokeDashoffset = offset;
+// ── Build character picker ──
+function buildCharGrid() {
+  const grid = document.getElementById('charGrid');
+  grid.innerHTML = '';
+  CHARS.forEach(ch => {
+    const btn = document.createElement('button');
+    btn.className = 'char-btn' + (ch.id === state.charId ? ' active' : '');
+    btn.onclick = () => selectChar(ch.id);
+    btn.innerHTML = `<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">${ch.svg.base}</svg>
+                     <div class="char-name">${ch.name}</div>`;
+    grid.appendChild(btn);
+  });
+}
 
-    // Colour shift as time runs low
-    if (state.remainingSecs <= 60) {
-      circ.style.stroke = '#f43f5e';
-    } else if (state.remainingSecs <= state.totalSecs * 0.25) {
-      circ.style.stroke = '#f59e0b';
-    } else {
-      circ.style.stroke = 'var(--green)';
-    }
-
-    // Progress bar
-    document.getElementById('progressFill').style.width = (pct * 100) + '%';
-    document.getElementById('fsProgFill').style.width = (pct * 100) + '%';
-
-    // Status text
-    let status = 'Working together 👥';
-    if (state.phase === 'paused') status = 'Paused ⏸️';
-    else if (state.remainingSecs <= 60) status = 'Almost done! 🏁';
-    else if (state.remainingSecs <= state.totalSecs * 0.25) status = 'Great progress 🌟';
-    document.getElementById('timerStatus').textContent = status;
-    document.getElementById('fsStatus').textContent = status;
-  }
-
-  // ── Pause / resume ──
-  function togglePause() {
-    const btn = document.getElementById('pauseBtn');
-    if (state.phase === 'running') {
-      state.phase = 'paused';
-      clearInterval(state.interval);
-      btn.textContent = '▶ Resume';
-      btn.className = 'ctrl-btn ctrl-resume';
-    } else {
-      state.phase = 'running';
-      state.interval = setInterval(tick, 1000);
-      btn.textContent = '⏸ Pause';
-      btn.className = 'ctrl-btn ctrl-pause';
-    }
-    renderTimer();
-  }
-
-  // ── Stop ──
-  function stopSession() {
-    if (!confirm('Stop this session?')) return;
-    clearInterval(state.interval);
-    state.phase = 'setup';
-    document.getElementById('timerCard').classList.remove('show');
-    document.getElementById('setupCard').classList.remove('hidden');
-    exitFullscreen();
-  }
-
-  // ── Finish ──
-  function finishSession() {
-    clearInterval(state.interval);
-    state.phase = 'done';
-    state.sessionsToday++;
-
-    document.getElementById('timerCard').classList.remove('show');
-    exitFullscreen();
-
-    const doneCard = document.getElementById('doneCard');
-    doneCard.classList.add('show');
-    document.getElementById('doneTask').innerHTML =
-      `You focused for <strong>${state.selectedMins} minutes</strong> on <strong>${esc(state.task)}</strong>`;
-
-    updateStreak();
-    playFinish();
-  }
-
-  function updateStreak() {
-    document.getElementById('streakCount').textContent = state.sessionsToday;
-    document.getElementById('streakSub').textContent =
-      state.sessionsToday === 1 ? 'First session done — great start!' :
-      state.sessionsToday === 2 ? 'Two sessions — you\'re on a roll!' :
-      state.sessionsToday === 3 ? 'Three sessions — incredible focus!' :
-      `${state.sessionsToday} sessions — outstanding! 🌟`;
-  }
-
-  // ── Do another / reset ──
-  function startAgain() {
-    document.getElementById('doneCard').classList.remove('show');
-    startSession(); // same task, same duration
-  }
-
-  function resetToSetup() {
-    document.getElementById('doneCard').classList.remove('show');
-    document.getElementById('setupCard').classList.remove('hidden');
-    state.phase = 'setup';
-  }
-
-  // ── Fullscreen ──
-  function enterFullscreen() {
-    state.fullscreen = true;
-    document.getElementById('fsOverlay').classList.add('show');
-    document.getElementById('fsTask').textContent = state.task;
-    renderTimer();
-  }
-
-  function exitFullscreen() {
-    state.fullscreen = false;
-    document.getElementById('fsOverlay').classList.remove('show');
-  }
-
-  // ── Sound ──
-  function playBeep(freq, vol) {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'sine';
-      gain.gain.setValueAtTime(vol, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      osc.start(); osc.stop(ctx.currentTime + 0.4);
-    } catch(e) {}
-  }
-
-  function playFinish() {
-    // Three rising tones
-    [523, 659, 784].forEach((freq, i) => {
-      setTimeout(() => playBeep(freq, 0.2), i * 200);
-    });
-  }
-
-  function esc(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // Init
+function selectChar(id) {
+  state.charId = id;
+  document.querySelectorAll('.char-btn').forEach((b,i) => {
+    b.classList.toggle('active', CHARS[i].id === id);
+  });
   updateStartBtn();
-</script>
+}
 
+function getChar() { return CHARS.find(c => c.id === state.charId); }
+
+function svgFor(mood) {
+  const ch = getChar();
+  return `<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">${ch.svg[mood] || ch.svg.base}</svg>`;
+}
+
+function setCompanionMood(mood, bubble) {
+  state.currentMood = mood;
+  const ch = getChar();
+  const wrap = document.getElementById('companionWrap');
+  if (!wrap) return;
+
+  const anim = mood === 'happy' ? 'anim-celebrate' : mood === 'pause' ? '' : 'anim-breathe';
+  wrap.innerHTML = `<div class="${anim}" style="width:140px;height:140px">${svgFor(mood)}</div>`;
+  document.getElementById('companionName').textContent = ch.name;
+  if (bubble) document.getElementById('companionBubble').textContent = bubble;
+
+  // Also update fullscreen
+  const fsChar = document.getElementById('fsChar');
+  if (fsChar) fsChar.innerHTML = `<div class="${anim}" style="width:180px;height:180px">
+    <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" width="180" height="180">${svgFor(mood)}</svg></div>`;
+  if (bubble) {
+    const fsBubble = document.getElementById('fsBubble');
+    if (fsBubble) fsBubble.textContent = bubble;
+  }
+}
+
+// ── Duration & vibe ──
+function selectDur(mins) {
+  state.selectedMins = mins;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', +b.dataset.mins === mins));
+  updateStartBtn();
+}
+
+function selectVibe(v) {
+  state.vibe = v;
+  document.querySelectorAll('.vibe-btn').forEach(b => b.classList.toggle('active', b.dataset.vibe === v));
+}
+
+function updateStartBtn() {
+  const ch = getChar();
+  const task = document.getElementById('taskInput')?.value.trim();
+  const btn = document.getElementById('startBtn');
+  btn.textContent = `${ch.emoji} Start with ${ch.name} — ${state.selectedMins} minutes`;
+}
+
+document.getElementById('taskInput').addEventListener('input', updateStartBtn);
+
+// ── Start ──
+function startSession() {
+  const ch = getChar();
+  state.task = document.getElementById('taskInput').value.trim() || 'Your focus session';
+  state.totalSecs = state.selectedMins * 60;
+  state.remainingSecs = state.totalSecs;
+  state.breakShown = false;
+  state.phase = 'running';
+
+  document.getElementById('setupCard').classList.add('hidden');
+  document.getElementById('doneCard').classList.remove('show');
+  document.getElementById('timerCard').classList.add('show');
+  document.getElementById('timerTask').textContent = state.task;
+  document.getElementById('breakWarning').classList.remove('show');
+  document.getElementById('pauseBtn').textContent = '⏸ Pause';
+  document.getElementById('pauseBtn').className = 'ctrl-btn ctrl-pause';
+
+  setCompanionMood('base', ch.say.focus);
+  renderTimer();
+  state.interval = setInterval(tick, 1000);
+}
+
+// ── Tick ──
+function tick() {
+  if (state.phase !== 'running') return;
+  state.remainingSecs--;
+  checkBreak();
+  if (state.remainingSecs <= 0) { state.remainingSecs = 0; renderTimer(); finish(); return; }
+  renderTimer();
+}
+
+function checkBreak() {
+  if (state.breakShown) return;
+  const ch = getChar();
+  const elapsed = state.totalSecs - state.remainingSecs;
+  const pct = elapsed / state.totalSecs;
+  let show = false; let msg = '';
+
+  if (state.vibe === 'halfway' && pct >= 0.5) { show = true; msg = ch.say.half; }
+  else if (state.vibe === 'every10' && elapsed > 0 && elapsed % 600 === 0) { show = true; msg = 'Take a quick break — stretch and breathe!'; }
+  else if (state.vibe === 'end5' && state.remainingSecs <= 300 && state.remainingSecs > 299) { show = true; msg = '5 minutes left — nearly there!'; }
+
+  if (show) {
+    state.breakShown = true;
+    document.getElementById('breakMsg').textContent = msg;
+    document.getElementById('breakWarning').classList.add('show');
+    setCompanionMood('happy', msg);
+    playBeep(440, .15);
+    setTimeout(() => {
+      document.getElementById('breakWarning').classList.remove('show');
+      state.breakShown = false;
+      setCompanionMood('base', ch.say.focus);
+    }, 8000);
+  }
+}
+
+function renderTimer() {
+  const mins = Math.floor(state.remainingSecs / 60);
+  const secs = state.remainingSecs % 60;
+  const ts = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+  document.getElementById('timerDisplay').textContent = ts;
+  document.getElementById('fsTime').textContent = ts;
+
+  const pct = state.remainingSecs / state.totalSecs;
+  const offset = CIRC * (1 - pct);
+  const cp = document.getElementById('circProg');
+  cp.style.strokeDashoffset = offset;
+  cp.style.stroke = state.remainingSecs <= 60 ? '#f43f5e' : state.remainingSecs <= state.totalSecs*.25 ? '#f59e0b' : 'var(--green)';
+
+  document.getElementById('progFill').style.width = (pct*100)+'%';
+  document.getElementById('fsProgFill').style.width = (pct*100)+'%';
+
+  let status = state.phase === 'paused' ? 'Paused ⏸️' :
+               state.remainingSecs <= 60 ? 'Almost done! 🏁' :
+               state.remainingSecs <= state.totalSecs*.25 ? 'Great progress 🌟' : 'Working together 👥';
+  document.getElementById('timerStatus').textContent = status;
+  document.getElementById('fsStatus').textContent = status.toUpperCase();
+  document.getElementById('fsTask').textContent = state.task;
+}
+
+// ── Pause / stop / finish ──
+function togglePause() {
+  const ch = getChar();
+  const btn = document.getElementById('pauseBtn');
+  if (state.phase === 'running') {
+    state.phase = 'paused';
+    clearInterval(state.interval);
+    btn.textContent = '▶ Resume'; btn.className = 'ctrl-btn ctrl-resume';
+    setCompanionMood('pause', ch.say.pause);
+  } else {
+    state.phase = 'running';
+    state.interval = setInterval(tick, 1000);
+    btn.textContent = '⏸ Pause'; btn.className = 'ctrl-btn ctrl-pause';
+    setCompanionMood('base', ch.say.focus);
+  }
+  renderTimer();
+}
+
+function stopSession() {
+  if (!confirm('Stop this session?')) return;
+  clearInterval(state.interval);
+  state.phase = 'setup';
+  document.getElementById('timerCard').classList.remove('show');
+  document.getElementById('setupCard').classList.remove('hidden');
+  exitFs();
+}
+
+function finish() {
+  clearInterval(state.interval);
+  state.phase = 'done';
+  state.sessionsToday++;
+  const ch = getChar();
+
+  setCompanionMood('happy', ch.say.done);
+
+  document.getElementById('timerCard').classList.remove('show');
+  exitFs();
+
+  // Build done card with celebrating companion
+  const doneChar = document.getElementById('doneChar');
+  doneChar.innerHTML = `<div class="anim-celebrate" style="width:120px;height:120px">
+    <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" width="120" height="120">${ch.svg.happy || ch.svg.base}</svg></div>`;
+  document.getElementById('doneTask').innerHTML =
+    `${ch.name} worked with you for <strong>${state.selectedMins} minutes</strong> on <strong>${esc(state.task)}</strong>!`;
+  document.getElementById('doneCard').classList.add('show');
+
+  updateStreak();
+  playFanfare();
+}
+
+function updateStreak() {
+  document.getElementById('streakCount').textContent = state.sessionsToday;
+  document.getElementById('streakSub').textContent =
+    state.sessionsToday === 1 ? 'First session done — great start!' :
+    state.sessionsToday === 2 ? 'Two sessions — you\'re on a roll!' :
+    state.sessionsToday === 3 ? 'Three sessions — incredible focus!' :
+    `${state.sessionsToday} sessions — outstanding! 🌟`;
+}
+
+function startAgain() {
+  document.getElementById('doneCard').classList.remove('show');
+  startSession();
+}
+function resetSetup() {
+  document.getElementById('doneCard').classList.remove('show');
+  document.getElementById('setupCard').classList.remove('hidden');
+  state.phase = 'setup';
+}
+
+// ── Fullscreen ──
+function enterFs() {
+  document.getElementById('fsOverlay').classList.add('show');
+  const ch = getChar();
+  const fsChar = document.getElementById('fsChar');
+  fsChar.innerHTML = `<div class="anim-breathe" style="width:180px;height:180px">
+    <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" width="180" height="180">${ch.svg.base}</svg></div>`;
+  renderTimer();
+}
+function exitFs() { document.getElementById('fsOverlay').classList.remove('show'); }
+
+// ── Sound ──
+function playBeep(f,v) {
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value=f; o.type='sine';
+    g.gain.setValueAtTime(v,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);
+    o.start(); o.stop(ctx.currentTime+.4);
+  } catch(e){}
+}
+function playFanfare() {
+  [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playBeep(f,.2),i*150));
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Init
+buildCharGrid();
+updateStartBtn();
+</script>
 </body>
 </html>
