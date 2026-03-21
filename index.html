@@ -30,9 +30,11 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overf
     radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
 a{text-decoration:none;color:inherit}
 @keyframes fadeUp{from{opacity:0}to{opacity:1}}
-@keyframes floatA{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(-2deg)}}
-@keyframes floatB{0%,100%{transform:rotate(2deg)}50%{transform:rotate(2deg)}}
-@keyframes floatMain{0%,100%{transform:none}50%{transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .a1,.a2,.a3,.a4,.a5{animation:none;opacity:1}
+  .r{opacity:1;transform:none;transition:none}
+  @keyframes glow{0%,100%{box-shadow:none}}
+}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(46,204,135,.35)}60%{box-shadow:0 0 0 10px rgba(46,204,135,0)}}
 .a1{opacity:0;animation:fadeUp .65s .05s cubic-bezier(.22,1,.36,1) forwards}
 .a2{opacity:0;animation:fadeUp .65s .18s cubic-bezier(.22,1,.36,1) forwards}
@@ -52,7 +54,7 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-
   border-radius:100px;transition:all .14s}
 .nlink:hover{background:var(--green-l);color:var(--green-d)}
 .npill{background:var(--green);color:white;padding:8px 20px;border-radius:100px;
-  font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3}
+  font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3 forwards}
 .npill:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,.4)}
 @media(max-width:620px){.nlinks .nlink{display:none}}
 /* HERO */
@@ -85,10 +87,10 @@ h1 .hi{color:var(--green);font-style:italic}
 .hvis{position:relative;display:flex;align-items:center;justify-content:center;padding:20px 0}
 .hvwrap{position:relative;max-width:400px;width:100%;margin:0 auto}
 .hcard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);border:1.5px solid var(--border)}
-.hmain{padding:18px;animation:floatMain 4s ease-in-out infinite}
+.hmain{padding:18px}
 .hfloat{position:absolute;border-radius:14px;padding:12px}
-.hf1{top:-22px;right:-14px;width:162px;animation:floatA 4.4s .4s ease-in-out infinite}
-.hf2{bottom:-22px;left:-14px;width:148px;animation:floatB 3.9s .9s ease-in-out infinite}
+.hf1{top:-22px;right:-14px;width:162px;transform:rotate(-2deg)}
+.hf2{bottom:-22px;left:-14px;width:148px;transform:rotate(2deg)}
 @media(max-width:860px){.hf1,.hf2{display:none}}
 .rmh{font-family:var(--font-head);font-size:.85rem;font-weight:800;color:var(--ink);
   padding-bottom:9px;border-bottom:2px solid var(--green);margin-bottom:10px;
@@ -320,7 +322,7 @@ footer{background:var(--ink);padding:38px 28px 28px}
     <div class="seye r">How it works</div>
     <h2 class="stit r">From blank page to printed support in four steps</h2>
     <div class="srow">
-      <div class="scard r"><div class="snum">1</div><span class="sico">📋</span><div class="stitl">Pick a tool</div><p class="stxt">Choose from routine builders, communication cards, Now/Next boards, trackers, and 20+ other tools.</p><div class="stags"><span class="stag">24 tools</span><span class="stag">Pre-built options</span></div></div>
+      <div class="scard r"><div class="snum">1</div><span class="sico">📋</span><div class="stitl">Pick a tool</div><p class="stxt">Choose from routine builders, communication cards, Now/Next boards, trackers, and 20+ other tools.</p><div class="stags"><span class="stag">21 tools</span><span class="stag">Pre-built options</span></div></div>
       <div class="scard r"><div class="snum">2</div><span class="sico">✏️</span><div class="stitl">Customise it</div><p class="stxt">Edit labels, add steps, search 20,000+ ARASAAC pictograms, change colours — make it yours.</p><div class="stags"><span class="stag">20,000+ icons</span><span class="stag">Drag &amp; drop</span></div></div>
       <div class="scard r"><div class="snum">3</div><span class="sico">👁️</span><div class="stitl">Preview live</div><p class="stxt">See exactly how your routine chart, board or card set will look before you print — no surprises.</p><div class="stags"><span class="stag">Live preview</span><span class="stag">Auto-saves</span></div></div>
       <div class="scard r"><div class="snum">4</div><span class="sico">🖨️</span><div class="stitl">Print &amp; use</div><p class="stxt">Print from your browser in one click. Laminate, Velcro, fridge — ready for tomorrow morning.</p><div class="stags"><span class="stag">Print or PDF</span><span class="stag">Any printer</span></div></div>
@@ -331,7 +333,7 @@ footer{background:var(--ink);padding:38px 28px 28px}
 <section class="tools" id="tools">
   <div class="si">
     <div class="seye r">All tools</div>
-    <h2 class="stit r">24 tools — all free, all in one place</h2>
+    <h2 class="stit r">21 tools — all free, all in one place</h2>
     <p class="ssub r">Covering routines, communication, emotions, learning support and daily life.</p>
     <div class="tgrid">
       <div class="tcat r"><span class="tcatlbl">Routines &amp; Visual Supports</span><span class="tcatline"></span></div>
@@ -366,11 +368,6 @@ footer{background:var(--ink);padding:38px 28px 28px}
       <div class="tcard ta r"><span class="tico">🍽️</span><div class="ttit">Safe Food List Builder</div><p class="tdesc">Add foods, tick the safe ones, sort into Always, Sometimes or Not Yet. Great for mealtimes.</p><a href="/safefood/" class="tlink">Open tool →</a></div>
       <div class="tcard tb r"><span class="tico">💊</span><div class="ttit">Medication &amp; Appointments</div><p class="tdesc">Track daily medications with a simple tick system and keep upcoming appointments in one place.</p><a href="/med-tracker/" class="tlink">Open tool →</a></div>
       <div class="tcard tp r"><span class="tico">🌙</span><div class="ttit">Sleep Pattern Logger</div><p class="tdesc">Track your child's sleep each night — bedtimes, wakings, mood and patterns over time.</p><a href="/sleep-logger/" class="tlink">Open tool →</a></div>
-
-      <div class="tcat r"><span class="tcatlbl">ADHD Support</span><span class="tcatline"></span></div>
-      <div class="tcard tg r"><span class="tico">🧠</span><div class="ttit">Brain Dump Pad</div><p class="tdesc">Too many thoughts at once? Get everything out of your head, then sort into Do Now, Do Later or Let It Go.</p><a href="/brain-dump/" class="tlink">Open tool →</a></div>
-      <div class="tcard tb r"><span class="tico">👥</span><div class="ttit">Body Doubling Timer</div><p class="tdesc">Focus better by working alongside someone — even virtually. Set your task, pick your time, get it done.</p><a href="/body-doubling-timer/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">⭐</span><div class="ttit">Token Board Builder</div><p class="tdesc">Earn tokens, reach the reward. Build a personalised token board with custom tokens, colours and rewards.</p><a href="/token-board/" class="tlink">Open tool →</a></div>
     </div>
   </div>
 </section>
@@ -544,6 +541,16 @@ async function handleContactSubmit(e){
     alert('Sorry, something went wrong. Please try emailing directly.');
   }
 }
+
+// Pause animations when tab is hidden to save CPU
+document.addEventListener('visibilitychange', () => {
+  document.body.style.animationPlayState =
+    document.hidden ? 'paused' : 'running';
+  // Also pause all animated elements
+  document.querySelectorAll('.a1,.a2,.a3,.a4,.a5,.npill').forEach(el => {
+    el.style.animationPlayState = document.hidden ? 'paused' : 'running';
+  });
+});
 </script>
 </body>
 </html>
