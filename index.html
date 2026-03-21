@@ -57,6 +57,59 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-
   font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3 forwards}
 .npill:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,.4)}
 @media(max-width:620px){.nlinks .nlink{display:none}}
+/* BOOKMARK */
+.bookmark-btn{font-family:var(--font-body);font-size:.75rem;font-weight:700;color:var(--ink2);
+  background:none;border:1.5px solid var(--border2);border-radius:20px;padding:5px 12px;
+  cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.bookmark-btn:hover{border-color:var(--green);color:var(--green-d);background:var(--green-l)}
+.bookmark-btn.saved{color:var(--amber,#f59e0b);border-color:rgba(245,158,11,.4)}
+.bookmark-banner{position:fixed;bottom:0;left:0;right:0;background:#0f1a2e;
+  border-top:2px solid rgba(16,185,129,.3);padding:12px 20px;
+  display:flex;align-items:center;gap:12px;z-index:300;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.bookmark-banner.show{transform:translateY(0)}
+.bookmark-banner-icon{font-size:1.2rem;flex-shrink:0}
+.bookmark-banner-text{flex:1;font-family:var(--font-body);font-size:.82rem;font-weight:700;
+  color:rgba(255,255,255,.7);line-height:1.4}
+.bookmark-banner-text strong{color:white}
+.bookmark-banner-btn{font-family:var(--font-body);font-size:.78rem;font-weight:800;
+  background:#10b981;color:white;border:none;border-radius:20px;padding:7px 14px;
+  cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0}
+.bookmark-banner-btn:hover{background:#059669}
+.bookmark-banner-close{background:none;border:none;color:rgba(255,255,255,.3);
+  font-size:1.1rem;cursor:pointer;padding:4px;transition:color .13s;flex-shrink:0;line-height:1}
+.bookmark-banner-close:hover{color:rgba(255,255,255,.7)}
+.bm-backdrop{position:fixed;inset:0;background:rgba(15,26,46,.6);z-index:500;
+  display:none;align-items:flex-end;justify-content:center;padding:20px}
+.bm-backdrop.open{display:flex}
+.bm-modal{background:white;border-radius:18px 18px 14px 14px;padding:22px 22px 28px;
+  width:min(440px,100%);box-shadow:0 -8px 40px rgba(15,26,46,.2);
+  animation:bmUp .3s cubic-bezier(.22,1,.36,1)}
+@keyframes bmUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.bm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.bm-title{font-family:var(--font-head);font-size:1.05rem;font-weight:800;color:#0f1a2e;
+  display:flex;align-items:center;gap:8px}
+.bm-x{background:none;border:none;font-size:1.2rem;color:#7a8fa6;cursor:pointer;
+  padding:4px;line-height:1;transition:color .13s}
+.bm-x:hover{color:#0f1a2e}
+.bm-panel{background:#f0f4f8;border-radius:12px;padding:14px 16px;margin-bottom:8px;display:none}
+.bm-panel.show{display:block}
+.bm-lbl{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.7px;
+  color:#10b981;margin-bottom:8px}
+.bm-step{font-size:.85rem;font-weight:600;color:#4a5568;line-height:1.7;
+  display:flex;gap:10px;align-items:flex-start;margin-bottom:6px}
+.bm-step:last-child{margin-bottom:0}
+.bm-num{background:#10b981;color:white;border-radius:50%;width:20px;height:20px;
+  font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px}
+.bm-install{width:100%;font-family:var(--font-body);font-size:.92rem;font-weight:800;
+  background:#10b981;color:white;border:none;border-radius:12px;padding:13px;
+  cursor:pointer;transition:all .15s;margin-top:4px;display:none}
+.bm-install:hover{background:#059669;transform:translateY(-1px)}
+.bm-install.show{display:block}
+.bm-done{text-align:center;font-size:.85rem;color:#059669;font-weight:700;
+  padding:8px 0 0;display:none}
+.bm-done.show{display:block}
 /* HERO */
 .hero{max-width:1120px;margin:0 auto;padding:72px 28px 64px;
   display:grid;grid-template-columns:1.05fr 1fr;gap:52px;align-items:center}
@@ -252,6 +305,7 @@ footer{background:var(--ink);padding:38px 28px 28px}
     <a href="#tools" class="nlink">Tools</a>
     <a href="#how" class="nlink">How it works</a>
     <a href="#routines" class="nlink">Routines</a>
+    <button class="bookmark-btn" onclick="openBmModal()" id="bookmarkBtn">⭐ Bookmark</button>
     <a href="/routine/" class="npill">✨ Get started free</a>
   </div>
 </nav>
@@ -551,6 +605,137 @@ document.addEventListener('visibilitychange', () => {
     el.style.animationPlayState = document.hidden ? 'paused' : 'running';
   });
 });
+</script>
+<!-- Bookmark banner -->
+<div class="bookmark-banner" id="bmBanner">
+  <span class="bookmark-banner-icon">⭐</span>
+  <div class="bookmark-banner-text"><strong>Bookmark SendSteps</strong> — save it to your home screen for quick access</div>
+  <button class="bookmark-banner-btn" onclick="openBmModal()">Bookmark this page</button>
+  <button class="bookmark-banner-close" onclick="dismissBmBanner()" aria-label="Dismiss">✕</button>
+</div>
+
+<!-- Bookmark modal -->
+<div class="bm-backdrop" id="bmBackdrop" onclick="closeBmModal(event)">
+  <div class="bm-modal">
+    <div class="bm-head">
+      <div class="bm-title">⭐ Bookmark this page</div>
+      <button class="bm-x" onclick="closeBmModalDirect()">✕</button>
+    </div>
+    <div class="bm-panel" id="bmp-android">
+      <div class="bm-lbl">Android · Chrome</div>
+      <button class="bm-install show" id="bmInstallBtn" onclick="bmTriggerInstall()">📱 Add to Home Screen</button>
+      <div class="bm-done" id="bmDoneMsg">✅ Added! Look for the SendSteps icon on your home screen.</div>
+    </div>
+    <div class="bm-panel" id="bmp-ios">
+      <div class="bm-lbl">iPhone · Safari</div>
+      <div class="bm-step"><span class="bm-num">1</span><span>Tap the <strong>Share button</strong> at the bottom of your screen (box with arrow pointing up)</span></div>
+      <div class="bm-step"><span class="bm-num">2</span><span>Scroll down and tap <strong>"Add to Home Screen"</strong></span></div>
+      <div class="bm-step"><span class="bm-num">3</span><span>Tap <strong>"Add"</strong> — SendSteps will appear on your home screen like an app</span></div>
+    </div>
+    <div class="bm-panel" id="bmp-chrome">
+      <div class="bm-lbl">Chrome · Desktop</div>
+      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span></div>
+      <div class="bm-step"><span class="bm-num">2</span><span>Choose a folder and click <strong>Done</strong></span></div>
+    </div>
+    <div class="bm-panel" id="bmp-firefox">
+      <div class="bm-lbl">Firefox</div>
+      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span></div>
+      <div class="bm-step"><span class="bm-num">2</span><span>Click <strong>Save Bookmark</strong></span></div>
+    </div>
+    <div class="bm-panel" id="bmp-safari">
+      <div class="bm-lbl">Safari · Mac</div>
+      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Cmd+D</strong> or go to <strong>Bookmarks → Add Bookmark</strong></span></div>
+      <div class="bm-step"><span class="bm-num">2</span><span>Choose where to save it and click <strong>Add</strong></span></div>
+    </div>
+    <div class="bm-panel" id="bmp-generic">
+      <div class="bm-lbl">Add a bookmark</div>
+      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span></div>
+      <div class="bm-step"><span class="bm-num">2</span><span>On mobile, tap your browser menu and look for <strong>"Add to Home Screen"</strong> or <strong>"Bookmark"</strong></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/.test(ua);
+  const isChrome = /Chrome/.test(ua) && !/Edg/.test(ua);
+  const isFirefox = /Firefox/.test(ua);
+  const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua);
+  let deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  function detectPanel() {
+    ['android','ios','chrome','firefox','safari','generic'].forEach(id => {
+      const el = document.getElementById('bmp-'+id);
+      if (el) el.classList.remove('show');
+    });
+    let id = 'generic';
+    if (isIOS && isSafari)          id = 'ios';
+    else if (isAndroid && isChrome) id = 'android';
+    else if (isChrome)              id = 'chrome';
+    else if (isFirefox)             id = 'firefox';
+    else if (isSafari)              id = 'safari';
+    const panel = document.getElementById('bmp-'+id);
+    if (panel) panel.classList.add('show');
+    // If Android Chrome but no deferred prompt, show manual steps
+    if (id === 'android' && !deferredPrompt) {
+      const p = document.getElementById('bmp-android');
+      if (p) p.innerHTML = `<div class="bm-lbl">Android · Chrome</div>
+        <div class="bm-step"><span class="bm-num">1</span><span>Tap the <strong>three dots menu</strong> in the top right</span></div>
+        <div class="bm-step"><span class="bm-num">2</span><span>Tap <strong>"Add to Home screen"</strong></span></div>
+        <div class="bm-step"><span class="bm-num">3</span><span>Tap <strong>Add</strong> to confirm</span></div>`;
+    }
+  }
+
+  window.bmTriggerInstall = function() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(r => {
+      if (r.outcome === 'accepted') {
+        const btn = document.getElementById('bmInstallBtn');
+        const msg = document.getElementById('bmDoneMsg');
+        if (btn) btn.classList.remove('show');
+        if (msg) msg.classList.add('show');
+        const hbtn = document.getElementById('bookmarkBtn');
+        if (hbtn) { hbtn.textContent = '⭐ Bookmarked!'; hbtn.classList.add('saved'); }
+      }
+      deferredPrompt = null;
+    });
+  };
+
+  window.openBmModal = function() {
+    detectPanel();
+    document.getElementById('bmBackdrop').classList.add('open');
+  };
+  window.closeBmModal = function(e) {
+    if (e && e.target !== document.getElementById('bmBackdrop')) return;
+    closeBmModalDirect();
+  };
+  window.closeBmModalDirect = function() {
+    document.getElementById('bmBackdrop').classList.remove('open');
+  };
+
+  // Banner — show after 20s, remember if dismissed
+  const BANNER_KEY = 'ss_bm_dismissed';
+  const banner = document.getElementById('bmBanner');
+  if (banner && !localStorage.getItem(BANNER_KEY)) {
+    setTimeout(() => banner.classList.add('show'), 20000);
+  }
+  window.dismissBmBanner = function() {
+    if (banner) banner.classList.remove('show');
+    try { localStorage.setItem(BANNER_KEY, '1'); } catch(e) {}
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeBmModalDirect();
+  });
+})();
 </script>
 </body>
 </html>
