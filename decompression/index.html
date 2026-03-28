@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Decompression Planner</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+<title>Decompression Planner — SendSteps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>
@@ -37,70 +37,136 @@
 html{font-size:16px;scroll-behavior:smooth}
 body{
   font-family:'Quicksand',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  padding:0 0 60px;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;padding:0 0 60px;
   background-image:
     radial-gradient(ellipse 80% 50% at 50% -10%,rgba(167,139,212,0.12) 0%,transparent 70%),
     radial-gradient(ellipse 40% 40% at 90% 90%,rgba(245,185,66,0.06) 0%,transparent 60%);
 }
 button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:none}
+input{font-family:'Quicksand',sans-serif}
 
 /* ── HEADER ── */
 .header{padding:14px 20px 10px;display:flex;align-items:center;gap:14px;max-width:700px;margin:0 auto}
-.header-icon{
-  font-size:2.2rem;flex-shrink:0;
-  animation:breathe 4s ease-in-out infinite;
-}
-.header-text{}
+.header-back{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.5);text-decoration:none;
+  border:1.5px solid rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;
+  transition:all .15s;flex-shrink:0}
+.header-back:hover{color:white;border-color:rgba(255,255,255,.45)}
+.header-icon{font-size:2.2rem;flex-shrink:0;animation:breathe 4s ease-in-out infinite}
 @keyframes breathe{
   0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(167,139,212,0.4))}
   50%{transform:scale(1.08);filter:drop-shadow(0 0 18px rgba(167,139,212,0.7))}
 }
-.header h1{
-  font-family:'Quicksand',sans-serif;font-size:clamp(1.2rem,3vw,1.6rem);
-  font-weight:700;color:var(--text);letter-spacing:-0.3px;line-height:1.2;margin-bottom:4px;
-}
+.header-text{}
+.header h1{font-family:'Quicksand',sans-serif;font-size:clamp(1.2rem,3vw,1.6rem);
+  font-weight:700;color:var(--text);letter-spacing:-.3px;line-height:1.2;margin-bottom:4px}
 .header h1 span{color:var(--lavender)}
-.header p{color:var(--text2);font-size:0.8rem;font-weight:600;line-height:1.55}
-.header-note{
-  display:inline-block;margin-top:5px;
-  background:rgba(167,139,212,0.12);border:1.5px solid rgba(167,139,212,0.25);
-  border-radius:100px;padding:3px 12px;font-size:0.7rem;font-weight:700;
-  color:var(--lavender-l);letter-spacing:0.3px;
-}
+.header p{color:var(--text2);font-size:.8rem;font-weight:600;line-height:1.55}
+.header-note{display:inline-block;margin-top:5px;
+  background:rgba(167,139,212,.12);border:1.5px solid rgba(167,139,212,.25);
+  border-radius:100px;padding:3px 12px;font-size:.7rem;font-weight:700;
+  color:var(--lavender-l);letter-spacing:.3px}
 
 /* ── PLANNER ── */
 .planner{max-width:560px;margin:0 auto;padding:0 20px}
 
+/* ── SETUP CARD ── */
+.setup-card{
+  background:var(--surface2);border:1.5px solid var(--border2);
+  border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:14px;
+  box-shadow:var(--shadow);
+}
+.setup-card-head{font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px}
+.setup-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.setup-input{
+  flex:1;min-width:140px;background:var(--surface);border:1.5px solid var(--border2);
+  border-radius:12px;padding:9px 14px;color:var(--text);font-size:.9rem;font-weight:600;
+  outline:none;transition:border-color .15s;
+}
+.setup-input:focus{border-color:var(--lavender)}
+.setup-input::placeholder{color:var(--text3);font-weight:500}
+.setup-save{
+  padding:9px 18px;border-radius:100px;
+  background:rgba(167,139,212,.15);border:1.5px solid var(--lavender-d);
+  color:var(--lavender-l);font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.setup-save:hover{background:rgba(167,139,212,.28)}
+.setup-saved{font-size:.78rem;color:var(--mint);font-weight:700;margin-top:8px;display:none}
+.setup-saved.show{display:block}
+
+/* ── CHARGER SETUP ── */
+.charger-section{margin-top:14px}
+.charger-section-head{font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px}
+.charger-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.charger-preset{
+  padding:6px 13px;border-radius:100px;font-size:.8rem;font-weight:700;
+  border:1.5px solid var(--border2);background:var(--surface);
+  color:var(--text2);cursor:pointer;transition:all .15s;
+}
+.charger-preset:hover{border-color:var(--mint);color:var(--mint-l)}
+.charger-preset.selected{background:rgba(94,196,168,.15);border-color:var(--mint);color:var(--mint-l)}
+.charger-custom-row{display:flex;gap:8px;margin-top:6px}
+.charger-custom-input{
+  flex:1;background:var(--surface);border:1.5px solid var(--border2);
+  border-radius:12px;padding:8px 13px;color:var(--text);font-size:.85rem;font-weight:600;
+  outline:none;transition:border-color .15s;
+}
+.charger-custom-input:focus{border-color:var(--mint)}
+.charger-custom-input::placeholder{color:var(--text3);font-weight:500}
+.charger-add-btn{
+  padding:8px 16px;border-radius:100px;
+  background:rgba(94,196,168,.15);border:1.5px solid var(--mint);
+  color:var(--mint-l);font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.charger-add-btn:hover{background:rgba(94,196,168,.28)}
+.charger-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:0}
+.charger-tag{
+  display:flex;align-items:center;gap:5px;padding:5px 11px;
+  border-radius:100px;background:rgba(94,196,168,.12);
+  border:1.5px solid var(--mint);color:var(--mint-l);
+  font-size:.78rem;font-weight:700;
+}
+.charger-tag-del{font-size:.85rem;cursor:pointer;color:var(--mint);
+  opacity:.6;transition:opacity .12s;line-height:1}
+.charger-tag-del:hover{opacity:1}
+
+/* ── SECTIONS ── */
 .section{
   background:var(--surface);border:1.5px solid var(--border);
   border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:14px;
-  box-shadow:var(--shadow);animation:fadeUp 0.4s ease both;
+  box-shadow:var(--shadow);animation:fadeUp .4s ease both;
 }
-.section:nth-child(1){animation-delay:0.05s}
-.section:nth-child(2){animation-delay:0.12s}
-.section:nth-child(3){animation-delay:0.19s}
+.section:nth-child(1){animation-delay:.05s}
+.section:nth-child(2){animation-delay:.10s}
+.section:nth-child(3){animation-delay:.15s}
+.section:nth-child(4){animation-delay:.20s}
+.section:nth-child(5){animation-delay:.25s}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
 .section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .section-icon{font-size:1.3rem;line-height:1}
-.section-title{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3)}
-.section-q{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--text);line-height:1.4;margin-top:2px}
+.section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3)}
+.section-q{font-family:'Lora',serif;font-size:1rem;font-weight:600;
+  color:var(--text);line-height:1.4;margin-top:2px}
 
 /* ── OPTIONS ── */
 .options{display:flex;flex-wrap:wrap;gap:8px}
 .opt-btn{
   padding:9px 18px;border-radius:100px;font-family:'Quicksand',sans-serif;
-  font-size:0.85rem;font-weight:700;border:2px solid var(--border2);
+  font-size:.85rem;font-weight:700;border:2px solid var(--border2);
   background:var(--surface2);color:var(--text2);cursor:pointer;
-  transition:all 0.18s;display:flex;align-items:center;gap:7px;user-select:none;
+  transition:all .18s;display:flex;align-items:center;gap:7px;user-select:none;
 }
 .opt-btn:hover{border-color:var(--text3);color:var(--text);background:var(--surface)}
-.opt-btn.sel-mint{background:rgba(94,196,168,0.15);border-color:var(--mint);color:var(--mint-l)}
-.opt-btn.sel-amber{background:rgba(245,185,66,0.15);border-color:var(--amber);color:var(--amber-l)}
-.opt-btn.sel-rose{background:rgba(224,123,138,0.15);border-color:var(--rose);color:var(--rose-l)}
+.opt-btn.sel-mint{background:rgba(94,196,168,.15);border-color:var(--mint);color:var(--mint-l)}
+.opt-btn.sel-amber{background:rgba(245,185,66,.15);border-color:var(--amber);color:var(--amber-l)}
+.opt-btn.sel-rose{background:rgba(224,123,138,.15);border-color:var(--rose);color:var(--rose-l)}
 
 /* ── GENERATE ── */
 .gen-wrap{text-align:center;margin:20px 0 8px}
@@ -108,63 +174,98 @@ button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:
   display:inline-flex;align-items:center;gap:9px;
   padding:14px 32px;border-radius:100px;
   background:linear-gradient(135deg,var(--lavender-d),var(--lavender));
-  color:white;font-family:'Quicksand',sans-serif;font-size:1rem;font-weight:700;
-  border:none;cursor:pointer;box-shadow:0 4px 20px rgba(167,139,212,0.35);
-  transition:all 0.2s;letter-spacing:0.2px;
+  color:white;font-size:1rem;font-weight:700;
+  border:none;cursor:pointer;box-shadow:0 4px 20px rgba(167,139,212,.35);
+  transition:all .2s;letter-spacing:.2px;
 }
-.gen-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(167,139,212,0.5)}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(167,139,212,.5)}
 .gen-btn:active{transform:translateY(0)}
-.gen-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none}
+.gen-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
 
 /* ── OUTPUT ── */
 .output{
   display:none;background:var(--surface);border:1.5px solid var(--border);
   border-radius:var(--radius-lg);overflow:hidden;
-  box-shadow:var(--shadow-lg),0 0 40px rgba(167,139,212,0.12);
-  margin-top:8px;
+  box-shadow:var(--shadow-lg),0 0 40px rgba(167,139,212,.12);margin-top:8px;
 }
-.output.show{display:block;animation:glowIn 0.5s ease both}
-@keyframes glowIn{
-  from{opacity:0;transform:scale(0.97)}
-  to{opacity:1;transform:scale(1)}
-}
+.output.show{display:block;animation:glowIn .5s ease both}
+@keyframes glowIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
 
 .output-top{
   padding:22px 24px 18px;border-bottom:1.5px solid var(--border);
   display:flex;align-items:flex-start;gap:14px;
 }
 .output-top-icon{font-size:2rem;line-height:1;margin-top:2px}
-.output-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px}
-.output-headline{font-family:'Lora',serif;font-size:1rem;font-weight:600;color:var(--lavender-l);line-height:1.45}
+.output-label{font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3);margin-bottom:4px}
+.output-headline{font-family:'Lora',serif;font-size:1rem;font-weight:600;
+  color:var(--lavender-l);line-height:1.45}
 
 .output-plan{padding:20px 24px}
-.output-plan-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:14px}
+.output-plan-label{font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text3);margin-bottom:14px}
 
-.plan-items{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-.plan-item{
-  display:flex;align-items:flex-start;gap:12px;
+/* Timeline */
+.timeline{display:flex;flex-direction:column;gap:0;margin-bottom:16px}
+.timeline-block{display:flex;gap:14px;position:relative}
+.timeline-block:not(:last-child)::before{
+  content:'';position:absolute;left:19px;top:40px;bottom:-8px;
+  width:2px;background:var(--border2);z-index:0;
+}
+.timeline-time-col{display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;padding-top:10px}
+.timeline-dot{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;z-index:1;position:relative;
+  border:2px solid var(--border2);background:var(--surface2);
+}
+.timeline-when{font-size:.65rem;font-weight:700;color:var(--text3);
+  margin-top:4px;text-align:center;line-height:1.2;white-space:nowrap}
+.timeline-content{
   background:var(--surface2);border:1.5px solid var(--border);
   border-radius:var(--radius);padding:12px 16px;
-  animation:slideIn 0.25s ease both;
+  flex:1;margin-bottom:10px;
+  animation:slideIn .25s ease both;
 }
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
-.plan-item-icon{font-size:1.4rem;flex-shrink:0;line-height:1;margin-top:1px}
-.plan-item-title{font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:2px}
-.plan-item-desc{font-family:'Lora',serif;font-style:italic;font-size:0.82rem;color:var(--text2);line-height:1.5}
+.timeline-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.timeline-desc{font-family:'Lora',serif;font-style:italic;font-size:.82rem;
+  color:var(--text2);line-height:1.5}
+.timeline-charger-tag{
+  display:inline-block;margin-top:6px;padding:3px 10px;border-radius:100px;
+  background:rgba(94,196,168,.12);border:1px solid var(--mint);
+  color:var(--mint-l);font-size:.72rem;font-weight:700;
+}
+
+/* Chargers row in output */
+.output-chargers{
+  background:rgba(94,196,168,.07);border:1.5px solid rgba(94,196,168,.25);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;
+}
+.output-chargers-label{font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--mint);margin-bottom:8px}
+.charger-pills{display:flex;flex-wrap:wrap;gap:7px}
+.charger-pill{
+  padding:5px 13px;border-radius:100px;
+  background:rgba(94,196,168,.15);border:1.5px solid var(--mint);
+  color:var(--mint-l);font-size:.82rem;font-weight:700;
+}
 
 .output-note{
-  background:rgba(245,185,66,0.08);border:1.5px solid rgba(245,185,66,0.2);
+  background:rgba(245,185,66,.08);border:1.5px solid rgba(245,185,66,.2);
   border-radius:var(--radius);padding:12px 16px;
-  font-family:'Lora',serif;font-style:italic;font-size:0.85rem;
+  font-family:'Lora',serif;font-style:italic;font-size:.85rem;
   color:var(--amber-l);line-height:1.6;
 }
-.output-note strong{font-style:normal;font-weight:700;font-family:'Quicksand',sans-serif;color:var(--amber)}
+.output-note strong{font-style:normal;font-weight:700;
+  font-family:'Quicksand',sans-serif;color:var(--amber)}
 
 .intensity-bar{display:flex;align-items:center;gap:10px;margin-top:14px}
-.intensity-label{font-size:0.7rem;font-weight:700;color:var(--text3);min-width:80px}
+.intensity-label{font-size:.7rem;font-weight:700;color:var(--text3);min-width:80px}
 .intensity-track{flex:1;height:6px;background:var(--border);border-radius:100px;overflow:hidden}
-.intensity-fill{height:100%;border-radius:100px;transition:width 0.7s cubic-bezier(.34,1.1,.64,1)}
-.intensity-val{font-size:0.72rem;font-weight:700;color:var(--text3);min-width:36px;text-align:right}
+.intensity-fill{height:100%;border-radius:100px;transition:width .7s cubic-bezier(.34,1.1,.64,1)}
+.intensity-val{font-size:.72rem;font-weight:700;color:var(--text3);min-width:36px;text-align:right}
 
 .output-footer{
   padding:14px 24px 18px;display:flex;justify-content:space-between;
@@ -173,49 +274,91 @@ button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:
 .reset-btn{
   display:inline-flex;align-items:center;gap:6px;padding:7px 16px;
   border-radius:100px;background:transparent;border:1.5px solid var(--border2);
-  color:var(--text3);font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.15s;
+  color:var(--text3);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;
 }
 .reset-btn:hover{border-color:var(--text3);color:var(--text2)}
 .print-btn{
   display:inline-flex;align-items:center;gap:6px;padding:7px 16px;
-  border-radius:100px;background:rgba(167,139,212,0.12);border:1.5px solid var(--lavender-d);
-  color:var(--lavender-l);font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.15s;
+  border-radius:100px;background:rgba(167,139,212,.12);
+  border:1.5px solid var(--lavender-d);
+  color:var(--lavender-l);font-size:.78rem;font-weight:700;
+  cursor:pointer;transition:all .15s;
 }
-.print-btn:hover{background:rgba(167,139,212,0.22)}
+.print-btn:hover{background:rgba(167,139,212,.22)}
 
+/* ── PRINT ── */
 @media print{
-  body{background:white!important;color:black!important}
-  .header p,.header-note,.gen-wrap,.section,.output-footer{display:none!important}
-  .output{display:block!important;box-shadow:none!important;border:2px solid #ccc!important;background:white!important}
-  .output *{color:black!important;background:transparent!important;border-color:#ddd!important}
-  .plan-item{border:1px solid #ddd!important}
+  body{background:white!important;color:#1a1a2e!important;padding:0}
+  .header-back,.gen-wrap,.output-footer,.setup-card,
+  .section,.charger-section,.charger-presets{display:none!important}
+  .output{display:block!important;border:none!important;box-shadow:none!important}
+  .output-top{background:#f5f0ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .timeline-content{background:#f8f8ff!important;border:1px solid #ddd!important}
+  .output-chargers{background:#f0fdf8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .output-note{background:#fffbeb!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#7a5000!important}
+  .output-headline,.timeline-title,.timeline-desc,.output-note{color:#1a1a2e!important}
+  .timeline-block::before{background:#ccc!important}
+  .print-child-name{display:block!important;font-size:1.1rem;font-weight:700;
+    color:#7A5FAA;margin-bottom:8px;font-family:'Quicksand',sans-serif}
 }
-@media(max-width:480px){
-  .options{gap:6px}
-  .opt-btn{padding:8px 14px;font-size:0.8rem}
-  .section{padding:18px 16px}
-  .output-plan,.output-top{padding:16px}
-}
+.print-child-name{display:none}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <span class="header-icon">🧠</span>
+  <a href="/" class="header-back">← SendSteps</a>
+  <div class="header-icon">🧠</div>
   <div class="header-text">
     <h1>Decompression <span>Planner</span></h1>
     <p>After a day of masking and managing, your child needs the right kind of recovery. Tell us about today.</p>
-    <span class="header-note">Takes 30 seconds &middot; No data stored</span>
+    <span class="header-note">Takes 60 seconds · Nothing stored</span>
   </div>
 </div>
 
 <div class="planner">
 
+  <!-- ── SETUP CARD ── -->
+  <div class="setup-card">
+    <div class="setup-card-head">⚙️ Quick setup — save once, use every day</div>
+    <div class="setup-row">
+      <input type="text" class="setup-input" id="childNameInput"
+        placeholder="Child's name (optional)" maxlength="30">
+      <button class="setup-save" onclick="saveName()">Save name</button>
+    </div>
+    <div class="setup-saved" id="nameSaved">✓ Saved!</div>
+
+    <div class="charger-section" id="chargerSection">
+      <div class="charger-section-head">💚 What charges your child up? (pick all that apply)</div>
+      <div class="charger-presets" id="chargerPresets">
+        <button class="charger-preset" data-label="Minecraft">🎮 Minecraft</button>
+        <button class="charger-preset" data-label="TV / YouTube">📺 TV / YouTube</button>
+        <button class="charger-preset" data-label="Drawing">✏️ Drawing</button>
+        <button class="charger-preset" data-label="Dog cuddles">🐶 Dog cuddles</button>
+        <button class="charger-preset" data-label="Quiet room">🚪 Quiet room</button>
+        <button class="charger-preset" data-label="Trampoline">🤸 Trampoline</button>
+        <button class="charger-preset" data-label="LEGO">🧱 LEGO</button>
+        <button class="charger-preset" data-label="Music">🎵 Music</button>
+        <button class="charger-preset" data-label="Reading">📚 Reading</button>
+        <button class="charger-preset" data-label="Bath / shower">🛁 Bath / shower</button>
+        <button class="charger-preset" data-label="Weighted blanket">🧸 Weighted blanket</button>
+        <button class="charger-preset" data-label="Walk outside">🌳 Walk outside</button>
+      </div>
+      <div class="charger-custom-row">
+        <input type="text" class="charger-custom-input" id="chargerCustom"
+          placeholder="Add your own..." maxlength="30">
+        <button class="charger-add-btn" onclick="addCustomCharger()">+ Add</button>
+      </div>
+      <div class="charger-tags" id="chargerTags"></div>
+    </div>
+  </div>
+
+  <!-- ── Q1: Noise ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-icon">🔊</span>
       <div>
-        <div class="section-title">Question 1 of 3</div>
+        <div class="section-title">Question 1 of 5</div>
         <div class="section-q">How noisy was today?</div>
       </div>
     </div>
@@ -226,11 +369,12 @@ button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:
     </div>
   </div>
 
+  <!-- ── Q2: Social ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-icon">👥</span>
       <div>
-        <div class="section-title">Question 2 of 3</div>
+        <div class="section-title">Question 2 of 5</div>
         <div class="section-q">How much social demand was there?</div>
       </div>
     </div>
@@ -241,11 +385,12 @@ button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:
     </div>
   </div>
 
+  <!-- ── Q3: Change ── -->
   <div class="section">
     <div class="section-header">
       <span class="section-icon">🔄</span>
       <div>
-        <div class="section-title">Question 3 of 3</div>
+        <div class="section-title">Question 3 of 5</div>
         <div class="section-q">How much change or unpredictability?</div>
       </div>
     </div>
@@ -256,153 +401,408 @@ button{cursor:pointer;font-family:'Quicksand',sans-serif;border:none;background:
     </div>
   </div>
 
+  <!-- ── Q4: Physical ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <div>
+        <div class="section-title">Question 4 of 5</div>
+        <div class="section-q">How physically demanding was today?</div>
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt-btn" data-group="physical" data-val="0" data-color="sel-mint">🪑 Mostly sitting</button>
+      <button class="opt-btn" data-group="physical" data-val="1" data-color="sel-amber">🏃 Active day</button>
+      <button class="opt-btn" data-group="physical" data-val="2" data-color="sel-rose">🏊 Exhausting — PE, trip or sport</button>
+    </div>
+  </div>
+
+  <!-- ── Q5: Emotional ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">💛</span>
+      <div>
+        <div class="section-title">Question 5 of 5</div>
+        <div class="section-q">Did anything emotionally difficult happen?</div>
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt-btn" data-group="emotional" data-val="0" data-color="sel-mint">😊 Nothing significant</button>
+      <button class="opt-btn" data-group="emotional" data-val="1" data-color="sel-amber">😟 Something small happened</button>
+      <button class="opt-btn" data-group="emotional" data-val="2" data-color="sel-rose">💔 Friendship, conflict or upset</button>
+    </div>
+  </div>
+
   <div class="gen-wrap">
     <button class="gen-btn" id="genBtn" disabled>✨ Show me today's plan</button>
   </div>
 
+  <!-- ── OUTPUT ── -->
   <div class="output" id="output">
     <div class="output-top">
       <div class="output-top-icon" id="outIcon"></div>
       <div>
+        <div class="print-child-name" id="printChildName"></div>
         <div class="output-label">Today's decompression needs</div>
         <div class="output-headline" id="outHeadline"></div>
       </div>
     </div>
+
     <div class="output-plan">
-      <div class="output-plan-label">Recommended right now</div>
-      <div class="plan-items" id="planItems"></div>
+      <div class="output-plan-label" id="timelineLabel">What to do — step by step</div>
+      <div class="timeline" id="planTimeline"></div>
+
+      <div class="output-chargers" id="outputChargers" style="display:none">
+        <div class="output-chargers-label">💚 Their chargers — once the window opens</div>
+        <div class="charger-pills" id="outputChargerPills"></div>
+      </div>
+
       <div class="output-note" id="outNote"></div>
+
       <div class="intensity-bar">
         <div class="intensity-label">Demand level</div>
-        <div class="intensity-track"><div class="intensity-fill" id="intensityFill"></div></div>
+        <div class="intensity-track">
+          <div class="intensity-fill" id="intensityFill"></div>
+        </div>
         <div class="intensity-val" id="intensityVal"></div>
       </div>
     </div>
+
     <div class="output-footer">
-      <button class="reset-btn" id="resetBtn">&#8635; Start again</button>
-      <button class="print-btn" onclick="window.print()">&#128424; Print plan</button>
+      <button class="reset-btn" id="resetBtn">↻ Start again</button>
+      <button class="print-btn" onclick="window.print()">🖨 Print plan</button>
     </div>
   </div>
 
 </div>
 
 <script>
-const PLANS = [
-  // Score 0-1: Easy day
-  {
-    min:0, max:1,
-    icon:'🌿',
-    headline:"Today was manageable — a gentle wind-down is all that's needed.",
-    items:[
-      {icon:'🍎', title:'Light snack', desc:"Something easy and familiar — they've earned it."},
-      {icon:'🎮', title:'Free choice time', desc:'30 minutes of whatever they want, no agenda.'},
-      {icon:'💬', title:'Chat is welcome', desc:"They're likely okay to talk — just follow their lead."},
-    ],
-    note:"<strong>Good news:</strong> Today wasn't too draining. Keep the evening calm and they should regulate fairly quickly.",
-    barColor:'var(--mint)',
-  },
-  // Score 2-3: Moderate day
-  {
-    min:2, max:3,
-    icon:'🌤️',
-    headline:"Today asked quite a lot — they need real space to recover.",
-    items:[
-      {icon:'🍫', title:'Favourite snack', desc:'Blood sugar helps. Let them choose what they want.'},
-      {icon:'🚪', title:'Alone time first', desc:'20–30 minutes in their room before any interaction.'},
-      {icon:'🎧', title:'Sensory reset', desc:'Headphones, dim lights, or a comfort activity.'},
-      {icon:'🤫', title:'No questions yet', desc:'Save homework, "how was your day?" and decisions for later.'},
-    ],
-    note:"<strong>Remember:</strong> What looks like a bad mood is probably exhaustion from masking. They held it together all day — home is where they finally let go.",
-    barColor:'var(--amber)',
-  },
-  // Score 4-5: Hard day
-  {
-    min:4, max:5,
-    icon:'🌙',
-    headline:"Today was genuinely tough — maximum decompression needed.",
-    items:[
-      {icon:'🍕', title:'Comfort food', desc:"Whatever their safe food is — now is not the time for healthy eating negotiations."},
-      {icon:'🚪', title:'Alone time, no interruptions', desc:'At least 30–45 minutes. Knock first, respect the door.'},
-      {icon:'📵', title:'Screen time without guilt', desc:"Let them zone out. It's regulating, not rotting."},
-      {icon:'🤫', title:'No questions for 45 mins', desc:'No homework talk, no decisions of any kind.'},
-      {icon:'🧸', title:'Safe space ready', desc:'Make sure their comfort items or favourite spot is available.'},
-    ],
-    note:"<strong>This was a high-demand day.</strong> The behaviour you might see now is the mask coming off — not defiance. Give them the full recovery window before expecting anything.",
-    barColor:'var(--rose)',
-  },
-  // Score 6: Maximum
-  {
-    min:6, max:6,
-    icon:'⛔',
-    headline:"Today was at maximum demand — full shutdown recovery needed tonight.",
-    items:[
-      {icon:'🚪', title:'Complete retreat', desc:'Their room, their rules. No interruptions for at least an hour.'},
-      {icon:'🍕', title:'Bring food to them', desc:"Don't ask them to come to the table. Safe food, delivered quietly."},
-      {icon:'📵', title:'Unlimited comfort time', desc:'This is medicine right now, not a reward.'},
-      {icon:'🤐', title:'Zero demands — full stop', desc:'No homework, no chores, no questions, no eye contact unless they initiate.'},
-      {icon:'💙', title:'Gentle check-in later', desc:'After 60+ minutes, "I\'m here if you need me" is enough.'},
-    ],
-    note:"<strong>Shutdown mode.</strong> This isn't a choice — their nervous system is in full recovery. The kindest thing is to make home feel completely safe and ask nothing of them tonight.",
-    barColor:'var(--lavender)',
-  },
-];
+// ── State ──
+const state = {
+  childName: '',
+  chargers: [],
+  selections: { noise:null, social:null, change:null, physical:null, emotional:null }
+};
 
-const selections = {noise:null, social:null, change:null};
+// ── Load saved data ──
+try {
+  const saved = JSON.parse(localStorage.getItem('ss_decomp_prefs') || '{}');
+  if (saved.childName) {
+    state.childName = saved.childName;
+    document.getElementById('childNameInput').value = saved.childName;
+  }
+  if (saved.chargers && Array.isArray(saved.chargers)) {
+    saved.chargers.forEach(c => addCharger(c, false));
+    // Re-mark presets as selected
+    document.querySelectorAll('.charger-preset').forEach(btn => {
+      if (state.chargers.includes(btn.dataset.label)) btn.classList.add('selected');
+    });
+  }
+} catch(e) {}
 
+function savePrefs() {
+  try {
+    localStorage.setItem('ss_decomp_prefs', JSON.stringify({
+      childName: state.childName,
+      chargers: state.chargers
+    }));
+  } catch(e) {}
+}
+
+// ── Name ──
+function saveName() {
+  state.childName = document.getElementById('childNameInput').value.trim();
+  const saved = document.getElementById('nameSaved');
+  saved.classList.add('show');
+  setTimeout(() => saved.classList.remove('show'), 2000);
+  savePrefs();
+}
+document.getElementById('childNameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveName();
+});
+
+// ── Chargers ──
+document.querySelectorAll('.charger-preset').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const label = btn.dataset.label;
+    if (btn.classList.contains('selected')) {
+      btn.classList.remove('selected');
+      removeCharger(label);
+    } else {
+      btn.classList.add('selected');
+      addCharger(label, true);
+    }
+  });
+});
+
+function addCustomCharger() {
+  const input = document.getElementById('chargerCustom');
+  const val = input.value.trim();
+  if (!val) return;
+  addCharger(val, true);
+  input.value = '';
+}
+document.getElementById('chargerCustom').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addCustomCharger();
+});
+
+function addCharger(label, save) {
+  if (state.chargers.includes(label)) return;
+  state.chargers.push(label);
+  renderChargerTags();
+  if (save) savePrefs();
+}
+
+function removeCharger(label) {
+  state.chargers = state.chargers.filter(c => c !== label);
+  document.querySelectorAll('.charger-preset').forEach(btn => {
+    if (btn.dataset.label === label) btn.classList.remove('selected');
+  });
+  renderChargerTags();
+  savePrefs();
+}
+
+function renderChargerTags() {
+  const wrap = document.getElementById('chargerTags');
+  wrap.innerHTML = '';
+  state.chargers.forEach(c => {
+    // Only show custom ones (not presets) as tags — presets are shown highlighted above
+    const isPreset = [...document.querySelectorAll('.charger-preset')]
+      .some(btn => btn.dataset.label === c);
+    if (!isPreset) {
+      const tag = document.createElement('div');
+      tag.className = 'charger-tag';
+      tag.innerHTML = `${esc(c)}<span class="charger-tag-del" onclick="removeCharger('${esc(c)}')">✕</span>`;
+      wrap.appendChild(tag);
+    }
+  });
+}
+
+// ── Questions ──
 document.querySelectorAll('.opt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const group = btn.dataset.group;
     const color = btn.dataset.color;
-    document.querySelectorAll(`.opt-btn[data-group="${group}"]`).forEach(b => b.className = 'opt-btn');
+    document.querySelectorAll(`.opt-btn[data-group="${group}"]`)
+      .forEach(b => b.className = 'opt-btn');
     btn.classList.add(color);
-    selections[group] = parseInt(btn.dataset.val);
-    const allDone = selections.noise !== null && selections.social !== null && selections.change !== null;
+    state.selections[group] = parseInt(btn.dataset.val);
+    const allDone = Object.values(state.selections).every(v => v !== null);
     document.getElementById('genBtn').disabled = !allDone;
   });
 });
 
-document.getElementById('genBtn').addEventListener('click', () => {
-  const score = selections.noise + selections.social + selections.change;
-  const plan = PLANS.find(p => score >= p.min && score <= p.max);
+// ── Plans ──
+// Score is now 0–10 across 5 questions
+// We use tiers: 0-2 easy, 3-5 moderate, 6-8 hard, 9-10 maximum
+// Physical and emotional scores adjust timeline timing
 
-  document.getElementById('outIcon').textContent = plan.icon;
-  document.getElementById('outHeadline').textContent = plan.headline;
+function buildTimeline(score, physical, emotional) {
+  const isMaximum = score >= 9;
+  const isHard    = score >= 6;
+  const isModerate= score >= 3;
 
-  const list = document.getElementById('planItems');
-  list.innerHTML = '';
-  plan.items.forEach((item, i) => {
-    const el = document.createElement('div');
-    el.className = 'plan-item';
-    el.style.animationDelay = (i * 0.08) + 's';
-    el.innerHTML = `
-      <div class="plan-item-icon">${item.icon}</div>
-      <div>
-        <div class="plan-item-title">${item.title}</div>
-        <div class="plan-item-desc">${item.desc}</div>
-      </div>`;
-    list.appendChild(el);
+  // Base windows change based on intensity
+  const alone1 = isMaximum ? '60–90 min' : isHard ? '30–45 min' : isModerate ? '20–30 min' : '15 min';
+  const noQ    = isMaximum ? '90 min' : isHard ? '45 min' : isModerate ? '30 min' : '20 min';
+
+  const blocks = [];
+
+  // Arrival block — always first
+  blocks.push({
+    icon: isMaximum ? '🚪' : isHard ? '🚪' : '🏠',
+    when: 'Arrival',
+    title: isMaximum ? 'Complete retreat — their room, their rules'
+         : isHard    ? 'Alone time — no interruptions'
+         : isModerate? 'Space first, then check in'
+         :             'Gentle welcome home',
+    desc: isMaximum ? `Don't ask them to come out. No eye contact unless they initiate. Knock before entering.`
+        : isHard    ? `At least ${alone1} in their room before any interaction. Respect the door.`
+        : isModerate? `Give them ${alone1} to decompress before attempting conversation.`
+        :             `They're probably okay to chat — follow their lead.`,
+    delay: 0
   });
 
-  document.getElementById('outNote').innerHTML = plan.note;
+  // Food block
+  blocks.push({
+    icon: '🍽️',
+    when: isMaximum ? '~15 min' : '~10 min',
+    title: isMaximum ? 'Bring food to them' : isHard ? 'Comfort food, no fuss' : 'Favourite snack',
+    desc: isMaximum ? `Don't ask them to come to the table. Safe food, delivered quietly. No negotiation.`
+        : isHard    ? `Whatever their safe food is. Now is not the time for healthy eating conversations.`
+        : isModerate? `Blood sugar helps. Let them choose what they want.`
+        :             `Something easy and familiar — they've earned it.`,
+    delay: 1
+  });
 
-  const pct = Math.round((score / 6) * 100);
+  // Sensory block — only for moderate+
+  if (isModerate) {
+    blocks.push({
+      icon: '🎧',
+      when: '~20 min',
+      title: physical >= 2 ? 'Physical recovery first' : 'Sensory reset',
+      desc: physical >= 2
+        ? `Today was physically draining too — let them rest flat. No screens that require decisions. Passive is fine.`
+        : `Headphones, dim lights, or their comfort activity. Reduce all sensory input.`,
+      delay: 2
+    });
+  }
+
+  // No questions block
+  blocks.push({
+    icon: '🤫',
+    when: isMaximum ? 'First 90 min' : isHard ? 'First 45 min' : 'First 30 min',
+    title: 'No questions, no decisions',
+    desc: `Nothing about school, homework, what happened, how they feel, or what's for dinner. All of that can wait until after ${noQ}.`,
+    delay: isModerate ? 3 : 2
+  });
+
+  // Emotional specific block
+  if (emotional >= 2) {
+    blocks.push({
+      icon: '💛',
+      when: isMaximum ? 'Later tonight' : 'After recovery',
+      title: 'Something difficult happened today',
+      desc: `Something emotionally hard happened. Don't push them to talk — just let them know you're there. "I heard today was tough. I'm here when you're ready." Then leave it.`,
+      delay: 4
+    });
+  } else if (emotional === 1) {
+    blocks.push({
+      icon: '💬',
+      when: 'When ready',
+      title: 'Something small happened',
+      desc: `Something minor came up today. If they want to talk about it they will — don't prompt. Just keep the evening relaxed.`,
+      delay: 4
+    });
+  }
+
+  // Check-in block
+  blocks.push({
+    icon: '💙',
+    when: isMaximum ? 'After 60+ min' : isHard ? 'After 45 min' : 'After 20 min',
+    title: isMaximum ? 'Gentle check-in only' : 'Gentle reconnection',
+    desc: isMaximum ? `"I'm here if you need me" is enough. Don't ask questions. Presence is the message.`
+        : isHard    ? `A quiet presence near them is enough — they don't need conversation, just company.`
+        : isModerate? `Follow their lead — if they want to chat, chat. If not, that's fine too.`
+        :             `They're likely ready to connect by now. Keep it low-key.`,
+    delay: 5
+  });
+
+  // Charger window — always last
+  if (state.chargers.length > 0) {
+    const window = isMaximum ? 'After 60+ min' : isHard ? 'After 30–45 min' : 'Whenever ready';
+    blocks.push({
+      icon: '💚',
+      when: window,
+      title: 'Their charger time',
+      desc: `Once the recovery window has passed, make space for the things that genuinely restore them.`,
+      isChargerSlot: true,
+      delay: 6
+    });
+  }
+
+  return blocks;
+}
+
+const HEADLINES = {
+  easy:     "Today was manageable — a gentle wind-down is all that's needed.",
+  moderate: "Today asked quite a lot — they need real space to recover.",
+  hard:     "Today was genuinely tough — maximum decompression needed.",
+  maximum:  "Today was at maximum demand — full shutdown recovery needed tonight.",
+};
+
+const NOTES = {
+  easy:     "<strong>Good news:</strong> Today wasn't too draining. Keep the evening calm and they should regulate fairly quickly.",
+  moderate: "<strong>Remember:</strong> What looks like a bad mood is probably exhaustion from masking. They held it together all day — home is where they finally let go.",
+  hard:     "<strong>This was a high-demand day.</strong> The behaviour you might see now is the mask coming off — not defiance. Give them the full recovery window before expecting anything.",
+  maximum:  "<strong>Shutdown mode.</strong> This isn't a choice — their nervous system is in full recovery. The kindest thing is to make home feel completely safe and ask nothing of them tonight.",
+};
+
+const ICONS = { easy:'🌿', moderate:'🌤️', hard:'🌙', maximum:'⛔' };
+const BAR_COLORS = { easy:'var(--mint)', moderate:'var(--amber)', hard:'var(--rose)', maximum:'var(--lavender)' };
+
+// ── Generate plan ──
+document.getElementById('genBtn').addEventListener('click', () => {
+  const s = state.selections;
+  const score = s.noise + s.social + s.change + s.physical + s.emotional;
+  const tier = score <= 2 ? 'easy' : score <= 5 ? 'moderate' : score <= 8 ? 'hard' : 'maximum';
+
+  // Output icon + headline
+  document.getElementById('outIcon').textContent = ICONS[tier];
+
+  // Child name for print
+  const nameEl = document.getElementById('printChildName');
+  if (state.childName) {
+    nameEl.textContent = `${state.childName}'s Decompression Plan`;
+  }
+
+  document.getElementById('outHeadline').textContent =
+    state.childName
+      ? HEADLINES[tier].replace('Today was', `${state.childName}'s day was`).replace("Today wasn't", `${state.childName}'s day wasn't`)
+      : HEADLINES[tier];
+
+  // Timeline
+  const timeline = document.getElementById('planTimeline');
+  timeline.innerHTML = '';
+  const blocks = buildTimeline(score, s.physical, s.emotional);
+  blocks.forEach((block, i) => {
+    const el = document.createElement('div');
+    el.className = 'timeline-block';
+    el.style.animationDelay = (i * 0.1) + 's';
+    el.innerHTML = `
+      <div class="timeline-time-col">
+        <div class="timeline-dot">${block.icon}</div>
+        <div class="timeline-when">${block.when}</div>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-title">${block.title}</div>
+        <div class="timeline-desc">${block.desc}</div>
+        ${block.isChargerSlot && state.chargers.length > 0
+          ? state.chargers.map(c => `<span class="timeline-charger-tag">💚 ${esc(c)}</span>`).join(' ')
+          : ''}
+      </div>`;
+    timeline.appendChild(el);
+  });
+
+  // Chargers panel
+  const chargersPanel = document.getElementById('outputChargers');
+  const chargerPills = document.getElementById('outputChargerPills');
+  if (state.chargers.length > 0) {
+    chargerPills.innerHTML = state.chargers.map(c =>
+      `<span class="charger-pill">💚 ${esc(c)}</span>`).join('');
+    chargersPanel.style.display = 'block';
+  } else {
+    chargersPanel.style.display = 'none';
+  }
+
+  // Note
+  document.getElementById('outNote').innerHTML = NOTES[tier];
+
+  // Bar
+  const pct = Math.round((score / 10) * 100);
   const fill = document.getElementById('intensityFill');
   fill.style.width = pct + '%';
-  fill.style.background = plan.barColor;
+  fill.style.background = BAR_COLORS[tier];
   document.getElementById('intensityVal').textContent = pct + '%';
 
+  // Show
   const output = document.getElementById('output');
   output.classList.add('show');
   setTimeout(() => output.scrollIntoView({behavior:'smooth', block:'start'}), 50);
 });
 
+// ── Reset ──
 document.getElementById('resetBtn').addEventListener('click', () => {
-  selections.noise = null; selections.social = null; selections.change = null;
+  Object.keys(state.selections).forEach(k => state.selections[k] = null);
   document.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn');
   document.getElementById('genBtn').disabled = true;
   document.getElementById('output').classList.remove('show');
   window.scrollTo({top:0, behavior:'smooth'});
 });
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
 </body>
 </html>
