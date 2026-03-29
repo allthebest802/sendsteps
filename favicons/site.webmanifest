@@ -121,5 +121,11 @@
     "standalone",
     "minimal-ui",
     "browser"
+  ],
+  "dir": "ltr",
+  "scope_extensions": [
+    {
+      "origin": "https://sendsteps.uk"
+    }
   ]
 }
