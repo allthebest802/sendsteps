@@ -1,2 +1,6 @@
 [build]
   functions = "task-helper-netlify/netlify/functions"
+[[headers]]
+  for = "/favicons/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
