@@ -136,5 +136,17 @@
       "text": "text",
       "url": "url"
     }
-  }
+  },
+  "launch_handler": {
+    "client_mode": [
+      "focus-existing",
+      "auto"
+    ]
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+sendsteps",
+      "url": "/?protocol=%s"
+    }
+  ]
 }
