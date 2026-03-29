@@ -100,5 +100,13 @@
       "form_factor": "narrow",
       "label": "Visual Routine Builder — drag, drop and print"
     }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=uk.sendsteps.app",
+      "id": "uk.sendsteps.app"
+    }
   ]
 }
