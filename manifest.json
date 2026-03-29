@@ -1,0 +1,107 @@
+{
+  "name": "SendSteps — Free Visual Tools for SEND Families",
+  "short_name": "SendSteps",
+  "description": "Free visual supports for SEND children and families. Routine builders, communication cards, Now/Next boards, ADHD tools, dyslexia support and more. No login. No subscription. No ads.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f1a2e",
+  "theme_color": "#10b981",
+  "lang": "en-GB",
+  "categories": ["education", "health", "kids"],
+  "icons": [
+    {
+      "src": "/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "SendSteps home screen — 24 free tools"
+    },
+    {
+      "src": "/screenshots/routine.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Visual Routine Builder"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Visual Routine Builder",
+      "short_name": "Routine",
+      "description": "Build a visual daily routine",
+      "url": "/routine/",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Communication Cards",
+      "short_name": "Comm Cards",
+      "description": "Build a communication card set",
+      "url": "/comm-cards/",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Now / Next Board",
+      "short_name": "Now/Next",
+      "description": "Build a Now/Next visual board",
+      "url": "/now-next-board/",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Brain Dump Pad",
+      "short_name": "Brain Dump",
+      "description": "ADHD brain dump and sort",
+      "url": "/brain-dump/",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}
