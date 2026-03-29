@@ -1,5 +1,5 @@
 {
-  "name": "SendSteps — Free Visual Tools for SEND Families",
+  "name": "SendSteps \u2014 Free Visual Tools for SEND Families",
   "short_name": "SendSteps",
   "description": "Free visual supports for SEND children and families. Routine builders, communication cards, Now/Next boards, ADHD tools, dyslexia support and more. No login. No subscription. No ads.",
   "start_url": "/",
@@ -9,22 +9,26 @@
   "background_color": "#0f1a2e",
   "theme_color": "#10b981",
   "lang": "en-GB",
-  "categories": ["education", "health", "kids"],
+  "categories": [
+    "education",
+    "health",
+    "kids"
+  ],
   "icons": [
     {
-      "src": "/favicons/favicon-96x96.png",
+      "src": "/favicon/favicon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/favicons/web-app-manifest-192x192.png",
+      "src": "/favicon/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/favicons/web-app-manifest-512x512.png",
+      "src": "/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -36,28 +40,64 @@
       "short_name": "Routine",
       "description": "Build a visual daily routine",
       "url": "/routine/",
-      "icons": [{ "src": "/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/favicon/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Communication Cards",
       "short_name": "Comm Cards",
       "description": "Build a communication card set",
       "url": "/comm-cards/",
-      "icons": [{ "src": "/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/favicon/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Now / Next Board",
       "short_name": "Now/Next",
       "description": "Build a Now/Next visual board",
       "url": "/now-next-board/",
-      "icons": [{ "src": "/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/favicon/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Brain Dump Pad",
       "short_name": "Brain Dump",
       "description": "ADHD brain dump and sort",
       "url": "/brain-dump/",
-      "icons": [{ "src": "/favicons/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/favicon/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "SendSteps home \u2014 24 free tools for SEND families"
+    },
+    {
+      "src": "/screenshots/routine.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Visual Routine Builder \u2014 drag, drop and print"
     }
   ]
 }
