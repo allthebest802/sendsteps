@@ -1,5 +1,6 @@
 {
-  "name": "SendSteps \u2014 Free Visual Tools for SEND Families",
+  "id": "sendsteps-uk-app",
+  "name": "SendSteps — Free Visual Tools for SEND Families",
   "short_name": "SendSteps",
   "description": "Free visual supports for SEND children and families. Routine builders, communication cards, Now/Next boards, ADHD tools, dyslexia support and more. No login. No subscription. No ads.",
   "start_url": "/",
@@ -90,14 +91,14 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "SendSteps home \u2014 24 free tools for SEND families"
+      "label": "SendSteps home — 24 free tools for SEND families"
     },
     {
       "src": "/screenshots/routine.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Visual Routine Builder \u2014 drag, drop and print"
+      "label": "Visual Routine Builder — drag, drop and print"
     }
   ]
 }
