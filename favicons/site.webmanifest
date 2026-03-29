@@ -115,5 +115,11 @@
       "url": "https://play.google.com/store/apps/details?id=uk.sendsteps.app",
       "id": "uk.sendsteps.app"
     }
+  ],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "browser"
   ]
 }
