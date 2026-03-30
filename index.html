@@ -4,13 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SendSteps — Free Visual Tools for SEND Families</title>
-<meta name="theme-color" content="#10b981">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SendSteps">
-<link rel="manifest" href="/favicons/site.webmanifest">
-<link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png">
 <meta name="description" content="Free printable visual routines, communication cards, Now/Next boards, trackers and more — for children with SEND. No login. No subscription.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,9 +111,8 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-
   padding:8px 0 0;display:none}
 .bm-done.show{display:block}
 /* HERO */
-.hero{max-width:1120px;margin:0 auto;padding:72px 28px 64px;
-  display:grid;grid-template-columns:1.05fr 1fr;gap:52px;align-items:center}
-@media(max-width:860px){.hero{grid-template-columns:1fr;padding:48px 22px 40px;text-align:center}.hvis{order:-1}}
+.hero{max-width:760px;margin:0 auto;padding:72px 28px 64px;text-align:center}
+@media(max-width:860px){.hero{padding:48px 22px 40px}}
 .hpill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);
   color:var(--green-d);border:1.5px solid rgba(46,204,135,.28);padding:6px 14px;
   border-radius:100px;font-size:.77rem;font-weight:700;margin-bottom:20px}
@@ -130,8 +122,7 @@ h1{font-family:var(--font-head);font-size:clamp(2.1rem,4.2vw,3.1rem);font-weight
 h1 .hi{color:var(--green);font-style:italic}
 .hdesc{font-size:1.04rem;line-height:1.65;color:var(--ink2);margin-bottom:28px;max-width:44ch}
 @media(max-width:860px){.hdesc{margin:0 auto 28px}}
-.hbtns{display:flex;gap:10px;flex-wrap:wrap}
-@media(max-width:860px){.hbtns{justify-content:center}}
+.hbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .bmain{background:var(--green);color:white;padding:13px 26px;border-radius:100px;
   font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:7px;transition:all .18s}
 .bmain:hover{background:var(--green-d);transform:translateY(-2px);box-shadow:0 7px 22px rgba(46,204,135,.4)}
@@ -139,8 +130,7 @@ h1 .hi{color:var(--green);font-style:italic}
   font-size:.95rem;font-weight:700;border:2px solid var(--border);
   display:inline-flex;align-items:center;gap:7px;transition:all .18s}
 .balt:hover{border-color:var(--green);color:var(--green-d);transform:translateY(-2px)}
-.trust{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:18px}
-@media(max-width:860px){.trust{justify-content:center}}
+.trust{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:18px;justify-content:center}
 .ti{font-size:.74rem;font-weight:700;color:var(--muted)}
 .ts{color:var(--border2)}
 /* HERO VISUAL */
@@ -323,37 +313,6 @@ footer{background:var(--ink);padding:38px 28px 28px}
       <span class="ti">🚫 No ads</span>
     </div>
   </div>
-  <div class="hvis a3">
-    <div class="hvwrap">
-      <div class="hcard hmain">
-        <div class="rmh">🌅 Morning Routine</div>
-        <div class="rmsteps">
-          <div class="rms"><span class="rmn">1</span><span class="rme">⏰</span><span class="rmt">Wake Up</span></div>
-          <div class="rms g"><span class="rmn">2</span><span class="rme">🚿</span><span class="rmt">Wash &amp; Dress</span></div>
-          <div class="rms"><span class="rmn">3</span><span class="rme">🥣</span><span class="rmt">Breakfast</span></div>
-          <div class="rms b"><span class="rmn">4</span><span class="rme">🦷</span><span class="rmt">Brush Teeth</span></div>
-          <div class="rms"><span class="rmn">5</span><span class="rme">🎒</span><span class="rmt">Pack Bag</span></div>
-          <div class="rms g"><span class="rmn">6</span><span class="rme">🚌</span><span class="rmt">Leave for School</span></div>
-        </div>
-      </div>
-      <div class="hcard hfloat hf1">
-        <div class="nntit">NOW / NEXT BOARD</div>
-        <div class="nnw">
-          <div class="nnp n"><div class="nnb">NOW</div><span class="nne">📖</span><div class="nnl">Reading</div></div>
-          <div class="nnp x"><div class="nnb">NEXT</div><span class="nne">🍎</span><div class="nnl">Break</div></div>
-        </div>
-      </div>
-      <div class="hcard hfloat hf2">
-        <div class="cctit">COMMUNICATION CARDS</div>
-        <div class="ccg">
-          <div class="ccc"><span class="cce">🍽️</span><div class="ccl">Eat</div></div>
-          <div class="ccc"><span class="cce">💧</span><div class="ccl">Drink</div></div>
-          <div class="ccc"><span class="cce">🚽</span><div class="ccl">Toilet</div></div>
-          <div class="ccc"><span class="cce">🆘</span><div class="ccl">Help</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <section class="why">
@@ -433,7 +392,7 @@ footer{background:var(--ink);padding:38px 28px 28px}
     <div class="wa-icon">💬</div>
     <h2 class="wa-title">Join our WhatsApp community</h2>
     <p class="wa-sub">Tips, new tools and support from other SEND families — all in one friendly group.</p>
-    <a href="https://chat.whatsapp.com/GesEiOc0V2B2C6Ui6kVAYj" class="wa-btn" target="_blank" rel="noopener">
+    <a href="YOUR_WHATSAPP_INVITE_LINK_HERE" class="wa-btn" target="_blank" rel="noopener">
       💬 Join the community
     </a>
     <p class="wa-note">Free to join · No spam · Leave any time</p>
@@ -715,15 +674,6 @@ document.addEventListener('visibilitychange', () => {
     if (e.key === 'Escape') closeBmModalDirect();
   });
 })();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-      .then(reg => reg.update())
-      .catch(err => console.warn('[SW] Registration failed:', err));
-  });
-}
 </script>
 </body>
 </html>
