@@ -56,6 +56,8 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-
 .npill{background:var(--green);color:white;padding:8px 20px;border-radius:100px;
   font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3 forwards}
 .npill:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,.4)}
+.nfree{font-size:.75rem;font-weight:700;color:var(--green-d);white-space:nowrap}
+@media(max-width:780px){.nfree{display:none}}
 @media(max-width:620px){.nlinks .nlink{display:none}}
 /* BOOKMARK */
 .bookmark-btn{font-family:var(--font-body);font-size:.75rem;font-weight:700;color:var(--ink2);
@@ -291,7 +293,7 @@ footer{background:var(--ink);padding:38px 28px 28px}
   </a>
   <div class="nlinks">
     <a href="#tools" class="nlink">Tools</a>
-    <a href="#how" class="nlink">How it works</a>
+    <span class="nfree">Free · No login · No subscription</span>
     <button class="bookmark-btn" onclick="openBmModal()" id="bookmarkBtn">⭐ Bookmark</button>
     <a href="#tools" class="npill">👀 See all tools</a>
   </div>
@@ -299,24 +301,10 @@ footer{background:var(--ink);padding:38px 28px 28px}
 
 <div class="hero">
   <div>
-    <div class="hpill a1"><span class="hdot"></span>Free · No login · No subscription</div>
     <h1 class="a2">Visual supports for <span class="hi">every</span> SEND child</h1>
     <p class="hdesc a3">Routine charts, communication cards, Now/Next boards, trackers and more — all free, printable and built around real SEND family life.</p>
   </div>
 </div>
-
-<section class="how" id="how">
-  <div class="si">
-    <div class="seye r">How it works</div>
-    <h2 class="stit r">From blank page to printed support in four steps</h2>
-    <div class="srow">
-      <div class="scard r"><div class="snum">1</div><span class="sico">📋</span><div class="stitl">Pick a tool</div></div>
-      <div class="scard r"><div class="snum">2</div><span class="sico">✏️</span><div class="stitl">Customise it</div></div>
-      <div class="scard r"><div class="snum">3</div><span class="sico">👁️</span><div class="stitl">Preview live</div></div>
-      <div class="scard r"><div class="snum">4</div><span class="sico">🖨️</span><div class="stitl">Print &amp; use</div></div>
-    </div>
-  </div>
-</section>
 
 <section class="tools" id="tools">
   <div class="si">
