@@ -45,6 +45,9 @@ const FONT_URLS = [
   'https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap',
   'https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
   'https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,500&display=swap',
+  // OpenDyslexic — loaded from jsDelivr CDN, must be cached for PWA use
+  'https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Regular.otf',
+  'https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Bold.otf',
 ];
 
 // ── Install: cache all static assets ──
@@ -129,8 +132,9 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ── Google Fonts — cache first ──
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+  // ── Google Fonts and jsDelivr CDN — cache first ──
+  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com'
+      || url.hostname === 'cdn.jsdelivr.net') {
     event.respondWith(
       caches.open(DYNAMIC_CACHE).then(cache =>
         cache.match(request).then(cached => {

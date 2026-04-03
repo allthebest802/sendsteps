@@ -4,8 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Emotion Scale Builder — SendSteps</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -175,11 +173,22 @@ textarea.form-input{resize:vertical;min-height:56px;line-height:1.5}
   border:1.5px solid var(--border);background:white;
   border-radius:var(--radius-lg);padding:14px;
   display:flex;flex-direction:column;gap:8px;
-  box-shadow:var(--shadow);min-height:120px;
+  box-shadow:var(--shadow);min-height:100px;
   cursor:pointer;user-select:none;transition:all 0.15s;
 }
-.level-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.level-card:hover{box-shadow:var(--shadow-lg)}
 .level-card.selected{outline:3px solid var(--sage);box-shadow:var(--shadow-lg)}
+
+@media(max-width:600px){
+  .levels.horizontal{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .level-card{padding:10px;min-height:80px;gap:5px}
+  .card-face{width:38px;height:38px;font-size:20px}
+  .card-label{font-size:0.82rem}
+  .card-desc{display:none}
+  .wrap{padding:0 12px}
+  .scale-wrap{padding:14px}
+  .panel-body{padding:14px 16px}
+}
 .card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .card-num{
   font-size:0.72rem;font-weight:800;padding:4px 10px;border-radius:100px;
@@ -212,9 +221,13 @@ textarea.form-input{resize:vertical;min-height:56px;line-height:1.5}
 <body>
 
 <div class="header">
-  <div>
-    <h1>🎭 Emotion Scale Builder</h1>
-    <p>Turn feelings into visuals so children can point instead of explain. Choose a preset or build your own. Nothing leaves this device.</p>
+  <div style="display:flex;align-items:center;gap:14px">
+    <a href="/" style="font-size:.75rem;font-weight:700;color:rgba(255,255,255,.55);text-decoration:none;
+      border:1.5px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;white-space:nowrap">← SendSteps</a>
+    <div>
+      <h1>🎭 Emotion Scale Builder</h1>
+      <p>Turn feelings into visuals so children can point instead of explain. Choose a preset or build your own. Nothing leaves this device.</p>
+    </div>
   </div>
   <div class="header-actions no-print">
     <button class="btn btn-primary" id="printBtn">🖨️ Print</button>

@@ -123,7 +123,7 @@ body.large-text .card-emoji{font-size:2.4rem}
   from{opacity:0;transform:translateY(12px) scale(0.98)}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
-.routine-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.routine-card:hover{box-shadow:var(--shadow-lg)}
 .card-color-bar{width:10px;flex-shrink:0;border-radius:0}
 .card-body{flex:1;padding:14px 16px;display:flex;align-items:center;gap:14px;min-width:0}
 .card-emoji{font-size:1.9rem;line-height:1;flex-shrink:0;transition:transform 0.2s}
@@ -279,8 +279,16 @@ body.large-text .card-emoji{font-size:2.4rem}
   .ft-display{grid-template-columns:1fr;grid-template-rows:auto auto auto}
   .ft-arrow{transform:rotate(90deg)}
   .form-row{flex-direction:column}
-  .header-actions{gap:4px}
-  .btn{padding:7px 10px;font-size:0.8rem}
+  .header-actions{gap:4px;flex-wrap:nowrap}
+  .btn{padding:6px 8px;font-size:0.75rem}
+  .btn-hide-mobile{display:none}
+  .app-header{padding:10px 12px 8px}
+  .main{padding:14px 12px}
+  .routine-card{font-size:0.95rem}
+  .card-title{font-size:1rem}
+  .card-body{padding:10px 12px;gap:10px}
+  .card-emoji{font-size:1.6rem}
+  .templates-bar{padding:0 12px 8px}
 }
 
 /* ===== TOAST ===== */
@@ -311,8 +319,8 @@ body.large-text .card-emoji{font-size:2.4rem}
     <div class="header-actions">
       <a href="/" class="btn btn-ghost btn-sm" title="Back to SendSteps">← SendSteps</a>
       <button class="btn btn-ghost btn-sm" id="toggleTimes" aria-pressed="true" title="Show/hide times">🕐 Times</button>
-      <button class="btn btn-ghost btn-sm" id="toggleLargeText" aria-pressed="false" title="Large text mode">🔡 Large</button>
-      <button class="btn btn-ghost btn-sm" id="toggleFT" aria-pressed="false" title="First / Then mode">🔀 First/Then</button>
+      <button class="btn btn-ghost btn-sm btn-hide-mobile" id="toggleLargeText" aria-pressed="false" title="Large text mode">🔡 Large</button>
+      <button class="btn btn-ghost btn-sm btn-hide-mobile" id="toggleFT" aria-pressed="false" title="First / Then mode">🔀 First/Then</button>
       <button class="btn btn-ghost btn-sm" id="printBtn" title="Print schedule">🖨️ Print</button>
     </div>
   </div>
