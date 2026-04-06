@@ -7,7 +7,9 @@
 <meta name="description" content="Free printable visual routines, communication cards, Now/Next boards, trackers and more — for children with SEND. No login. No subscription.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Load fonts async so they don't block FCP -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -22,9 +24,9 @@
   --radius:18px;
   --shadow:0 2px 16px rgba(24,24,37,0.07);
   --shadow-lg:0 10px 40px rgba(24,24,37,0.13);
-  --font-head:'Fraunces',serif;--font-body:'Plus Jakarta Sans',sans-serif;
+  --font-head:'Fraunces',Georgia,serif;--font-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
 }
-html{font-size:16px;scroll-behavior:smooth}
+html{font-size:16px}
 body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden;
   background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.1),transparent 55%),
     radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
@@ -445,7 +447,7 @@ footer{background:var(--ink);padding:38px 28px 28px}
   </div>
 </div>
 
-  <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="reaffaffF" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+  <script defer data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="reaffaffF" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 
 
 <script>
@@ -659,6 +661,18 @@ document.addEventListener('visibilitychange', () => {
     if (e.key === 'Escape') closeBmModalDirect();
   });
 })();
+</script>
+<script>
+// Add scroll-behavior after page load so it doesn't affect FCP
+window.addEventListener('load', () => {
+  document.documentElement.style.scrollBehavior = 'smooth';
+  // Service worker registration
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+      .then(reg => reg.update())
+      .catch(err => console.warn('[SW] Registration failed:', err));
+  }
+});
 </script>
 </body>
 </html>
