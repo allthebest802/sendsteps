@@ -7,6 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<!-- Preload OpenDyslexic fonts so they cache reliably in PWA -->
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Regular.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Bold.otf" as="font" type="font/otf" crossorigin>
 <style>
 @font-face {
   font-family: 'OpenDyslexic';
@@ -507,5 +510,26 @@ document.getElementById('printBtn').addEventListener('click', () => window.print
 // ── APPLY INITIAL STYLES ──
 applyStyles();
 </script>
+<script>
+// Pre-cache OpenDyslexic fonts so they work in the PWA app shell
+const FONT_URLS = [
+  'https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Regular.otf',
+  'https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Bold.otf'
+];
+if ('caches' in window) {
+  caches.open('sendsteps-v1-dynamic').then(cache => {
+    FONT_URLS.forEach(url => {
+      cache.match(url).then(cached => {
+        if (!cached) {
+          fetch(url, {mode:'cors'})
+            .then(r => { if(r.ok) cache.put(url, r); })
+            .catch(() => {});
+        }
+      });
+    });
+  }).catch(() => {});
+}
+</script>
+<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
 </body>
 </html>

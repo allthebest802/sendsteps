@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Medication & Appointments — SendSteps</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -156,15 +154,12 @@ input,textarea,select{font-family:'DM Sans',sans-serif}
 </head>
 <body>
 
-<div class="header"> <a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:700;color:rgba(255,255,255,0.85);text-decoration:none;padding:6px 12px;border-radius:100px;background:rgba(255,255,255,0.15);margin-bottom:10px">
-  ← Back to Homepage
-</a>
+<div class="header">
   <div class="header-inner">
     <span class="header-icon">💊</span>
     <div>
       <h1>Medication & Appointments</h1>
       <p>Track medications, doses, and upcoming appointments — saved privately on your device.</p>
-      
     </div>
   </div>
 </div>
@@ -466,5 +461,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMedModal();clo
 
 load();setTodayDate();renderMeds();renderAppts();
 </script>
+<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
 </body>
 </html>
