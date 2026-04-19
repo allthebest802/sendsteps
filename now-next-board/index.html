@@ -74,7 +74,8 @@ input,select{font-family:var(--font-body)}
 .board-wrap{margin-bottom:24px}
 .board{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;
   background:var(--surface);border:2px solid var(--border);border-radius:22px;
-  box-shadow:var(--shadow-lg);overflow:hidden;max-width:700px;margin:0 auto}
+  box-shadow:var(--shadow-lg);overflow:
+.board.show-then{grid-template-columns:1fr auto 1fr auto 1fr;}hidden;max-width:700px;margin:0 auto}
 .board-panel{display:flex;flex-direction:column;align-items:center;padding:24px 20px;
   text-align:center;min-height:260px;justify-content:space-between;cursor:pointer;
   transition:filter 0.15s}
@@ -171,6 +172,12 @@ input,select{font-family:var(--font-body)}
   cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:4px}
 .preset-btn:hover{border-color:var(--now);color:var(--now-d);background:var(--now-l)}
 
+/* THEN TOGGLE */
+.then-toggle{display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;padding:4px 0}
+.then-toggle input{accent-color:var(--green,#16A34A);width:16px;height:16px;cursor:pointer}
+.panel-badge.then{background:#16A34A}
+.board-panel.then{background:#F0FDF4}
+
 /* ATTRIBUTION */
 .attribution{max-width:700px;margin:14px auto 0;font-size:0.68rem;color:var(--muted);text-align:center}
 .attribution a{color:#3B82F6;text-decoration:none}
@@ -251,6 +258,25 @@ input,select{font-family:var(--font-body)}
         <div class="board-label" id="nextLabel"></div>
       </div>
 
+      <!-- THEN ARROW (hidden by default) -->
+      <div class="board-divider" id="thenDivider" style="display:none">
+        <span class="arrow-icon">→</span>
+      </div>
+
+      <!-- THEN PANEL (hidden by default) -->
+      <div class="board-panel then" onclick="focusSearch('then')" id="thenPanel" style="display:none">
+        <div class="board-panel-header">
+          <div class="panel-badge then">THEN</div>
+        </div>
+        <div class="board-pic-wrap" id="thenPicWrap">
+          <div class="board-empty-slot">
+            <span class="plus">＋</span>
+            <span>Choose below</span>
+          </div>
+        </div>
+        <div class="board-label" id="thenLabel"></div>
+      </div>
+
     </div>
   </div>
 
@@ -287,7 +313,13 @@ input,select{font-family:var(--font-body)}
 
   <!-- PRESET COMBINATIONS -->
   <div class="presets-wrap no-print">
-    <div class="presets-label">⚡ Quick presets</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+    <div class="presets-label" style="margin-bottom:0">⚡ Quick presets</div>
+    <label class="then-toggle">
+      <input type="checkbox" id="thenToggle" onchange="toggleThen(this.checked)">
+      Add THEN panel
+    </label>
+  </div>
     <div class="presets-strip" id="presetsStrip"></div>
   </div>
 
@@ -324,6 +356,21 @@ input,select{font-family:var(--font-body)}
       </div>
     </div>
 
+    <!-- THEN SELECTOR (hidden by default) -->
+    <div class="selector-panel" id="thenSelector" style="display:none">
+      <div class="selector-head" style="background:#16A34A">🟢 Choose THEN</div>
+      <div class="selector-body">
+        <div class="sel-search">
+          <input type="text" class="sel-input" id="thenSearchInput"
+            placeholder="Search e.g. play, trampoline..."
+            onkeydown="if(event.key==='Enter')doSearch('then')">
+          <button class="sel-btn" style="background:#16A34A;color:white;border-color:#16A34A" onclick="doSearch('then')">Go</button>
+        </div>
+        <div class="quick-words" id="thenQuickWords"></div>
+        <div id="thenResults"><div class="pic-status">Search above or tap a quick word</div></div>
+      </div>
+    </div>
+
   </div>
 
   <div class="attribution no-print">
@@ -341,20 +388,31 @@ input,select{font-family:var(--font-body)}
 // DATA
 // ══════════════════════════════════════════
 const QUICK_WORDS = [
-  'maths','english','reading','writing','science','art','pe','music','computing',
-  'lunch','break','assembly','homework','toilet','drink','eat','play','outside',
-  'tablet','tv','lego','drawing','swimming','tidy up','dressed','teeth','sleep'
+  // School subjects
+  'maths','english','reading','phonics','writing','science','art','pe','music','computing','library',
+  // School transitions
+  'assembly','register','circle time','tidy up','line up','pack bag','get coat','wash hands',
+  // Self-care
+  'toilet','drink','snack','lunch','dinner','breakfast','teeth','get dressed','bath','sleep',
+  // Rewards & motivating
+  'break','play','tablet','ipad','tv','lego','minecraft','youtube','trampoline','park','swimming','game','draw','crafts',
+  // Calming & SEND
+  'sensory break','quiet time','fidget toy','walk','music','headphones','movement break',
+  // Home routine
+  'homework','bedtime','story','tidy room','feed pet',
 ];
 
 const PRESETS = [
-  {label:'🔢 Maths → Break',      now:'maths',      next:'break'},
-  {label:'📖 Reading → Play',     now:'reading',    next:'play'},
-  {label:'✏️ Work → Tablet',      now:'homework',   next:'tablet'},
-  {label:'🦷 Teeth → Breakfast',  now:'teeth',      next:'eat'},
-  {label:'👕 Dressed → School',   now:'dressed',    next:'school'},
-  {label:'🍽️ Lunch → Outside',    now:'lunch',      next:'outside'},
-  {label:'📚 Homework → TV',      now:'homework',   next:'tv'},
-  {label:'🧹 Tidy Up → Lego',     now:'tidy up',    next:'lego'},
+  {label:'🔢 Maths → Break',           now:'maths',          next:'break'},
+  {label:'📖 Reading → Tablet',        now:'reading',         next:'tablet'},
+  {label:'🤸 PE → Lunch',             now:'pe',              next:'lunch'},
+  {label:'🦷 Teeth → Breakfast',       now:'teeth',           next:'breakfast'},
+  {label:'👕 Dressed → School',        now:'get dressed',     next:'school'},
+  {label:'🍽️ Lunch → Play',           now:'lunch',           next:'play'},
+  {label:'📚 Homework → Minecraft',    now:'homework',        next:'minecraft'},
+  {label:'🧹 Tidy Room → Trampoline', now:'tidy room',       next:'trampoline'},
+  {label:'🤫 Sensory Break → Circle', now:'sensory break',   next:'circle time'},
+  {label:'🛁 Bath → Story',           now:'bath',            next:'story'},
 ];
 
 const NOW_COLOURS = [
@@ -371,19 +429,29 @@ const NEXT_COLOURS = [
   {bg:'#FDF4FF', badge:'#A21CAF', name:'Pink'},
 ];
 
+const THEN_COLOURS = [
+  {bg:'#F0FDF4', badge:'#16A34A', name:'Green'},
+  {bg:'#FFF7ED', badge:'#EA580C', name:'Orange'},
+  {bg:'#F0F9FF', badge:'#0284C7', name:'Sky'},
+  {bg:'#FFF1F2', badge:'#E11D48', name:'Rose'},
+];
+
 // ══════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════
 let state = {
   now: null,   // {pictogramId, imageUrl, label}
   next: null,
+  then: null,
+  showThen: false,
   nowColour: 0,
   nextColour: 0,
+  thenColour: 0,
   labelPos: 'below',
   size: 'standard',
 };
 
-const STORAGE_KEY = 'sendsteps_nownext_v1';
+const STORAGE_KEY = 'sendsteps_nownext_v2';
 
 // ══════════════════════════════════════════
 // INIT
@@ -401,15 +469,13 @@ function init() {
 }
 
 function buildQuickWords() {
-  const nowEl = document.getElementById('nowQuickWords');
-  const nextEl = document.getElementById('nextQuickWords');
-  const words = QUICK_WORDS.slice(0, 14);
-  nowEl.innerHTML = words.map(w =>
-    `<span class="qword" onclick="searchAndShow('now','${w}')">${w}</span>`
-  ).join('');
-  nextEl.innerHTML = words.map(w =>
-    `<span class="qword next-word-btn" onclick="searchAndShow('next','${w}')">${w}</span>`
-  ).join('');
+  ['now','next'].concat(state.showThen ? ['then'] : []).forEach(side => {
+    const el = document.getElementById(side + 'QuickWords');
+    if (!el) return;
+    el.innerHTML = QUICK_WORDS.map(w =>
+      `<button class="qw-btn" onclick="quickSearch('${side}','${w}')">${w}</button>`
+    ).join('');
+  });
 }
 
 function buildPresets() {
@@ -493,7 +559,8 @@ function selectPic(side, pictogramId, encodedUrl, encodedLabel) {
   saveState();
   // Update selected state in results
   refreshResultSelections(side);
-  showToast(`✓ ${side === 'now' ? 'NOW' : 'NEXT'} set to "${label}"`);
+  const sideLabel = side === 'now' ? 'NOW' : side === 'next' ? 'NEXT' : 'THEN';
+  showToast(`✓ ${sideLabel} set to "${label}"`);
 }
 
 function refreshResultSelections(side) {
@@ -548,6 +615,24 @@ async function loadFirstResult(side, query) {
 function renderBoard() {
   const nowC = NOW_COLOURS[state.nowColour];
   const nextC = NEXT_COLOURS[state.nextColour];
+  const thenC = THEN_COLOURS[state.thenColour || 0];
+
+  // THEN panel visibility
+  const mainBoard = document.getElementById('mainBoard');
+  const thenPanel = document.getElementById('thenPanel');
+  const thenDivider = document.getElementById('thenDivider');
+  const thenSel = document.getElementById('thenSelector');
+  if (state.showThen) {
+    mainBoard.classList.add('show-then');
+    thenPanel.style.display = '';
+    thenDivider.style.display = '';
+    if(thenSel) thenSel.style.display = '';
+  } else {
+    mainBoard.classList.remove('show-then');
+    thenPanel.style.display = 'none';
+    thenDivider.style.display = 'none';
+    if(thenSel) thenSel.style.display = 'none';
+  }
   const sizeMap = {small:'80px', standard:'120px', large:'170px'};
   const imgSize = sizeMap[state.size] || '120px';
   const labelSizeMap = {small:'0.95rem', standard:'1.2rem', large:'1.6rem'};
@@ -594,6 +679,26 @@ function renderBoard() {
   const nextLbl = document.getElementById('nextLabel');
   nextLbl.style.fontSize = lblSize;
   nextLbl.textContent = (state.labelPos !== 'none' && state.next) ? state.next.label : '';
+
+  // THEN panel
+  if (state.showThen) {
+    thenPanel.style.background = thenC.bg;
+    thenPanel.querySelector('.panel-badge').style.background = thenC.badge;
+    const thenPicWrap = document.getElementById('thenPicWrap');
+    if (state.then) {
+      thenPicWrap.innerHTML = `<img class="board-pic" src="${state.then.imageUrl}"
+        alt="${escHtml(state.then.label)}"
+        width="120" height="120"
+        style="width:${imgSize};height:${imgSize}"
+        onerror="this.style.display='none'">`;
+    } else {
+      thenPicWrap.innerHTML = `<div class="board-empty-slot">
+        <span class="plus">＋</span><span>Choose below</span></div>`;
+    }
+    const thenLbl = document.getElementById('thenLabel');
+    thenLbl.style.fontSize = lblSize;
+    thenLbl.textContent = (state.labelPos !== 'none' && state.then) ? state.then.label : '';
+  }
 }
 
 // ══════════════════════════════════════════
@@ -621,6 +726,7 @@ function setNextColour(i) {
 }
 
 function focusSearch(side) {
+  if (side === 'then' && !state.showThen) return;
   const el = document.getElementById(side + 'SearchInput');
   if (el) { el.focus(); el.select(); }
 }
@@ -631,9 +737,18 @@ function focusSearch(side) {
 function clearBoard() {
   state.now = null;
   state.next = null;
+  state.then = null;
   renderBoard();
   saveState();
   showToast('🗑️ Board cleared');
+}
+
+function toggleThen(on) {
+  state.showThen = on;
+  if (!on) state.then = null;
+  renderBoard();
+  saveState();
+  buildQuickWords();
 }
 
 // ══════════════════════════════════════════
