@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A free digital worry box for children and young people. Write your worry down, choose a calming strategy, then lock it away. No login, no data saved.">
+<meta name="keywords" content="worry box for children, kids worry box, anxiety tool for children, SEND worry tool, free worry box, calming strategies for kids, SEND support">
+<link rel="canonical" href="https://sendsteps.uk/worry-box/">
+<meta property="og:title" content="Worry Box — SendSteps">
+<meta property="og:description" content="A free digital worry box for children. Write your worry, choose a calming strategy, then lock it away.">
+<meta property="og:url" content="https://sendsteps.uk/worry-box/">
+<meta property="og:site_name" content="SendSteps">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Worry Box","description":"A free digital worry box for children and young people with SEND. Write worries down, choose calming strategies and lock them away.","url":"https://sendsteps.uk/worry-box/","applicationCategory":"EducationalApplication","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
 <title>Worry Box — SendSteps</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -45,6 +53,8 @@ body{
 button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
 
 /* ── HEADER ── */
+.back-home{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:700;color:var(--text3);text-decoration:none;padding:5px 14px;border:1.5px solid var(--border2);border-radius:100px;transition:all 0.15s;margin:12px 0 0 24px}
+.back-home:hover{color:var(--rose-d);border-color:var(--rose)}
 .header{
   padding:14px 24px;display:flex;align-items:center;gap:14px;
   max-width:620px;margin:0 auto;
@@ -294,11 +304,18 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
 </head>
 <body>
 
+<a class="back-home" href="/">← SendSteps Home</a>
 <div class="header">
   <span class="header-icon">📦</span>
   <div class="header-text">
     <h1>The Worry Box</h1>
     <p>Write your worry down, take a breath, choose something that helps — then lock it away for good.</p>
+  </div>
+</div>
+<div style="max-width:620px;margin:0 auto 8px;padding:0 24px">
+  <div style="background:linear-gradient(135deg,var(--rose-l),var(--lav-l));border:1.5px solid var(--rose);border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:12px">
+    <span style="font-size:1.4rem;flex-shrink:0">💜</span>
+    <p style="font-size:0.85rem;color:var(--text2);line-height:1.65"><strong>Your worries are private.</strong> Nothing you write here is saved or sent anywhere — it all stays on your device and disappears when you close the page. This is just for you.</p>
   </div>
 </div>
 
