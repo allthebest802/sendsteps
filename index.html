@@ -3,677 +3,852 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SendSteps — Free Visual Tools for SEND Families</title>
-<meta name="description" content="Free printable visual routines, communication cards, Now/Next boards, trackers and more — for children with SEND. No login. No subscription.">
+<title>Now & Next Board — SendSteps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Load fonts async so they don't block FCP -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+<link rel="preconnect" href="https://static.arasaac.org" crossorigin>
+<link rel="preconnect" href="https://api.arasaac.org" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cream:#FAF8F4;--ink:#181825;--ink2:#3A3A52;--muted:#7B7B9B;
-  --border:#E4E0D8;--border2:#CEC9BE;--surface:#FFFFFF;
-  --green:#2ECC87;--green-d:#1FA869;--green-l:#E6F9F1;
-  --amber:#F59E0B;--amber-l:#FFFBEB;
-  --blue:#3B82F6;--blue-l:#EFF6FF;
-  --rose:#F43F5E;--rose-l:#FFF1F2;
-  --purple:#7C3AED;--purple-l:#F5F3FF;
-  --teal:#0D9488;--teal-l:#F0FDFA;
-  --radius:18px;
-  --shadow:0 2px 16px rgba(24,24,37,0.07);
-  --shadow-lg:0 10px 40px rgba(24,24,37,0.13);
-  --font-head:'Fraunces',Georgia,serif;--font-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --surface2:#EDF0F7;
+  --ink:#1A2540;
+  --ink2:#46536E;
+  --muted:#8C96B0;
+  --border:#D4DAE8;
+  --border2:#B8C2D8;
+  --now:#F59E0B;
+  --now-l:#FFFBEB;
+  --now-d:#D97706;
+  --next:#3B82F6;
+  --next-l:#EFF6FF;
+  --next-d:#2563EB;
+  --green:#10B981;
+  --radius:16px;
+  --shadow:0 2px 14px rgba(26,37,64,0.09);
+  --shadow-lg:0 8px 32px rgba(26,37,64,0.16);
+  --font-display:'Baloo 2',cursive;
+  --font-body:'Nunito',sans-serif;
 }
-html{font-size:16px}
-body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden;
-  background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.1),transparent 55%),
-    radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
-a{text-decoration:none;color:inherit}
-@keyframes fadeUp{from{opacity:0}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){
-  .a1,.a2,.a3,.a4,.a5{animation:none;opacity:1}
-  .r{opacity:1;transform:none;transition:none}
-  @keyframes glow{0%,100%{box-shadow:none}}
+html{font-size:15px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 600px 400px at 0% 0%,rgba(245,158,11,0.08),transparent 55%),
+    radial-gradient(ellipse 600px 400px at 100% 100%,rgba(59,130,246,0.08),transparent 55%);
 }
-@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(46,204,135,.35)}60%{box-shadow:0 0 0 10px rgba(46,204,135,0)}}
-.a1{opacity:0;animation:fadeUp .65s .05s cubic-bezier(.22,1,.36,1) forwards}
-.a2{opacity:0;animation:fadeUp .65s .18s cubic-bezier(.22,1,.36,1) forwards}
-.a3{opacity:0;animation:fadeUp .65s .30s cubic-bezier(.22,1,.36,1) forwards}
-.a4{opacity:0;animation:fadeUp .65s .42s cubic-bezier(.22,1,.36,1) forwards}
-.a5{opacity:0;animation:fadeUp .65s .54s cubic-bezier(.22,1,.36,1) forwards}
-/* NAV */
-nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;
-  justify-content:space-between;gap:14px}
-.nbrand{display:flex;align-items:center;gap:9px}
-.nbmark{width:32px;height:32px;background:var(--green);border-radius:9px;display:flex;
-  align-items:center;justify-content:center;font-size:1rem}
-.nbname{font-family:var(--font-head);font-size:1.18rem;font-weight:800;color:var(--ink)}
-.nlinks{display:flex;gap:4px;align-items:center}
-.nlink{font-size:.82rem;font-weight:600;color:var(--ink2);padding:7px 12px;
-  border-radius:100px;transition:all .14s}
-.nlink:hover{background:var(--green-l);color:var(--green-d)}
-.npill{background:var(--green);color:white;padding:8px 20px;border-radius:100px;
-  font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3 forwards}
-.npill:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,.4)}
-.nfree{font-size:.75rem;font-weight:700;color:var(--green-d);white-space:nowrap}
-@media(max-width:780px){.nfree{display:none}}
-@media(max-width:620px){.nlinks .nlink{display:none}}
-/* BOOKMARK */
-.bookmark-btn{font-family:var(--font-body);font-size:.75rem;font-weight:700;color:var(--ink2);
-  background:none;border:1.5px solid var(--border2);border-radius:20px;padding:5px 12px;
-  cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;flex-shrink:0}
-.bookmark-btn:hover{border-color:var(--green);color:var(--green-d);background:var(--green-l)}
-.bookmark-btn.saved{color:var(--amber,#f59e0b);border-color:rgba(245,158,11,.4)}
-.bookmark-banner{position:fixed;bottom:0;left:0;right:0;background:#0f1a2e;
-  border-top:2px solid rgba(16,185,129,.3);padding:12px 20px;
-  display:flex;align-items:center;gap:12px;z-index:300;
-  transform:translateY(100%);transition:transform .4s cubic-bezier(.22,1,.36,1)}
-.bookmark-banner.show{transform:translateY(0)}
-.bookmark-banner-icon{font-size:1.2rem;flex-shrink:0}
-.bookmark-banner-text{flex:1;font-family:var(--font-body);font-size:.82rem;font-weight:700;
-  color:rgba(255,255,255,.7);line-height:1.4}
-.bookmark-banner-text strong{color:white}
-.bookmark-banner-btn{font-family:var(--font-body);font-size:.78rem;font-weight:800;
-  background:#10b981;color:white;border:none;border-radius:20px;padding:7px 14px;
-  cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0}
-.bookmark-banner-btn:hover{background:#059669}
-.bookmark-banner-close{background:none;border:none;color:rgba(255,255,255,.3);
-  font-size:1.1rem;cursor:pointer;padding:4px;transition:color .13s;flex-shrink:0;line-height:1}
-.bookmark-banner-close:hover{color:rgba(255,255,255,.7)}
-.bm-backdrop{position:fixed;inset:0;background:rgba(15,26,46,.6);z-index:500;
-  display:none;align-items:flex-end;justify-content:center;padding:20px}
-.bm-backdrop.open{display:flex}
-.bm-modal{background:white;border-radius:18px 18px 14px 14px;padding:22px 22px 28px;
-  width:min(440px,100%);box-shadow:0 -8px 40px rgba(15,26,46,.2);
-  animation:bmUp .3s cubic-bezier(.22,1,.36,1)}
-@keyframes bmUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
-.bm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.bm-title{font-family:var(--font-head);font-size:1.05rem;font-weight:800;color:#0f1a2e;
-  display:flex;align-items:center;gap:8px}
-.bm-x{background:none;border:none;font-size:1.2rem;color:#7a8fa6;cursor:pointer;
-  padding:4px;line-height:1;transition:color .13s}
-.bm-x:hover{color:#0f1a2e}
-.bm-panel{background:#f0f4f8;border-radius:12px;padding:14px 16px;margin-bottom:8px;display:none}
-.bm-panel.show{display:block}
-.bm-lbl{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.7px;
-  color:#10b981;margin-bottom:8px}
-.bm-step{font-size:.85rem;font-weight:600;color:#4a5568;line-height:1.7;
-  display:flex;gap:10px;align-items:flex-start;margin-bottom:6px}
-.bm-step:last-child{margin-bottom:0}
-.bm-num{background:#10b981;color:white;border-radius:50%;width:20px;height:20px;
-  font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;margin-top:2px}
-.bm-install{width:100%;font-family:var(--font-body);font-size:.92rem;font-weight:800;
-  background:#10b981;color:white;border:none;border-radius:12px;padding:13px;
-  cursor:pointer;transition:all .15s;margin-top:4px;display:none}
-.bm-install:hover{background:#059669;transform:translateY(-1px)}
-.bm-install.show{display:block}
-.bm-done{text-align:center;font-size:.85rem;color:#059669;font-weight:700;
-  padding:8px 0 0;display:none}
-.bm-done.show{display:block}
-/* HERO */
-.hero{max-width:760px;margin:0 auto;padding:36px 28px 32px;text-align:center}
-@media(max-width:860px){.hero{padding:28px 22px 24px}}
-.hpill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);
-  color:var(--green-d);border:1.5px solid rgba(46,204,135,.28);padding:6px 14px;
-  border-radius:100px;font-size:.77rem;font-weight:700;margin-bottom:20px}
-.hdot{width:7px;height:7px;border-radius:50%;background:var(--green)}
-h1{font-family:var(--font-head);font-size:clamp(1.9rem,3.8vw,2.8rem);font-weight:900;
-  line-height:1.1;letter-spacing:-.5px;color:var(--ink);margin-bottom:12px}
-h1 .hi{color:var(--green);font-style:italic}
-.hdesc{font-size:1rem;line-height:1.6;color:var(--ink2);margin-bottom:14px;max-width:60ch}
-@media(max-width:860px){.hdesc{margin:0 auto 14px}}
-.hbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.hstory{font-size:.95rem;color:var(--ink2);line-height:1.7;max-width:56ch;margin:0 auto}
-.bmain{background:var(--green);color:white;padding:13px 26px;border-radius:100px;
-  font-size:.95rem;font-weight:700;display:inline-flex;align-items:center;gap:7px;transition:all .18s}
-.bmain:hover{background:var(--green-d);transform:translateY(-2px);box-shadow:0 7px 22px rgba(46,204,135,.4)}
-.balt{background:var(--surface);color:var(--ink);padding:13px 24px;border-radius:100px;
-  font-size:.95rem;font-weight:700;border:2px solid var(--border);
-  display:inline-flex;align-items:center;gap:7px;transition:all .18s}
-.balt:hover{border-color:var(--green);color:var(--green-d);transform:translateY(-2px)}
-.trust{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:18px;justify-content:center}
-.ti{font-size:.74rem;font-weight:700;color:var(--muted)}
-.ts{color:var(--border2)}
-/* HERO VISUAL */
-.hvis{position:relative;display:flex;align-items:center;justify-content:center;padding:20px 0}
-.hvwrap{position:relative;max-width:400px;width:100%;margin:0 auto}
-.hcard{background:var(--surface);border-radius:16px;box-shadow:var(--shadow-lg);border:1.5px solid var(--border)}
-.hmain{padding:18px}
-.hfloat{position:absolute;border-radius:14px;padding:12px}
-.hf1{top:-22px;right:-14px;width:162px;transform:rotate(-2deg)}
-.hf2{bottom:-22px;left:-14px;width:148px;transform:rotate(2deg)}
-@media(max-width:860px){.hf1,.hf2{display:none}}
-.rmh{font-family:var(--font-head);font-size:.85rem;font-weight:800;color:var(--ink);
-  padding-bottom:9px;border-bottom:2px solid var(--green);margin-bottom:10px;
-  display:flex;align-items:center;gap:6px}
-.rmsteps{display:flex;flex-direction:column;gap:5px}
-.rms{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:8px;background:var(--cream)}
-.rms.g{background:var(--green-l)}.rms.b{background:var(--blue-l)}
-.rmn{font-size:.58rem;font-weight:800;color:var(--muted);width:14px;text-align:right}
-.rme{font-size:1rem}.rmt{font-size:.7rem;font-weight:700;color:var(--ink)}
-.nnw{display:flex;gap:5px}.nntit{font-size:.58rem;font-weight:800;color:var(--muted);margin-bottom:7px;text-align:center}
-.nnp{flex:1;border-radius:9px;padding:8px 6px;text-align:center}
-.nnp.n{background:var(--amber-l)}.nnp.x{background:var(--blue-l)}
-.nnb{display:inline-block;padding:2px 9px;border-radius:100px;font-size:.58rem;font-weight:800;color:white;margin-bottom:5px}
-.nnp.n .nnb{background:var(--amber)}.nnp.x .nnb{background:var(--blue)}
-.nne{font-size:1.3rem;display:block;margin-bottom:3px}.nnl{font-size:.58rem;font-weight:700;color:var(--ink)}
-.cctit{font-size:.58rem;font-weight:800;color:var(--muted);margin-bottom:7px}
-.ccg{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
-.ccc{border-radius:7px;padding:5px 3px;text-align:center;background:var(--cream);border:1.5px solid var(--border)}
-.cce{font-size:1rem;display:block}.ccl{font-size:.52rem;font-weight:700;color:var(--ink2)}
-/* SECTIONS */
-section{padding:76px 28px}
-.si{max-width:1120px;margin:0 auto}
-.seye{font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:1.1px;color:var(--green-d);margin-bottom:9px}
-.stit{font-family:var(--font-head);font-size:clamp(1.7rem,3.2vw,2.5rem);font-weight:800;
-  line-height:1.14;color:var(--ink);margin-bottom:12px;letter-spacing:-.3px}
-.ssub{font-size:.97rem;color:var(--ink2);line-height:1.65;max-width:54ch}
-/* WHY */
-.why{background:var(--ink)}
-.why .seye{color:#5DEDB0}.why .stit{color:white}.why .ssub{color:rgba(255,255,255,.6)}
-.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
-@media(max-width:680px){.wgrid{grid-template-columns:1fr}}
-.wcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:var(--radius);padding:26px 22px;transition:all .18s}
-.wcard:hover{background:rgba(255,255,255,.09);transform:translateY(-3px)}
-.wico{font-size:2.1rem;margin-bottom:13px;display:block}
-.wtit{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:white;margin-bottom:7px}
-.wtxt{font-size:.85rem;color:rgba(255,255,255,.58);line-height:1.65}
-/* HOW */
-.how{background:var(--surface)}
-.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:46px;position:relative}
-@media(max-width:860px){.srow{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.srow{grid-template-columns:1fr}}
-.scard{background:var(--cream);border:1.5px solid var(--border);border-radius:var(--radius);
-  padding:14px 16px;transition:all .18s;position:relative;
-  display:flex;align-items:center;gap:10px}
-.scard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--green)}
-.snum{width:30px;height:30px;border-radius:50%;background:var(--green);color:white;
-  font-family:var(--font-head);font-size:.9rem;font-weight:900;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sico{font-size:1.4rem;flex-shrink:0}
-.stitl{font-family:var(--font-head);font-size:.9rem;font-weight:800;color:var(--ink)}
-@media(min-width:861px){
-  .scard::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:1rem;font-weight:900;color:var(--green);z-index:2}
-  .scard:last-child::after{display:none}}
-/* TOOLS */
-.tools{background:var(--cream)}
-.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:38px}
-.tcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
-  padding:20px;display:flex;flex-direction:column;gap:9px;transition:all .18s}
-.tcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.tico{font-size:1.9rem}.ttit{font-family:var(--font-head);font-size:.97rem;font-weight:800;color:var(--ink)}
-.tdesc{font-size:.79rem;color:var(--ink2);line-height:1.55;flex:1}
-.tlink{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;font-weight:700;
-  padding:6px 13px;border-radius:100px;transition:all .14s;align-self:flex-start;margin-top:2px}
-.tlink:hover{transform:translateX(2px)}
-.tg{border-color:rgba(46,204,135,.4)}.tg:hover{border-color:var(--green)}.tg .tlink{background:var(--green-l);color:var(--green-d)}
-.ta{border-color:rgba(245,158,11,.35)}.ta:hover{border-color:var(--amber)}.ta .tlink{background:var(--amber-l);color:#92400E}
-.tb{border-color:rgba(59,130,246,.35)}.tb:hover{border-color:var(--blue)}.tb .tlink{background:var(--blue-l);color:#1D4ED8}
-.tr{border-color:rgba(244,63,94,.3)}.tr:hover{border-color:var(--rose)}.tr .tlink{background:var(--rose-l);color:#BE123C}
-.tp{border-color:rgba(124,58,237,.3)}.tp:hover{border-color:var(--purple)}.tp .tlink{background:var(--purple-l);color:#5B21B6}
-.tt{border-color:rgba(13,148,136,.3)}.tt:hover{border-color:var(--teal)}.tt .tlink{background:var(--teal-l);color:#0F766E}
-.tcat{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding-top:6px}
-.tcatlbl{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);white-space:nowrap}
-.tcatline{flex:1;height:1px;background:var(--border)}
-/* CTA */
-.wa-section{background:#f0f4f8;padding:48px 28px;text-align:center}
-.wa-card{background:white;border:2px solid #e2e8f0;border-radius:20px;padding:32px 28px;
-  max-width:560px;margin:0 auto;box-shadow:0 4px 20px rgba(15,26,46,.07)}
-.wa-icon{width:56px;height:56px;background:#25D366;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem}
-.wa-title{font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:#0f1a2e;margin-bottom:8px}
-.wa-sub{font-size:.92rem;color:#4a5568;line-height:1.6;margin-bottom:22px;
-  max-width:38ch;margin-left:auto;margin-right:auto}
-.wa-btn{display:inline-flex;align-items:center;gap:9px;background:#25D366;color:white;
-  font-family:var(--font-body);font-size:.95rem;font-weight:800;border-radius:100px;
-  padding:13px 28px;text-decoration:none;transition:all .15s;
-  box-shadow:0 4px 16px rgba(37,211,102,.3)}
-.wa-btn:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35)}
-.wa-note{font-size:.75rem;color:#7a8fa6;margin-top:12px}
-/* FOOTER */
-footer{background:var(--ink);padding:38px 28px 28px}
-.fi{max-width:1120px;margin:0 auto}
-.ftop{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;
-  padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px}
-.fbrand{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:white;margin-bottom:7px}
-.fbrand span{color:var(--green)}
-.ftag{font-size:.77rem;color:rgba(255,255,255,.42);max-width:28ch;line-height:1.5}
-.flinks{display:flex;gap:4px;flex-wrap:wrap}
-.flink{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.45);padding:5px 9px;border-radius:6px;transition:color .13s}
-.flink:hover{color:white}
-.fcopy{font-size:.7rem;color:rgba(255,255,255,.28);text-align:center;line-height:1.65}
-.fcopy a{color:rgba(255,255,255,.35)}.fcopy a:hover{color:rgba(255,255,255,.6)}
-/* REVEAL */
-.r{opacity:0;transition:opacity .6s cubic-bezier(.22,1,.36,1)}
-.r.v{opacity:1}
-/* CONTACT MODAL */
-.modal-backdrop{position:fixed;inset:0;background:rgba(24,24,37,.55);z-index:500;
-  display:none;align-items:center;justify-content:center;padding:20px;
-  backdrop-filter:blur(4px)}
-.modal-backdrop.open{display:flex}
-.modal-box{background:var(--surface);border-radius:22px;box-shadow:0 20px 60px rgba(24,24,37,.2);
-  width:min(480px,100%);overflow:hidden;animation:fadeUp .3s cubic-bezier(.22,1,.36,1)}
-.modal-head{background:var(--ink);padding:18px 22px;display:flex;align-items:center;justify-content:space-between}
-.modal-head h3{font-family:var(--font-head);font-size:1.05rem;font-weight:800;color:white}
-.modal-close{color:rgba(255,255,255,.6);font-size:1.3rem;padding:2px 8px;
-  border-radius:6px;cursor:pointer;transition:all .12s;background:none;border:none}
-.modal-close:hover{color:white;background:rgba(255,255,255,.15)}
-.modal-body{padding:22px}
-.mfield{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.mfield label{font-size:.73rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:.5px;color:var(--muted)}
-.mfield input,.mfield textarea{padding:10px 13px;border-radius:10px;
-  border:1.5px solid var(--border2);font-family:var(--font-body);font-size:.9rem;
-  color:var(--ink);background:var(--cream);outline:none;transition:border-color .14s;resize:vertical}
-.mfield input:focus,.mfield textarea:focus{border-color:var(--green);background:white}
-.mfield textarea{min-height:110px}
-/* honeypot */
-.mhoney{display:none}
-.mactions{display:flex;gap:9px;justify-content:flex-end;margin-top:4px}
-.mbtn-send{background:var(--green);color:white;padding:10px 22px;border-radius:100px;
-  font-size:.88rem;font-weight:700;border:none;cursor:pointer;transition:all .15s}
-.mbtn-send:hover{background:var(--green-d);transform:translateY(-1px)}
-.mbtn-cancel{background:var(--cream);color:var(--ink2);padding:10px 18px;border-radius:100px;
-  font-size:.88rem;font-weight:700;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s}
-.mbtn-cancel:hover{border-color:var(--border);background:var(--border)}
-.msuccess{text-align:center;padding:28px 22px}
-.msuccess-icon{font-size:2.8rem;display:block;margin-bottom:12px}
-.msuccess h4{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:var(--ink);margin-bottom:7px}
-.msuccess p{font-size:.88rem;color:var(--ink2);line-height:1.6}
+button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
+input,select{font-family:var(--font-body)}
+
+/* HEADER */
+.header{background:var(--ink);padding:14px 22px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;flex-wrap:wrap}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-back{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.6);text-decoration:none;
+  padding:5px 10px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);transition:all 0.15s}
+.header-back:hover{color:white;border-color:rgba(255,255,255,0.5)}
+.header-title{font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:white}
+.header-title .now-word{color:var(--now)}
+.header-title .next-word{color:#60A5FA}
+.header-sub{font-size:0.72rem;color:rgba(255,255,255,0.55);margin-top:1px}
+.header-actions{display:flex;gap:8px;align-items:center}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:100px;
+  font-size:0.82rem;font-weight:700;transition:all 0.15s;white-space:nowrap}
+.btn-ghost-white{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);
+  border:1px solid rgba(255,255,255,0.2)}
+.btn-ghost-white:hover{background:rgba(255,255,255,0.2)}
+.btn-primary{background:var(--green);color:white}
+.btn-primary:hover{background:#059669;transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,0.3)}
+.btn-ghost{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border2)}
+.btn-ghost:hover{background:var(--border);color:var(--ink)}
+.btn-sm{padding:5px 12px;font-size:0.75rem}
+
+/* APP LAYOUT */
+.app{max-width:1100px;margin:0 auto;padding:20px 18px 60px}
+
+/* BOARD — the big visual NOW/NEXT */
+.board-wrap{margin-bottom:24px}
+.board{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;
+  background:var(--surface);border:2px solid var(--border);border-radius:22px;
+  box-shadow:var(--shadow-lg);overflow:
+.board.show-then{grid-template-columns:1fr auto 1fr auto 1fr;}hidden;max-width:700px;margin:0 auto}
+.board-panel{display:flex;flex-direction:column;align-items:center;padding:24px 20px;
+  text-align:center;min-height:260px;justify-content:space-between;cursor:pointer;
+  transition:filter 0.15s}
+.board-panel:hover{filter:brightness(0.97)}
+.board-panel.now{background:var(--now-l)}
+.board-panel.next{background:var(--next-l)}
+.board-panel-header{width:100%}
+.panel-badge{display:inline-block;padding:6px 22px;border-radius:100px;
+  font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:14px}
+.now .panel-badge{background:var(--now);color:white}
+.next .panel-badge{background:var(--next);color:white}
+.board-pic-wrap{flex:1;display:flex;align-items:center;justify-content:center;
+  width:100%;padding:10px 0}
+.board-pic{width:120px;height:120px;object-fit:contain;border-radius:10px}
+.board-label{font-family:var(--font-display);font-size:1.2rem;font-weight:800;
+  color:var(--ink);margin-top:8px;line-height:1.2}
+.board-empty-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:120px;height:120px;border:3px dashed var(--border2);border-radius:14px;
+  color:var(--muted);font-size:0.8rem;font-weight:700;gap:6px}
+.board-empty-slot .plus{font-size:1.8rem;opacity:0.5}
+.board-divider{width:50px;display:flex;align-items:center;justify-content:center;
+  background:var(--surface2);border-left:2px solid var(--border);border-right:2px solid var(--border)}
+.arrow-icon{font-size:1.8rem;color:var(--muted)}
+
+/* SELECTOR AREA */
+.selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:700px;margin:0 auto}
+@media(max-width:600px){.selector-grid{grid-template-columns:1fr}}
+.selector-panel{background:var(--surface);border:2px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.selector-head{padding:11px 15px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:0.95rem;font-weight:800}
+.selector-head.now-head{background:var(--now-l);color:var(--now-d);border-color:#FDE68A}
+.selector-head.next-head{background:var(--next-l);color:var(--next-d);border-color:#BFDBFE}
+.selector-body{padding:12px}
+
+/* SEARCH in selector */
+.sel-search{display:flex;gap:6px;margin-bottom:8px}
+.sel-input{flex:1;padding:8px 12px;border-radius:100px;border:1.5px solid var(--border2);
+  font-size:0.82rem;font-weight:700;color:var(--ink);outline:none;background:var(--surface2);
+  transition:border-color 0.15s}
+.sel-input:focus{border-color:var(--now);background:white}
+.sel-input.next-focus:focus{border-color:var(--next)}
+.sel-btn{padding:8px 12px;border-radius:100px;font-size:0.8rem;font-weight:700;
+  color:white;transition:all 0.15s;white-space:nowrap}
+.sel-btn.now-btn{background:var(--now)}
+.sel-btn.now-btn:hover{background:var(--now-d)}
+.sel-btn.next-btn{background:var(--next)}
+.sel-btn.next-btn:hover{background:var(--next-d)}
+
+/* Quick words */
+.quick-words{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.qword{padding:3px 9px;border-radius:100px;font-size:0.7rem;font-weight:700;
+  border:1.5px solid var(--border2);color:var(--ink2);cursor:pointer;transition:all 0.12s}
+.qword:hover{border-color:var(--now);color:var(--now)}
+.qword.next-word-btn:hover{border-color:var(--next);color:var(--next)}
+
+/* Pictogram results */
+.pic-results{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+  max-height:220px;overflow-y:auto}
+.pic-item{border-radius:9px;border:2px solid var(--border);padding:5px 4px;min-height:72px;
+  text-align:center;cursor:pointer;transition:all 0.12s;background:var(--surface)}
+.pic-item:hover{border-color:var(--now);background:var(--now-l);transform:scale(1.04)}
+.pic-item.next-hover:hover{border-color:var(--next);background:var(--next-l)}
+.pic-item.selected-now{border-color:var(--now);background:var(--now-l)}
+.pic-item.selected-next{border-color:var(--next);background:var(--next-l)}
+.pic-img{width:44px;height:44px;object-fit:contain;display:block;margin:0 auto 3px}
+.pic-lbl{font-size:0.6rem;font-weight:700;color:var(--ink2);line-height:1.2;word-break:break-word}
+.pic-status{text-align:center;padding:16px 8px;color:var(--muted);font-size:0.78rem;font-weight:600}
+
+/* SETTINGS BAR */
+.settings-bar{max-width:700px;margin:16px auto 0;background:var(--surface);
+  border:1.5px solid var(--border);border-radius:var(--radius);padding:13px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow)}
+.setting-group{display:flex;align-items:center;gap:7px}
+.setting-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.4px;color:var(--muted);white-space:nowrap}
+.setting-select{padding:5px 9px;border-radius:9px;border:1.5px solid var(--border2);
+  font-size:0.78rem;font-weight:700;color:var(--ink);background:var(--surface2);outline:none}
+.setting-select:focus{border-color:var(--now)}
+.settings-actions{margin-left:auto;display:flex;gap:7px}
+.colour-dots{display:flex;gap:4px}
+.cdot{width:20px;height:20px;border-radius:50%;cursor:pointer;
+  border:2.5px solid transparent;transition:all 0.12s}
+.cdot:hover{transform:scale(1.15)}
+.cdot.active{border-color:var(--ink);transform:scale(1.15)}
+
+/* PRESETS STRIP */
+.presets-wrap{max-width:700px;margin:14px auto 0}
+.presets-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.4px;color:var(--muted);margin-bottom:6px}
+.presets-strip{display:flex;flex-wrap:wrap;gap:6px}
+.preset-btn{padding:5px 12px;border-radius:100px;font-size:0.75rem;font-weight:700;
+  border:1.5px solid var(--border2);color:var(--ink2);background:var(--surface);
+  cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:4px}
+.preset-btn:hover{border-color:var(--now);color:var(--now-d);background:var(--now-l)}
+
+/* THEN TOGGLE */
+.then-toggle{display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;padding:4px 0}
+.then-toggle input{accent-color:var(--green,#16A34A);width:16px;height:16px;cursor:pointer}
+.panel-badge.then{background:#16A34A}
+.board-panel.then{background:#F0FDF4}
+
+/* ATTRIBUTION */
+.attribution{max-width:700px;margin:14px auto 0;font-size:0.68rem;color:var(--muted);text-align:center}
+.attribution a{color:#3B82F6;text-decoration:none}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:white;padding:9px 18px;border-radius:100px;
+  font-size:0.8rem;font-weight:700;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* PRINT */
+@media print{
+  .no-print{display:none!important}
+  body{background:white}
+  .app{padding:0}
+  .board{max-width:100%;box-shadow:none;border:2px solid #ccc}
+  .board-panel{min-height:220px}
+  .board-pic{width:150px;height:150px}
+  .board-label{font-size:1.4rem}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="/" class="nbrand">
-    <div class="nbmark">🌿</div>
-    <span class="nbname">SendSteps</span>
-  </a>
-  <div class="nlinks">
-    <a href="#tools" class="nlink">Tools</a>
-    <span class="nfree">Free · No login · No subscription</span>
-    <button class="bookmark-btn" onclick="openBmModal()" id="bookmarkBtn">⭐ Bookmark</button>
-    <a href="#tools" class="npill">👀 See all tools</a>
-  </div>
-</nav>
-
-<div class="hero">
-  <div>
-    <p class="hstory a2">These tools were created from personal experience as a parent of a child with autism and dyslexia. The aim is simple — to provide helpful, easy-to-use resources that support SEND children and their families in everyday life. If these tools make things even a little bit easier, then they are doing their job.</p>
-  </div>
-</div>
-
-<section class="tools" id="tools">
-  <div class="si">
-    <div class="seye r">All tools</div>
-    <h2 class="stit r">24 tools — all free, all in one place</h2>
-    <p class="ssub r">Not sure where to start? Here are 4 good ones.</p>
-    <div class="tgrid" style="margin-bottom:32px">
-      <div class="tcard tg r"><span class="tico">📅</span><div class="ttit">Visual Routine Builder</div><p class="tdesc">Build interactive daily routines with drag-and-drop steps, emoji, timings and a First/Then mode.</p><a href="/routine/" class="tlink">Open tool →</a></div>
-      <div class="tcard tb r"><span class="tico">🃏</span><div class="ttit">Visual Communication Cards</div><p class="tdesc">Search 20,000+ ARASAAC pictograms and build a printable communication card set in seconds.</p><a href="/comm-cards/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">🔀</span><div class="ttit">Now / Next Board</div><p class="tdesc">Build a clear Now/Next visual board using real pictograms. Print, laminate and Velcro-ready.</p><a href="/now-next-board/" class="tlink">Open tool →</a></div>
-      <div class="tcard tp r"><span class="tico">👥</span><div class="ttit">Body Doubling Timer</div><p class="tdesc">Focus better by working alongside an animated companion. Set your task, pick your time, get it done.</p><a href="/body-doubling-timer/" class="tlink">Open tool →</a></div>
-    </div>
-    <div class="seye r" style="margin-bottom:14px">All 24 tools</div>
-    <div class="tgrid">
-      <div class="tcat r"><span class="tcatlbl">Routines &amp; Visual Supports</span><span class="tcatline"></span></div>
-      <div class="tcard tg r"><span class="tico">📅</span><div class="ttit">Visual Routine Builder</div><p class="tdesc">Build interactive daily routines with drag-and-drop steps, emoji, timings and a First/Then mode.</p><a href="/routine/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">📋</span><div class="ttit">Ready-Made Routines</div><p class="tdesc">22 pre-built routines ready to open and print — morning, bedtime, homework, sensory break and more.</p><a href="/printable-routines/" class="tlink">Open tool →</a></div>
-      <div class="tcard tp r"><span class="tico">🗓️</span><div class="ttit">Visual Timetable</div><p class="tdesc">Build a weekly school timetable with lesson slots, breaks, TA support flags and room notes.</p><a href="/visual-timetable/" class="tlink">Open tool →</a></div>
-      <div class="tcard tt r"><span class="tico">⏱️</span><div class="ttit">Visual Timer</div><p class="tdesc">A clear countdown with a shrinking circle and colour bar. Presets, custom times, sound alerts, full screen.</p><a href="/visual-timer/" class="tlink">Open tool →</a></div>
-
-      <div class="tcat r"><span class="tcatlbl">Communication</span><span class="tcatline"></span></div>
-      <div class="tcard tb r"><span class="tico">🃏</span><div class="ttit">Visual Communication Cards</div><p class="tdesc">Search 20,000+ ARASAAC pictograms and build a printable communication card set in seconds.</p><a href="/comm-cards/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">🔀</span><div class="ttit">Now / Next Board</div><p class="tdesc">Build a clear Now/Next visual board using real pictograms. Print, laminate and Velcro-ready.</p><a href="/now-next-board/" class="tlink">Open tool →</a></div>
-      <div class="tcard tg r"><span class="tico">📖</span><div class="ttit">Social Story Mini-Builder</div><p class="tdesc">Choose a scenario, add your child's name, and get a beautifully formatted social story to read and print.</p><a href="/socialstory/" class="tlink">Open tool →</a></div>
-
-      <div class="tcat r"><span class="tcatlbl">Feelings &amp; Emotions</span><span class="tcatline"></span></div>
-      <div class="tcard ta r"><span class="tico">💛</span><div class="ttit">Feelings &amp; Emotion Tools</div><p class="tdesc">Help children name and communicate how they feel using visual scales, emotion words and "what helps" prompts.</p><a href="/feelings/" class="tlink">Open tool →</a></div>
-      <div class="tcard tb r"><span class="tico">🔋</span><div class="ttit">Social Battery</div><p class="tdesc">Explain "running low" before it becomes a meltdown. Add drains and chargers, set today's level and print.</p><a href="/battery/" class="tlink">Open tool →</a></div>
-      <div class="tcard tp r"><span class="tico">📦</span><div class="ttit">Worry Box</div><p class="tdesc">Write down worries, take a breath, choose something that helps — then lock it away.</p><a href="/worry-box/" class="tlink">Open tool →</a></div>
-      <div class="tcard tr r"><span class="tico">📊</span><div class="ttit">Meltdown Trigger Tracker</div><p class="tdesc">Gently track triggers, intensity and what helped — without blame or judgement.</p><a href="/tracker/" class="tlink">Open tool →</a></div>
-      <div class="tcard tt r"><span class="tico">🧠</span><div class="ttit">Decompression Planner</div><p class="tdesc">After a day of masking and managing, your child needs the right recovery. Tell us about today.</p><a href="/decompression/" class="tlink">Open tool →</a></div>
-
-      <div class="tcat r"><span class="tcatlbl">Learning Support</span><span class="tcatline"></span></div>
-      <div class="tcard tg r"><span class="tico">✨</span><div class="ttit">AI Task Helper</div><p class="tdesc">Type any task and get it broken into tiny, manageable SEND-friendly steps — AI-powered.</p><a href="/task-helper-netlify/" class="tlink">Open tool →</a></div>
-      <div class="tcard tb r"><span class="tico">📚</span><div class="ttit">Homework Helper</div><p class="tdesc">Break homework into calm, manageable steps with reduced pressure, clear starts and built-in stopping points.</p><a href="/homework/" class="tlink">Open tool →</a></div>
-      <div class="tcard tp r"><span class="tico">🔡</span><div class="ttit">Word Decoder</div><p class="tdesc">Type a tricky word and get it broken into syllables, with a simple definition and how to say it out loud.</p><a href="/word-decoder/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">🔠</span><div class="ttit">Dyslexia-Friendly Text</div><p class="tdesc">Paste any text and instantly reformat it to be easier to read — adjustable font, spacing and layout.</p><a href="/dyslexia/" class="tlink">Open tool →</a></div>
-      <div class="tcard tt r"><span class="tico">📏</span><div class="ttit">Reading Ruler</div><p class="tdesc">A coloured strip that follows your mouse or finger to help track across the line — no losing your place.</p><a href="/reading-ruler/" class="tlink">Open tool →</a></div>
-      <div class="tcard tt r"><span class="tico">📚</span><div class="ttit">Story Writer</div><p class="tdesc">A tool designed exactly for someone who loves writing stories but gets blocked by spelling.</p><a href="/story-writer/" class="tlink">Open tool →</a></div>
-
-      
-      <div class="tcat r"><span class="tcatlbl">Daily Life</span><span class="tcatline"></span></div>
-      <div class="tcard tr r"><span class="tico">🏠</span><div class="ttit">Sensory-Friendly Home</div><p class="tdesc">Small home changes that make a big difference. A guided checklist to get started without overwhelm.</p><a href="/sensory/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">🍽️</span><div class="ttit">Safe Food List Builder</div><p class="tdesc">Add foods, tick the safe ones, sort into Always, Sometimes or Not Yet. Great for mealtimes.</p><a href="/safefood/" class="tlink">Open tool →</a></div>
-      <div class="tcard tb r"><span class="tico">💊</span><div class="ttit">Medication &amp; Appointments</div><p class="tdesc">Track daily medications with a simple tick system and keep upcoming appointments in one place.</p><a href="/med-tracker/" class="tlink">Open tool →</a></div>
-      <div class="tcard tp r"><span class="tico">🌙</span><div class="ttit">Sleep Pattern Logger</div><p class="tdesc">Track your child's sleep each night — bedtimes, wakings, mood and patterns over time.</p><a href="/sleep-logger/" class="tlink">Open tool →</a></div>
-
-      <div class="tcat r"><span class="tcatlbl">ADHD Support</span><span class="tcatline"></span></div>
-      <div class="tcard tg r"><span class="tico">🧠</span><div class="ttit">Brain Dump Pad</div><p class="tdesc">Too many thoughts at once? Get everything out of your head, then sort into Do Now, Do Later or Let It Go.</p><a href="/brain-dump/" class="tlink">Open tool →</a></div>
-      <div class="tcard tb r"><span class="tico">👥</span><div class="ttit">Body Doubling Timer</div><p class="tdesc">Focus better by working alongside someone — even virtually. Set your task, pick your time, get it done.</p><a href="/body-doubling-timer/" class="tlink">Open tool →</a></div>
-      <div class="tcard ta r"><span class="tico">⭐</span><div class="ttit">Token Board Builder</div><p class="tdesc">Earn tokens, reach the reward. Build a personalised token board with custom tokens, colours and rewards.</p><a href="/token-board/" class="tlink">Open tool →</a></div>
-    </div>
-  </div>
-</section>
-
-<section class="why">
-  <div class="si">
-    <div class="seye r">Why families choose SendSteps</div>
-    <h2 class="stit r">Built from lived SEND experience</h2>
-    <div class="wgrid">
-      <div class="wcard r"><span class="wico">🎨</span><div class="wtit">Customisable for every child</div><p class="wtxt">Every SEND child is different. Change labels, swap icons, adjust colours — make each tool fit your child, not the other way round.</p></div>
-      <div class="wcard r"><span class="wico">🖨️</span><div class="wtit">Print-ready in seconds</div><p class="wtxt">One click to print. A4 for the wall, strips for the desk, individual cards to laminate and Velcro — however you need it.</p></div>
-      <div class="wcard r"><span class="wico">🔒</span><div class="wtit">Private &amp; no login</div><p class="wtxt">Everything runs in your browser. Nothing is uploaded, nothing is tracked. No accounts, no ads, no subscription — ever.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="wa-section">
-  <div class="wa-card r">
-    <div class="wa-icon">💬</div>
-    <h2 class="wa-title">Join our WhatsApp community</h2>
-    <p class="wa-sub">Tips, new tools and support from other SEND families — all in one friendly group.</p>
-    <a href="YOUR_WHATSAPP_INVITE_LINK_HERE" class="wa-btn" target="_blank" rel="noopener">
-      💬 Join the community
-    </a>
-    <p class="wa-note">Free to join · No spam · Leave any time</p>
-  </div>
-</section>
-
-<footer>
-  <div class="fi">
-    <div class="ftop">
-      <div>
-        <div class="fbrand">Send<span>Steps</span></div>
-        <p class="ftag">Free visual tools for SEND children and families. Built from lived experience.</p>
+<!-- HEADER -->
+<header class="header no-print">
+  <div class="header-left">
+    <a href="/" class="header-back">← SendSteps</a>
+    <div>
+      <div class="header-title">
+        <span class="now-word">Now</span> &amp; <span class="next-word">Next</span> Board
       </div>
-      <div class="flinks">
-        <a href="#tools" class="flink">Tools</a>
-        <a href="/privacy/" class="flink">Privacy</a>
-        <a href="/terms/" class="flink">Terms</a>
-        <a href="#contact" id="footerContactLink" data-open-contact="1">Contact</a> 
- </div>
-    </div>
-    <p class="fcopy">
-      © SendSteps · Built for SEND families · Everything runs in your browser · No accounts · No ads ·
-      Pictograms by <a href="https://arasaac.org" target="_blank">ARASAAC</a>
-      © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao
-    </p>
-  </div>
-</footer>
-<!-- CONTACT MODAL -->
-<div class="modal-backdrop" id="contactModal" role="dialog" aria-modal="true" aria-label="Contact form">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>✉️ Send a message</h3>
-      <button class="modal-close" onclick="closeContact()" aria-label="Close">✕</button>
-    </div>
-    <div id="contactFormWrap">
-      <form class="modal-body" id="contactForm"
-        name="contact" method="POST" data-netlify="true"
-        netlify-honeypot="bot-field"
-        onsubmit="handleContactSubmit(event)">
-        <input type="hidden" name="form-name" value="contact">
-        <p class="mhoney"><label>Don't fill this in: <input name="bot-field"></label></p>
-        <div class="mfield">
-          <label for="cname">Name</label>
-          <input type="text" id="cname" name="name" placeholder="Your name" required>
-        </div>
-        <div class="mfield">
-          <label for="cemail">Email</label>
-          <input type="email" id="cemail" name="email" placeholder="your@email.com" required>
-        </div>
-        <div class="mfield">
-          <label for="cmsg">Message</label>
-          <textarea id="cmsg" name="message" placeholder="Your message..." required></textarea>
-        </div>
-        <div class="mactions">
-          <button type="button" class="mbtn-cancel" onclick="closeContact()">Cancel</button>
-          <button type="submit" class="mbtn-send">Send message →</button>
-        </div>
-      </form>
-    </div>
-    <div class="msuccess" id="contactSuccess" style="display:none">
-      <span class="msuccess-icon">💚</span>
-      <h4>Message sent!</h4>
-      <p>Thanks for getting in touch. I'll get back to you as soon as I can.</p>
+      <div class="header-sub">Build a printable Now / Next visual support board</div>
     </div>
   </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost-white btn-sm" onclick="clearBoard()">🗑️ Clear</button>
+    <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨️ Print board</button>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- THE BOARD -->
+  <div class="board-wrap">
+    <div class="board" id="mainBoard">
+
+      <!-- NOW PANEL -->
+      <div class="board-panel now" onclick="focusSearch('now')" id="nowPanel">
+        <div class="board-panel-header">
+          <div class="panel-badge">NOW</div>
+        </div>
+        <div class="board-pic-wrap" id="nowPicWrap">
+          <div class="board-empty-slot">
+            <span class="plus">＋</span>
+            <span>Choose below</span>
+          </div>
+        </div>
+        <div class="board-label" id="nowLabel"></div>
+      </div>
+
+      <!-- ARROW -->
+      <div class="board-divider">
+        <span class="arrow-icon">→</span>
+      </div>
+
+      <!-- NEXT PANEL -->
+      <div class="board-panel next" onclick="focusSearch('next')" id="nextPanel">
+        <div class="board-panel-header">
+          <div class="panel-badge">NEXT</div>
+        </div>
+        <div class="board-pic-wrap" id="nextPicWrap">
+          <div class="board-empty-slot">
+            <span class="plus">＋</span>
+            <span>Choose below</span>
+          </div>
+        </div>
+        <div class="board-label" id="nextLabel"></div>
+      </div>
+
+      <!-- THEN ARROW (hidden by default) -->
+      <div class="board-divider" id="thenDivider" style="display:none">
+        <span class="arrow-icon">→</span>
+      </div>
+
+      <!-- THEN PANEL (hidden by default) -->
+      <div class="board-panel then" onclick="focusSearch('then')" id="thenPanel" style="display:none">
+        <div class="board-panel-header">
+          <div class="panel-badge then">THEN</div>
+        </div>
+        <div class="board-pic-wrap" id="thenPicWrap">
+          <div class="board-empty-slot">
+            <span class="plus">＋</span>
+            <span>Choose below</span>
+          </div>
+        </div>
+        <div class="board-label" id="thenLabel"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SETTINGS BAR -->
+  <div class="settings-bar no-print">
+    <div class="setting-group">
+      <span class="setting-label">Board size</span>
+      <select class="setting-select" id="sizeSelect" onchange="applySettings()">
+        <option value="standard" selected>Standard (A4)</option>
+        <option value="large">Large (classroom)</option>
+        <option value="small">Small (desk)</option>
+      </select>
+    </div>
+    <div class="setting-group">
+      <span class="setting-label">Label</span>
+      <select class="setting-select" id="labelSelect" onchange="applySettings()">
+        <option value="below" selected>Below picture</option>
+        <option value="above">Above picture</option>
+        <option value="none">No label</option>
+      </select>
+    </div>
+    <div class="setting-group">
+      <span class="setting-label">NOW colour</span>
+      <div class="colour-dots" id="nowColours"></div>
+    </div>
+    <div class="setting-group">
+      <span class="setting-label">NEXT colour</span>
+      <div class="colour-dots" id="nextColours"></div>
+    </div>
+    <div class="settings-actions">
+      <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <!-- PRESET COMBINATIONS -->
+  <div class="presets-wrap no-print">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+    <div class="presets-label" style="margin-bottom:0">⚡ Quick presets</div>
+    <label class="then-toggle">
+      <input type="checkbox" id="thenToggle" onchange="toggleThen(this.checked)">
+      Add THEN panel
+    </label>
+  </div>
+    <div class="presets-strip" id="presetsStrip"></div>
+  </div>
+
+  <!-- SELECTORS -->
+  <div class="selector-grid" style="margin-top:16px" id="selectorGrid">
+
+    <!-- NOW SELECTOR -->
+    <div class="selector-panel">
+      <div class="selector-head now-head">🟡 Choose NOW</div>
+      <div class="selector-body">
+        <div class="sel-search">
+          <input type="text" class="sel-input" id="nowSearchInput"
+            placeholder="Search e.g. maths, lunch..."
+            onkeydown="if(event.key==='Enter')doSearch('now')">
+          <button class="sel-btn now-btn" onclick="doSearch('now')">Go</button>
+        </div>
+        <div class="quick-words" id="nowQuickWords"></div>
+        <div id="nowResults"><div class="pic-status">Search above or tap a quick word</div></div>
+      </div>
+    </div>
+
+    <!-- NEXT SELECTOR -->
+    <div class="selector-panel">
+      <div class="selector-head next-head">🔵 Choose NEXT</div>
+      <div class="selector-body">
+        <div class="sel-search">
+          <input type="text" class="sel-input next-focus" id="nextSearchInput"
+            placeholder="Search e.g. break, reading..."
+            onkeydown="if(event.key==='Enter')doSearch('next')">
+          <button class="sel-btn next-btn" onclick="doSearch('next')">Go</button>
+        </div>
+        <div class="quick-words" id="nextQuickWords"></div>
+        <div id="nextResults"><div class="pic-status">Search above or tap a quick word</div></div>
+      </div>
+    </div>
+
+    <!-- THEN SELECTOR (hidden by default) -->
+    <div class="selector-panel" id="thenSelector" style="display:none">
+      <div class="selector-head" style="background:#16A34A">🟢 Choose THEN</div>
+      <div class="selector-body">
+        <div class="sel-search">
+          <input type="text" class="sel-input" id="thenSearchInput"
+            placeholder="Search e.g. play, trampoline..."
+            onkeydown="if(event.key==='Enter')doSearch('then')">
+          <button class="sel-btn" style="background:#16A34A;color:white;border-color:#16A34A" onclick="doSearch('then')">Go</button>
+        </div>
+        <div class="quick-words" id="thenQuickWords"></div>
+        <div id="thenResults"><div class="pic-status">Search above or tap a quick word</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="attribution no-print">
+    Pictograms by <a href="https://arasaac.org" target="_blank">ARASAAC</a> —
+    © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao
+  </div>
+
 </div>
 
-  
-
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
-// Scroll reveal
-const obs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target)}});
-},{threshold:0.1,rootMargin:'0px 0px -36px 0px'});
-document.querySelectorAll('.r').forEach(el=>obs.observe(el));
-document.querySelectorAll('.wgrid,.srow,.tgrid').forEach(g=>{
-  g.querySelectorAll('.r').forEach((el,i)=>{el.style.transitionDelay=(i*.055)+'s'});
-});
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const QUICK_WORDS = [
+  // School subjects
+  'maths','english','reading','phonics','writing','science','art','pe','music','computing','library',
+  // School transitions
+  'assembly','register','circle time','tidy up','line up','pack bag','get coat','wash hands',
+  // Self-care
+  'toilet','drink','snack','lunch','dinner','breakfast','teeth','get dressed','bath','sleep',
+  // Rewards & motivating
+  'break','play','tablet','ipad','tv','lego','minecraft','youtube','trampoline','park','swimming','game','draw','crafts',
+  // Calming & SEND
+  'sensory break','quiet time','fidget toy','walk','music','headphones','movement break',
+  // Home routine
+  'homework','bedtime','story','tidy room','feed pet',
+];
 
-// Contact modal
-function openContact(){
-  document.getElementById('contactModal').classList.add('open');
-  document.body.style.overflow='hidden';
-  setTimeout(()=>document.getElementById('cname').focus(),100);
+const PRESETS = [
+  {label:'🔢 Maths → Break',           now:'maths',          next:'break'},
+  {label:'📖 Reading → Tablet',        now:'reading',         next:'tablet'},
+  {label:'🤸 PE → Lunch',             now:'pe',              next:'lunch'},
+  {label:'🦷 Teeth → Breakfast',       now:'teeth',           next:'breakfast'},
+  {label:'👕 Dressed → School',        now:'get dressed',     next:'school'},
+  {label:'🍽️ Lunch → Play',           now:'lunch',           next:'play'},
+  {label:'📚 Homework → Minecraft',    now:'homework',        next:'minecraft'},
+  {label:'🧹 Tidy Room → Trampoline', now:'tidy room',       next:'trampoline'},
+  {label:'🤫 Sensory Break → Circle', now:'sensory break',   next:'circle time'},
+  {label:'🛁 Bath → Story',           now:'bath',            next:'story'},
+];
+
+const NOW_COLOURS = [
+  {bg:'#FFFBEB', badge:'#F59E0B', name:'Amber'},
+  {bg:'#FFF7ED', badge:'#EA580C', name:'Orange'},
+  {bg:'#FEF2F2', badge:'#DC2626', name:'Red'},
+  {bg:'#F0FDF4', badge:'#16A34A', name:'Green'},
+];
+
+const NEXT_COLOURS = [
+  {bg:'#EFF6FF', badge:'#3B82F6', name:'Blue'},
+  {bg:'#F5F3FF', badge:'#7C3AED', name:'Purple'},
+  {bg:'#F0FDFA', badge:'#0D9488', name:'Teal'},
+  {bg:'#FDF4FF', badge:'#A21CAF', name:'Pink'},
+];
+
+const THEN_COLOURS = [
+  {bg:'#F0FDF4', badge:'#16A34A', name:'Green'},
+  {bg:'#FFF7ED', badge:'#EA580C', name:'Orange'},
+  {bg:'#F0F9FF', badge:'#0284C7', name:'Sky'},
+  {bg:'#FFF1F2', badge:'#E11D48', name:'Rose'},
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let state = {
+  now: null,   // {pictogramId, imageUrl, label}
+  next: null,
+  then: null,
+  showThen: false,
+  nowColour: 0,
+  nextColour: 0,
+  thenColour: 0,
+  labelPos: 'below',
+  size: 'standard',
+};
+
+const STORAGE_KEY = 'sendsteps_nownext_v2';
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  loadState();
+  buildQuickWords();
+  buildPresets();
+  buildColourPickers();
+  syncSettings();
+  renderBoard();
+  // Auto-load first quick word results
+  searchAndShow('now', 'maths');
+  searchAndShow('next', 'break');
 }
-function closeContact(){
-  document.getElementById('contactModal').classList.remove('open');
-  document.body.style.overflow='';
-  // Reset form after short delay
-  setTimeout(()=>{
-    document.getElementById('contactFormWrap').style.display='';
-    document.getElementById('contactSuccess').style.display='none';
-    document.getElementById('contactForm').reset();
-  },300);
+
+function buildQuickWords() {
+  ['now','next'].concat(state.showThen ? ['then'] : []).forEach(side => {
+    const el = document.getElementById(side + 'QuickWords');
+    if (!el) return;
+    el.innerHTML = QUICK_WORDS.map(w =>
+      `<button class="qw-btn" onclick="quickSearch('${side}','${w}')">${w}</button>`
+    ).join('');
+  });
 }
 
-// Open modal from footer Contact link
-document.getElementById('footerContactLink').addEventListener('click',function(e){
-  e.preventDefault();
-  openContact();
-});
+function buildPresets() {
+  const el = document.getElementById('presetsStrip');
+  el.innerHTML = PRESETS.map(p =>
+    `<button class="preset-btn" onclick="loadPreset('${p.now}','${p.next}')">${p.label}</button>`
+  ).join('');
+}
 
-// Close on backdrop click
-document.getElementById('contactModal').addEventListener('click',function(e){
-  if(e.target===this) closeContact();
-});
+function buildColourPickers() {
+  document.getElementById('nowColours').innerHTML = NOW_COLOURS.map((c, i) =>
+    `<div class="cdot${state.nowColour===i?' active':''}"
+      style="background:${c.bg};box-shadow:inset 0 0 0 2px ${c.badge}"
+      title="${c.name}" onclick="setNowColour(${i})"></div>`
+  ).join('');
+  document.getElementById('nextColours').innerHTML = NEXT_COLOURS.map((c, i) =>
+    `<div class="cdot${state.nextColour===i?' active':''}"
+      style="background:${c.bg};box-shadow:inset 0 0 0 2px ${c.badge}"
+      title="${c.name}" onclick="setNextColour(${i})"></div>`
+  ).join('');
+}
 
-// Close on Escape
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape') closeContact();
-});
+function syncSettings() {
+  document.getElementById('sizeSelect').value = state.size;
+  document.getElementById('labelSelect').value = state.labelPos;
+}
 
-// Handle form submit — Netlify submission via fetch
-async function handleContactSubmit(e){
-  e.preventDefault();
-  const form = document.getElementById('contactForm');
-  const btn = form.querySelector('.mbtn-send');
-  btn.textContent = 'Sending...';
-  btn.disabled = true;
+// ══════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════
+async function doSearch(side) {
+  const input = document.getElementById(side + 'SearchInput').value.trim();
+  if (!input) return;
+  await searchAndShow(side, input);
+}
+
+async function searchAndShow(side, query) {
+  const el = document.getElementById(side + 'Results');
+  el.innerHTML = `<div class="pic-status">🔍 Searching...</div>`;
 
   try {
-    const data = new FormData(form);
-    const res = await fetch('/', {
-      method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body: new URLSearchParams(data).toString()
-    });
-    if(res.ok){
-      document.getElementById('contactFormWrap').style.display='none';
-      document.getElementById('contactSuccess').style.display='block';
-    } else {
-      throw new Error('Network response was not ok');
+    const url = `https://api.arasaac.org/api/pictograms/en/search/${encodeURIComponent(query)}`;
+    const res = await fetch(url);
+    const data = res.ok ? await res.json() : [];
+    const results = Array.isArray(data) ? data.slice(0, 8) : [];
+
+    if (results.length === 0) {
+      el.innerHTML = `<div class="pic-status">No results for "${query}"</div>`;
+      return;
     }
-  } catch(err){
-    btn.textContent = 'Send message →';
-    btn.disabled = false;
-    alert('Sorry, something went wrong. Please try emailing directly.');
+
+    const isNext = side === 'next';
+    el.innerHTML = `<div class="pic-results">${
+      results.map(p => {
+        const imgUrl = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_500.png`;
+        const label = (p.keywords && p.keywords[0] && p.keywords[0].keyword) || query;
+        const isSelected = state[side] && state[side].pictogramId === p._id;
+        const selClass = isSelected ? (isNext ? 'selected-next' : 'selected-now') : '';
+        const hoverClass = isNext ? 'next-hover' : '';
+        return `<div class="pic-item ${hoverClass} ${selClass}"
+          onclick="selectPic('${side}', ${p._id}, '${encodeURIComponent(imgUrl)}', '${encodeURIComponent(label)}')">
+          <img class="pic-img" src="${imgUrl}" alt="${label}" width="44" height="44"
+            onerror="this.style.display='none'">
+          <div class="pic-lbl">${label}</div>
+        </div>`;
+      }).join('')
+    }</div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="pic-status">Search failed. Check your connection.</div>`;
   }
 }
 
-// Pause animations when tab is hidden to save CPU
-document.addEventListener('visibilitychange', () => {
-  document.body.style.animationPlayState =
-    document.hidden ? 'paused' : 'running';
-  // Also pause all animated elements
-  document.querySelectorAll('.a1,.a2,.a3,.a4,.a5,.npill').forEach(el => {
-    el.style.animationPlayState = document.hidden ? 'paused' : 'running';
+// ══════════════════════════════════════════
+// SELECT PICTOGRAM
+// ══════════════════════════════════════════
+function selectPic(side, pictogramId, encodedUrl, encodedLabel) {
+  const imageUrl = decodeURIComponent(encodedUrl);
+  const label = decodeURIComponent(encodedLabel);
+  state[side] = {pictogramId, imageUrl, label};
+  renderBoard();
+  saveState();
+  // Update selected state in results
+  refreshResultSelections(side);
+  const sideLabel = side === 'now' ? 'NOW' : side === 'next' ? 'NEXT' : 'THEN';
+  showToast(`✓ ${sideLabel} set to "${label}"`);
+}
+
+function refreshResultSelections(side) {
+  const el = document.getElementById(side + 'Results');
+  const items = el.querySelectorAll('.pic-item');
+  items.forEach(item => {
+    item.classList.remove('selected-now', 'selected-next');
   });
-});
-</script>
-<!-- Bookmark banner -->
-<div class="bookmark-banner" id="bmBanner">
-  <span class="bookmark-banner-icon">⭐</span>
-  <div class="bookmark-banner-text"><strong>Bookmark SendSteps</strong> — save it to your home screen for quick access</div>
-  <button class="bookmark-banner-btn" onclick="openBmModal()">Bookmark this page</button>
-  <button class="bookmark-banner-close" onclick="dismissBmBanner()" aria-label="Dismiss">✕</button>
-</div>
-
-<!-- Bookmark modal -->
-<div class="bm-backdrop" id="bmBackdrop" onclick="closeBmModal(event)">
-  <div class="bm-modal">
-    <div class="bm-head">
-      <div class="bm-title">⭐ Bookmark this page</div>
-      <button class="bm-x" onclick="closeBmModalDirect()">✕</button>
-    </div>
-    <div class="bm-panel" id="bmp-android">
-      <div class="bm-lbl">Android · Chrome</div>
-      <button class="bm-install show" id="bmInstallBtn" onclick="bmTriggerInstall()">📱 Add to Home Screen</button>
-      <div class="bm-done" id="bmDoneMsg">✅ Added! Look for the SendSteps icon on your home screen.</div>
-    </div>
-    <div class="bm-panel" id="bmp-ios">
-      <div class="bm-lbl">iPhone · Safari</div>
-      <div class="bm-step"><span class="bm-num">1</span><span>Tap the <strong>Share button</strong> at the bottom of your screen (box with arrow pointing up)</span></div>
-      <div class="bm-step"><span class="bm-num">2</span><span>Scroll down and tap <strong>"Add to Home Screen"</strong></span></div>
-      <div class="bm-step"><span class="bm-num">3</span><span>Tap <strong>"Add"</strong> — SendSteps will appear on your home screen like an app</span></div>
-    </div>
-    <div class="bm-panel" id="bmp-chrome">
-      <div class="bm-lbl">Chrome · Desktop</div>
-      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span></div>
-      <div class="bm-step"><span class="bm-num">2</span><span>Choose a folder and click <strong>Done</strong></span></div>
-    </div>
-    <div class="bm-panel" id="bmp-firefox">
-      <div class="bm-lbl">Firefox</div>
-      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span></div>
-      <div class="bm-step"><span class="bm-num">2</span><span>Click <strong>Save Bookmark</strong></span></div>
-    </div>
-    <div class="bm-panel" id="bmp-safari">
-      <div class="bm-lbl">Safari · Mac</div>
-      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Cmd+D</strong> or go to <strong>Bookmarks → Add Bookmark</strong></span></div>
-      <div class="bm-step"><span class="bm-num">2</span><span>Choose where to save it and click <strong>Add</strong></span></div>
-    </div>
-    <div class="bm-panel" id="bmp-generic">
-      <div class="bm-lbl">Add a bookmark</div>
-      <div class="bm-step"><span class="bm-num">1</span><span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span></div>
-      <div class="bm-step"><span class="bm-num">2</span><span>On mobile, tap your browser menu and look for <strong>"Add to Home Screen"</strong> or <strong>"Bookmark"</strong></span></div>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const ua = navigator.userAgent;
-  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-  const isAndroid = /Android/.test(ua);
-  const isChrome = /Chrome/.test(ua) && !/Edg/.test(ua);
-  const isFirefox = /Firefox/.test(ua);
-  const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua);
-  let deferredPrompt = null;
-
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
-
-  function detectPanel() {
-    ['android','ios','chrome','firefox','safari','generic'].forEach(id => {
-      const el = document.getElementById('bmp-'+id);
-      if (el) el.classList.remove('show');
-    });
-    let id = 'generic';
-    if (isIOS && isSafari)          id = 'ios';
-    else if (isAndroid && isChrome) id = 'android';
-    else if (isChrome)              id = 'chrome';
-    else if (isFirefox)             id = 'firefox';
-    else if (isSafari)              id = 'safari';
-    const panel = document.getElementById('bmp-'+id);
-    if (panel) panel.classList.add('show');
-    // If Android Chrome but no deferred prompt, show manual steps
-    if (id === 'android' && !deferredPrompt) {
-      const p = document.getElementById('bmp-android');
-      if (p) p.innerHTML = `<div class="bm-lbl">Android · Chrome</div>
-        <div class="bm-step"><span class="bm-num">1</span><span>Tap the <strong>three dots menu</strong> in the top right</span></div>
-        <div class="bm-step"><span class="bm-num">2</span><span>Tap <strong>"Add to Home screen"</strong></span></div>
-        <div class="bm-step"><span class="bm-num">3</span><span>Tap <strong>Add</strong> to confirm</span></div>`;
-    }
-  }
-
-  window.bmTriggerInstall = function() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(r => {
-      if (r.outcome === 'accepted') {
-        const btn = document.getElementById('bmInstallBtn');
-        const msg = document.getElementById('bmDoneMsg');
-        if (btn) btn.classList.remove('show');
-        if (msg) msg.classList.add('show');
-        const hbtn = document.getElementById('bookmarkBtn');
-        if (hbtn) { hbtn.textContent = '⭐ Bookmarked!'; hbtn.classList.add('saved'); }
+  if (state[side]) {
+    const id = state[side].pictogramId;
+    items.forEach(item => {
+      if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(',' + id + ',')) {
+        item.classList.add(side === 'now' ? 'selected-now' : 'selected-next');
       }
-      deferredPrompt = null;
     });
-  };
-
-  window.openBmModal = function() {
-    detectPanel();
-    document.getElementById('bmBackdrop').classList.add('open');
-  };
-  window.closeBmModal = function(e) {
-    if (e && e.target !== document.getElementById('bmBackdrop')) return;
-    closeBmModalDirect();
-  };
-  window.closeBmModalDirect = function() {
-    document.getElementById('bmBackdrop').classList.remove('open');
-  };
-
-  // Banner — show after 20s, remember if dismissed
-  const BANNER_KEY = 'ss_bm_dismissed';
-  const banner = document.getElementById('bmBanner');
-  if (banner && !localStorage.getItem(BANNER_KEY)) {
-    setTimeout(() => banner.classList.add('show'), 20000);
   }
-  window.dismissBmBanner = function() {
-    if (banner) banner.classList.remove('show');
-    try { localStorage.setItem(BANNER_KEY, '1'); } catch(e) {}
-  };
+}
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeBmModalDirect();
-  });
-})();
-</script>
-<script>
-// Add scroll-behavior after page load so it doesn't affect FCP
-window.addEventListener('load', () => {
-  document.documentElement.style.scrollBehavior = 'smooth';
-  // Service worker registration
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-      .then(reg => reg.update())
-      .catch(err => console.warn('[SW] Registration failed:', err));
+// ══════════════════════════════════════════
+// PRESETS
+// ══════════════════════════════════════════
+async function loadPreset(nowWord, nextWord) {
+  showToast('⏳ Loading preset...');
+  await Promise.all([
+    loadFirstResult('now', nowWord),
+    loadFirstResult('next', nextWord),
+  ]);
+  renderBoard();
+  saveState();
+  showToast('✓ Preset loaded!');
+}
+
+async function loadFirstResult(side, query) {
+  try {
+    const url = `https://api.arasaac.org/api/pictograms/en/search/${encodeURIComponent(query)}`;
+    const res = await fetch(url);
+    const data = res.ok ? await res.json() : [];
+    if (data && data.length > 0) {
+      const p = data[0];
+      const imgUrl = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_500.png`;
+      const label = (p.keywords && p.keywords[0] && p.keywords[0].keyword) || query;
+      state[side] = {pictogramId: p._id, imageUrl: imgUrl, label};
+      // Also refresh the search results panel
+      await searchAndShow(side, query);
+    }
+  } catch(e){}
+}
+
+// ══════════════════════════════════════════
+// RENDER BOARD
+// ══════════════════════════════════════════
+function renderBoard() {
+  const nowC = NOW_COLOURS[state.nowColour];
+  const nextC = NEXT_COLOURS[state.nextColour];
+  const thenC = THEN_COLOURS[state.thenColour || 0];
+
+  // THEN panel visibility
+  const mainBoard = document.getElementById('mainBoard');
+  const thenPanel = document.getElementById('thenPanel');
+  const thenDivider = document.getElementById('thenDivider');
+  const thenSel = document.getElementById('thenSelector');
+  if (state.showThen) {
+    mainBoard.classList.add('show-then');
+    thenPanel.style.display = '';
+    thenDivider.style.display = '';
+    if(thenSel) thenSel.style.display = '';
+  } else {
+    mainBoard.classList.remove('show-then');
+    thenPanel.style.display = 'none';
+    thenDivider.style.display = 'none';
+    if(thenSel) thenSel.style.display = 'none';
   }
-});
+  const sizeMap = {small:'80px', standard:'120px', large:'170px'};
+  const imgSize = sizeMap[state.size] || '120px';
+  const labelSizeMap = {small:'0.95rem', standard:'1.2rem', large:'1.6rem'};
+  const lblSize = labelSizeMap[state.size] || '1.2rem';
+
+  // NOW panel
+  const nowPanel = document.getElementById('nowPanel');
+  nowPanel.style.background = nowC.bg;
+  nowPanel.querySelector('.panel-badge').style.background = nowC.badge;
+
+  const nowPicWrap = document.getElementById('nowPicWrap');
+  if (state.now) {
+    nowPicWrap.innerHTML = `<img class="board-pic" src="${state.now.imageUrl}"
+      alt="${escHtml(state.now.label)}"
+      width="120" height="120"
+      style="width:${imgSize};height:${imgSize}"
+      onerror="this.style.display='none'">`;
+  } else {
+    nowPicWrap.innerHTML = `<div class="board-empty-slot">
+      <span class="plus">＋</span><span>Choose below</span></div>`;
+  }
+
+  const nowLbl = document.getElementById('nowLabel');
+  nowLbl.style.fontSize = lblSize;
+  nowLbl.textContent = (state.labelPos !== 'none' && state.now) ? state.now.label : '';
+
+  // NEXT panel
+  const nextPanel = document.getElementById('nextPanel');
+  nextPanel.style.background = nextC.bg;
+  nextPanel.querySelector('.panel-badge').style.background = nextC.badge;
+
+  const nextPicWrap = document.getElementById('nextPicWrap');
+  if (state.next) {
+    nextPicWrap.innerHTML = `<img class="board-pic" src="${state.next.imageUrl}"
+      alt="${escHtml(state.next.label)}"
+      width="120" height="120"
+      style="width:${imgSize};height:${imgSize}"
+      onerror="this.style.display='none'">`;
+  } else {
+    nextPicWrap.innerHTML = `<div class="board-empty-slot">
+      <span class="plus">＋</span><span>Choose below</span></div>`;
+  }
+
+  const nextLbl = document.getElementById('nextLabel');
+  nextLbl.style.fontSize = lblSize;
+  nextLbl.textContent = (state.labelPos !== 'none' && state.next) ? state.next.label : '';
+
+  // THEN panel
+  if (state.showThen) {
+    thenPanel.style.background = thenC.bg;
+    thenPanel.querySelector('.panel-badge').style.background = thenC.badge;
+    const thenPicWrap = document.getElementById('thenPicWrap');
+    if (state.then) {
+      thenPicWrap.innerHTML = `<img class="board-pic" src="${state.then.imageUrl}"
+        alt="${escHtml(state.then.label)}"
+        width="120" height="120"
+        style="width:${imgSize};height:${imgSize}"
+        onerror="this.style.display='none'">`;
+    } else {
+      thenPicWrap.innerHTML = `<div class="board-empty-slot">
+        <span class="plus">＋</span><span>Choose below</span></div>`;
+    }
+    const thenLbl = document.getElementById('thenLabel');
+    thenLbl.style.fontSize = lblSize;
+    thenLbl.textContent = (state.labelPos !== 'none' && state.then) ? state.then.label : '';
+  }
+}
+
+// ══════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════
+function applySettings() {
+  state.size = document.getElementById('sizeSelect').value;
+  state.labelPos = document.getElementById('labelSelect').value;
+  renderBoard();
+  saveState();
+}
+
+function setNowColour(i) {
+  state.nowColour = i;
+  buildColourPickers();
+  renderBoard();
+  saveState();
+}
+
+function setNextColour(i) {
+  state.nextColour = i;
+  buildColourPickers();
+  renderBoard();
+  saveState();
+}
+
+function focusSearch(side) {
+  if (side === 'then' && !state.showThen) return;
+  const el = document.getElementById(side + 'SearchInput');
+  if (el) { el.focus(); el.select(); }
+}
+
+// ══════════════════════════════════════════
+// CLEAR
+// ══════════════════════════════════════════
+function clearBoard() {
+  state.now = null;
+  state.next = null;
+  state.then = null;
+  renderBoard();
+  saveState();
+  showToast('🗑️ Board cleared');
+}
+
+function toggleThen(on) {
+  state.showThen = on;
+  if (!on) state.then = null;
+  renderBoard();
+  saveState();
+  buildQuickWords();
+}
+
+// ══════════════════════════════════════════
+// PRINT
+// ══════════════════════════════════════════
+function doPrint() {
+  if (!state.now && !state.next) {
+    showToast('⚠️ Choose a NOW and NEXT activity first');
+    return;
+  }
+
+  const nowC = NOW_COLOURS[state.nowColour];
+  const nextC = NEXT_COLOURS[state.nextColour];
+  const sizeMap = {small:'100pt', standard:'150pt', large:'210pt'};
+  const imgSize = sizeMap[state.size] || '150pt';
+  const lblSize = {small:'16pt', standard:'22pt', large:'30pt'}[state.size] || '22pt';
+
+  function panelHtml(slot, c, title) {
+    const labelHtml = state.labelPos !== 'none' && slot
+      ? `<div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:${lblSize};
+          color:#1A2540;margin-top:10pt;line-height:1.2">${escHtml(slot.label)}</div>` : '';
+    const imgHtml = slot
+      ? `<img src="${slot.imageUrl}" style="width:${imgSize};height:${imgSize};
+          object-fit:contain;display:block;margin:0 auto">`
+      : `<div style="width:${imgSize};height:${imgSize};border:3pt dashed #ccc;
+          border-radius:12pt;display:flex;align-items:center;justify-content:center;
+          margin:0 auto;color:#bbb;font-size:14pt">?</div>`;
+    return `<div style="background:${c.bg};padding:24pt 20pt;text-align:center;
+      flex:1;display:flex;flex-direction:column;align-items:center;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact">
+      <div style="display:inline-block;background:${c.badge};color:white;
+        padding:6pt 24pt;border-radius:100pt;font-family:'Baloo 2',cursive;
+        font-weight:800;font-size:24pt;margin-bottom:16pt">${title}</div>
+      ${state.labelPos === 'above' ? labelHtml : ''}
+      ${imgHtml}
+      ${state.labelPos !== 'above' ? labelHtml : ''}
+    </div>`;
+  }
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Now & Next Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Baloo 2',cursive;background:white;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .board{display:flex;border:3pt solid #D4DAE8;border-radius:16pt;
+    overflow:hidden;margin:10mm;box-shadow:none}
+  .divider{width:40pt;background:#F5F7FA;border-left:2pt solid #D4DAE8;
+    border-right:2pt solid #D4DAE8;display:flex;align-items:center;
+    justify-content:center;font-size:28pt;color:#8C96B0}
+  .credit{font-size:7pt;color:#bbb;text-align:center;padding:6pt;margin:0 10mm}
+  @media print{body{margin:0}}
+</style></head><body>
+<div class="board">
+  ${panelHtml(state.now, nowC, 'NOW')}
+  <div class="divider">→</div>
+  ${panelHtml(state.next, nextC, 'NEXT')}
+</div>
+<div class="credit">
+  Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · sendsteps.uk
+</div>
+</body></html>`;
+
+  const w = window.open('', '_blank', 'width=900,height=600');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => setTimeout(() => w.print(), 800);
+}
+
+// ══════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+}
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) Object.assign(state, JSON.parse(s));
+  } catch(e){}
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
 </script>
-<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:90px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
 </body>
 </html>
