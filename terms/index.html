@@ -13,13 +13,13 @@
   --surface2:#F2F7F4;
   --border:#D4E6DC;
   --border2:#B8D4C4;
-  --sage:#5A9E7A;
+  --sage:#356B4F;
   --sage-d:#3D7A5A;
   --sage-l:#D8EFE3;
   --sage-ll:#EEF8F2;
   --text:#1E3228;
   --text2:#3D5E4A;
-  --text3:#7A9E8A;
+  --text3:#567A66;
   --radius:14px;
   --radius-lg:20px;
   --shadow:0 3px 16px rgba(30,50,40,0.08);
@@ -108,9 +108,16 @@ a:hover{color:var(--sage)}
   text-align:center;font-size:0.76rem;font-weight:600;color:var(--text3);
   line-height:1.7;
 }
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#1E3228;color:#F6F9F7;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid #3D7A5A;outline-offset:3px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
 <div class="header">
   <div class="header-icon">📋</div>
@@ -120,7 +127,7 @@ a:hover{color:var(--sage)}
   </div>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main-content">
 
   <a href="/" class="back">← Back to SendSteps</a>
 
@@ -209,7 +216,7 @@ a:hover{color:var(--sage)}
     </div>
 
   </div>
-</div>
+</main>
 
 <div class="footer">
   © 2025 SendSteps.uk — Made with 💚 by a SEND parent, for SEND families.<br>

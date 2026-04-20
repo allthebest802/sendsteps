@@ -13,22 +13,22 @@
   --paper:#FFFFFF;
   --ink:#2C1F0E;
   --ink2:#5C4A2E;
-  --muted:#9A8468;
+  --muted:#836C50;
   --border:#E8D9C0;
   --border2:#D4C0A0;
-  --teal:#2D9B8A;
+  --teal:#0C7A69;
   --teal-l:#E6F5F3;
   --teal-d:#1F7A6C;
-  --sun:#F5A623;
+  --sun:#8A5A00;
   --sun-l:#FEF4E4;
-  --sun-d:#C87D0E;
-  --rose:#D9534F;
+  --sun-d:#A75C00;
+  --rose:#C13B37;
   --rose-l:#FBEAEA;
-  --sky:#4A90C4;
+  --sky:#2C72A6;
   --sky-l:#EAF3FB;
-  --mint:#4CAF82;
+  --mint:#197C4F;
   --mint-l:#E8F5EE;
-  --lavender:#8B6DB5;
+  --lavender:#795BA3;
   --lavender-l:#F0EBF8;
   --radius:18px;
   --radius-lg:26px;
@@ -188,10 +188,19 @@ input,textarea{font-family:'Nunito',sans-serif}
   .wizard-nav{padding:16px}
   .story-body{padding:20px 16px}
 }
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#2C1F0E;color:#FFFBF4;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #1F7A6C;outline-offset:3px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
+<div id="main-content" tabindex="-1" style="outline:none">
+<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#0C7A69;text-decoration:none;border:1.5px solid #D4C0A0;border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; SendSteps Home</a>
 <div class="rainbow-stripe"></div>
 
 <header class="site-header">
@@ -721,5 +730,6 @@ function toast(msg){
 }
 </script>
 <a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+</div>
 </body>
 </html>

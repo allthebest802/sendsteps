@@ -14,23 +14,23 @@
   --surface2:#F2F7F4;
   --border:#D4E6DC;
   --border2:#B8D4C4;
-  --sage:#5A9E7A;
+  --sage:#307450;
   --sage-d:#3D7A5A;
   --sage-l:#D8EFE3;
   --sage-ll:#EEF8F2;
-  --amber:#E8963A;
+  --amber:#A95700;
   --amber-l:#FDF0DC;
-  --rose:#D4727A;
+  --rose:#AD4B53;
   --rose-l:#FAEAEB;
-  --sky:#5A9EC8;
+  --sky:#2D719B;
   --sky-l:#DCF0FA;
-  --teal:#4ABCB0;
+  --teal:#087A6E;
   --teal-l:#D8F4F0;
-  --lavender:#8A7EC8;
+  --lavender:#6C60AA;
   --lav-l:#ECEAF8;
   --text:#1E3228;
   --text2:#3D5E4A;
-  --text3:#7A9E8A;
+  --text3:#527566;
   --radius:14px;
   --radius-lg:20px;
   --shadow:0 3px 16px rgba(30,50,40,0.08);
@@ -255,10 +255,19 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.5}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#1E3228;color:#F6F9F7;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #307450;outline-offset:3px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
+<div id="main-content" tabindex="-1" style="outline:none">
+<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#307450;text-decoration:none;border:1.5px solid #B8D4C4;border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; SendSteps Home</a>
 <div class="header">
   <div>
     <h1>📊 Meltdown Trigger Tracker</h1>
@@ -319,7 +328,7 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.5}
       </div>
 
       <div class="form-section">
-        <label class="form-label">Intensity</label>
+        <label for="inc-intensity" class="form-label">Intensity</label>
         <div class="intensity-row">
           <span style="font-size:1.1rem">😌</span>
           <input type="range" id="inc-intensity" min="1" max="10" value="5">
@@ -717,7 +726,7 @@ function showExportModal(csv){
   overlay.innerHTML=`<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:24px;max-width:540px;width:100%;box-shadow:var(--shadow-lg)">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text)">📤 Export CSV</h3>
-      <button id="closeExport" style="font-size:1.2rem;color:var(--text3);cursor:pointer;background:none;border:none;padding:4px 8px">✕</button>
+      <button id="closeExport" style="font-size:1.2rem;color:var(--text3);cursor:pointer;background:none;border:none;padding:4px 8px" aria-label="Close">✕</button>
     </div>
     <p style="font-size:0.83rem;color:var(--text2);font-weight:600;margin-bottom:10px">Select all and copy, or use the button below:</p>
     <textarea id="csvOutput" readonly style="width:100%;height:160px;font-family:monospace;font-size:0.75rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius);padding:10px;color:var(--text2);resize:none;line-height:1.4;outline:none"></textarea>
@@ -795,6 +804,6 @@ function showToast(msg){
   toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
 }
 </script>
-<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+</div>
 </body>
 </html>

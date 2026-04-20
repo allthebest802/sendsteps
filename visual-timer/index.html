@@ -13,17 +13,17 @@
   --surface2:#F5F9FF;
   --border:#D0E4FF;
   --border2:#B0CCF8;
-  --primary:#4A90E8;
-  --primary-d:#2A6BC8;
+  --primary:#1E60BE;
+  --primary-d:#1250AA;
   --primary-l:#DCEEFF;
-  --warn:#F0A030;
+  --warn:#A85800;
   --warn-l:#FEF3D8;
-  --done:#48C880;
+  --done:#007D35;
   --done-l:#D8F5E8;
-  --done-d:#28A060;
+  --done-d:#1A7A50;
   --text:#1A2840;
   --text2:#3A5070;
-  --text3:#7090B0;
+  --text3:#4E6882;
   --radius:16px;
   --radius-lg:24px;
   --shadow:0 4px 24px rgba(26,40,64,0.10);
@@ -40,13 +40,13 @@ body.bright{
   --surface2:#FFF4E8;
   --border:#FFD8A8;
   --border2:#FFB870;
-  --primary:#FF8C30;
+  --primary:#B74400;
   --primary-d:#D06010;
   --primary-l:#FFE8C8;
   --text:#2A1800;
   --text2:#5A3800;
-  --text3:#A07040;
-  --timer-color:#FF8C30;
+  --text3:#976737;
+  --timer-color:#B74400;
 }
 
 html{font-size:16px}
@@ -248,10 +248,19 @@ body.fs-mode{overflow:hidden}
 /* Done animation */
 @keyframes doneFlash{0%,100%{opacity:1}50%{opacity:0.5}}
 .done-flash{animation:doneFlash 0.5s ease-in-out 4}
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#1A2840;color:#F0F7FF;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #2A6BC8;outline-offset:3px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
+<div id="main-content" tabindex="-1" style="outline:none">
+<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#2A6BC8;text-decoration:none;border:1.5px solid #B0CCF8;border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; SendSteps Home</a>
 <div class="header">
   <h1>⏱️ Visual Timer</h1>
   <div class="theme-toggle">
@@ -330,9 +339,9 @@ body.fs-mode{overflow:hidden}
     <div class="preset-label" style="margin-top:4px">Custom time</div>
     <div class="custom-row">
       <div class="time-inputs">
-        <input class="time-input" type="number" id="customMins" min="0" max="99" value="5" placeholder="mm">
+        <input class="time-input" type="number" id="customMins" aria-label="Custom minutes" min="0" max="99" value="5" placeholder="mm">
         <span class="time-sep">:</span>
-        <input class="time-input" type="number" id="customSecs" min="0" max="59" value="0" placeholder="ss">
+        <input class="time-input" type="number" id="customSecs" aria-label="Custom seconds" min="0" max="59" value="0" placeholder="ss">
       </div>
       <span class="custom-label">mins : secs</span>
       <button class="set-btn" onclick="setCustom()">Set →</button>
@@ -627,5 +636,6 @@ updateDisplay();
 setStatus('Choose a time below to begin');
 </script>
 <a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+</div>
 </body>
 </html>
