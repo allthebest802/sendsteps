@@ -74,7 +74,7 @@ input,select{font-family:var(--font-body)}
 .board-wrap{margin-bottom:24px}
 .board{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:stretch;
   background:var(--surface);border:2px solid var(--border);border-radius:22px;
-  box-shadow:var(--shadow-lg);overflow:
+  box-shadow:var(--shadow-lg);overflow:hidden}
 
 .presets-wrap{overflow:hidden;max-width:700px;margin:0 auto}
 .board-panel{display:flex;flex-direction:column;align-items:center;padding:24px 20px;
@@ -217,9 +217,9 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 <h1 class="sr-only">Now Next Board — SendSteps</h1>
 
 <!-- HEADER -->
+<div id="main-content" tabindex="-1" style="outline:none">
 <header class="header no-print">
-  <div id="main-content" tabindex="-1" style="outline:none">
-<div class="header-left">
+  <div class="header-left">
     <a href="/" class="header-back">← SendSteps</a>
     <div>
       <div class="header-title">
@@ -396,20 +396,23 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 // ══════════════════════════════════════════
 // DATA
 // ══════════════════════════════════════════
-const QUICK_WORDS = [
-  // Everyday life
-  'get dressed','breakfast','lunch','dinner','snack','drink','toilet','teeth','bath','sleep','bedtime',
-  // Transitions
-  'tidy up','wash hands','get coat','pack bag','school','home',
-  // Rewards & fun
-  'play','break','tablet','minecraft','youtube','trampoline','park','swimming','lego','game','draw','tv','crafts','music',
-  // Calming & sensory
-  'sensory break','quiet time','movement break','walk','headphones','fidget toy',
-  // School (lighter selection)
-  'maths','reading','pe','art','homework','circle time',
-  // Home
-  'story','tidy room','feed pet','shopping',
+// Quick words shown by default (visible immediately)
+const QUICK_WORDS_DEFAULT = [
+  'play','break','lunch','snack','tablet','trampoline','park','swimming',
+  'bath','teeth','sleep','story','quiet time','walk','draw','tv',
 ];
+
+// Extra words shown when "more" is expanded
+const QUICK_WORDS_MORE = [
+  'get dressed','breakfast','dinner','drink','toilet','bedtime',
+  'tidy up','wash hands','get coat','pack bag','school','home',
+  'minecraft','youtube','lego','game','crafts','music',
+  'sensory break','movement break','headphones','fidget toy',
+  'maths','reading','pe','art','homework','circle time',
+  'tidy room','feed pet','shopping',
+];
+
+const QUICK_WORDS = [...QUICK_WORDS_DEFAULT, ...QUICK_WORDS_MORE];
 
 const PRESETS = [
   {label:'🌅 Morning',    now:'get dressed',   next:'breakfast',     then:'school'},
@@ -477,13 +480,27 @@ function init() {
 }
 
 function buildQuickWords() {
-  ['now','next'].concat(state.showThen ? ['then'] : []).forEach(side => {
+  ['now','next','then'].forEach(side => {
     const el = document.getElementById(side + 'QuickWords');
     if (!el) return;
-    el.innerHTML = QUICK_WORDS.map(w =>
-      `<button class="qw-btn" onclick="quickSearch('${side}','${w}')">${w}</button>`
+    const colorClass = side === 'next' ? 'next-word-btn' : '';
+    const defaultBtns = QUICK_WORDS_DEFAULT.map(w =>
+      `<button class="qw-btn ${colorClass}" onclick="quickSearch('${side}','${w}')">${w}</button>`
     ).join('');
+    const moreBtns = QUICK_WORDS_MORE.map(w =>
+      `<button class="qw-btn ${colorClass} qw-more" style="display:none" onclick="quickSearch('${side}','${w}')">${w}</button>`
+    ).join('');
+    const moreToggle = `<button class="qw-btn qw-more-toggle" onclick="toggleMoreWords('${side}', this)" style="border-style:dashed;opacity:0.7">+ more</button>`;
+    el.innerHTML = defaultBtns + moreBtns + moreToggle;
   });
+}
+
+function toggleMoreWords(side, btn) {
+  const el = document.getElementById(side + 'QuickWords');
+  const hidden = el.querySelectorAll('.qw-more');
+  const isExpanded = btn.textContent.trim().startsWith('−');
+  hidden.forEach(b => b.style.display = isExpanded ? 'none' : '');
+  btn.textContent = isExpanded ? '+ more' : '− less';
 }
 
 function quickSearch(side, word) {
@@ -524,7 +541,7 @@ function syncSettings() {
 // ══════════════════════════════════════════
 // SEARCH
 // ══════════════════════════════════════════
-async async function doSearch(side) {
+async function doSearch(side) {
   const input = document.getElementById(side + 'SearchInput').value.trim();
   if (!input) return;
   await searchAndShow(side, input);
@@ -826,6 +843,7 @@ function doPrint() {
   Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · sendsteps.uk
 </div>
 </div>
+</div>
 </body></html>`;
 
   const w = window.open('', '_blank', 'width=900,height=600');
@@ -865,6 +883,7 @@ function escHtml(s) {
 init();
 </script>
 <a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+</div>
 </div>
 </body>
 </html>
