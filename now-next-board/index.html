@@ -3,887 +3,861 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Now & Next Board — SendSteps</title>
+<title>Flag Speed Quiz — 60 Second Challenge | FlagAtlas</title>
+<meta name="description" content="How many flags can you name in 60 seconds? Test your world flag knowledge in this fast-paced quiz. Beat your high score and challenge your friends — free to play.">
+<meta name="keywords" content="flag quiz, speed quiz, world flags quiz, geography quiz for kids, flag game, country quiz, flag challenge">
+<meta name="author" content="FlagAtlas">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://flagatlas.co.uk/quiz.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://flagatlas.co.uk/quiz.html">
+<meta property="og:title" content="Flag Speed Quiz — 60 Second Challenge | FlagAtlas">
+<meta property="og:description" content="How many flags can you name in 60 seconds? Test your world flag knowledge in this fast-paced quiz. Free to play.">
+<meta property="og:image" content="https://flagatlas.co.uk/og-image.png">
+<meta property="og:site_name" content="FlagAtlas">
+<meta property="og:locale" content="en_GB">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://flagatlas.co.uk/quiz.html">
+<meta name="twitter:title" content="Flag Speed Quiz — 60 Second Challenge | FlagAtlas">
+<meta name="twitter:description" content="How many flags can you name in 60 seconds? Test your world flag knowledge. Free to play.">
+<meta name="twitter:image" content="https://flagatlas.co.uk/og-image.png">
+
+<!-- JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Flag Speed Quiz",
+  "url": "https://flagatlas.co.uk/quiz.html",
+  "description": "A 60-second timed flag quiz — name as many countries as you can from their flags.",
+  "applicationCategory": "GameApplication",
+  "isPartOf": { "@type": "WebSite", "name": "FlagAtlas", "url": "https://flagatlas.co.uk/" },
+  "audience": { "@type": "Audience", "audienceType": "Children, Families, Students" },
+  "inLanguage": "en-GB",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://static.arasaac.org" crossorigin>
-<link rel="preconnect" href="https://api.arasaac.org" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#F5F7FA;
-  --surface:#FFFFFF;
-  --surface2:#EDF0F7;
-  --ink:#1A2540;
-  --ink2:#46536E;
-  --muted:#656F89;
-  --border:#D4DAE8;
-  --border2:#B8C2D8;
-  --now:#B45309;
-  --now-l:#FFFBEB;
-  --now-d:#92400E;
-  --next:#1D4ED8;
-  --next-l:#EFF6FF;
-  --next-d:#1E3A8A;
-  --green:#10B981;
-  --radius:16px;
-  --shadow:0 2px 14px rgba(26,37,64,0.09);
-  --shadow-lg:0 8px 32px rgba(26,37,64,0.16);
-  --font-display:'Baloo 2',cursive;
-  --font-body:'Nunito',sans-serif;
-}
-html{font-size:15px}
-body{font-family:var(--font-body);background:var(--bg);color:var(--ink);min-height:100vh;
-  background-image:
-    radial-gradient(ellipse 600px 400px at 0% 0%,rgba(245,158,11,0.08),transparent 55%),
-    radial-gradient(ellipse 600px 400px at 100% 100%,rgba(59,130,246,0.08),transparent 55%);
-}
-button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
-input,select{font-family:var(--font-body)}
+  :root {
+    --navy: #0f1f3d;
+    --navy-mid: #162847;
+    --navy-light: #1e3460;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --gold: #f59e0b;
+    --cream: #fef9f0;
+    --text-light: #e2e8f0;
+    --text-muted: #94a3b8;
+    --red: #f43f5e;
+    --green: #34d399;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
-/* HEADER */
-.header{background:var(--ink);padding:14px 22px;display:flex;align-items:center;
-  justify-content:space-between;gap:12px;flex-wrap:wrap}
-.header-left{display:flex;align-items:center;gap:12px}
-.header-back{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.6);text-decoration:none;
-  padding:5px 10px;border-radius:100px;border:1px solid rgba(255,255,255,0.2);transition:all 0.15s}
-.header-back:hover{color:white;border-color:rgba(255,255,255,0.5)}
-.header-title{font-family:var(--font-display);font-size:1.25rem;font-weight:800;color:white}
-.header-title .now-word{color:var(--now)}
-.header-title .next-word{color:#60A5FA}
-.header-sub{font-size:0.72rem;color:rgba(255,255,255,0.55);margin-top:1px}
-.header-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+  body {
+    font-family:'DM Sans',sans-serif;
+    background:var(--navy);
+    color:var(--text-light);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none; z-index:0;
+  }
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:100px;
-  font-size:0.82rem;font-weight:700;transition:all 0.15s;white-space:nowrap}
-.btn-ghost-white{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);
-  border:1px solid rgba(255,255,255,0.2)}
-.btn-ghost-white:hover{background:rgba(255,255,255,0.2)}
-.btn-primary{background:var(--green);color:white}
-.btn-primary:hover{background:#059669;transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,0.3)}
-.btn-ghost{background:var(--surface2);color:var(--ink2);border:1.5px solid var(--border2)}
-.btn-ghost:hover{background:var(--border);color:var(--ink)}
-.btn-sm{padding:5px 12px;font-size:0.75rem}
+  /* ── NAV ── */
+  nav {
+    position:relative; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1rem 1.5rem;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .nav-logo { display:flex; align-items:center; gap:0.5rem; text-decoration:none; }
+  .nav-logo-icon { width:32px; height:32px; background:var(--teal); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .nav-logo-text { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; color:var(--cream); }
+  .nav-logo-text span { color:var(--teal-light); }
+  .nav-back { font-size:0.82rem; color:var(--text-muted); text-decoration:none; display:flex; align-items:center; gap:0.3rem; transition:color 0.15s; }
+  .nav-back:hover { color:var(--teal-light); }
 
-/* APP LAYOUT */
-.app{max-width:1100px;margin:0 auto;padding:20px 18px 60px}
+  /* ── SCREENS ── */
+  .screen { display:none; position:relative; z-index:1; }
+  .screen.active { display:flex; flex-direction:column; align-items:center; }
 
-/* BOARD — the big visual NOW/NEXT */
-.board-wrap{margin-bottom:24px}
-.board{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:stretch;
-  background:var(--surface);border:2px solid var(--border);border-radius:22px;
-  box-shadow:var(--shadow-lg);overflow:hidden}
+  /* ── START SCREEN ── */
+  #startScreen {
+    justify-content:center;
+    min-height:calc(100vh - 57px);
+    padding:2rem 1.5rem;
+    text-align:center;
+  }
+  .start-inner { max-width:500px; width:100%; }
 
-.presets-wrap{overflow:hidden;max-width:700px;margin:0 auto}
-.board-panel{display:flex;flex-direction:column;align-items:center;padding:24px 20px;
-  text-align:center;min-height:260px;justify-content:space-between;cursor:pointer;
-  transition:filter 0.15s}
-.board-panel:hover{filter:brightness(0.97)}
-.board-panel.now{background:var(--now-l)}
-.board-panel.next{background:var(--next-l)}
-.board-panel-header{width:100%}
-.panel-badge{display:inline-block;padding:6px 22px;border-radius:100px;
-  font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:14px}
-.now .panel-badge{background:var(--now);color:white}
-.next .panel-badge{background:var(--next);color:white}
-.board-pic-wrap{flex:1;display:flex;align-items:center;justify-content:center;
-  width:100%;padding:10px 0}
-.board-pic{width:120px;height:120px;object-fit:contain;border-radius:10px}
-.board-label{font-family:var(--font-display);font-size:1.2rem;font-weight:800;
-  color:var(--ink);margin-top:8px;line-height:1.2}
-.board-empty-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  width:120px;height:120px;border:3px dashed var(--border2);border-radius:14px;
-  color:var(--muted);font-size:0.8rem;font-weight:700;gap:6px}
-.board-empty-slot .plus{font-size:1.8rem;opacity:0.5}
-.board-divider{width:50px;display:flex;align-items:center;justify-content:center;
-  background:var(--surface2);border-left:2px solid var(--border);border-right:2px solid var(--border)}
-.arrow-icon{font-size:1.8rem;color:var(--muted)}
+  .start-badge {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background:rgba(244,63,94,0.12);
+    border:1px solid rgba(244,63,94,0.3);
+    color:var(--red);
+    font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+    padding:0.35rem 0.9rem; border-radius:100px; margin-bottom:1.5rem;
+  }
 
-/* SELECTOR AREA */
-.selector-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-@media(max-width:700px){.selector-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.selector-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-@media(max-width:700px){.selector-grid{grid-template-columns:1fr}}}
-.selector-panel{background:var(--surface);border:2px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.selector-head{padding:11px 15px;border-bottom:1.5px solid var(--border);
-  display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:0.95rem;font-weight:800}
-.selector-head.now-head{background:var(--now-l);color:var(--now-d);border-color:#FDE68A}
-.selector-head.next-head{background:var(--next-l);color:var(--next-d);border-color:#BFDBFE}
-.selector-body{padding:12px}
+  .start-inner h1 {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,6vw,3.2rem);
+    font-weight:900; color:var(--cream);
+    line-height:1.1; margin-bottom:0.8rem;
+  }
+  .start-inner h1 em { font-style:italic; color:var(--red); }
 
-/* SEARCH in selector */
-.sel-search{display:flex;gap:6px;margin-bottom:8px}
-.sel-input{flex:1;padding:8px 12px;border-radius:100px;border:1.5px solid var(--border2);
-  font-size:0.82rem;font-weight:700;color:var(--ink);outline:none;background:var(--surface2);
-  transition:border-color 0.15s}
-.sel-input:focus{border-color:var(--now);background:white}
-.sel-input.next-focus:focus{border-color:var(--next)}
-.sel-btn{padding:8px 12px;border-radius:100px;font-size:0.8rem;font-weight:700;
-  color:white;transition:all 0.15s;white-space:nowrap}
-.sel-btn.now-btn{background:var(--now)}
-.sel-btn.now-btn:hover{background:var(--now-d)}
-.sel-btn.next-btn{background:var(--next)}
-.sel-btn.next-btn:hover{background:var(--next-d)}
+  .start-sub {
+    font-size:1rem; color:var(--text-muted); line-height:1.6;
+    margin-bottom:2rem;
+  }
 
-/* Quick words */
-.quick-words{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
-.qword{padding:3px 9px;border-radius:100px;font-size:0.7rem;font-weight:700;
-  border:1.5px solid var(--border2);color:var(--ink2);cursor:pointer;transition:all 0.12s}
-.qw-btn{padding:3px 9px;border-radius:100px;font-size:0.7rem;font-weight:700;
-  border:1.5px solid var(--border2);color:var(--ink2);cursor:pointer;transition:all 0.12s}
-.qword:hover{border-color:var(--now);color:var(--now)}
-.qword.next-word-btn:hover{border-color:var(--next);color:var(--next)}
+  .hiscore-box {
+    display:flex; align-items:center; justify-content:center; gap:1.5rem;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+    padding:1.2rem 1.5rem; margin-bottom:2rem;
+  }
+  .hiscore-item { text-align:center; }
+  .hiscore-num {
+    font-family:'Playfair Display',serif;
+    font-size:2rem; font-weight:700; color:var(--gold); line-height:1;
+  }
+  .hiscore-label { font-size:0.72rem; color:var(--text-muted); letter-spacing:0.08em; text-transform:uppercase; margin-top:0.2rem; }
+  .hiscore-divider { width:1px; height:40px; background:rgba(255,255,255,0.1); }
 
-/* Pictogram results */
-.pic-results{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
-  max-height:220px;overflow-y:auto}
-.pic-item{border-radius:9px;border:2px solid var(--border);padding:5px 4px;min-height:72px;
-  text-align:center;cursor:pointer;transition:all 0.12s;background:var(--surface)}
-.pic-item:hover{border-color:var(--now);background:var(--now-l);transform:scale(1.04)}
-.pic-item.next-hover:hover{border-color:var(--next);background:var(--next-l)}
-.pic-item.selected-now{border-color:var(--now);background:var(--now-l)}
-.pic-item.selected-next{border-color:var(--next);background:var(--next-l)}
-.pic-img{width:44px;height:44px;object-fit:contain;display:block;margin:0 auto 3px}
-.pic-lbl{font-size:0.6rem;font-weight:700;color:var(--ink2);line-height:1.2;word-break:break-word}
-.pic-status{text-align:center;padding:16px 8px;color:var(--muted);font-size:0.78rem;font-weight:600}
+  .how-it-works {
+    display:flex; gap:1rem; margin-bottom:2.5rem; text-align:left;
+  }
+  .how-step {
+    flex:1; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);
+    border-radius:var(--radius-sm); padding:1rem;
+  }
+  .how-step-icon { font-size:1.4rem; margin-bottom:0.4rem; }
+  .how-step-title { font-size:0.82rem; font-weight:600; color:var(--text-light); margin-bottom:0.2rem; }
+  .how-step-desc { font-size:0.75rem; color:var(--text-muted); line-height:1.4; }
 
-/* SETTINGS BAR */
-.settings-bar{max-width:700px;margin:16px auto 0;background:var(--surface);
-  border:1.5px solid var(--border);border-radius:var(--radius);padding:13px 16px;
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow)}
-.setting-group{display:flex;align-items:center;gap:7px}
-.setting-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:0.4px;color:var(--muted);white-space:nowrap}
-.setting-select{padding:5px 9px;border-radius:9px;border:1.5px solid var(--border2);
-  font-size:0.78rem;font-weight:700;color:var(--ink);background:var(--surface2);outline:none}
-.setting-select:focus{border-color:var(--now)}
-.settings-actions{margin-left:auto;display:flex;gap:7px}
-.colour-dots{display:flex;gap:4px}
-.cdot{width:20px;height:20px;border-radius:50%;cursor:pointer;
-  border:2.5px solid transparent;transition:all 0.12s}
-.cdot:hover{transform:scale(1.15)}
-.cdot.active{border-color:var(--ink);transform:scale(1.15)}
+  .btn-start {
+    width:100%; padding:1rem 2rem;
+    background:var(--red);
+    border:none; border-radius:var(--radius-sm);
+    color:#fff; font-family:'DM Sans',sans-serif;
+    font-size:1.1rem; font-weight:600;
+    cursor:pointer; letter-spacing:0.01em;
+    transition:transform 0.15s, opacity 0.15s;
+  }
+  .btn-start:hover { transform:translateY(-2px); opacity:0.9; }
+  .btn-start:active { transform:translateY(0); }
 
-/* PRESETS STRIP */
-.presets-wrap{max-width:700px;margin:14px auto 0}
-.presets-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:0.4px;color:var(--muted);margin-bottom:6px}
-.presets-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
-.presets-list .preset-btn{text-align:left;justify-content:flex-start;padding:8px 12px;border-radius:10px;
-  font-size:0.8rem;font-weight:700;background:var(--surface);border:1.5px solid var(--border);color:var(--ink);
-  display:flex;align-items:center;gap:6px;transition:all 0.15s;width:100%}
-.presets-list .preset-btn:hover{background:var(--indigo-l);border-color:var(--indigo)}
-.preset-btn{padding:5px 12px;border-radius:100px;font-size:0.75rem;font-weight:700;
-  border:1.5px solid var(--border2);color:var(--ink2);background:var(--surface);
-  cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:4px}
-.preset-btn:hover{border-color:var(--now);color:var(--now-d);background:var(--now-l)}
+  /* ── QUIZ SCREEN ── */
+  #quizScreen {
+    padding:1.5rem;
+    max-width:600px; width:100%; margin:0 auto;
+  }
 
-/* THEN TOGGLE */
-.then-toggle{display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;padding:4px 0}
-.then-toggle input{accent-color:var(--green,#16A34A);width:16px;height:16px;cursor:pointer}
-.panel-badge.then{background:#16A34A}
-.board-panel.then{background:#F0FDF4}
+  /* HUD */
+  .hud {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:1.5rem; gap:1rem;
+  }
 
-/* ATTRIBUTION */
-.attribution{max-width:700px;margin:14px auto 0;font-size:0.68rem;color:var(--muted);text-align:center}
-.attribution a{color:#3B82F6;text-decoration:none}
+  .hud-timer {
+    display:flex; flex-direction:column; align-items:center;
+    min-width:64px;
+  }
+  .timer-ring {
+    position:relative; width:64px; height:64px;
+  }
+  .timer-ring svg { transform:rotate(-90deg); }
+  .timer-ring circle {
+    fill:none; stroke-width:5;
+  }
+  .timer-track { stroke:rgba(255,255,255,0.1); }
+  .timer-fill { stroke:var(--red); stroke-linecap:round; transition:stroke-dashoffset 1s linear, stroke 0.5s; }
+  .timer-num {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display',serif;
+    font-size:1.3rem; font-weight:700; color:var(--cream);
+  }
 
-/* TOAST */
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--ink);color:white;padding:9px 18px;border-radius:100px;
-  font-size:0.8rem;font-weight:700;opacity:0;transition:all 0.25s;pointer-events:none;z-index:999}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .hud-score {
+    flex:1; text-align:center;
+  }
+  .hud-score-num {
+    font-family:'Playfair Display',serif;
+    font-size:2.4rem; font-weight:900; color:var(--cream); line-height:1;
+  }
+  .hud-score-label { font-size:0.72rem; color:var(--text-muted); letter-spacing:0.08em; text-transform:uppercase; }
 
-/* PRINT */
-@media print{
-  .no-print{display:none!important}
-  body{background:white}
-  .app{padding:0}
-  .board{max-width:100%;box-shadow:none;border:2px solid #ccc}
-  .board-panel{min-height:220px}
-  .board-pic{width:150px;height:150px}
-  .board-label{font-size:1.4rem}
-}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #2563EB;outline-offset:3px;border-radius:4px}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+  .hud-streak {
+    min-width:64px; text-align:center;
+  }
+  .streak-num {
+    font-family:'Playfair Display',serif;
+    font-size:1.6rem; font-weight:700; color:var(--gold); line-height:1;
+  }
+  .streak-label { font-size:0.68rem; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; }
 
+  /* FLAG DISPLAY */
+  .flag-display {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+    overflow:hidden; margin-bottom:1.2rem;
+    position:relative;
+  }
+  .flag-display img {
+    width:100%; display:block;
+    max-height:260px; object-fit:contain;
+    background:rgba(0,0,0,0.2);
+    padding:1rem;
+    transition:opacity 0.15s;
+  }
+  .flag-display img.flash { opacity:0; }
+
+  /* FEEDBACK OVERLAY */
+  .feedback-overlay {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:3rem; opacity:0;
+    transition:opacity 0.15s;
+    pointer-events:none;
+  }
+  .feedback-overlay.show { opacity:1; }
+  .feedback-overlay.correct { background:rgba(52,211,153,0.3); }
+  .feedback-overlay.wrong   { background:rgba(244,63,94,0.3); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height:3px; background:rgba(255,255,255,0.08);
+    border-radius:2px; margin-bottom:1.2rem; overflow:hidden;
+  }
+  .progress-fill {
+    height:100%; background:var(--red);
+    transition:width 1s linear;
+    border-radius:2px;
+  }
+
+  /* ANSWER BUTTONS */
+  .answers {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:0.7rem; margin-bottom:1rem;
+  }
+  .answer-btn {
+    padding:0.9rem 1rem;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:var(--radius-sm);
+    color:var(--text-light);
+    font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:500;
+    cursor:pointer; text-align:left; line-height:1.3;
+    transition:background 0.12s, border-color 0.12s, transform 0.1s;
+    display:flex; align-items:center; gap:0.6rem;
+  }
+  .answer-btn:hover:not(:disabled) {
+    background:rgba(255,255,255,0.1);
+    border-color:rgba(255,255,255,0.2);
+    transform:translateY(-1px);
+  }
+  .answer-btn:disabled { cursor:default; }
+  .answer-btn.correct {
+    background:rgba(52,211,153,0.2);
+    border-color:var(--green); color:#fff;
+  }
+  .answer-btn.wrong {
+    background:rgba(244,63,94,0.2);
+    border-color:var(--red); color:#fff;
+  }
+  .answer-btn .btn-flag {
+    width:32px; height:21px; object-fit:cover;
+    border-radius:3px; flex-shrink:0;
+  }
+  .answer-key {
+    width:22px; height:22px; border-radius:5px;
+    background:rgba(255,255,255,0.1);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.7rem; font-weight:700; color:var(--text-muted);
+    flex-shrink:0;
+  }
+
+  .skip-btn {
+    width:100%; padding:0.6rem;
+    background:transparent; border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius-sm);
+    color:var(--text-muted); font-family:'DM Sans',sans-serif;
+    font-size:0.82rem; cursor:pointer;
+    transition:border-color 0.15s, color 0.15s;
+  }
+  .skip-btn:hover { border-color:rgba(255,255,255,0.2); color:var(--text-light); }
+
+  /* ── RESULT SCREEN ── */
+  #resultScreen {
+    justify-content:center; min-height:calc(100vh - 57px);
+    padding:2rem 1.5rem; text-align:center;
+  }
+  .result-inner { max-width:500px; width:100%; }
+
+  .result-emoji { font-size:3.5rem; margin-bottom:0.8rem; display:block; }
+
+  .result-inner h2 {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.8rem,5vw,2.8rem);
+    font-weight:900; color:var(--cream);
+    margin-bottom:0.5rem;
+  }
+  .result-sub { font-size:0.95rem; color:var(--text-muted); margin-bottom:2rem; }
+
+  .result-scores {
+    display:flex; gap:1rem; margin-bottom:2rem;
+  }
+  .result-score-card {
+    flex:1; padding:1.2rem;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:var(--radius);
+  }
+  .result-score-card.highlight {
+    background:rgba(244,63,94,0.1);
+    border-color:rgba(244,63,94,0.3);
+  }
+  .result-score-card.gold {
+    background:rgba(245,158,11,0.1);
+    border-color:rgba(245,158,11,0.3);
+  }
+  .result-score-num {
+    font-family:'Playfair Display',serif;
+    font-size:2.6rem; font-weight:900; color:var(--cream); line-height:1;
+  }
+  .result-score-card.highlight .result-score-num { color:var(--red); }
+  .result-score-card.gold .result-score-num { color:var(--gold); }
+  .result-score-label { font-size:0.72rem; color:var(--text-muted); letter-spacing:0.08em; text-transform:uppercase; margin-top:0.3rem; }
+
+  .new-record {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background:rgba(245,158,11,0.15);
+    border:1px solid rgba(245,158,11,0.3);
+    color:var(--gold);
+    font-size:0.75rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+    padding:0.3rem 0.8rem; border-radius:100px;
+    margin-bottom:1.5rem;
+  }
+
+  .missed-flags { margin-bottom:2rem; text-align:left; }
+  .missed-title {
+    font-size:0.75rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--text-muted); margin-bottom:0.8rem;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .missed-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+
+  .missed-grid {
+    display:flex; flex-wrap:wrap; gap:0.5rem;
+  }
+  .missed-chip {
+    display:flex; align-items:center; gap:0.4rem;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:100px; padding:0.3rem 0.7rem 0.3rem 0.4rem;
+    font-size:0.78rem; color:var(--text-muted);
+  }
+  .missed-chip img { width:24px; height:16px; object-fit:cover; border-radius:2px; }
+
+  .result-btns { display:flex; gap:0.8rem; }
+  .btn-play-again {
+    flex:1; padding:0.9rem;
+    background:var(--red); border:none; border-radius:var(--radius-sm);
+    color:#fff; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600;
+    cursor:pointer; transition:transform 0.15s, opacity 0.15s;
+  }
+  .btn-play-again:hover { transform:translateY(-2px); opacity:0.9; }
+  .btn-home {
+    padding:0.9rem 1.2rem;
+    background:transparent; border:1px solid rgba(255,255,255,0.15);
+    border-radius:var(--radius-sm);
+    color:var(--text-muted); font-family:'DM Sans',sans-serif; font-size:1rem;
+    text-decoration:none; display:flex; align-items:center;
+    transition:border-color 0.15s, color 0.15s;
+  }
+  .btn-home:hover { border-color:rgba(255,255,255,0.3); color:var(--text-light); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes pop { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+  .anim-pop   { animation:pop 0.3s ease both; }
+  .anim-shake { animation:shake 0.35s ease; }
+
+  @keyframes score-bump { 0%{transform:scale(1)} 50%{transform:scale(1.3);color:var(--green)} 100%{transform:scale(1)} }
+  .score-bump { animation:score-bump 0.3s ease; }
+  footer { position:relative; z-index:1; text-align:center; padding:1.5rem; border-top:1px solid rgba(255,255,255,0.06); color:var(--text-muted); font-size:0.8rem; margin-top:2rem; }
+  footer a { color:var(--teal-light); text-decoration:none; }
 </style>
 </head>
 <body>
-<h1 class="sr-only">Now Next Board — SendSteps</h1>
 
-<!-- HEADER -->
-<div id="main-content" tabindex="-1" style="outline:none">
-<header class="header no-print">
-  <div class="header-left">
-    <a href="/" class="header-back">← SendSteps</a>
-    <div>
-      <div class="header-title">
-        <span class="now-word">Now</span> &amp; <span class="next-word">Next</span> Board
+<nav>
+  <a class="nav-logo" href="/index.html">
+    <div class="nav-logo-icon">🌍</div>
+    <span class="nav-logo-text">Flag<span>Atlas</span></span>
+  </a>
+  
+</nav>
+
+<!-- ══ START SCREEN ══ -->
+<div class="screen active" id="startScreen">
+  <div class="start-inner">
+    <div class="start-badge">⚡ Timed Challenge</div>
+    <h1>Can you name <em>60</em> flags?</h1>
+    <p class="start-sub">60 seconds. 4 choices per flag. How many can you get right?</p>
+
+    <div class="hiscore-box" id="hiscoreBox">
+      <div class="hiscore-item">
+        <div class="hiscore-num" id="hiScoreNum">0</div>
+        <div class="hiscore-label">Best score</div>
       </div>
-      <div class="header-sub">Build a printable Now / Next visual support board</div>
+      <div class="hiscore-divider"></div>
+      <div class="hiscore-item">
+        <div class="hiscore-num" id="hiStreakNum">0</div>
+        <div class="hiscore-label">Best streak</div>
+      </div>
+      <div class="hiscore-divider"></div>
+      <div class="hiscore-item">
+        <div class="hiscore-num" id="hiGamesNum">0</div>
+        <div class="hiscore-label">Games played</div>
+      </div>
     </div>
+
+    <div class="how-it-works">
+      <div class="how-step">
+        <div class="how-step-icon">🏳️</div>
+        <div class="how-step-title">See a flag</div>
+        <div class="how-step-desc">A mystery flag appears on screen</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-icon">🎯</div>
+        <div class="how-step-title">Pick the country</div>
+        <div class="how-step-desc">Four options — tap the right one</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-icon">⏱️</div>
+        <div class="how-step-title">Beat the clock</div>
+        <div class="how-step-desc">60 seconds to score as high as you can</div>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btnStart">Start the clock ⚡</button>
   </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost-white btn-sm" onclick="clearBoard()">🗑️ Clear</button>
-    <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨️ Print board</button>
-  </div>
-</header>
-
-<div class="app">
-
-  <!-- THE BOARD -->
-  <div class="board-wrap">
-    <div class="board" id="mainBoard">
-
-      <!-- NOW PANEL -->
-      <div class="board-panel now" onclick="focusSearch('now')" id="nowPanel">
-        <div class="board-panel-header">
-          <div class="panel-badge">NOW</div>
-        </div>
-        <div class="board-pic-wrap" id="nowPicWrap">
-          <div class="board-empty-slot">
-            <span class="plus">＋</span>
-            <span>Choose below</span>
-          </div>
-        </div>
-        <div class="board-label" id="nowLabel"></div>
-      </div>
-
-      <!-- ARROW -->
-      <div class="board-divider">
-        <span class="arrow-icon">→</span>
-      </div>
-
-      <!-- NEXT PANEL -->
-      <div class="board-panel next" onclick="focusSearch('next')" id="nextPanel">
-        <div class="board-panel-header">
-          <div class="panel-badge">NEXT</div>
-        </div>
-        <div class="board-pic-wrap" id="nextPicWrap">
-          <div class="board-empty-slot">
-            <span class="plus">＋</span>
-            <span>Choose below</span>
-          </div>
-        </div>
-        <div class="board-label" id="nextLabel"></div>
-      </div>
-
-      <!-- THEN ARROW (hidden by default) -->
-      <div class="board-divider" id="thenDivider">
-        <span class="arrow-icon">→</span>
-      </div>
-
-      <!-- THEN PANEL (hidden by default) -->
-      <div class="board-panel then" onclick="focusSearch('then')" id="thenPanel">
-        <div class="board-panel-header">
-          <div class="panel-badge then">THEN</div>
-        </div>
-        <div class="board-pic-wrap" id="thenPicWrap">
-          <div class="board-empty-slot">
-            <span class="plus">＋</span>
-            <span>Choose below</span>
-          </div>
-        </div>
-        <div class="board-label" id="thenLabel"></div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- SETTINGS BAR -->
-  <div class="settings-bar no-print">
-    <div class="setting-group">
-      <span class="setting-label">Board size</span>
-      <select class="setting-select" id="sizeSelect" onchange="applySettings()">
-        <option value="standard" selected>Standard (A4)</option>
-        <option value="large">Large (classroom)</option>
-        <option value="small">Small (desk)</option>
-      </select>
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">Label</span>
-      <select class="setting-select" id="labelSelect" onchange="applySettings()">
-        <option value="below" selected>Below picture</option>
-        <option value="above">Above picture</option>
-        <option value="none">No label</option>
-      </select>
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">NOW colour</span>
-      <div class="colour-dots" id="nowColours"></div>
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">NEXT colour</span>
-      <div class="colour-dots" id="nextColours"></div>
-    </div>
-    <div class="settings-actions">
-      <button class="btn btn-primary btn-sm" onclick="doPrint()">🖨️ Print</button>
-    </div>
-  </div>
-
-  <!-- PRESET COMBINATIONS -->
-  <div class="presets-wrap no-print">
-    <div class="presets-label">⚡ Quick presets</div>
-    <div class="presets-list" id="presetsStrip"></div>
-  </div>
-
-  <!-- SELECTORS -->
-  <div class="selector-grid" style="margin-top:16px" id="selectorGrid">
-
-    <!-- NOW SELECTOR -->
-    <div class="selector-panel">
-      <div class="selector-head now-head">🟡 Choose NOW</div>
-      <div class="selector-body">
-        <div class="sel-search">
-          <input type="text" class="sel-input" id="nowSearchInput"
-            placeholder="Search e.g. maths, lunch..."
-            onkeydown="if(event.key==='Enter')doSearch('now')">
-          <button class="sel-btn now-btn" onclick="doSearch('now')">Go</button>
-        </div>
-        <div class="quick-words" id="nowQuickWords"></div>
-        <div id="nowResults"><div class="pic-status">Search above or tap a quick word</div></div>
-      </div>
-    </div>
-
-    <!-- NEXT SELECTOR -->
-    <div class="selector-panel">
-      <div class="selector-head next-head">🔵 Choose NEXT</div>
-      <div class="selector-body">
-        <div class="sel-search">
-          <input type="text" class="sel-input next-focus" id="nextSearchInput"
-            placeholder="Search e.g. break, reading..."
-            onkeydown="if(event.key==='Enter')doSearch('next')">
-          <button class="sel-btn next-btn" onclick="doSearch('next')">Go</button>
-        </div>
-        <div class="quick-words" id="nextQuickWords"></div>
-        <div id="nextResults"><div class="pic-status">Search above or tap a quick word</div></div>
-      </div>
-    </div>
-
-    <!-- THEN SELECTOR (hidden by default) -->
-    <div class="selector-panel" id="thenSelector">
-      <div class="selector-head" style="background:#16A34A">🟢 Choose THEN</div>
-      <div class="selector-body">
-        <div class="sel-search">
-          <input type="text" class="sel-input" id="thenSearchInput"
-            placeholder="Search e.g. play, trampoline..."
-            onkeydown="if(event.key==='Enter')doSearch('then')">
-          <button class="sel-btn" style="background:#16A34A;color:white;border-color:#16A34A" onclick="doSearch('then')">Go</button>
-        </div>
-        <div class="quick-words" id="thenQuickWords"></div>
-        <div id="thenResults"><div class="pic-status">Search above or tap a quick word</div></div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="attribution no-print">
-    Pictograms by <a href="https://arasaac.org" target="_blank">ARASAAC</a> —
-    © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao
-  </div>
-
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<!-- ══ QUIZ SCREEN ══ -->
+<div class="screen" id="quizScreen">
+
+  <div class="hud">
+    <div class="hud-timer">
+      <div class="timer-ring">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle class="timer-track" cx="32" cy="32" r="27"/>
+          <circle class="timer-fill" id="timerArc" cx="32" cy="32" r="27"
+            stroke-dasharray="169.6" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timerNum">60</div>
+      </div>
+    </div>
+
+    <div class="hud-score">
+      <div class="hud-score-num" id="scoreNum">0</div>
+      <div class="hud-score-label">correct</div>
+    </div>
+
+    <div class="hud-streak">
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">🔥 streak</div>
+    </div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:100%"></div>
+  </div>
+
+  <div class="flag-display">
+    <img id="flagImg" src="" alt="Mystery flag">
+    <div class="feedback-overlay" id="feedbackOverlay"></div>
+  </div>
+
+  <div class="answers" id="answersGrid"></div>
+  <button class="skip-btn" id="skipBtn">Skip this flag →</button>
+</div>
+
+<!-- ══ RESULT SCREEN ══ -->
+<div class="screen" id="resultScreen">
+  <div class="result-inner">
+    <span class="result-emoji" id="resultEmoji">🎉</span>
+    <h2 id="resultTitle">Nice work!</h2>
+    <p class="result-sub" id="resultSub"></p>
+
+    <div id="newRecordBadge" class="new-record" style="display:none">🏆 New personal best!</div>
+
+    <div class="result-scores">
+      <div class="result-score-card highlight">
+        <div class="result-score-num" id="finalScore">0</div>
+        <div class="result-score-label">This game</div>
+      </div>
+      <div class="result-score-card gold">
+        <div class="result-score-num" id="finalBest">0</div>
+        <div class="result-score-label">Personal best</div>
+      </div>
+      <div class="result-score-card">
+        <div class="result-score-num" id="finalStreak">0</div>
+        <div class="result-score-label">Best streak</div>
+      </div>
+    </div>
+
+    <div class="missed-flags" id="missedSection" style="display:none">
+      <div class="missed-title">Flags to learn</div>
+      <div class="missed-grid" id="missedGrid"></div>
+    </div>
+
+    <div class="result-btns">
+      <button class="btn-play-again" id="btnPlayAgain">Play again ⚡</button>
+      <a class="btn-home" href="/index.html">Home</a>
+    </div>
+  </div>
+</div>
 
 <script>
-// ══════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════
-// Quick words shown by default (visible immediately)
-const QUICK_WORDS_DEFAULT = [
-  'play','break','lunch','snack','tablet','trampoline','park','swimming',
-  'bath','teeth','sleep','story','quiet time','walk','draw','tv',
+// ── DATA ──────────────────────────────────────────────────────────────────
+const COUNTRIES = [
+  {code:"gb",name:"United Kingdom"},{code:"fr",name:"France"},{code:"de",name:"Germany"},
+  {code:"it",name:"Italy"},{code:"es",name:"Spain"},{code:"pt",name:"Portugal"},
+  {code:"nl",name:"Netherlands"},{code:"be",name:"Belgium"},{code:"ch",name:"Switzerland"},
+  {code:"at",name:"Austria"},{code:"se",name:"Sweden"},{code:"no",name:"Norway"},
+  {code:"dk",name:"Denmark"},{code:"fi",name:"Finland"},{code:"is",name:"Iceland"},
+  {code:"ie",name:"Ireland"},{code:"pl",name:"Poland"},{code:"cz",name:"Czech Republic"},
+  {code:"hu",name:"Hungary"},{code:"ro",name:"Romania"},{code:"gr",name:"Greece"},
+  {code:"tr",name:"Turkey"},{code:"ua",name:"Ukraine"},{code:"hr",name:"Croatia"},
+  {code:"rs",name:"Serbia"},{code:"bg",name:"Bulgaria"},{code:"sk",name:"Slovakia"},
+  {code:"al",name:"Albania"},{code:"ge",name:"Georgia"},{code:"am",name:"Armenia"},
+  {code:"az",name:"Azerbaijan"},{code:"ee",name:"Estonia"},{code:"lv",name:"Latvia"},
+  {code:"lt",name:"Lithuania"},{code:"si",name:"Slovenia"},{code:"me",name:"Montenegro"},
+  {code:"mk",name:"North Macedonia"},{code:"ba",name:"Bosnia & Herzegovina"},
+  {code:"md",name:"Moldova"},{code:"by",name:"Belarus"},
+  {code:"cn",name:"China"},{code:"jp",name:"Japan"},{code:"in",name:"India"},
+  {code:"kr",name:"South Korea"},{code:"id",name:"Indonesia"},{code:"my",name:"Malaysia"},
+  {code:"ph",name:"Philippines"},{code:"vn",name:"Vietnam"},{code:"th",name:"Thailand"},
+  {code:"sg",name:"Singapore"},{code:"pk",name:"Pakistan"},{code:"bd",name:"Bangladesh"},
+  {code:"np",name:"Nepal"},{code:"bt",name:"Bhutan"},{code:"lk",name:"Sri Lanka"},
+  {code:"mn",name:"Mongolia"},{code:"kz",name:"Kazakhstan"},{code:"af",name:"Afghanistan"},
+  {code:"ir",name:"Iran"},{code:"iq",name:"Iraq"},{code:"sa",name:"Saudi Arabia"},
+  {code:"ae",name:"UAE"},{code:"il",name:"Israel"},{code:"jo",name:"Jordan"},
+  {code:"lb",name:"Lebanon"},{code:"sy",name:"Syria"},{code:"kw",name:"Kuwait"},
+  {code:"qa",name:"Qatar"},{code:"om",name:"Oman"},{code:"ye",name:"Yemen"},
+  {code:"mm",name:"Myanmar"},{code:"kh",name:"Cambodia"},{code:"la",name:"Laos"},
+  {code:"tl",name:"East Timor"},{code:"kp",name:"North Korea"},{code:"tm",name:"Turkmenistan"},
+  {code:"uz",name:"Uzbekistan"},{code:"kg",name:"Kyrgyzstan"},{code:"tj",name:"Tajikistan"},
+  {code:"za",name:"South Africa"},{code:"eg",name:"Egypt"},{code:"ng",name:"Nigeria"},
+  {code:"et",name:"Ethiopia"},{code:"ke",name:"Kenya"},{code:"tz",name:"Tanzania"},
+  {code:"ug",name:"Uganda"},{code:"gh",name:"Ghana"},{code:"sn",name:"Senegal"},
+  {code:"ci",name:"Côte d'Ivoire"},{code:"cm",name:"Cameroon"},{code:"ma",name:"Morocco"},
+  {code:"dz",name:"Algeria"},{code:"tn",name:"Tunisia"},{code:"ly",name:"Libya"},
+  {code:"sd",name:"Sudan"},{code:"ss",name:"South Sudan"},{code:"ao",name:"Angola"},
+  {code:"mz",name:"Mozambique"},{code:"zw",name:"Zimbabwe"},{code:"zm",name:"Zambia"},
+  {code:"bw",name:"Botswana"},{code:"na",name:"Namibia"},{code:"rw",name:"Rwanda"},
+  {code:"cd",name:"DR Congo"},{code:"cg",name:"Rep. of Congo"},{code:"mg",name:"Madagascar"},
+  {code:"ml",name:"Mali"},{code:"ne",name:"Niger"},{code:"td",name:"Chad"},
+  {code:"bf",name:"Burkina Faso"},{code:"gn",name:"Guinea"},{code:"sl",name:"Sierra Leone"},
+  {code:"lr",name:"Liberia"},{code:"bj",name:"Benin"},{code:"tg",name:"Togo"},
+  {code:"mw",name:"Malawi"},{code:"so",name:"Somalia"},{code:"er",name:"Eritrea"},
+  {code:"mr",name:"Mauritania"},{code:"gm",name:"Gambia"},{code:"cv",name:"Cape Verde"},
+  {code:"sc",name:"Seychelles"},{code:"mu",name:"Mauritius"},{code:"km",name:"Comoros"},
+  {code:"us",name:"United States"},{code:"ca",name:"Canada"},{code:"mx",name:"Mexico"},
+  {code:"br",name:"Brazil"},{code:"ar",name:"Argentina"},{code:"cl",name:"Chile"},
+  {code:"co",name:"Colombia"},{code:"ve",name:"Venezuela"},{code:"pe",name:"Peru"},
+  {code:"bo",name:"Bolivia"},{code:"ec",name:"Ecuador"},{code:"py",name:"Paraguay"},
+  {code:"uy",name:"Uruguay"},{code:"gy",name:"Guyana"},{code:"sr",name:"Suriname"},
+  {code:"cu",name:"Cuba"},{code:"jm",name:"Jamaica"},{code:"ht",name:"Haiti"},
+  {code:"do",name:"Dominican Republic"},{code:"gt",name:"Guatemala"},{code:"hn",name:"Honduras"},
+  {code:"sv",name:"El Salvador"},{code:"ni",name:"Nicaragua"},{code:"cr",name:"Costa Rica"},
+  {code:"pa",name:"Panama"},{code:"tt",name:"Trinidad & Tobago"},{code:"bb",name:"Barbados"},
+  {code:"bs",name:"Bahamas"},{code:"bz",name:"Belize"},{code:"ag",name:"Antigua & Barbuda"},
+  {code:"au",name:"Australia"},{code:"nz",name:"New Zealand"},{code:"pg",name:"Papua New Guinea"},
+  {code:"fj",name:"Fiji"},{code:"sb",name:"Solomon Islands"},{code:"vu",name:"Vanuatu"},
+  {code:"ws",name:"Samoa"},{code:"to",name:"Tonga"},{code:"ki",name:"Kiribati"},
+  {code:"tv",name:"Tuvalu"},{code:"nr",name:"Nauru"},{code:"pw",name:"Palau"},
+  {code:"fm",name:"Micronesia"},{code:"mh",name:"Marshall Islands"},
 ];
 
-// Extra words shown when "more" is expanded
-const QUICK_WORDS_MORE = [
-  'get dressed','breakfast','dinner','drink','toilet','bedtime',
-  'tidy up','wash hands','get coat','pack bag','school','home',
-  'minecraft','youtube','lego','game','crafts','music',
-  'sensory break','movement break','headphones','fidget toy',
-  'maths','reading','pe','art','homework','circle time',
-  'tidy room','feed pet','shopping',
-];
+function flagUrl(code) { return `https://flagcdn.com/w320/${code}.png`; }
+function shuffle(a) { return [...a].sort(()=>Math.random()-0.5); }
+function rand(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
 
-const QUICK_WORDS = [...QUICK_WORDS_DEFAULT, ...QUICK_WORDS_MORE];
+// ── STATE ─────────────────────────────────────────────────────────────────
+const DURATION = 60;
+const CIRCUMFERENCE = 2 * Math.PI * 27; // 169.6
 
-const PRESETS = [
-  {label:'🌅 Morning',    now:'get dressed',   next:'breakfast',     then:'school'},
-  {label:'🏫 School AM',  now:'maths',         next:'break',         then:'lunch'},
-  {label:'📚 Homework',   now:'homework',      next:'snack',         then:'minecraft'},
-  {label:'🌙 Bedtime',    now:'bath',          next:'teeth',         then:'story'},
-  {label:'🎮 Wind down',  now:'tidy room',     next:'quiet time',    then:'tablet'},
-  {label:'🤸 Active',     now:'pe',            next:'sensory break', then:'play'},
-  {label:'🛒 Outing',     now:'get coat',      next:'shopping',      then:'trampoline'},
-  {label:'🍽️ Mealtime',  now:'wash hands',    next:'lunch',         then:'play'},
-];
+let timeLeft, score, streak, bestStreak, missed;
+let currentCountry, timerInterval, deck;
+let answering = false;
 
-const NOW_COLOURS = [
-  {bg:'#FFFBEB', badge:'#F59E0B', name:'Amber'},
-  {bg:'#FFF7ED', badge:'#EA580C', name:'Orange'},
-  {bg:'#FEF2F2', badge:'#DC2626', name:'Red'},
-  {bg:'#F0FDF4', badge:'#16A34A', name:'Green'},
-];
-
-const NEXT_COLOURS = [
-  {bg:'#EFF6FF', badge:'#3B82F6', name:'Blue'},
-  {bg:'#F5F3FF', badge:'#7C3AED', name:'Purple'},
-  {bg:'#F0FDFA', badge:'#0D9488', name:'Teal'},
-  {bg:'#FDF4FF', badge:'#A21CAF', name:'Pink'},
-];
-
-const THEN_COLOURS = [
-  {bg:'#F0FDF4', badge:'#16A34A', name:'Green'},
-  {bg:'#FFF7ED', badge:'#EA580C', name:'Orange'},
-  {bg:'#F0F9FF', badge:'#0284C7', name:'Sky'},
-  {bg:'#FFF1F2', badge:'#E11D48', name:'Rose'},
-];
-
-// ══════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════
-let state = {
-  now: null,   // {pictogramId, imageUrl, label}
-  next: null,
-  then: null,
-  showThen: true,
-  nowColour: 0,
-  nextColour: 0,
-  thenColour: 0,
-  labelPos: 'below',
-  size: 'standard',
-};
-
-const STORAGE_KEY = 'sendsteps_nownext_v2';
-
-// ══════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════
-function init() {
-  loadState();
-  buildQuickWords();
-  buildPresets();
-  buildColourPickers();
-  syncSettings();
-  renderBoard();
-  // Auto-load first quick word results
-  searchAndShow('now', 'maths');
-  searchAndShow('next', 'break');
-  searchAndShow('then', 'play');
-}
-
-function buildQuickWords() {
-  ['now','next','then'].forEach(side => {
-    const el = document.getElementById(side + 'QuickWords');
-    if (!el) return;
-    const colorClass = side === 'next' ? 'next-word-btn' : '';
-    const defaultBtns = QUICK_WORDS_DEFAULT.map(w =>
-      `<button class="qw-btn ${colorClass}" onclick="quickSearch('${side}','${w}')">${w}</button>`
-    ).join('');
-    const moreBtns = QUICK_WORDS_MORE.map(w =>
-      `<button class="qw-btn ${colorClass} qw-more" style="display:none" onclick="quickSearch('${side}','${w}')">${w}</button>`
-    ).join('');
-    const moreToggle = `<button class="qw-btn qw-more-toggle" onclick="toggleMoreWords('${side}', this)" style="border-style:dashed;opacity:0.7">+ more</button>`;
-    el.innerHTML = defaultBtns + moreBtns + moreToggle;
-  });
-}
-
-function toggleMoreWords(side, btn) {
-  const el = document.getElementById(side + 'QuickWords');
-  const hidden = el.querySelectorAll('.qw-more');
-  const isExpanded = btn.textContent.trim().startsWith('−');
-  hidden.forEach(b => b.style.display = isExpanded ? 'none' : '');
-  btn.textContent = isExpanded ? '+ more' : '− less';
-}
-
-function quickSearch(side, word) {
-  const input = document.getElementById(side + 'SearchInput');
-  if (input) input.value = word;
-  searchAndShow(side, word);
-}
-
-function buildPresets() {
-  const el = document.getElementById('presetsStrip');
-  if (!el) return;
-  el.innerHTML = PRESETS.map(p => {
-    const thenPart = p.then ? ` <span style="opacity:0.5">→</span> ${p.then}` : '';
-    return `<button class="preset-btn" onclick="loadPreset('${p.now}','${p.next}','${p.then||''}')">
-      ${p.label} <span style="font-size:0.72rem;opacity:0.7;font-weight:600">${p.now} → ${p.next}${thenPart}</span>
-    </button>`;
-  }).join('');
-}
-
-function buildColourPickers() {
-  document.getElementById('nowColours').innerHTML = NOW_COLOURS.map((c, i) =>
-    `<div class="cdot${state.nowColour===i?' active':''}"
-      style="background:${c.bg};box-shadow:inset 0 0 0 2px ${c.badge}"
-      title="${c.name}" onclick="setNowColour(${i})"></div>`
-  ).join('');
-  document.getElementById('nextColours').innerHTML = NEXT_COLOURS.map((c, i) =>
-    `<div class="cdot${state.nextColour===i?' active':''}"
-      style="background:${c.bg};box-shadow:inset 0 0 0 2px ${c.badge}"
-      title="${c.name}" onclick="setNextColour(${i})"></div>`
-  ).join('');
-}
-
-function syncSettings() {
-  document.getElementById('sizeSelect').value = state.size;
-  document.getElementById('labelSelect').value = state.labelPos;
-}
-
-// ══════════════════════════════════════════
-// SEARCH
-// ══════════════════════════════════════════
-async function doSearch(side) {
-  const input = document.getElementById(side + 'SearchInput').value.trim();
-  if (!input) return;
-  await searchAndShow(side, input);
-}
-
-async function searchAndShow(side, query) {
-  const el = document.getElementById(side + 'Results');
-  el.innerHTML = `<div class="pic-status">🔍 Searching...</div>`;
-
+// ── STORAGE ───────────────────────────────────────────────────────────────
+function getStats() {
   try {
-    const url = `https://api.arasaac.org/api/pictograms/en/search/${encodeURIComponent(query)}`;
-    const res = await fetch(url);
-    const data = res.ok ? await res.json() : [];
-    const results = Array.isArray(data) ? data.slice(0, 8) : [];
-
-    if (results.length === 0) {
-      el.innerHTML = `<div class="pic-status">No results for "${query}"</div>`;
-      return;
-    }
-
-    const isNext = side === 'next';
-    el.innerHTML = `<div class="pic-results">${
-      results.map(p => {
-        const imgUrl = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_500.png`;
-        const label = (p.keywords && p.keywords[0] && p.keywords[0].keyword) || query;
-        const isSelected = state[side] && state[side].pictogramId === p._id;
-        const selClass = isSelected ? (isNext ? 'selected-next' : 'selected-now') : '';
-        const hoverClass = isNext ? 'next-hover' : '';
-        return `<div class="pic-item ${hoverClass} ${selClass}"
-          onclick="selectPic('${side}', ${p._id}, '${encodeURIComponent(imgUrl)}', '${encodeURIComponent(label)}')">
-          <img class="pic-img" src="${imgUrl}" alt="${label}" width="44" height="44"
-            onerror="this.style.display='none'">
-          <div class="pic-lbl">${label}</div>
-        </div>`;
-      }).join('')
-    }</div>`;
-  } catch(e) {
-    el.innerHTML = `<div class="pic-status" style="color:#DC2626">⚠️ Search failed — check your internet connection.</div>`;
-  }
+    return JSON.parse(localStorage.getItem('flagatlas_quiz') || '{}');
+  } catch(e) { return {}; }
+}
+function saveStats(s) {
+  try { localStorage.setItem('flagatlas_quiz', JSON.stringify(s)); } catch(e){}
 }
 
-// ══════════════════════════════════════════
-// SELECT PICTOGRAM
-// ══════════════════════════════════════════
-function selectPic(side, pictogramId, encodedUrl, encodedLabel) {
-  const imageUrl = decodeURIComponent(encodedUrl);
-  const label = decodeURIComponent(encodedLabel);
-  state[side] = {pictogramId, imageUrl, label};
-  renderBoard();
-  saveState();
-  // Update selected state in results
-  refreshResultSelections(side);
-  const sideLabel = side === 'now' ? 'NOW' : side === 'next' ? 'NEXT' : 'THEN';
-  showToast(`✓ ${sideLabel} set to "${label}"`);
+// ── SCREENS ───────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-function refreshResultSelections(side) {
-  const el = document.getElementById(side + 'Results');
-  const items = el.querySelectorAll('.pic-item');
-  items.forEach(item => {
-    item.classList.remove('selected-now', 'selected-next');
+// ── START ─────────────────────────────────────────────────────────────────
+function initStart() {
+  const stats = getStats();
+  document.getElementById('hiScoreNum').textContent  = stats.best  || 0;
+  document.getElementById('hiStreakNum').textContent  = stats.streak || 0;
+  document.getElementById('hiGamesNum').textContent  = stats.games  || 0;
+  showScreen('startScreen');
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────────────────
+function startQuiz() {
+  timeLeft   = DURATION;
+  score      = 0;
+  streak     = 0;
+  bestStreak = 0;
+  missed     = [];
+  deck       = shuffle(COUNTRIES);
+  answering  = false;
+
+  updateHUD();
+  updateTimerRing();
+  showScreen('quizScreen');
+  nextQuestion();
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateHUD();
+    updateTimerRing();
+    if (timeLeft <= 0) endQuiz();
+  }, 1000);
+}
+
+function updateHUD() {
+  document.getElementById('timerNum').textContent = Math.max(timeLeft, 0);
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('streakNum').textContent = streak;
+
+  // timer colour: green → gold → red
+  const arc = document.getElementById('timerArc');
+  const pct = timeLeft / DURATION;
+  if (pct > 0.5)      arc.style.stroke = 'var(--green)';
+  else if (pct > 0.25) arc.style.stroke = 'var(--gold)';
+  else                 arc.style.stroke = 'var(--red)';
+
+  // progress bar
+  document.getElementById('progressFill').style.width = (timeLeft / DURATION * 100) + '%';
+}
+
+function updateTimerRing() {
+  const pct = Math.max(timeLeft, 0) / DURATION;
+  const offset = CIRCUMFERENCE * (1 - pct);
+  document.getElementById('timerArc').style.strokeDashoffset = offset;
+}
+
+function nextQuestion() {
+  if (deck.length === 0) deck = shuffle(COUNTRIES);
+  currentCountry = deck.pop();
+  answering = false;
+
+  // flag image
+  const img = document.getElementById('flagImg');
+  img.classList.remove('flash');
+  img.src = flagUrl(currentCountry.code);
+  img.alt = 'Mystery flag';
+
+  // clear feedback
+  const fb = document.getElementById('feedbackOverlay');
+  fb.className = 'feedback-overlay';
+  fb.textContent = '';
+
+  // build 4 options: correct + 3 random wrong
+  const wrong = shuffle(COUNTRIES.filter(c => c.code !== currentCountry.code)).slice(0, 3);
+  const options = shuffle([currentCountry, ...wrong]);
+
+  const grid = document.getElementById('answersGrid');
+  grid.innerHTML = '';
+  const keys = ['A','B','C','D'];
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn anim-pop';
+    btn.style.animationDelay = (i * 0.06) + 's';
+    btn.innerHTML = `
+      <span class="answer-key">${keys[i]}</span>
+      ${opt.name}`;
+    btn.addEventListener('click', () => handleAnswer(btn, opt.code === currentCountry.code, opt));
+    grid.appendChild(btn);
   });
-  if (state[side]) {
-    const id = state[side].pictogramId;
-    items.forEach(item => {
-      if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(',' + id + ',')) {
-        item.classList.add(side === 'now' ? 'selected-now' : 'selected-next');
-      }
+}
+
+function handleAnswer(btn, isCorrect, chosen) {
+  if (answering) return;
+  answering = true;
+
+  const btns = document.querySelectorAll('.answer-btn');
+  btns.forEach(b => b.disabled = true);
+
+  // mark correct answer green always
+  btns.forEach(b => {
+    const img = b.querySelector('.btn-flag');
+    if (img && img.src.includes(currentCountry.code)) b.classList.add('correct');
+  });
+
+  const fb = document.getElementById('feedbackOverlay');
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.className = 'feedback-overlay correct show';
+    fb.textContent = '✓';
+    score++;
+    streak++;
+    if (streak > bestStreak) bestStreak = streak;
+
+    // bump score animation
+    const sn = document.getElementById('scoreNum');
+    sn.textContent = score;
+    sn.classList.remove('score-bump');
+    void sn.offsetWidth;
+    sn.classList.add('score-bump');
+
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'feedback-overlay wrong show';
+    fb.textContent = '✗';
+    streak = 0;
+    missed.push(currentCountry);
+    document.getElementById('answersGrid').classList.add('anim-shake');
+    setTimeout(() => document.getElementById('answersGrid').classList.remove('anim-shake'), 400);
+  }
+
+  updateHUD();
+
+  setTimeout(() => {
+    fb.className = 'feedback-overlay';
+    nextQuestion();
+  }, 700);
+}
+
+document.getElementById('skipBtn').addEventListener('click', () => {
+  if (!answering) {
+    missed.push(currentCountry);
+    streak = 0;
+    updateHUD();
+    nextQuestion();
+  }
+});
+
+// ── END ───────────────────────────────────────────────────────────────────
+function endQuiz() {
+  clearInterval(timerInterval);
+
+  const stats = getStats();
+  const prevBest   = stats.best   || 0;
+  const prevStreak = stats.streak || 0;
+  const isNewBest  = score > prevBest;
+  const isNewStreak = bestStreak > prevStreak;
+
+  stats.best   = Math.max(score, prevBest);
+  stats.streak = Math.max(bestStreak, prevStreak);
+  stats.games  = (stats.games || 0) + 1;
+  saveStats(stats);
+
+  // emoji + title based on score
+  let emoji, title, sub;
+  if (score === 0)       { emoji='😬'; title="Don't worry!";     sub="Every expert starts somewhere. Give it another go!"; }
+  else if (score < 5)    { emoji='🌱'; title="Good start!";      sub="You're learning — keep going!"; }
+  else if (score < 10)   { emoji='👍'; title="Nice effort!";     sub="You're getting the hang of it!"; }
+  else if (score < 20)   { emoji='⚡'; title="Not bad at all!";   sub="Your geography is coming along nicely."; }
+  else if (score < 30)   { emoji='🌍'; title="Pretty good!";     sub="You clearly know your flags."; }
+  else if (score < 40)   { emoji='🔥'; title="Impressive!";      sub="Seriously strong flag knowledge!"; }
+  else if (score < 50)   { emoji='🏆'; title="Outstanding!";     sub="You're a flag expert!"; }
+  else                   { emoji='🌟'; title="Unbelievable!";    sub="You're basically a geography professor."; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent   = sub;
+  document.getElementById('finalScore').textContent  = score;
+  document.getElementById('finalBest').textContent   = stats.best;
+  document.getElementById('finalStreak').textContent = bestStreak;
+
+  const badge = document.getElementById('newRecordBadge');
+  badge.style.display = (isNewBest || isNewStreak) ? 'inline-flex' : 'none';
+
+  // missed flags
+  const missedSection = document.getElementById('missedSection');
+  const missedGrid    = document.getElementById('missedGrid');
+  missedGrid.innerHTML = '';
+  const uniqueMissed = [...new Map(missed.map(m => [m.code, m])).values()].slice(0, 12);
+  if (uniqueMissed.length > 0) {
+    missedSection.style.display = 'block';
+    uniqueMissed.forEach(c => {
+      const chip = document.createElement('div');
+      chip.className = 'missed-chip';
+      chip.innerHTML = `<img src="${flagUrl(c.code)}" alt="${c.name}"> ${c.name}`;
+      missedGrid.appendChild(chip);
     });
-  }
-}
-
-// ══════════════════════════════════════════
-// PRESETS
-// ══════════════════════════════════════════
-async function loadPreset(nowWord, nextWord, thenWord) {
-  showToast('⏳ Loading preset...');
-  const tasks = [
-    loadFirstResult('now', nowWord),
-    loadFirstResult('next', nextWord),
-  ];
-  if (thenWord) tasks.push(loadFirstResult('then', thenWord));
-  await Promise.all(tasks);
-  renderBoard();
-  saveState();
-  showToast('✓ Preset loaded!');
-}
-
-async function loadFirstResult(side, query) {
-  try {
-    const url = `https://api.arasaac.org/api/pictograms/en/search/${encodeURIComponent(query)}`;
-    const res = await fetch(url);
-    const data = res.ok ? await res.json() : [];
-    if (data && data.length > 0) {
-      const p = data[0];
-      const imgUrl = `https://static.arasaac.org/pictograms/${p._id}/${p._id}_500.png`;
-      const label = (p.keywords && p.keywords[0] && p.keywords[0].keyword) || query;
-      state[side] = {pictogramId: p._id, imageUrl: imgUrl, label};
-      // Also refresh the search results panel
-      await searchAndShow(side, query);
-    }
-  } catch(e){}
-}
-
-// ══════════════════════════════════════════
-// RENDER BOARD
-// ══════════════════════════════════════════
-function renderBoard() {
-  const nowC = NOW_COLOURS[state.nowColour];
-  const nextC = NEXT_COLOURS[state.nextColour];
-  const thenC = THEN_COLOURS[state.thenColour || 0];
-
-  // THEN panel visibility
-  const mainBoard = document.getElementById('mainBoard');
-  const thenPanel = document.getElementById('thenPanel');
-  const thenDivider = document.getElementById('thenDivider');
-  const thenSel = document.getElementById('thenSelector');
-  // THEN is always visible
-  mainBoard.classList.add('show-then');
-  thenPanel.style.display = '';
-  thenDivider.style.display = '';
-  if(thenSel) thenSel.style.display = '';
-  const sizeMap = {small:'80px', standard:'120px', large:'170px'};
-  const imgSize = sizeMap[state.size] || '120px';
-  const labelSizeMap = {small:'0.95rem', standard:'1.2rem', large:'1.6rem'};
-  const lblSize = labelSizeMap[state.size] || '1.2rem';
-
-  // NOW panel
-  const nowPanel = document.getElementById('nowPanel');
-  nowPanel.style.background = nowC.bg;
-  nowPanel.querySelector('.panel-badge').style.background = nowC.badge;
-
-  const nowPicWrap = document.getElementById('nowPicWrap');
-  if (state.now) {
-    nowPicWrap.innerHTML = `<img class="board-pic" src="${state.now.imageUrl}"
-      alt="${escHtml(state.now.label)}"
-      width="120" height="120"
-      style="width:${imgSize};height:${imgSize}"
-      onerror="this.style.display='none'">`;
   } else {
-    nowPicWrap.innerHTML = `<div class="board-empty-slot">
-      <span class="plus">＋</span><span>Choose below</span></div>`;
+    missedSection.style.display = 'none';
   }
 
-  const nowLbl = document.getElementById('nowLabel');
-  nowLbl.style.fontSize = lblSize;
-  nowLbl.textContent = (state.labelPos !== 'none' && state.now) ? state.now.label : '';
+  showScreen('resultScreen');
+}
 
-  // NEXT panel
-  const nextPanel = document.getElementById('nextPanel');
-  nextPanel.style.background = nextC.bg;
-  nextPanel.querySelector('.panel-badge').style.background = nextC.badge;
+// ── BUTTONS ───────────────────────────────────────────────────────────────
+document.getElementById('btnStart').addEventListener('click', startQuiz);
+document.getElementById('btnPlayAgain').addEventListener('click', startQuiz);
 
-  const nextPicWrap = document.getElementById('nextPicWrap');
-  if (state.next) {
-    nextPicWrap.innerHTML = `<img class="board-pic" src="${state.next.imageUrl}"
-      alt="${escHtml(state.next.label)}"
-      width="120" height="120"
-      style="width:${imgSize};height:${imgSize}"
-      onerror="this.style.display='none'">`;
-  } else {
-    nextPicWrap.innerHTML = `<div class="board-empty-slot">
-      <span class="plus">＋</span><span>Choose below</span></div>`;
+// keyboard shortcuts
+document.addEventListener('keydown', e => {
+  const map = {'a':0,'b':1,'c':2,'d':3,'1':0,'2':1,'3':2,'4':3};
+  const idx = map[e.key.toLowerCase()];
+  if (idx !== undefined) {
+    const btns = document.querySelectorAll('.answer-btn:not(:disabled)');
+    if (btns[idx]) btns[idx].click();
   }
-
-  const nextLbl = document.getElementById('nextLabel');
-  nextLbl.style.fontSize = lblSize;
-  nextLbl.textContent = (state.labelPos !== 'none' && state.next) ? state.next.label : '';
-
-  // THEN panel
-  if (state.showThen) {
-    thenPanel.style.background = thenC.bg;
-    thenPanel.querySelector('.panel-badge').style.background = thenC.badge;
-    const thenPicWrap = document.getElementById('thenPicWrap');
-    if (state.then) {
-      thenPicWrap.innerHTML = `<img class="board-pic" src="${state.then.imageUrl}"
-        alt="${escHtml(state.then.label)}"
-        width="120" height="120"
-        style="width:${imgSize};height:${imgSize}"
-        onerror="this.style.display='none'">`;
-    } else {
-      thenPicWrap.innerHTML = `<div class="board-empty-slot">
-        <span class="plus">＋</span><span>Choose below</span></div>`;
-    }
-    const thenLbl = document.getElementById('thenLabel');
-    thenLbl.style.fontSize = lblSize;
-    thenLbl.textContent = (state.labelPos !== 'none' && state.then) ? state.then.label : '';
+  if (e.key === ' ') {
+    e.preventDefault();
+    document.getElementById('skipBtn').click();
   }
-}
+});
 
-// ══════════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════════
-function applySettings() {
-  state.size = document.getElementById('sizeSelect').value;
-  state.labelPos = document.getElementById('labelSelect').value;
-  renderBoard();
-  saveState();
-}
-
-function setNowColour(i) {
-  state.nowColour = i;
-  buildColourPickers();
-  renderBoard();
-  saveState();
-}
-
-function setNextColour(i) {
-  state.nextColour = i;
-  buildColourPickers();
-  renderBoard();
-  saveState();
-}
-
-function focusSearch(side) {
-  if (side === 'then' && !state.showThen) return;
-  const el = document.getElementById(side + 'SearchInput');
-  if (el) { el.focus(); el.select(); }
-}
-
-// ══════════════════════════════════════════
-// CLEAR
-// ══════════════════════════════════════════
-function clearBoard() {
-  state.now = null;
-  state.next = null;
-  state.then = null;
-  renderBoard();
-  saveState();
-  showToast('🗑️ Board cleared');
-}
-
-function toggleThen(on) {
-  state.showThen = true; // THEN is always on
-  renderBoard();
-  saveState();
-  buildQuickWords();
-}
-
-// ══════════════════════════════════════════
-// PRINT
-// ══════════════════════════════════════════
-function doPrint() {
-  if (!state.now && !state.next) {
-    showToast('⚠️ Choose a NOW and NEXT activity first');
-    return;
-  }
-
-  const nowC = NOW_COLOURS[state.nowColour];
-  const nextC = NEXT_COLOURS[state.nextColour];
-  const sizeMap = {small:'100pt', standard:'150pt', large:'210pt'};
-  const imgSize = sizeMap[state.size] || '150pt';
-  const lblSize = {small:'16pt', standard:'22pt', large:'30pt'}[state.size] || '22pt';
-
-  function panelHtml(slot, c, title) {
-    const labelHtml = state.labelPos !== 'none' && slot
-      ? `<div style="font-family:'Baloo 2',cursive;font-weight:800;font-size:${lblSize};
-          color:#1A2540;margin-top:10pt;line-height:1.2">${escHtml(slot.label)}</div>` : '';
-    const imgHtml = slot
-      ? `<img src="${slot.imageUrl}" style="width:${imgSize};height:${imgSize};
-          object-fit:contain;display:block;margin:0 auto">`
-      : `<div style="width:${imgSize};height:${imgSize};border:3pt dashed #ccc;
-          border-radius:12pt;display:flex;align-items:center;justify-content:center;
-          margin:0 auto;color:#bbb;font-size:14pt">?</div>`;
-    return `<div style="background:${c.bg};padding:24pt 20pt;text-align:center;
-      flex:1;display:flex;flex-direction:column;align-items:center;
-      -webkit-print-color-adjust:exact;print-color-adjust:exact">
-      <div style="display:inline-block;background:${c.badge};color:white;
-        padding:6pt 24pt;border-radius:100pt;font-family:'Baloo 2',cursive;
-        font-weight:800;font-size:24pt;margin-bottom:16pt">${title}</div>
-      ${state.labelPos === 'above' ? labelHtml : ''}
-      ${imgHtml}
-      ${state.labelPos !== 'above' ? labelHtml : ''}
-    </div>`;
-  }
-
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-<title>Now & Next Board</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Baloo 2',cursive;background:white;
-    -webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .board{display:flex;border:3pt solid #D4DAE8;border-radius:16pt;
-    overflow:hidden;margin:10mm;box-shadow:none}
-  .divider{width:40pt;background:#F5F7FA;border-left:2pt solid #D4DAE8;
-    border-right:2pt solid #D4DAE8;display:flex;align-items:center;
-    justify-content:center;font-size:28pt;color:#8C96B0}
-  .credit{font-size:7pt;color:#bbb;text-align:center;padding:6pt;margin:0 10mm}
-  @media print{body{margin:0}}
-</style></head><body>
-<h1 class="sr-only">Now Next Board — SendSteps</h1>
-<div class="board">
-  ${panelHtml(state.now, nowC, 'NOW')}
-  <div class="divider">→</div>
-  ${panelHtml(state.next, nextC, 'NEXT')}
-</div>
-<div class="credit">
-  Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · sendsteps.uk
-</div>
-</div>
-</div>
-</body></html>`;
-
-  const w = window.open('', '_blank', 'width=900,height=600');
-  w.document.write(html);
-  w.document.close();
-  w.onload = () => setTimeout(() => w.print(), 800);
-}
-
-// ══════════════════════════════════════════
-// PERSIST
-// ══════════════════════════════════════════
-function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
-}
-function loadState() {
-  try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) Object.assign(state, JSON.parse(s));
-  } catch(e){}
-}
-
-// ══════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-}
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-init();
+// ── INIT ──────────────────────────────────────────────────────────────────
+initStart();
 </script>
-<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
-</div>
-</div>
+<footer><p>FlagAtlas — free educational tools for everyone &nbsp;·&nbsp; <a href="/index.html">Home</a> &nbsp;·&nbsp; <a href="/privacy.html">Privacy &amp; Terms</a></p></footer>
 </body>
 </html>
