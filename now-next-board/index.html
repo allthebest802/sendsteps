@@ -792,6 +792,7 @@ function doPrint() {
 
   const nowC = NOW_COLOURS[state.nowColour];
   const nextC = NEXT_COLOURS[state.nextColour];
+  const thenC = THEN_COLOURS[state.thenColour || 0];
   const sizeMap = {small:'100pt', standard:'150pt', large:'210pt'};
   const imgSize = sizeMap[state.size] || '150pt';
   const lblSize = {small:'16pt', standard:'22pt', large:'30pt'}[state.size] || '22pt';
@@ -838,6 +839,7 @@ function doPrint() {
   ${panelHtml(state.now, nowC, 'NOW')}
   <div class="divider">→</div>
   ${panelHtml(state.next, nextC, 'NEXT')}
+  ${state.then ? `<div class="divider">→</div>${panelHtml(state.then, thenC, 'THEN')}` : ''}
 </div>
 <div class="credit">
   Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · sendsteps.uk
