@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap-0.9">
-
-  <!-- Homepage -->
   <url>
     <loc>https://sendsteps.uk/</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- Routines & Daily Life -->
   <url>
     <loc>https://sendsteps.uk/routine/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -58,8 +54,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Communication -->
   <url>
     <loc>https://sendsteps.uk/comm-cards/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -78,8 +72,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Feelings & Wellbeing -->
   <url>
     <loc>https://sendsteps.uk/feelings/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -116,8 +108,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Learning Support -->
   <url>
     <loc>https://sendsteps.uk/homework/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -142,8 +132,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Sensory & Health -->
   <url>
     <loc>https://sendsteps.uk/sensory/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -168,8 +156,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Legal pages -->
   <url>
     <loc>https://sendsteps.uk/terms/</loc>
     <lastmod>2026-04-23</lastmod>
@@ -182,5 +168,4 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-
 </urlset>
