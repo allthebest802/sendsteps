@@ -3,35 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="A free digital worry box for children and young people. Write your worry down, choose a calming strategy, then lock it away. No login, no data saved.">
-<meta name="keywords" content="worry box for children, kids worry box, anxiety tool for children, SEND worry tool, free worry box, calming strategies for kids, SEND support">
+<title>Online Worry Box for Children — Free Digital Tool | SendSteps</title>
+<meta name="description" content="A free online worry box for anxious children aged 7+. Your child writes a worry, takes a calming breath, then locks it away — no account, no saving, fully private. Designed for bedtime, after school, or any worrying moment.">
 <link rel="canonical" href="https://sendsteps.uk/worry-box/">
-<meta property="og:title" content="Worry Box — SendSteps">
-<meta property="og:description" content="A free digital worry box for children. Write your worry, choose a calming strategy, then lock it away.">
+<meta property="og:title" content="Online Worry Box for Children — Free Digital Tool">
+<meta property="og:description" content="A free online worry box for anxious children. Write a worry, breathe, and lock it away. Private — nothing is saved or sent.">
 <meta property="og:url" content="https://sendsteps.uk/worry-box/">
 <meta property="og:site_name" content="SendSteps">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Worry Box","description":"A free digital worry box for children and young people with SEND. Write worries down, choose calming strategies and lock them away.","url":"https://sendsteps.uk/worry-box/","applicationCategory":"EducationalApplication","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
-<title>Worry Box — SendSteps</title>
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Online Worry Box","description":"A free digital worry box for anxious children and young people. Private, no account needed, works anytime.","url":"https://sendsteps.uk/worry-box/","applicationCategory":"EducationalApplication","isAccessibleForFree":true,"operatingSystem":"Any","audience":{"@type":"Audience","audienceType":"Children aged 7 and up, parents, teachers, SEND practitioners"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a worry box?","acceptedAnswer":{"@type":"Answer","text":"A worry box is a simple anxiety tool where a child writes down a worry and then puts it away — in a physical container or a digital one like this. The act of naming the worry and symbolically letting it go helps children feel lighter and calmer."}},{"@type":"Question","name":"What age is a worry box suitable for?","acceptedAnswer":{"@type":"Answer","text":"A digital worry box like this one works best for children who can read and type independently, roughly age 7 and up, through to teenagers. Younger children can still benefit from a worry box but usually need an adult to sit with them and help with the writing."}},{"@type":"Question","name":"Is the worry box on SendSteps private?","acceptedAnswer":{"@type":"Answer","text":"Yes. Nothing your child writes is saved, sent, or stored anywhere. The worry exists only on the device while the page is open, then disappears when the page is closed. There are no accounts, no logins, and no data collection."}},{"@type":"Question","name":"When is a worry box not enough?","acceptedAnswer":{"@type":"Answer","text":"A worry box helps with everyday worries. If your child's anxiety is persistent, causing physical symptoms, stopping them eating or sleeping, leading to school refusal, or involves something that has happened to them or someone else, speak to your GP, school SENCo, or a mental health charity such as YoungMinds."}}]}</script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#FDF6F0;
   --bg2:#FAF0E8;
-  --rose:#E8A0A0;
-  --rose-d:#C87878;
+  --rose:#9E5858;
+  --rose-d:#A45454;
   --rose-l:#FDEAEA;
   --rose-ll:#FEF5F5;
-  --teal:#5BBFB0;
+  --teal:#137768;
   --teal-l:#D4F0EB;
-  --teal-d:#3A9A8C;
+  --teal-d:#167668;
   --gold:#E8B84B;
   --gold-l:#FDF3D8;
-  --lavender:#A89BD8;
+  --lavender:#6C5F9C;
   --lav-l:#EDE8F8;
   --text:#3A2820;
   --text2:#6A4840;
-  --text3:#A88878;
+  --text3:#846457;
   --border:#F0D8CC;
   --border2:#E0C0B0;
   --radius:16px;
@@ -79,7 +80,7 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
   font-size:0.7rem;font-weight:700;color:var(--text3);
   transition:all 0.3s;flex-shrink:0;
 }
-.step-dot.active{background:var(--rose);border-color:var(--rose-d);color:white;transform:scale(1.1)}
+.step-dot.active{background:var(--rose);border-color:white;color:white;transform:scale(1.1)}
 .step-dot.done{background:var(--teal);border-color:var(--teal-d);color:white}
 .step-line{flex:1;height:2px;background:var(--border);max-width:40px;transition:background 0.3s}
 .step-line.done{background:var(--teal)}
@@ -279,7 +280,7 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
   color:var(--text2);font-size:0.88rem;font-weight:700;
   transition:all 0.15s;
 }
-.again-btn:hover{border-color:var(--rose);color:var(--rose-d);background:var(--rose-ll)}
+.again-btn:hover{border-color:var(--rose);color:white;background:var(--rose-ll)}
 
 /* ── BUTTONS ── */
 .primary-btn{
@@ -300,11 +301,113 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
   transition:all 0.15s;margin-top:10px;
 }
 .secondary-btn:hover{border-color:var(--rose);color:var(--rose-d)}
+
+/* ── INFO CONTENT SECTION ── */
+.info-section{
+  max-width:720px;margin:48px auto 0;padding:0 24px;
+}
+.info-divider{
+  display:flex;align-items:center;gap:14px;margin-bottom:32px;
+}
+.info-divider::before,.info-divider::after{
+  content:'';flex:1;height:1.5px;background:var(--border);
+}
+.info-divider-label{
+  font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.2px;color:var(--text3);
+}
+.info-section h2{
+  font-family:'Fredoka',sans-serif;font-size:1.35rem;font-weight:600;
+  color:var(--text);margin:32px 0 12px;letter-spacing:0.2px;
+}
+.info-section h2:first-of-type{margin-top:0}
+.info-section h3{
+  font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:600;
+  color:var(--text);margin:20px 0 8px;
+}
+.info-section p{
+  font-size:0.95rem;line-height:1.75;color:var(--text2);
+  margin-bottom:14px;font-weight:500;
+}
+.info-section a{
+  color:var(--rose-d);font-weight:700;text-decoration:underline;
+  text-decoration-color:var(--border2);text-underline-offset:2px;
+  transition:text-decoration-color 0.15s;
+}
+.info-section a:hover{text-decoration-color:var(--rose)}
+.info-section strong{color:var(--text);font-weight:700}
+
+.info-callout{
+  background:white;border:1.5px solid var(--border);
+  border-left:4px solid var(--teal);
+  border-radius:var(--radius);padding:18px 22px;margin:20px 0;
+  box-shadow:var(--shadow);
+}
+.info-callout.warm{border-left-color:var(--rose)}
+.info-callout.safeguard{border-left-color:var(--lavender);background:var(--lav-l)}
+.info-callout p{margin-bottom:0;color:var(--text2)}
+.info-callout p + p{margin-top:10px}
+.info-callout strong{color:var(--text)}
+
+.related-tools{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;margin:16px 0 8px;
+}
+.related-tool{
+  background:white;border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+  text-decoration:none;color:var(--text);
+  display:flex;align-items:flex-start;gap:10px;
+  transition:all 0.15s;
+}
+.related-tool:hover{border-color:var(--rose);transform:translateY(-2px);box-shadow:var(--shadow)}
+.related-tool-icon{font-size:1.5rem;flex-shrink:0}
+.related-tool-name{
+  font-family:'Fredoka',sans-serif;font-size:0.95rem;font-weight:600;
+  color:var(--text);margin-bottom:2px;display:block;
+}
+.related-tool-desc{
+  font-size:0.78rem;color:var(--text2);line-height:1.4;font-weight:500;
+}
+
+details.faq{
+  background:white;border:1.5px solid var(--border);
+  border-radius:var(--radius);margin-bottom:10px;
+  overflow:hidden;transition:border-color 0.15s;
+}
+details.faq[open]{border-color:var(--rose)}
+details.faq summary{
+  padding:14px 18px;cursor:pointer;font-weight:700;font-size:0.95rem;
+  color:var(--text);list-style:none;position:relative;
+  font-family:'Fredoka',sans-serif;
+}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{
+  content:'+';position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  font-size:1.3rem;color:var(--text3);font-weight:400;transition:transform 0.2s;
+}
+details.faq[open] summary::after{content:'−'}
+details.faq .faq-body{
+  padding:0 18px 16px;font-size:0.9rem;line-height:1.7;color:var(--text2);
+  font-weight:500;
+}
+details.faq .faq-body p{margin-bottom:10px}
+details.faq .faq-body p:last-child{margin-bottom:0}
+
+/* ── ACCESSIBILITY ── */
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#3A2820;color:#FDF6F0;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #137768;outline-offset:3px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
 <a class="back-home" href="/">← SendSteps Home</a>
+<div id="main-content" tabindex="-1" style="outline:none">
 <div class="header">
   <span class="header-icon">📦</span>
   <div class="header-text">
@@ -424,6 +527,180 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
   </div>
 
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- INFORMATION / SEO CONTENT SECTION                                -->
+<!-- Written primarily for parents and teachers searching for a       -->
+<!-- worry box tool. Keeps the tool itself child-facing above.        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<section class="info-section" aria-labelledby="about-heading">
+
+  <div class="info-divider">
+    <span class="info-divider-label">For parents &amp; teachers</span>
+  </div>
+
+  <h2 id="about-heading">What is a worry box, and does a digital one really work?</h2>
+
+  <p>A worry box is a simple tool used by parents, teachers, and therapists to help anxious children manage everyday worries. The idea is that a child writes a worry down, then physically puts it away — in a box, a jar, or on this page. The act of naming the worry and symbolically letting it go helps the worry feel smaller. It stops living rent-free in a child's head.</p>
+
+  <p>Worry boxes have been used in classrooms and consulting rooms for decades, and the underlying technique — externalising worries rather than carrying them internally — draws on the same principles as cognitive behavioural therapy. It isn't a cure for anxiety, but for many children it's a surprisingly effective way to interrupt the loop of worrying about something they can't immediately solve.</p>
+
+  <p>Traditionally, families have made physical worry boxes out of shoeboxes or jars. That works beautifully when you have time to sit down and craft one together. But worries rarely arrive at convenient times. They arrive at bedtime, on the walk to school, in the middle of homework, or on a Sunday evening before a Monday your child is dreading. That's where a <strong>digital worry box</strong> earns its place — as something your child can reach for the moment they need it, without waiting for scissors, glue, and a shoebox.</p>
+
+  <h2>When a digital worry box is the right tool</h2>
+
+  <p>This tool is particularly suited to:</p>
+
+  <h3>Bedtime worries</h3>
+  <p>Many children save their biggest worries for the quiet of bedtime — when there's nothing else to distract from them. A digital worry box on a phone or tablet gives your child something to do with those thoughts at 9pm without needing to get up, find paper, or wake a parent. They can write the worry, watch it lock away, and settle back down.</p>
+
+  <h3>School-related anxiety</h3>
+  <p>For children experiencing school anxiety, worries tend to cluster in the hour before school starts and the hour after they get home. A digital worry box can be opened on the walk home, on the school bus, or before registration — wherever the worry actually lives. It's also useful for children struggling with <a href="https://www.youngminds.org.uk/parent/parents-a-z-mental-health-guide/school-anxiety-and-refusal/" target="_blank" rel="noopener">emotionally based school avoidance (EBSA)</a>, who often cannot say their worries out loud but can type them.</p>
+
+  <h3>Children who find handwriting hard</h3>
+  <p>For children with dysgraphia, dyslexia, or motor coordination difficulties, writing a worry by hand can feel like extra punishment on top of an already difficult feeling. Typing removes that barrier. The worry can be expressed quickly, without judgement about spelling or neatness.</p>
+
+  <h3>Homes without space for a physical box</h3>
+  <p>Not every family has space for a decorated shoebox in a cupboard. Not every child has their own room. A digital worry box works anywhere there's a phone or tablet — no storage, no family members accidentally finding worries meant to be private.</p>
+
+  <div class="info-callout">
+    <p><strong>Not sure whether to use a physical box or a digital one?</strong> Many families use both — a physical box for planned, calmer moments, and a digital one for the urgent, in-the-moment worries that don't wait. They're not competing; they're complementary.</p>
+  </div>
+
+  <h2>How to use this worry box with your child</h2>
+
+  <p>The tool is designed so that a child aged roughly seven and up can use it independently — that's the age at which most children can read and type well enough to move through the five steps on their own. For younger children, sit alongside them the first few times so they understand what's happening.</p>
+
+  <p><strong>Step 1: Write the worry.</strong> Your child types whatever is worrying them. It can be one word or several sentences — up to 400 characters. There's no right way to do it. The act of putting the worry into words is already helping.</p>
+
+  <p><strong>Step 2: Take a breath.</strong> Before locking the worry away, the tool guides your child through three slow breath cycles. Breathing this way physically calms the nervous system — it isn't just relaxation, it's actually changing what's happening in their body. Children can skip this step if they prefer, but it makes the rest of the process feel more meaningful.</p>
+
+  <p><strong>Step 3: Choose something that helps.</strong> Your child picks one coping action to do after closing the page — a hug, fresh air, a favourite song, a snack. This gives them a concrete next move, so they aren't left alone with a freshly opened worry and nothing to do.</p>
+
+  <p><strong>Step 4: Lock it away.</strong> The worry visually flies into the box, the lid closes, and the lock activates. It's quick — perhaps only two seconds of animation — but that small moment of watching something go gives the brain a clear signal: this worry has been dealt with.</p>
+
+  <p><strong>Step 5: A reassuring message.</strong> The tool finishes with a short message of encouragement. It's not trying to minimise the worry, just to acknowledge that what your child just did took some courage.</p>
+
+  <h2>Using a worry box for children with additional needs</h2>
+
+  <p>SendSteps was built specifically with SEND families in mind, and the worry box has a few features that matter for neurodivergent children.</p>
+
+  <h3>For autistic children</h3>
+  <p>Many autistic children find verbalising feelings difficult, especially during or just after a moment of anxiety. Writing feelings down gives them a bridge — the same emotional content, but through a channel that feels safer and more controllable. The predictable five-step structure of this tool is also useful because autistic children often find unstructured emotional conversations overwhelming. Here, each step is clear, the end is visible, and nothing surprises them.</p>
+
+  <h3>For children with ADHD</h3>
+  <p>Children with ADHD often describe worry as "a loop I can't get out of" — the same thought circling without resolution. The act of moving through structured steps, choosing a coping action, and watching the worry visually leave the screen gives the ADHD brain the sensory pay-off it needs to feel the loop close. Several parents use this alongside our <a href="/brain-dump/">Brain Dump</a> tool for ADHD overthinking.</p>
+
+  <h3>For children with anxiety or OCD</h3>
+  <p>A note for families where a child has diagnosed anxiety disorders or obsessive-compulsive traits: a worry box can be helpful, but it can also accidentally reinforce the rumination loop if used compulsively. If your child is using the tool dozens of times a day, or finds they have to "do it again" because they didn't do it "right," this is a signal to talk to their therapist or GP about whether it's the right fit for them right now.</p>
+
+  <h2>Our promise about privacy</h2>
+
+  <div class="info-callout warm">
+    <p><strong>Nothing your child writes here is saved, sent, or stored anywhere.</strong> There are no accounts, no logins, no analytics tracking the content of worries. The worry exists only on the device while the page is open and disappears when the page is closed.</p>
+    <p>The only thing we save locally is a count of how many worries have been locked away — just a number, stored on your child's own device, never shared with us or anyone else.</p>
+  </div>
+
+  <p>This matters because the worries children write are often things they would never say out loud. The tool only works if they can trust that. We don't sell ads on the worry content, we don't run analytics on it, and we don't have any way to retrieve it even if we wanted to.</p>
+
+  <h2>When a worry box isn't enough</h2>
+
+  <div class="info-callout safeguard">
+    <p><strong>A worry box is for everyday worries — not for every worry.</strong> If your child's anxiety is persistent, stopping them eating or sleeping, leading to school refusal, or involves something that has happened to them or someone they know, please speak to a trusted adult, your GP, or your child's school SENCo. You can also contact <a href="https://www.youngminds.org.uk/parent/parents-helpline-and-webchat/" target="_blank" rel="noopener">YoungMinds Parents Helpline</a> on 0808 802 5544.</p>
+    <p>If your child is in crisis right now, call <strong>NHS 111</strong> or <strong>Samaritans on 116 123</strong>. In an emergency, call 999.</p>
+  </div>
+
+  <h2>Other SendSteps tools that pair well with the worry box</h2>
+
+  <p>The worry box is part of a wider set of free tools on SendSteps, designed to work together for different moments of a child's day.</p>
+
+  <div class="related-tools">
+    <a href="/feelings/" class="related-tool">
+      <span class="related-tool-icon">💭</span>
+      <span>
+        <span class="related-tool-name">Feelings tool</span>
+        <span class="related-tool-desc">For when your child knows something's wrong but can't name it</span>
+      </span>
+    </a>
+    <a href="/brain-dump/" class="related-tool">
+      <span class="related-tool-icon">🧠</span>
+      <span>
+        <span class="related-tool-name">Brain Dump</span>
+        <span class="related-tool-desc">For busy minds with too many thoughts at once</span>
+      </span>
+    </a>
+    <a href="/decompression/" class="related-tool">
+      <span class="related-tool-icon">🫧</span>
+      <span>
+        <span class="related-tool-name">Decompression</span>
+        <span class="related-tool-desc">A calming routine for after a hard school day</span>
+      </span>
+    </a>
+  </div>
+
+  <h2>Frequently asked questions</h2>
+
+  <details class="faq">
+    <summary>What age is a worry box suitable for?</summary>
+    <div class="faq-body">
+      <p>This digital worry box works best for children who can read and type independently — roughly age seven and up, through to teenagers. Younger children can still benefit from the concept of a worry box, but usually need an adult to sit with them and help with the writing.</p>
+      <p>For very young children, a physical worry box made together with a parent often works better than a digital one, because the process of making it becomes part of the comfort.</p>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Is the worry box really private?</summary>
+    <div class="faq-body">
+      <p>Yes. We don't save the text your child writes. We don't send it anywhere. There are no cookies tracking what the worry says. The worry exists only in the browser tab while the page is open, then vanishes when the page is closed.</p>
+      <p>The only data we save is a number — how many worries have been locked away — and even that is saved only on your child's own device, not on our servers.</p>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Can my child use this on their own?</summary>
+    <div class="faq-body">
+      <p>Yes, that's what it's designed for. Children from around age seven can typically work through all five steps independently. That said, it's worth introducing them to the tool together the first time, so they understand what each step does and feel comfortable using it.</p>
+      <p>For bigger worries — or when you sense your child is very upset — being in the same room while they use it is usually better than letting them use it entirely alone.</p>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>What if my child uses it over and over for the same worry?</summary>
+    <div class="faq-body">
+      <p>Occasional repetition is fine — some worries need to be locked away several times before they start to fade. But if your child feels they <em>have to</em> use the tool repeatedly, or feels anxious if they don't, this can be a sign that worry is turning into rumination or compulsion. In that case, a worry box may not be the right tool, and it's worth talking to your GP or your school SENCo.</p>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Does this replace seeing a therapist?</summary>
+    <div class="faq-body">
+      <p>No. A worry box is a simple self-help technique for managing everyday worries. If your child is experiencing significant anxiety, low mood, panic, or persistent distress, they need proper support from a GP, CAMHS, school counsellor, or private therapist. This tool is designed to sit alongside that kind of support — not instead of it.</p>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Can teachers use this in the classroom?</summary>
+    <div class="faq-body">
+      <p>Yes. Teachers and SENCos use SendSteps tools as part of regulation corners, calm-down stations, and PSHE lessons. The worry box works particularly well for children who don't want to talk to an adult in the moment but need somewhere to put a difficult feeling before they can focus on their learning.</p>
+      <p>If you're a teacher using this at school, keep in mind that worries children type here are not saved — so if a child tells you they wrote something important, encourage them to tell you about it in person too.</p>
+    </div>
+  </details>
+
+  <details class="faq">
+    <summary>Does it work without internet?</summary>
+    <div class="faq-body">
+      <p>Once the page has loaded, the worry box works fully offline — there's nothing sending or fetching data from the internet while your child uses it. You can even add the page to your home screen on a phone or tablet to use it like an app.</p>
+    </div>
+  </details>
+
+  <div style="margin-top:36px;padding-top:24px;border-top:1.5px dashed var(--border);text-align:center">
+    <p style="font-size:0.82rem;color:var(--text3);font-weight:600;margin-bottom:4px">
+      The Worry Box is a free tool from <a href="/" style="color:var(--rose-d)">SendSteps</a> — a small collection of SEND support tools built by a parent for families and schools.
+    </p>
+  </div>
+
+</section>
 
 <script>
 // ── STATE ──
@@ -646,5 +923,6 @@ function startAgain() {
 }
 </script>
 <a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+</div>
 </body>
 </html>
