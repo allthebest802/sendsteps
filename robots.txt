@@ -1,4 +1,12 @@
+# robots.txt for sendsteps.uk
+# Free web-based tools for families and neurodivergent users
+
 User-agent: *
 Allow: /
 
+# Block crawling of any known-dead URLs to save crawl budget
+Disallow: /chores
+Disallow: /chores/
+
+# Sitemap location
 Sitemap: https://sendsteps.uk/sitemap.xml
