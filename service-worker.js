@@ -1,9 +1,9 @@
 // ============================================================
-// SendSteps Service Worker — v1.0
+// Helpset Service Worker — v1.0
 // Handles offline caching so the app works without internet
 // ============================================================
 
-const CACHE_VERSION = 'sendsteps-v1';
+const CACHE_VERSION = 'helpset-v1';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 
@@ -84,7 +84,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(keys => {
       return Promise.all(
         keys
-          .filter(key => key.startsWith('sendsteps-') && key !== STATIC_CACHE && key !== DYNAMIC_CACHE)
+          .filter(key => key.startsWith('helpset-') && key !== STATIC_CACHE && key !== DYNAMIC_CACHE)
           .map(key => {
             console.log('[SW] Deleting old cache:', key);
             return caches.delete(key);
@@ -149,8 +149,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ── SendSteps pages and assets — cache first, network fallback ──
-  if (url.hostname === 'sendsteps.uk' || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+  // ── Helpset pages and assets — cache first, network fallback ──
+  if (url.hostname === 'helpset.uk' || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
     event.respondWith(
       caches.match(request).then(cached => {
         // Return cached version immediately
@@ -174,7 +174,7 @@ self.addEventListener('fetch', event => {
           // Full offline fallback — return homepage if we have it
           return caches.match('/').then(fallback =>
             fallback || new Response(
-              '<h1>You are offline</h1><p>Please reconnect to use SendSteps.</p>',
+              '<h1>You are offline</h1><p>Please reconnect to use HelpSet.</p>',
               { headers: { 'Content-Type': 'text/html' } }
             )
           );
