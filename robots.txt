@@ -9,4 +9,4 @@ Disallow: /chores
 Disallow: /chores/
 
 # Sitemap location
-Sitemap: https://sendsteps.uk/sitemap.xml
+Sitemap: https://helpset.uk/sitemap.xml
