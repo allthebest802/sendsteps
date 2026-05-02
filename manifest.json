@@ -1,6 +1,6 @@
-{
-  "name": "SendSteps — Free Visual Tools for SEND Families",
-  "short_name": "SendSteps",
+Get-ChildItem -Recurse -Include *.html,*.js,*.css,*.json,*.md,*.xml,*.toml | Select-String -Pattern "Helpset|helpset|HELP SET|Help Set" -CaseSensitive:$false | Format-Table Path, LineNumber, Line{
+  "name": "Helpset — Free Visual Tools for SEND Families",
+  "short_name": "Helpset",
   "description": "Free visual supports for SEND children and families. Routine builders, communication cards, Now/Next boards, ADHD tools, dyslexia support and more. No login. No subscription. No ads.",
   "start_url": "/",
   "scope": "/",
@@ -65,7 +65,7 @@
       "src": "/screenshots/home.png",
       "sizes": "1080x1920",
       "type": "image/png",
-      "label": "SendSteps home screen — 24 free tools"
+      "label": "Helpset home screen — 24 free tools"
     },
     {
       "src": "/screenshots/routine.png",
