@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Now & Next Board — SendSteps</title>
+<title>Now & Next Board — Helpset</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://static.arasaac.org" crossorigin>
@@ -214,13 +214,13 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 </style>
 </head>
 <body>
-<h1 class="sr-only">Now Next Board — SendSteps</h1>
+<h1 class="sr-only">Now Next Board — Helpset</h1>
 
 <!-- HEADER -->
 <div id="main-content" tabindex="-1" style="outline:none">
 <header class="header no-print">
   <div class="header-left">
-    <a href="/" class="header-back">← SendSteps</a>
+    <a href="/" class="header-back">← Helpset</a>
     <div>
       <div class="header-title">
         <span class="now-word">Now</span> &amp; <span class="next-word">Next</span> Board
@@ -461,7 +461,7 @@ let state = {
   size: 'standard',
 };
 
-const STORAGE_KEY = 'sendsteps_nownext_v2';
+const STORAGE_KEY = 'helpset_nownext_v2';
 
 // ══════════════════════════════════════════
 // INIT
@@ -834,7 +834,7 @@ function doPrint() {
   .credit{font-size:7pt;color:#bbb;text-align:center;padding:6pt;margin:0 10mm}
   @media print{body{margin:0}}
 </style></head><body>
-<h1 class="sr-only">Now Next Board — SendSteps</h1>
+<h1 class="sr-only">Now Next Board — Helpset</h1>
 <div class="board">
   ${panelHtml(state.now, nowC, 'NOW')}
   <div class="divider">→</div>
@@ -842,7 +842,7 @@ function doPrint() {
   ${state.then ? `<div class="divider">→</div>${panelHtml(state.then, thenC, 'THEN')}` : ''}
 </div>
 <div class="credit">
-  Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · sendsteps.uk
+  Pictograms: ARASAAC © Gobierno de Aragón · CC BY-NC-SA · Created by Sergio Palao · helpset.uk
 </div>
 </div>
 </div>
@@ -884,7 +884,7 @@ function escHtml(s) {
 
 init();
 </script>
-<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+<a href="https://ko-fi.com/helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
 </div>
 </div>
 </body>
