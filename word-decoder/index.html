@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Word Decoder — SendSteps</title>
+<title>Word Decoder — Helpset</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=Lora:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -19,18 +19,18 @@
   --purple-m:#A78BFA;
   --text:#1E1030;
   --text2:#4B3F6B;
-  --text3:#8B7BB0;
+  --text3:#73639A;
   --radius:14px;
   --radius-lg:20px;
   --shadow:0 4px 20px rgba(124,58,237,0.08);
   --shadow-lg:0 8px 40px rgba(124,58,237,0.14);
   /* Syllable colours */
-  --s1:#E53E3E;--s1-l:#FED7D7;
-  --s2:#D97706;--s2-l:#FEF3C7;
-  --s3:#059669;--s3-l:#D1FAE5;
-  --s4:#2563EB;--s4-l:#DBEAFE;
+  --s1:#C11A1A;--s1-l:#FED7D7;
+  --s2:#B25000;--s2-l:#FEF3C7;
+  --s3:#007E51;--s3-l:#D1FAE5;
+  --s4:#1F5DE5;--s4-l:#DBEAFE;
   --s5:#7C3AED;--s5-l:#EDE9FE;
-  --s6:#DB2777;--s6-l:#FCE7F3;
+  --s6:#CC1868;--s6-l:#FCE7F3;
 }
 html{font-size:16px;scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px}
@@ -206,10 +206,19 @@ button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:non
   .input-row{flex-direction:column}
   .syllable-text{font-size:2rem;padding:3px 8px}
 }
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#1E1030;color:#F5F0FF;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #5B21B6;outline-offset:3px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
+<div id="main-content" tabindex="-1" style="outline:none">
+<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#5B21B6;text-decoration:none;border:1.5px solid #C8B8F8;border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; Helpset Home</a>
 <div class="header">
   <span class="header-icon">🔤</span>
   <h1>Word Decoder</h1>
@@ -579,6 +588,7 @@ document.getElementById('decodeParaBtn').addEventListener('click', () => {
   renderParagraph(document.getElementById('paraInput').value);
 });
 </script>
-<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+<a href="https://ko-fi.com/helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
+</div>
 </body>
 </html>

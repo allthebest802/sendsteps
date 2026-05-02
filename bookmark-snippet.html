@@ -1,0 +1,488 @@
+<!--
+  ============================================================
+  HELPSET BOOKMARK SNIPPET — v1.0
+  ============================================================
+  HOW TO USE:
+
+  1. TOOL PAGES — header button
+     Copy the <style> block and the TOOL HEADER BUTTON block
+     into each tool page. Place the button inside your
+     existing .header div, after the .header-back link.
+
+  2. HOMEPAGE — bottom banner
+     Copy the <style> block and the HOMEPAGE BANNER block
+     into index.html, just before the closing </body> tag.
+
+  3. THE SCRIPT
+     Copy the <script> block into BOTH — paste it just before
+     </body> on every page that uses either component.
+
+  Only one copy of the <style> and <script> needed per page.
+  ============================================================
+-->
+
+
+<!-- ============================================================
+     SHARED STYLES — paste inside <style> or in a <style> block
+     ============================================================ -->
+<style>
+/* ── Tool header bookmark button ── */
+.bookmark-btn {
+  margin-left: auto;
+  font-family: var(--font-body, 'Nunito', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  background: none;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: 20px;
+  padding: 4px 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bookmark-btn:hover {
+  color: white;
+  border-color: rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.07);
+}
+.bookmark-btn.saved {
+  color: #fbbf24;
+  border-color: rgba(251,191,36,0.4);
+}
+
+/* ── Homepage bottom banner ── */
+.bookmark-banner {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #0f1a2e;
+  border-top: 2px solid rgba(16,185,129,0.3);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 200;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.bookmark-banner.show {
+  transform: translateY(0);
+}
+.bookmark-banner-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.bookmark-banner-text {
+  flex: 1;
+  font-family: var(--font-body, 'Nunito', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.4;
+}
+.bookmark-banner-text strong {
+  color: white;
+}
+.bookmark-banner-btn {
+  font-family: var(--font-body, 'Nunito', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bookmark-banner-btn:hover {
+  background: #059669;
+}
+.bookmark-banner-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.13s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.bookmark-banner-close:hover {
+  color: rgba(255,255,255,0.7);
+}
+
+/* ── Shared tooltip/modal ── */
+.bookmark-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,26,46,0.6);
+  z-index: 500;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+}
+.bookmark-modal-backdrop.open {
+  display: flex;
+}
+.bookmark-modal {
+  background: white;
+  border-radius: 18px 18px 14px 14px;
+  padding: 22px 22px 28px;
+  width: min(440px, 100%);
+  box-shadow: 0 -8px 40px rgba(15,26,46,0.2);
+  animation: bmSlideUp 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes bmSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.bookmark-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.bookmark-modal-title {
+  font-family: var(--font-display, 'Baloo 2', cursive);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f1a2e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bookmark-modal-x {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #7a8fa6;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.13s;
+}
+.bookmark-modal-x:hover { color: #0f1a2e; }
+
+.bookmark-instruction {
+  background: #f0f4f8;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: none;
+}
+.bookmark-instruction.show { display: block; }
+.bookmark-instruction-step {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+  line-height: 1.7;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+.bookmark-instruction-step:last-child { margin-bottom: 0; }
+.bookmark-step-num {
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.bookmark-instruction-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #10b981;
+  margin-bottom: 8px;
+}
+.bookmark-install-btn {
+  width: 100%;
+  font-family: var(--font-body, 'Nunito', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 800;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 4px;
+  display: none;
+}
+.bookmark-install-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+.bookmark-install-btn.show { display: block; }
+.bookmark-done-msg {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #059669;
+  font-weight: 700;
+  padding: 8px 0 0;
+  display: none;
+}
+.bookmark-done-msg.show { display: block; }
+</style>
+
+
+<!-- ============================================================
+     TOOL HEADER BUTTON
+     Paste this inside your .header div on each tool page,
+     after the existing .header-back link.
+     ============================================================ -->
+<button class="bookmark-btn" onclick="openBookmarkModal()" id="bookmarkBtn">
+  ⭐ Bookmark this page
+</button>
+
+
+<!-- ============================================================
+     HOMEPAGE BANNER
+     Paste this just before </body> on the homepage only.
+     ============================================================ -->
+<div class="bookmark-banner" id="bookmarkBanner">
+  <span class="bookmark-banner-icon">⭐</span>
+  <div class="bookmark-banner-text">
+    <strong>Bookmark Helpset</strong> — save it to your home screen for quick access
+  </div>
+  <button class="bookmark-banner-btn" onclick="openBookmarkModal()">Bookmark this page</button>
+  <button class="bookmark-banner-close" onclick="dismissBanner()" aria-label="Dismiss">✕</button>
+</div>
+
+
+<!-- ============================================================
+     SHARED MODAL — paste once per page, before </body>
+     ============================================================ -->
+<div class="bookmark-modal-backdrop" id="bookmarkModalBackdrop" onclick="closeBookmarkModal(event)">
+  <div class="bookmark-modal">
+    <div class="bookmark-modal-head">
+      <div class="bookmark-modal-title">⭐ Bookmark this page</div>
+      <button class="bookmark-modal-x" onclick="closeBookmarkModalDirect()">✕</button>
+    </div>
+
+    <!-- Chrome Android — native install prompt -->
+    <div class="bookmark-instruction show" id="bm-android-chrome">
+      <div class="bookmark-instruction-label">Android · Chrome</div>
+      <button class="bookmark-install-btn show" id="bmInstallBtn" onclick="triggerInstall()">
+        📱 Add to Home Screen
+      </button>
+      <div class="bookmark-done-msg" id="bmDoneMsg">✅ Added! Look for the Helpset icon on your home screen.</div>
+    </div>
+
+    <!-- iPhone / iPad Safari -->
+    <div class="bookmark-instruction" id="bm-ios-safari">
+      <div class="bookmark-instruction-label">iPhone · Safari</div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">1</span>
+        <span>Tap the <strong>Share button</strong> at the bottom of your screen (the box with an arrow pointing up)</span>
+      </div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">2</span>
+        <span>Scroll down and tap <strong>"Add to Home Screen"</strong></span>
+      </div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">3</span>
+        <span>Tap <strong>"Add"</strong> — Helpset will appear on your home screen like an app</span>
+      </div>
+    </div>
+
+    <!-- Chrome Desktop -->
+    <div class="bookmark-instruction" id="bm-desktop-chrome">
+      <div class="bookmark-instruction-label">Chrome · Desktop</div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">1</span>
+        <span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span>
+      </div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">2</span>
+        <span>Choose a folder and click <strong>Done</strong></span>
+      </div>
+    </div>
+
+    <!-- Firefox -->
+    <div class="bookmark-instruction" id="bm-firefox">
+      <div class="bookmark-instruction-label">Firefox</div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">1</span>
+        <span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span>
+      </div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">2</span>
+        <span>Click <strong>Save Bookmark</strong></span>
+      </div>
+    </div>
+
+    <!-- Safari Desktop -->
+    <div class="bookmark-instruction" id="bm-safari-desktop">
+      <div class="bookmark-instruction-label">Safari · Mac</div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">1</span>
+        <span>Press <strong>Cmd+D</strong> or go to <strong>Bookmarks → Add Bookmark</strong></span>
+      </div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">2</span>
+        <span>Choose where to save it and click <strong>Add</strong></span>
+      </div>
+    </div>
+
+    <!-- Generic fallback -->
+    <div class="bookmark-instruction" id="bm-generic">
+      <div class="bookmark-instruction-label">Add a bookmark</div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">1</span>
+        <span>Press <strong>Ctrl+D</strong> (Windows) or <strong>Cmd+D</strong> (Mac)</span>
+      </div>
+      <div class="bookmark-instruction-step">
+        <span class="bookmark-step-num">2</span>
+        <span>On mobile, tap your browser menu and look for <strong>"Add to Home Screen"</strong> or <strong>"Bookmark"</strong></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+     SCRIPT — paste once per page, just before </body>
+     ============================================================ -->
+<script>
+(function() {
+  // ── Device / browser detection ──
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/.test(ua);
+  const isChrome = /Chrome/.test(ua) && !/Edg/.test(ua);
+  const isFirefox = /Firefox/.test(ua);
+  const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua);
+  const isMobile = isIOS || isAndroid;
+
+  let deferredPrompt = null;
+
+  // ── Capture the Chrome install prompt ──
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  // ── Show the right instruction panel ──
+  function detectAndShow() {
+    // Hide all first
+    ['android-chrome','ios-safari','desktop-chrome','firefox','safari-desktop','generic']
+      .forEach(id => {
+        const el = document.getElementById('bm-' + id);
+        if (el) el.classList.remove('show');
+      });
+
+    let panelId = 'generic';
+    if (isIOS && isSafari)       panelId = 'ios-safari';
+    else if (isAndroid && isChrome) panelId = 'android-chrome';
+    else if (isChrome)           panelId = 'desktop-chrome';
+    else if (isFirefox)          panelId = 'firefox';
+    else if (isSafari)           panelId = 'safari-desktop';
+
+    const panel = document.getElementById('bm-' + panelId);
+    if (panel) panel.classList.add('show');
+
+    // If no native install prompt available, hide the install button
+    if (panelId === 'android-chrome' && !deferredPrompt) {
+      const btn = document.getElementById('bmInstallBtn');
+      if (btn) btn.classList.remove('show');
+      // Show keyboard shortcut fallback instead
+      const panel2 = document.getElementById('bm-android-chrome');
+      if (panel2) {
+        panel2.innerHTML = `
+          <div class="bookmark-instruction-label">Android · Chrome</div>
+          <div class="bookmark-instruction-step">
+            <span class="bookmark-step-num">1</span>
+            <span>Tap the <strong>three dots menu</strong> in the top right of Chrome</span>
+          </div>
+          <div class="bookmark-instruction-step">
+            <span class="bookmark-step-num">2</span>
+            <span>Tap <strong>"Add to Home screen"</strong></span>
+          </div>
+          <div class="bookmark-instruction-step">
+            <span class="bookmark-step-num">3</span>
+            <span>Tap <strong>Add</strong> to confirm</span>
+          </div>`;
+      }
+    }
+  }
+
+  // ── Native install trigger ──
+  window.triggerInstall = function() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        const btn = document.getElementById('bmInstallBtn');
+        const msg = document.getElementById('bmDoneMsg');
+        if (btn) btn.classList.remove('show');
+        if (msg) msg.classList.add('show');
+        // Update header button if present
+        const hbtn = document.getElementById('bookmarkBtn');
+        if (hbtn) { hbtn.textContent = '⭐ Bookmarked!'; hbtn.classList.add('saved'); }
+      }
+      deferredPrompt = null;
+    });
+  };
+
+  // ── Modal open / close ──
+  window.openBookmarkModal = function() {
+    detectAndShow();
+    const backdrop = document.getElementById('bookmarkModalBackdrop');
+    if (backdrop) backdrop.classList.add('open');
+  };
+
+  window.closeBookmarkModal = function(e) {
+    if (e && e.target !== document.getElementById('bookmarkModalBackdrop')) return;
+    closeBookmarkModalDirect();
+  };
+
+  window.closeBookmarkModalDirect = function() {
+    const backdrop = document.getElementById('bookmarkModalBackdrop');
+    if (backdrop) backdrop.classList.remove('open');
+  };
+
+  // ── Homepage banner ──
+  const BANNER_KEY = 'ss_banner_dismissed';
+  const banner = document.getElementById('bookmarkBanner');
+
+  if (banner) {
+    const dismissed = localStorage.getItem(BANNER_KEY);
+    if (!dismissed) {
+      // Show after 20 seconds — user has had time to look around
+      setTimeout(() => banner.classList.add('show'), 20000);
+    }
+  }
+
+  window.dismissBanner = function() {
+    if (banner) banner.classList.remove('show');
+    try { localStorage.setItem(BANNER_KEY, '1'); } catch(e) {}
+  };
+
+  // Close modal on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeBookmarkModalDirect();
+  });
+
+})();
+</script>
