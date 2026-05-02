@@ -1,0 +1,128 @@
+<!--
+  ============================================================
+  HELPSET PWA — INSTALLATION GUIDE
+  ============================================================
+
+  STEP 1 — ADD THESE FILES TO YOUR NETLIFY ROOT:
+    - manifest.json       (the file you just downloaded)
+    - service-worker.js   (the file you just downloaded)
+
+  STEP 2 — ADD THESE TAGS to the <head> of EVERY HTML page
+  (homepage AND all tool pages):
+
+  ============================================================
+-->
+
+
+<!-- ── Paste these inside <head> on every page ── -->
+
+<meta name="theme-color" content="#10b981">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Helpset">
+<link rel="manifest" href="/manifest.json">
+
+<!-- Apple touch icon (Safari Add to Home Screen) -->
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+<!-- ── Paste this just before </body> on every page ── -->
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+      .then(reg => {
+        // Check for updates every time the page loads
+        reg.update();
+        // If a new service worker is waiting, activate it on next navigation
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New version available — will activate on next page load
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('[SW] Registration failed:', err));
+  });
+}
+</script>
+
+
+<!--
+  ============================================================
+  STEP 3 — CREATE YOUR APP ICONS
+
+  You need icon PNG files at these sizes, saved to /icons/ folder:
+    icon-72.png
+    icon-96.png
+    icon-128.png
+    icon-144.png
+    icon-152.png
+    icon-192.png
+    icon-384.png
+    icon-512.png
+
+  EASIEST WAY: Go to https://realfavicongenerator.net
+  Upload any square version of the Helpset logo (the green SS mark)
+  It generates all sizes automatically — download and put in /icons/
+
+  Important: icons should have some padding (safe zone) around the
+  logo for Android's adaptive icon system. realfavicongenerator.net
+  handles this automatically.
+
+  ============================================================
+  STEP 4 — ADD SCREENSHOTS (optional but recommended for Play Store)
+
+  Take two portrait screenshots of the site on mobile:
+    /screenshots/home.png    (1080x1920px — the homepage)
+    /screenshots/routine.png (1080x1920px — the routine builder)
+
+  On Chrome on Android: DevTools → Toggle device toolbar → set to
+  1080x1920 → screenshot. Or just use your phone.
+
+  ============================================================
+  STEP 5 — TEST IT
+
+  1. Deploy everything to Netlify
+  2. Open helpset.uk in Chrome on Android
+  3. Tap the three-dot menu → "Add to Home Screen"
+  4. The app icon should appear on your home screen
+  5. Open it — it should launch full-screen with no browser chrome
+  6. Turn off wifi and open it — it should still work (offline mode)
+
+  To test in desktop Chrome:
+  - Open DevTools → Application → Service Workers
+  - Check it shows as "activated and running"
+  - Application → Manifest — check all fields show correctly
+
+  ============================================================
+  STEP 6 — SUBMIT TO GOOGLE PLAY
+
+  1. Go to https://www.pwabuilder.com
+  2. Enter https://helpset.uk
+  3. Click "Package for stores" → "Google Play"
+  4. It generates an Android App Bundle (.aab file)
+  5. Go to https://play.google.com/console
+  6. Pay the one-time £20 developer fee
+  7. Create a new app → upload the .aab file
+  8. Fill in the store listing (description, screenshots, category)
+  9. Submit for review — usually 2-7 days
+
+  ============================================================
+  STEP 7 — assetlinks.json (required for Play Store TWA)
+
+  PWA Builder will give you a file called assetlinks.json
+  This needs to be deployed to:
+    helpset.uk/.well-known/assetlinks.json
+
+  On Netlify: create a folder called .well-known in your project
+  root and put the file inside it. That's it.
+
+  ============================================================
+  THAT'S IT. You're in the Play Store.
+  ============================================================
+-->
