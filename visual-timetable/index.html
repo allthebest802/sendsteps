@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Visual Timetable Builder — SendSteps</title>
+<title>Visual Timetable Builder — Helpset</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -13,7 +13,7 @@
   --surface2:#F0EDE6;
   --ink:#1A1A2E;
   --ink2:#4A4A6A;
-  --muted:#9090AA;
+  --muted:#686882;
   --border:#E0DBD0;
   --border2:#C8C0B0;
   --radius:14px;
@@ -23,21 +23,21 @@
   --font-body:'DM Sans',sans-serif;
 
   /* Subject colours */
-  --c-english:#4F86C6;    --c-english-l:#EBF2FB;
-  --c-maths:#E8724A;      --c-maths-l:#FDF0EB;
-  --c-science:#3BAA7A;    --c-science-l:#E8F7F1;
-  --c-history:#9B6BB5;    --c-history-l:#F3EEF8;
-  --c-geography:#5BA8A0;  --c-geography-l:#EAF5F4;
-  --c-art:#E8A838;        --c-art-l:#FDF5E6;
-  --c-pe:#D4527A;         --c-pe-l:#FCEEF3;
-  --c-music:#6B8FD4;      --c-music-l:#EEF2FB;
-  --c-dt:#7BAA5B;         --c-dt-l:#EEF7E8;
-  --c-re:#C47B5A;         --c-re-l:#FAF0EB;
-  --c-pshe:#D4A0C8;       --c-pshe-l:#FAF2F8;
+  --c-english:#376EAE;    --c-english-l:#EBF2FB;
+  --c-maths:#BE4820;      --c-maths-l:#FDF0EB;
+  --c-science:#0E7D4D;    --c-science-l:#E8F7F1;
+  --c-history:#8959A3;    --c-history-l:#F3EEF8;
+  --c-geography:#2B7870;  --c-geography-l:#EAF5F4;
+  --c-art:#A06000;        --c-art-l:#FDF5E6;
+  --c-pe:#BF3D65;         --c-pe-l:#FCEEF3;
+  --c-music:#476BB0;      --c-music-l:#EEF2FB;
+  --c-dt:#4B7A2B;         --c-dt-l:#EEF7E8;
+  --c-re:#A35A39;         --c-re-l:#FAF0EB;
+  --c-pshe:#925E86;       --c-pshe-l:#FAF2F8;
   --c-languages:#5EB8D4;  --c-languages-l:#EAF7FB;
-  --c-computing:#7B8FE8;  --c-computing-l:#EEF0FB;
-  --c-break:#B0AFA8;      --c-break-l:#F5F4F2;
-  --c-other:#8A8A9A;      --c-other-l:#F0F0F4;
+  --c-computing:#5165BE;  --c-computing-l:#EEF0FB;
+  --c-break:#717069;      --c-break-l:#F5F4F2;
+  --c-other:#6C6C7C;      --c-other-l:#F0F0F4;
 }
 
 html{font-size:15px}
@@ -246,14 +246,22 @@ input,select,textarea{font-family:var(--font-body)}
   .sidebar{display:none}
   .timetable-wrap{margin:0}
 }
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#1A1A2E;color:#F7F5F0;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+.skip-link:focus{top:16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
 <!-- HEADER -->
 <header class="app-header no-print">
-  <div style="display:flex;align-items:center;gap:14px">
-    <a href="/" class="header-back">← SendSteps</a>
+  <div id="main-content" tabindex="-1" style="outline:none">
+<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#376EAE;text-decoration:none;border:1.5px solid #C8C0B0;border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; Helpset Home</a>
+<div style="display:flex;align-items:center;gap:14px">
+    <a href="/" class="header-back">← Helpset</a>
     <div class="header-logo">
       <h1>Visual <span>Timetable</span> Builder</h1>
     </div>
@@ -339,7 +347,7 @@ input,select,textarea{font-family:var(--font-body)}
   <div class="modal">
     <div class="modal-head">
       <h3 id="modalTitle">Edit Slot</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
     </div>
     <div class="modal-body">
       <div class="field">
@@ -610,7 +618,7 @@ function renderSlotCard(slot, time, mini) {
   const notes = slot.notes ? `<div class="slot-notes">${escHtml(slot.notes)}</div>` : '';
 
   return `<div class="slot-card" style="background:${subj.light};color:${subj.color};border-color:${subj.color}30">
-    <button class="slot-del" onclick="event.stopPropagation();clearSlot(${editCtx?.day ?? 0})" title="Clear">✕</button>
+    <button class="slot-del" onclick="event.stopPropagation();clearSlot(${editCtx?.day ?? 0})" title="Clear" aria-label="Clear slot">✕</button>
     <div class="slot-card-inner">
       <span class="slot-emoji">${subj.emoji}</span>
       <div class="slot-info">
@@ -802,8 +810,10 @@ td{border:1pt solid #E0DBD0;padding:5pt 6pt;vertical-align:top;min-height:40pt}
 .notes-tag{font-size:6pt;color:#888;margin-top:2pt;font-style:italic}
 @media print{body{padding:8mm}}
 </style></head><body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <h1>${childName} — Weekly Timetable</h1>
 <table><thead><tr>${headRow}</tr></thead><tbody>${bodyRows}</tbody></table>
+</div>
 </body></html>`;
 
   w.document.write(html);
@@ -825,7 +835,7 @@ function clearAll() {
 // ══════════════════════════════════════════
 // PERSIST
 // ══════════════════════════════════════════
-const STORAGE_KEY = 'sendsteps_timetable_v1';
+const STORAGE_KEY = 'helpset_timetable_v1';
 
 function saveState() {
   state.childName = document.getElementById('childName').value;
@@ -863,6 +873,7 @@ document.getElementById('daySelector').style.display = state.view === 'week' ? '
 
 init();
 </script>
-<a href="https://ko-fi.com/sendstepsuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support SendSteps</a>
+<a href="https://ko-fi.com/helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
+</div>
 </body>
 </html>
