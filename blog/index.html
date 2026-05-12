@@ -6,7 +6,56 @@
   <title>Blog — Helpset | Guides for SEND Families</title>
   <meta name="description" content="Practical guides for parents of SEND children — visual routines, emotion tools, communication supports and more. Free resources, no login required.">
   <link rel="canonical" href="https://helpset.uk/blog/">
-  <link rel="stylesheet" href="/blog-style.css">
+<style>
+:root{--green:#2E7D52;--green-light:#E8F5EE;--green-mid:#4CAF78;--dark:#1A2E22;--text:#2C3E30;--muted:#6B7E70;--border:#D4E6DA;--bg:#FAFCFB;--white:#FFFFFF;--accent:#F0FAF4;--radius:10px;--max:720px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:17px}
+.site-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:100}
+.site-nav a.logo{font-family:'Trebuchet MS',sans-serif;font-size:18px;font-weight:700;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:6px}
+.site-nav .sep{color:var(--border);margin:0 10px}
+.site-nav .blog-link{font-family:'Trebuchet MS',sans-serif;font-size:14px;color:var(--muted);text-decoration:none}
+.site-nav .blog-link:hover{color:var(--green)}
+.article-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--green) 100%);color:var(--white);padding:60px 24px 52px;text-align:center}
+.article-hero .tag{display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);font-family:'Trebuchet MS',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:20px}
+.article-hero h1{font-family:'Georgia',serif;font-size:clamp(24px,5vw,38px);font-weight:normal;line-height:1.25;max-width:680px;margin:0 auto 16px}
+.article-hero .meta{font-family:'Trebuchet MS',sans-serif;font-size:13px;color:rgba(255,255,255,0.65)}
+.article-wrap{max-width:var(--max);margin:0 auto;padding:52px 24px 80px}
+.article-wrap h2{font-family:'Georgia',serif;font-size:22px;font-weight:normal;color:var(--dark);margin:48px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.article-wrap p{margin-bottom:22px;color:var(--text)}
+.article-wrap strong{color:var(--dark);font-weight:600}
+.article-wrap ul,.article-wrap ol{padding-left:24px;margin-bottom:22px}
+.article-wrap li{margin-bottom:10px}
+.article-wrap a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
+.article-wrap a:hover{color:var(--dark)}
+.cta-box{background:var(--green-light);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:var(--radius);padding:28px 32px;margin:40px 0}
+.cta-box p{margin-bottom:12px}
+.cta-box p:last-child{margin-bottom:0}
+.cta-box a.btn{display:inline-block;background:var(--green);color:var(--white);font-family:'Trebuchet MS',sans-serif;font-size:14px;font-weight:600;padding:10px 22px;border-radius:6px;text-decoration:none;margin-top:6px;transition:background 0.2s}
+.cta-box a.btn:hover{background:var(--dark)}
+.related-tools{background:var(--accent);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin:40px 0}
+.related-tools h3{font-family:'Trebuchet MS',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:16px}
+.tool-links{display:flex;flex-direction:column;gap:10px}
+.tool-link{display:flex;align-items:center;gap:10px;font-family:'Trebuchet MS',sans-serif;font-size:14px;color:var(--green);text-decoration:none;font-weight:500}
+.tool-link:hover{color:var(--dark)}
+.tool-link .icon{font-size:18px}
+.blog-index-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--green) 100%);color:var(--white);padding:60px 24px 52px;text-align:center}
+.blog-index-hero h1{font-family:'Georgia',serif;font-size:clamp(28px,5vw,42px);font-weight:normal;margin-bottom:12px}
+.blog-index-hero p{font-family:'Trebuchet MS',sans-serif;font-size:16px;color:rgba(255,255,255,0.75);max-width:500px;margin:0 auto}
+.blog-grid{max-width:900px;margin:0 auto;padding:52px 24px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+.blog-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:box-shadow 0.2s,transform 0.2s}
+.blog-card:hover{box-shadow:0 6px 24px rgba(46,125,82,0.12);transform:translateY(-2px)}
+.blog-card-top{background:linear-gradient(135deg,var(--dark),var(--green));padding:28px 24px 22px;color:var(--white)}
+.blog-card-top .emoji{font-size:28px;margin-bottom:10px;display:block}
+.blog-card-top h2{font-family:'Georgia',serif;font-size:17px;font-weight:normal;line-height:1.35}
+.blog-card-body{padding:20px 24px 24px}
+.blog-card-body p{font-family:'Trebuchet MS',sans-serif;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.blog-card-body a{font-family:'Trebuchet MS',sans-serif;font-size:13px;font-weight:600;color:var(--green);text-decoration:none}
+.blog-card-body a:hover{color:var(--dark)}
+.site-footer{background:var(--dark);color:rgba(255,255,255,0.55);font-family:'Trebuchet MS',sans-serif;font-size:13px;text-align:center;padding:28px 24px;line-height:1.8}
+.site-footer a{color:rgba(255,255,255,0.6);text-decoration:none}
+.site-footer a:hover{color:var(--white)}
+@media(max-width:600px){.article-hero{padding:44px 20px 40px}.article-wrap{padding:36px 20px 60px}.cta-box,.related-tools{padding:22px 20px}}
+</style>
 </head>
 <body>
 
