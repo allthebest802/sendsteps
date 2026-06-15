@@ -1,5 +1,5 @@
 // ============================================================
-// Helpset Service Worker — v1.0
+// Helpset Service Worker — v2.0
 // Handles offline caching so the app works without internet
 // ============================================================
 
