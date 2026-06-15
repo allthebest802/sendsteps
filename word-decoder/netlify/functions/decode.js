@@ -1,3 +1,4 @@
+// Updated 2026-06-15 — model updated to claude-sonnet-4-6
 const https = require('https');
 
 exports.handler = async function(event) {
