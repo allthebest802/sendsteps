@@ -42,9 +42,16 @@ a{text-decoration:none;color:inherit}
 @media(prefers-reduced-motion:reduce){
   .a1,.a2,.a3,.a4,.a5{animation:none;opacity:1}
   .r{opacity:1;transform:none;transition:none}
-  @keyframes glow{0%,100%{box-shadow:none}}
+  .npill::after{animation:none;display:none}
 }
-@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(46,204,135,.35)}60%{box-shadow:0 0 0 10px rgba(46,204,135,0)}}
+/* Composited pulse ring — uses opacity + transform (GPU) instead of animating
+   box-shadow directly (main-thread paint, flagged by Lighthouse as
+   non-composited / potential jank source). Same visual effect. */
+@keyframes glow-ring{
+  0%   { opacity:.5; transform:scale(1); }
+  60%  { opacity:0;  transform:scale(1.35); }
+  100% { opacity:0;  transform:scale(1.35); }
+}
 .a1{opacity:0;animation:fadeUp .65s .05s cubic-bezier(.22,1,.36,1) forwards}
 .a2{opacity:0;animation:fadeUp .65s .18s cubic-bezier(.22,1,.36,1) forwards}
 .a3{opacity:0;animation:fadeUp .65s .30s cubic-bezier(.22,1,.36,1) forwards}
@@ -62,9 +69,15 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-
 .nlink{font-size:.82rem;font-weight:600;color:var(--ink2);padding:7px 12px;
   border-radius:100px;transition:all .14s}
 .nlink:hover{background:var(--green-l);color:var(--green-d)}
-.npill{background:var(--green);color:white;padding:8px 20px;border-radius:100px;
-  font-size:.83rem;font-weight:700;transition:all .15s;animation:glow 2.5s 1.5s 3 forwards}
-.npill:hover{background:var(--green-d);transform:translateY(-1px);box-shadow:0 4px 14px rgba(46,204,135,.4)}
+.npill{position:relative;background:#147a4c;color:white;padding:8px 20px;border-radius:100px;
+  font-size:.83rem;font-weight:700;transition:all .15s}
+.npill:hover{background:#0f6a40;transform:translateY(-1px)}
+.npill::after{
+  content:'';position:absolute;inset:0;border-radius:100px;
+  border:2px solid rgba(20,122,76,.5);
+  opacity:0;pointer-events:none;
+  animation:glow-ring 1.4s 1.5s 3 forwards;
+}
 .nfree{font-size:.75rem;font-weight:700;color:var(--green-d);white-space:nowrap}
 @media(max-width:780px){.nfree{display:none}}
 @media(max-width:620px){.nlinks .nlink{display:none}}
@@ -249,12 +262,12 @@ footer{background:var(--ink);padding:38px 28px 28px}
   padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px}
 .fbrand{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:white;margin-bottom:7px}
 .fbrand span{color:var(--green)}
-.ftag{font-size:.77rem;color:rgba(255,255,255,.42);max-width:28ch;line-height:1.5}
+.ftag{font-size:.77rem;color:rgba(255,255,255,.6);max-width:28ch;line-height:1.5}
 .flinks{display:flex;gap:4px;flex-wrap:wrap}
-.flink{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.45);padding:5px 9px;border-radius:6px;transition:color .13s}
+.flink{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);padding:5px 9px;border-radius:6px;transition:color .13s}
 .flink:hover{color:white}
-.fcopy{font-size:.7rem;color:rgba(255,255,255,.28);text-align:center;line-height:1.65}
-.fcopy a{color:rgba(255,255,255,.35)}.fcopy a:hover{color:rgba(255,255,255,.6)}
+.fcopy{font-size:.7rem;color:rgba(255,255,255,.6);text-align:center;line-height:1.65}
+.fcopy a{color:rgba(255,255,255,.6);text-decoration:underline;text-underline-offset:2px}.fcopy a:hover{color:#fff}
 /* REVEAL */
 .r{opacity:0;transition:opacity .6s cubic-bezier(.22,1,.36,1)}
 .r.v{opacity:1}
@@ -320,6 +333,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid 
   </div>
 </nav>
 
+<main>
 <div class="hero">
   <div>
     <p class="hstory a2">These tools were created from personal experience as a parent of a child with autism and dyslexia. The aim is simple — to provide helpful, easy-to-use resources that support SEND children and their families in everyday life. If these tools make things even a little bit easier, then they are doing their job.</p>
@@ -393,11 +407,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid 
 </section>
 
 </main>
+
 <footer>
   <div class="fi">
     <div class="ftop">
       <div>
-        <div class="fbrand">Send<span>Steps</span></div>
+        <div class="fbrand">Help<span>set</span></div>
         <p class="ftag">Free visual tools for SEND children and families. Built from lived experience.</p>
       </div>
       <div class="flinks">
@@ -682,6 +697,6 @@ window.addEventListener('load', () => {
   }
 });
 </script>
-<a href="https://ko-fi.com/Helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:90px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
+<a href="https://ko-fi.com/helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:90px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#d63a37;color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
 </body>
 </html>
