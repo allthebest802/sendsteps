@@ -10,758 +10,206 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
-<title>Free Story Writer's Helper for Children | Helpset</title>
-<meta name="description" content="Free creative writing tool for children with dyslexia, ADHD or autism. Story prompts, character builders, plot helpers and a distraction-free writing space. Builds confidence and makes writing fun. No signup needed.">
-<meta name="keywords" content="story writer for kids, creative writing tool children, dyslexia writing tool, ADHD creative writing, story helper for children, story writing prompts kids, creative writing SEND, story builder for kids, writing tool autism, free story writer children">
-<meta property="og:title" content="Story Writer's Helper — Free Creative Writing Tool for Children">
-<meta property="og:description" content="Story prompts, character builders and a distraction-free writing space for children with dyslexia, ADHD or autism. Free, no signup.">
+<title>Free Social Story Builder for Autistic Children | Helpset</title>
+<meta name="description" content="Free social story builder for autistic children. Write and print personalised social stories to prepare for new situations, explain social rules, or support transitions. No signup, works on any device.">
+<meta name="keywords" content="social story builder, social stories autism, free social story, social story generator, social stories for autistic children, Carol Gray social stories, printable social stories, social story template, SEND social stories, social story maker">
+<meta property="og:title" content="Social Story Builder — Free Printable Social Stories for Autism">
+<meta property="og:description" content="Write and print personalised social stories to prepare autistic children for new situations and social rules. Free, no signup.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://helpset.uk/story-writer/">
+<meta property="og:url" content="https://helpset.uk/socialstory/">
 <meta property="og:site_name" content="Helpset">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Story Writer's Helper for Children | Helpset">
-<meta name="twitter:description" content="Story prompts, character builders and distraction-free writing for children with ADHD, dyslexia or autism. Free, no signup.">
-<link rel="canonical" href="https://helpset.uk/story-writer/">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<meta name="twitter:title" content="Free Social Story Builder for Autistic Children | Helpset">
+<meta name="twitter:description" content="Write and print personalised social stories for autistic children. Free, no signup, works on any device.">
+<link rel="canonical" href="https://helpset.uk/socialstory/">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper: #1a1a2e;
-    --card: #16213e;
-    --card2: #0f3460;
-    --green: #2ecc87;
-    --green-d: #1a9e62;
-    --amber: #f5a623;
-    --blue: #4a9eff;
-    --rose: #ff6b6b;
-    --purple: #a78bfa;
-    --white: #f0f4ff;
-    --muted: #8892b0;
-    --border: rgba(255,255,255,0.08);
-    --radius: 16px;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFFBF4;
+  --cream2:#FFF5E6;
+  --paper:#FFFFFF;
+  --ink:#2C1F0E;
+  --ink2:#5C4A2E;
+  --muted:#836C50;
+  --border:#E8D9C0;
+  --border2:#D4C0A0;
+  --teal:#0C7A69;
+  --teal-l:#E6F5F3;
+  --teal-d:#1F7A6C;
+  --sun:#8A5A00;
+  --sun-l:#FEF4E4;
+  --sun-d:#A75C00;
+  --rose:#C13B37;
+  --rose-l:#FBEAEA;
+  --sky:#2C72A6;
+  --sky-l:#EAF3FB;
+  --mint:#197C4F;
+  --mint-l:#E8F5EE;
+  --lavender:#795BA3;
+  --lavender-l:#F0EBF8;
+  --radius:18px;
+  --radius-lg:26px;
+  --shadow:0 2px 18px rgba(44,31,14,0.08);
+  --shadow-lg:0 8px 36px rgba(44,31,14,0.14);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  padding-bottom:80px;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 5% 5%,rgba(45,155,138,0.07) 0%,transparent 100%),
+    radial-gradient(ellipse 50% 50% at 95% 95%,rgba(245,166,35,0.07) 0%,transparent 100%);
+}
+button{cursor:pointer;font-family:'Nunito',sans-serif;border:none;background:none}
+input,textarea{font-family:'Nunito',sans-serif}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+.rainbow-stripe{height:6px;background:linear-gradient(90deg,#2D9B8A 0%,#2D9B8A 16.6%,#F5A623 16.6%,#F5A623 33.2%,#D9534F 33.2%,#D9534F 50%,#4CAF82 50%,#4CAF82 66.6%,#8B6DB5 66.6%,#8B6DB5 83.2%,#4A90C4 83.2%,#4A90C4 100%)}
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--paper);
-    color: var(--white);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+.site-header{background:var(--paper);border-bottom:2px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px}
+.site-header-icon{font-size:2.2rem;flex-shrink:0}
+.site-header-text{flex:1}
+.header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-l);color:var(--teal-d);border:2px solid var(--teal);border-radius:100px;padding:3px 12px;font-size:0.68rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.site-header h1{font-family:'Lora',serif;font-size:clamp(1.3rem,3vw,1.8rem);font-weight:700;color:var(--ink);line-height:1.15;letter-spacing:-0.3px;margin-bottom:3px}
+.site-header h1 em{font-style:italic;color:var(--teal-d)}
+.site-header p{color:var(--ink2);font-size:0.82rem;font-weight:600;line-height:1.55}
 
-  /* Subtle dot grid background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
-    pointer-events: none;
-    z-index: 0;
-  }
+.wizard-wrap{max-width:680px;margin:0 auto;padding:0 20px}
+.wizard-nav{display:flex;align-items:flex-start;gap:0;margin:28px 0 0;padding:22px 28px;background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.wstep{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.wstep:not(:last-child)::after{content:'';position:absolute;top:15px;left:calc(50% + 16px);width:calc(100% - 32px);height:2px;background:var(--border2)}
+.wstep.done:not(:last-child)::after{background:var(--teal)}
+.wstep-dot{width:30px;height:30px;border-radius:50%;background:var(--cream2);border:2.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:900;color:var(--muted);z-index:1;transition:all 0.3s;position:relative}
+.wstep.active .wstep-dot{background:var(--teal);border-color:var(--teal-d);color:#fff;box-shadow:0 0 0 4px rgba(45,155,138,0.2)}
+.wstep.done .wstep-dot{background:var(--mint);border-color:#3a8f60;color:#fff;font-size:0}
+.wstep.done .wstep-dot::after{content:'✓';font-size:0.78rem}
+.wstep-label{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);text-align:center}
+.wstep.active .wstep-label{color:var(--teal-d)}
+.wstep.done .wstep-label{color:var(--mint)}
 
-  /* Glow blobs */
-  .blob {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.18;
-  }
-  .blob-1 { width: 500px; height: 500px; background: var(--green); top: -100px; right: -100px; }
-  .blob-2 { width: 400px; height: 400px; background: var(--blue); bottom: -80px; left: -80px; }
-  .blob-3 { width: 300px; height: 300px; background: var(--purple); top: 40%; left: 30%; }
+.main{max-width:680px;margin:24px auto 0;padding:0 20px}
 
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 24px 20px 60px;
-  }
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp 0.28s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-  /* Header */
-  .header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
+.panel-title{font-family:'Lora',serif;font-size:1.45rem;font-weight:700;color:var(--ink);margin-bottom:4px;margin-top:24px}
+.panel-sub{color:var(--ink2);font-size:0.88rem;font-weight:600;margin-bottom:20px;line-height:1.6}
 
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 6px 12px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    transition: all .2s;
-  }
-  .back-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.sc-card{background:var(--paper);border:2.5px solid var(--border);border-radius:var(--radius);padding:20px 12px 16px;text-align:center;cursor:pointer;transition:all 0.18s;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.sc-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--sc-accent,var(--teal));transform:scaleX(0);transform-origin:left;transition:transform 0.22s}
+.sc-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.sc-card.sel{border-color:var(--sc-accent,var(--teal));background:var(--sc-bg,var(--teal-l))}
+.sc-card.sel::after{transform:scaleX(1)}
+.sc-emoji{font-size:2.6rem;display:block;margin-bottom:10px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1))}
+.sc-name{font-size:0.82rem;font-weight:800;color:var(--ink);line-height:1.2}
+.sc-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;font-weight:600}
 
-  .header-icon {
-    width: 52px; height: 52px;
-    background: linear-gradient(135deg, var(--green), #1ecb7c);
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 4px 20px rgba(46,204,135,0.3);
-    flex-shrink: 0;
-  }
+.form-card{background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);padding:24px 26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.form-card h3{font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field-label{display:block;font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:6px}
+.opt-label{font-weight:600;color:var(--border2);text-transform:none;letter-spacing:0;font-size:0.68rem}
+.field-input{width:100%;padding:11px 15px;background:var(--cream);border:2px solid var(--border);border-radius:12px;color:var(--ink);font-size:0.92rem;font-weight:700;outline:none;transition:border-color 0.15s,box-shadow 0.15s}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(45,155,138,0.15);background:#fff}
+.field-input::placeholder{color:var(--muted);font-weight:600}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-  .header-text h1 {
-    font-family: 'Caveat', cursive;
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .header-text p { font-size: 14px; color: var(--muted); font-weight: 600; }
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+.chip{padding:6px 15px;border-radius:100px;font-size:0.8rem;font-weight:800;border:2px solid var(--border);background:var(--cream);color:var(--ink2);cursor:pointer;user-select:none;transition:all 0.13s}
+.chip:hover{border-color:var(--border2);color:var(--ink)}
+.chip.sel-teal{background:var(--teal);color:#fff;border-color:var(--teal-d)}
+.chip.sel-sun{background:var(--sun);color:#fff;border-color:var(--sun-d)}
 
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
+.custom-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.custom-row{display:flex;gap:8px;align-items:center}
+.custom-row .field-input{flex:1}
+.rm-btn{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--rose-l);color:var(--rose);border:2px solid var(--rose);font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all 0.13s}
+.rm-btn:hover{background:var(--rose);color:#fff}
+.add-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;background:var(--teal-l);color:var(--teal-d);border:2px solid var(--teal);font-size:0.82rem;font-weight:800;cursor:pointer;transition:all 0.13s}
+.add-btn:hover{background:var(--teal);color:#fff}
 
-  .tab {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 10px 18px;
-    border-radius: 100px;
-    font-size: 14px;
-    font-weight: 800;
-    border: 2px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .tab .tab-emoji { font-size: 16px; }
-  .tab:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
-  .tab.active {
-    color: var(--paper);
-    border-color: transparent;
-  }
-  .tab[data-tab="spell"].active { background: var(--green); box-shadow: 0 4px 16px rgba(46,204,135,0.4); ;color:#0a1628}
-  .tab[data-tab="syllable"].active { background: var(--amber); box-shadow: 0 4px 16px rgba(245,166,35,0.4); ;color:#0a1628}
-  .tab[data-tab="words"].active { background: var(--blue); box-shadow: 0 4px 16px rgba(74,158,255,0.4); ;color:#0a1628}
-  .tab[data-tab="write"].active { background: var(--purple); box-shadow: 0 4px 16px rgba(167,139,250,0.4); ;color:#0a1628}
-  .tab[data-tab="read"].active { background: var(--rose); box-shadow: 0 4px 16px rgba(255,107,107,0.4); ;color:#0a1628}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 24px;border-radius:100px;font-size:0.9rem;font-weight:800;transition:all 0.16s;white-space:nowrap}
+.btn-primary{background:var(--teal);color:#fff;border:2px solid var(--teal-d)}
+.btn-primary:hover{background:var(--teal-d);transform:translateY(-1px);box-shadow:0 4px 18px rgba(45,155,138,0.38)}
+.btn-ghost{background:var(--paper);color:var(--ink2);border:2px solid var(--border)}
+.btn-ghost:hover{background:var(--cream2);border-color:var(--border2)}
+.btn-sun{background:var(--sun);color:#fff;border:2px solid var(--sun-d)}
+.btn-sun:hover{background:var(--sun-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,166,35,0.4)}
+.btn-sm{padding:8px 18px;font-size:0.82rem}
 
-  /* Panels */
-  .panel { display: none; animation: fadeUp .3s ease; }
-  .panel.active { display: block; }
+.preview-shell{background:var(--paper);border:2px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden}
+.preview-toolbar{background:var(--cream2);border-bottom:2px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.preview-toolbar-title{font-family:'Lora',serif;font-size:0.95rem;font-weight:600;color:var(--ink2);font-style:italic}
+.toolbar-btns{display:flex;gap:8px}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+/* STORY */
+.story-body{padding:32px 28px}
+.story-cover{text-align:center;padding:40px 24px 48px;border-bottom:2px dashed var(--border2);margin-bottom:36px}
+.cover-emoji{font-size:5rem;display:block;margin-bottom:18px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.12));animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.cover-title{font-family:'Lora',serif;font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:8px}
+.cover-title em{font-style:italic;color:var(--teal-d)}
+.cover-sub{font-size:0.85rem;color:var(--muted);font-weight:700}
+.cover-dots{display:flex;justify-content:center;gap:6px;margin-top:18px}
+.cover-dot{width:8px;height:8px;border-radius:50%}
 
-  /* Cards */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 16px;
-  }
+.story-pages-list{display:flex;flex-direction:column;gap:28px}
+.story-page{display:grid;grid-template-columns:170px 1fr;gap:22px;align-items:center;padding-bottom:28px;border-bottom:1.5px dashed var(--border)}
+.story-page:last-child{border-bottom:none;padding-bottom:0}
+.story-page.rev{grid-template-columns:1fr 170px}
+.story-page.rev .illus-box{order:2}
+.story-page.rev .text-col{order:1}
 
-  .card-title {
-    font-family: 'Caveat', cursive;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.illus-box{background:var(--sc-bg,var(--teal-l));border:2.5px solid var(--sc-accent,var(--teal));border-radius:var(--radius-lg);aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;flex-shrink:0}
+.illus-box::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.25) 10px,rgba(255,255,255,0.25) 11px)}
+.illus-emoji{font-size:3.8rem;line-height:1;position:relative;z-index:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.12))}
+.illus-label{font-size:0.6rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;color:var(--sc-accent,var(--teal));background:#fff;padding:2px 8px;border-radius:100px;position:relative;z-index:1;opacity:0.75}
 
-  /* Inputs */
-  .input-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
+.text-col{}
+.page-num{font-size:0.65rem;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:7px}
+.page-text{font-family:'Lora',serif;font-size:1.05rem;line-height:1.85;color:var(--ink)}
+.page-text strong{color:var(--teal-d)}
+.page-text em{color:var(--ink2)}
+.custom-badge{display:inline-block;background:var(--sun-l);color:var(--sun-d);font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;padding:1px 8px;border-radius:100px;border:1.5px solid var(--sun-d);margin-left:6px;vertical-align:middle;font-style:normal}
 
-  input[type="text"], textarea {
-    flex: 1;
-    background: rgba(255,255,255,0.06);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--white);
-    outline: none;
-    transition: border-color .2s;
-  }
-  input[type="text"]:focus, textarea:focus {
-    border-color: var(--green);
-    background: rgba(46,204,135,0.05);
-  }
-  input::placeholder, textarea::placeholder { color: var(--muted); }
+.print-tip{background:var(--sun-l);border:2px solid var(--sun);border-radius:12px;padding:11px 16px;font-size:0.82rem;font-weight:700;color:var(--sun-d);margin-bottom:16px;display:flex;align-items:center;gap:8px;line-height:1.4}
 
-  textarea {
-    resize: vertical;
-    min-height: 140px;
-    font-size: 16px;
-    line-height: 1.7;
-  }
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 24px;border-radius:100px;font-size:0.85rem;font-weight:700;z-index:999;pointer-events:none;box-shadow:var(--shadow-lg);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 22px;
-    border-radius: 100px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px;
-    font-weight: 800;
-    border: none;
-    cursor: pointer;
-    transition: all .2s;
-    white-space: nowrap;
-  }
-  .btn-green { background: var(--green); color: #0a1628; }
-  .btn-green:hover { background: #25c97a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(46,204,135,0.35); }
-  .btn-amber { background: var(--amber); color: #0a1628; }
-  .btn-amber:hover { background: #e8961a; transform: translateY(-1px); }
-  .btn-blue { background: var(--blue); color: #0a1628; }
-  .btn-blue:hover { background: #3a8ef0; transform: translateY(-1px); }
-  .btn-purple { background: var(--purple); color: #0a1628; }
-  .btn-purple:hover { transform: translateY(-1px); }
-  .btn-rose { background: var(--rose); color: #0a1628; }
-  .btn-rose:hover { transform: translateY(-1px); }
-  .btn-ghost {
-    background: transparent;
-    border: 2px solid var(--border);
-    color: var(--muted);
-  }
-  .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--white); }
-  .btn-sm { padding: 7px 14px; font-size: 13px; }
-
-  /* ── SPELL CHECKER ────────────────────────────────── */
-  .spell-result {
-    background: rgba(46,204,135,0.08);
-    border: 2px solid rgba(46,204,135,0.25);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 16px;
-    display: none;
-  }
-  .spell-result.show { display: block; animation: fadeUp .3s ease; }
-
-  .spell-word {
-    font-family: 'Caveat', cursive;
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 8px;
-    letter-spacing: 2px;
-  }
-
-  .spell-breakdown {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin: 12px 0;
-    align-items: center;
-  }
-
-  .spell-chunk {
-    background: rgba(46,204,135,0.15);
-    border: 2px solid rgba(46,204,135,0.3);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--green);
-    animation: popIn .3s ease backwards;
-  }
-  .spell-chunk:nth-child(2) { animation-delay: .08s; }
-  .spell-chunk:nth-child(3) { animation-delay: .16s; }
-  .spell-chunk:nth-child(4) { animation-delay: .24s; }
-  .spell-chunk:nth-child(5) { animation-delay: .32s; }
-
-  @keyframes popIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .spell-divider {
-    color: var(--muted);
-    font-size: 20px;
-    font-weight: 800;
-  }
-
-  .spell-tip {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 10px;
-    line-height: 1.5;
-  }
-
-  .spell-tip strong { color: var(--amber); }
-
-  .bd-alert {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,107,107,0.12);
-    border: 1px solid rgba(255,107,107,0.3);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--rose);
-    margin-top: 8px;
-  }
-
-  /* ── SYLLABLE SPLITTER ────────────────────────────── */
-  .syllable-result {
-    margin-top: 20px;
-    display: none;
-  }
-  .syllable-result.show { display: block; }
-
-  .syllable-display {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .syl {
-    font-family: 'Caveat', cursive;
-    font-size: 38px;
-    font-weight: 700;
-    padding: 8px 14px;
-    border-radius: 12px;
-    animation: popIn .25s ease backwards;
-    cursor: pointer;
-    transition: transform .15s;
-    user-select: none;
-  }
-  .syl:hover { transform: scale(1.05); }
-  .syl.c1 { background: rgba(46,204,135,0.15); color: var(--green); border: 2px solid rgba(46,204,135,0.3); }
-  .syl.c2 { background: rgba(74,158,255,0.15); color: var(--blue); border: 2px solid rgba(74,158,255,0.3); }
-  .syl.c3 { background: rgba(167,139,250,0.15); color: var(--purple); border: 2px solid rgba(167,139,250,0.3); }
-  .syl.c4 { background: rgba(245,166,35,0.15); color: var(--amber); border: 2px solid rgba(245,166,35,0.3); }
-
-  .syl-dot {
-    width: 6px; height: 6px;
-    background: var(--muted);
-    border-radius: 50%;
-    margin: 0 2px;
-    opacity: 0.5;
-  }
-
-  .syl-count {
-    font-size: 14px;
-    color: var(--muted);
-    font-weight: 700;
-    margin-top: 8px;
-  }
-  .syl-count span { color: var(--amber); }
-
-  .tap-hint {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 6px;
-  }
-
-  /* Beat tap area */
-  .beat-area {
-    background: rgba(245,166,35,0.06);
-    border: 2px dashed rgba(245,166,35,0.2);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: all .15s;
-    margin-top: 12px;
-    user-select: none;
-  }
-  .beat-area:active { background: rgba(245,166,35,0.15); transform: scale(0.98); }
-  .beat-area .beat-count {
-    font-family: 'Caveat', cursive;
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--amber);
-    line-height: 1;
-  }
-  .beat-area p { font-size: 14px; color: var(--muted); margin-top: 4px; }
-
-  /* ── WORD BANK ───────────────────────────────────── */
-  .topic-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-
-  .topic-btn {
-    padding: 7px 16px;
-    border-radius: 100px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    border: 2px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .topic-btn.active, .topic-btn:hover {
-    background: var(--blue);
-    border-color:#0a1628;
-    color: var(--paper);
-  }
-
-  .word-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .word-card {
-    background: rgba(74,158,255,0.08);
-    border: 2px solid rgba(74,158,255,0.2);
-    border-radius: 10px;
-    padding: 10px 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all .2s;
-    position: relative;
-  }
-  .word-card:hover {
-    background: rgba(74,158,255,0.18);
-    border-color: var(--blue);
-    transform: translateY(-2px);
-  }
-  .word-card .w-word {
-    font-family: 'Caveat', cursive;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--blue);
-    display: block;
-    margin-bottom: 3px;
-  }
-  .word-card .w-syl {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 700;
-  }
-  .word-card.copied {
-    background: rgba(46,204,135,0.15);
-    border-color: var(--green);
-  }
-  .word-card.copied .w-word { color: var(--green); }
-
-  .add-word-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-  }
-
-  /* Custom word bank */
-  .my-words {
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-  .my-words h3 {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin-bottom: 10px;
-  }
-  .my-word-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(167,139,250,0.12);
-    border: 1px solid rgba(167,139,250,0.25);
-    border-radius: 100px;
-    padding: 5px 12px;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--purple);
-    margin: 4px;
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .my-word-tag:hover { background: rgba(167,139,250,0.22); }
-  .my-word-tag .del { opacity: 0.5; font-size: 12px; }
-  .my-word-tag .del:hover { opacity: 1; color: var(--rose); }
-
-  /* ── WRITING PAD ─────────────────────────────────── */
-  .write-toolbar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-
-  .starter-btn {
-    padding: 7px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    border: 2px solid rgba(167,139,250,0.25);
-    background: rgba(167,139,250,0.08);
-    color: var(--purple);
-    cursor: pointer;
-    transition: all .2s;
-    font-family: 'Nunito', sans-serif;
-  }
-  .starter-btn:hover {
-    background: rgba(167,139,250,0.18);
-    border-color: var(--purple);
-    transform: translateY(-1px);
-  }
-
-  #story-area {
-    width: 100%;
-    min-height: 220px;
-    background: rgba(255,255,255,0.04);
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.8;
-    outline: none;
-    resize: vertical;
-    transition: border-color .2s;
-  }
-  #story-area:focus { border-color: var(--purple); background: rgba(167,139,250,0.04); }
-
-  .write-stats {
-    display: flex;
-    gap: 16px;
-    margin-top: 10px;
-    font-size: 13px;
-    color: var(--muted);
-    font-weight: 700;
-  }
-  .write-stats span { color: var(--purple); }
-
-  /* BD warning in text */
-  .bd-warning-bar {
-    background: rgba(255,107,107,0.1);
-    border: 1px solid rgba(255,107,107,0.25);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--rose);
-    font-weight: 700;
-    margin-top: 10px;
-    display: none;
-    line-height: 1.5;
-  }
-  .bd-warning-bar.show { display: block; }
-
-  .frames-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .frame-card {
-    background: rgba(167,139,250,0.06);
-    border: 2px solid rgba(167,139,250,0.15);
-    border-radius: 12px;
-    padding: 14px;
-    cursor: pointer;
-    transition: all .2s;
-  }
-  .frame-card:hover {
-    background: rgba(167,139,250,0.14);
-    border-color: var(--purple);
-    transform: translateY(-2px);
-  }
-  .frame-card .frame-title {
-    font-family: 'Caveat', cursive;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--purple);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .frame-card .frame-preview {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.5;
-    font-style: italic;
-  }
-
-  /* ── READ BACK ───────────────────────────────────── */
-  .read-controls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .speed-select {
-    background: rgba(255,255,255,0.06);
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--white);
-    outline: none;
-    cursor: pointer;
-  }
-
-  #read-area {
-    width: 100%;
-    min-height: 180px;
-    background: rgba(255,255,255,0.04);
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.8;
-    outline: none;
-    resize: vertical;
-    transition: border-color .2s;
-  }
-  #read-area:focus { border-color: var(--rose); }
-
-  .reading-highlight {
-    background: rgba(255,107,107,0.25);
-    border-radius: 4px;
-    padding: 1px 2px;
-  }
-
-  .read-display {
-    background: rgba(255,107,107,0.06);
-    border: 2px solid rgba(255,107,107,0.15);
-    border-radius: 14px;
-    padding: 20px;
-    margin-top: 16px;
-    min-height: 100px;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1.8;
-    color: var(--white);
-    display: none;
-  }
-  .read-display.show { display: block; }
-  .read-display .current-word {
-    background: var(--rose);
-    color: var(--paper);
-    border-radius: 6px;
-    padding: 2px 6px;
-    transition: all .15s;
-  }
-
-  /* Tips banner */
-  .tips-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-
-  .tip-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-  }
-  .tip-pill em { color: var(--green); font-style: normal; }
-
-  /* Progress stars */
-  .stars {
-    display: flex;
-    gap: 4px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-    align-items: center;
-  }
-  .star { font-size: 20px; cursor: pointer; transition: transform .15s; }
-  .star:hover { transform: scale(1.3); }
-  .stars-label { font-size: 13px; color: var(--muted); font-weight: 700; margin-left: 8px; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--green);
-    color: var(--paper);
-    font-weight: 800;
-    font-size: 14px;
-    padding: 12px 24px;
-    border-radius: 100px;
-    z-index: 999;
-    transition: transform .3s ease;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* Footer */
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 600;
-  }
-  .footer a { color: var(--green); text-decoration: none; }
-
-  @media (max-width: 600px) {
-    .frames-grid { grid-template-columns: 1fr; }
-    .input-row { flex-direction: column; }
-    .syl { font-size: 28px; }
-    .spell-word { font-size: 32px; }
-  }
-.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#f0f4ff;color:#1a1a2e;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body,html{background:white!important}
+  .rainbow-stripe,.site-header,.wizard-wrap,.panel-title,.panel-sub,.form-card,.nav-row,.preview-toolbar,.print-tip{display:none!important}
+  .panel{display:block!important}
+  .preview-shell{box-shadow:none!important;border:none!important}
+  .story-body{padding:8mm 10mm}
+  .story-cover{page-break-after:always}
+  .story-page{page-break-inside:avoid;margin-bottom:8mm;padding-bottom:8mm}
+  .cover-emoji{animation:none!important}
+  .page-text{font-size:12pt;line-height:1.9}
+  .cover-title{font-size:22pt}
+}
+@media(max-width:540px){
+  .scenario-grid{grid-template-columns:repeat(2,1fr)}
+  .field-row{grid-template-columns:1fr}
+  .story-page,.story-page.rev{grid-template-columns:1fr}
+  .story-page .illus-box,.story-page.rev .illus-box{width:100%;aspect-ratio:2/1;order:0}
+  .story-page.rev .text-col{order:1}
+  .wizard-nav{padding:16px}
+  .story-body{padding:20px 16px}
+}
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#2C1F0E;color:#FFFBF4;font-size:0.9rem;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;transition:top 0.15s}
 .skip-link:focus{top:16px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #2ecc87;outline-offset:3px;border-radius:4px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #1F7A6C;outline-offset:3px;border-radius:4px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
 
 </style>
@@ -770,803 +218,553 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <div id="main-content" tabindex="-1" style="outline:none">
-<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#2ecc87;text-decoration:none;border:1.5px solid rgba(255,255,255,0.12);border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; Helpset Home</a>
-<div class="blob blob-1"></div>
-<div class="blob blob-2"></div>
-<div class="blob blob-3"></div>
+<a href="/" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#0C7A69;text-decoration:none;border:1.5px solid #D4C0A0;border-radius:100px;padding:4px 12px;margin:10px 0 0 16px">&#8592; Helpset Home</a>
+<div class="rainbow-stripe"></div>
 
-<div class="wrap">
-
-  <!-- Header -->
-  <div class="header">
-    <a href="https://helpset.uk" class="back-btn">← Helpset</a>
-    <div class="header-icon">✏️</div>
-    <div class="header-text">
-      <h1>Story Writer's Helper</h1>
-      <p>Spelling help · Syllable splitter · Word banks · Writing frames · Read-back</p>
-    </div>
+<header class="site-header">
+  <div class="site-header-icon">📖</div>
+  <div class="site-header-text">
+    <div class="header-badge">✨ Free to use &middot; No account needed</div>
+    <h1>Social Story <em>Mini-Builder</em></h1>
+    <p>Choose a scenario, add your child's name, and get a beautifully formatted social story — ready to read and print together.</p>
   </div>
+</header>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="spell"><span class="tab-emoji">🔤</span> Spell It</button>
-    <button class="tab" data-tab="syllable"><span class="tab-emoji">🥁</span> Beat It</button>
-    <button class="tab" data-tab="words"><span class="tab-emoji">📚</span> Word Bank</button>
-    <button class="tab" data-tab="write"><span class="tab-emoji">✍️</span> Write</button>
-    <button class="tab" data-tab="read"><span class="tab-emoji">🔊</span> Read Back</button>
-  </div>
-
-  <!-- ── PANEL 1: SPELL IT ──────────────────────────── -->
-  <div class="panel active" id="panel-spell">
-    <div class="card">
-      <div class="card-title" style="color:var(--green)">🔤 Type what it sounds like</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
-        Type how you think the word sounds — we'll find the real spelling for you
-      </p>
-      <div class="input-row">
-        <input type="text" id="spell-input" placeholder="e.g. skateboard, frends, waching..." maxlength="40"
-               autocomplete="off" autocorrect="off" spellcheck="false">
-        <button class="btn btn-green" onclick="doSpell()">✨ Check it</button>
-      </div>
-
-      <div class="tips-row">
-        <div class="tip-pill">💡 <em>b or d?</em> — if in doubt, say "bed" — b comes first, d comes last</div>
-        <div class="tip-pill">💡 <em>p or q?</em> — p has a stick going down on the left, q on the right</div>
-      </div>
+<div class="wizard-wrap">
+  <div class="wizard-nav">
+    <div class="wstep active" id="ws1">
+      <div class="wstep-dot">1</div>
+      <div class="wstep-label">Pick scenario</div>
     </div>
-
-    <div class="spell-result" id="spell-result">
-      <div id="spell-word" class="spell-word"></div>
-      <p style="font-size:14px;color:var(--muted);font-weight:700;margin-bottom:8px">Broken into sounds:</p>
-      <div class="spell-breakdown" id="spell-breakdown"></div>
-      <div id="bd-alert" class="bd-alert" style="display:none">
-        ⚠️ Watch out! This word has a <strong>b</strong> or <strong>d</strong> in it — say "bed" to remember which is which
-      </div>
-      <p class="spell-tip" id="spell-tip"></p>
-      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost btn-sm" onclick="speakWord()">🔊 Hear it</button>
-        <button class="btn btn-ghost btn-sm" onclick="copyWord()">📋 Copy</button>
-      </div>
+    <div class="wstep" id="ws2">
+      <div class="wstep-dot">2</div>
+      <div class="wstep-label">Personalise</div>
     </div>
-
-    <!-- Common tricky words for 10-year-olds with dyslexia -->
-    <div class="card" style="margin-top:0">
-      <div class="card-title" style="color:var(--amber)">⚡ Quick tricky words</div>
-      <div id="tricky-words" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div class="wstep" id="ws3">
+      <div class="wstep-dot">3</div>
+      <div class="wstep-label">Read &amp; Print</div>
     </div>
-  </div>
-
-  <!-- ── PANEL 2: SYLLABLE BEAT ─────────────────────── -->
-  <div class="panel" id="panel-syllable">
-    <div class="card">
-      <div class="card-title" style="color:var(--amber)">🥁 Beat out the syllables</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
-        Type a word — we'll split it into beats to help you spell it. Click each beat to hear it!
-      </p>
-      <div class="input-row">
-        <input type="text" id="syl-input" placeholder="e.g. skateboard, because, adventure..." maxlength="40"
-               autocomplete="off" autocorrect="off" spellcheck="false">
-        <button class="btn btn-amber" onclick="doSyllable()">🥁 Split it</button>
-      </div>
-    </div>
-
-    <div class="syllable-result" id="syl-result">
-      <div class="card">
-        <div class="syllable-display" id="syl-display"></div>
-        <div class="syl-count" id="syl-count"></div>
-        <p class="tap-hint">👆 Click any beat to hear it · 🥁 Tap the drum pad to count your own beats</p>
-      </div>
-
-      <div class="card">
-        <div class="card-title" style="color:var(--amber)">🥁 Tap to count beats</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:600">
-          Say the word out loud and tap once for each beat you hear
-        </p>
-        <div class="beat-area" id="beat-area" onclick="tapBeat()">
-          <div class="beat-count" id="beat-count">0</div>
-          <p>tap here — one tap per beat</p>
-        </div>
-        <div style="margin-top:10px;display:flex;gap:8px">
-          <button class="btn btn-ghost btn-sm" onclick="resetBeats()">↺ Reset</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PANEL 3: WORD BANK ─────────────────────────── -->
-  <div class="panel" id="panel-words">
-    <div class="card">
-      <div class="card-title" style="color:var(--blue)">📚 Topic word banks</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
-        Click a word to copy it. Use these in your writing!
-      </p>
-      <div class="topic-row" id="topic-row"></div>
-      <div class="word-grid" id="word-grid"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title" style="color:var(--purple)">⭐ My own words</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
-        Add words you use a lot so they're always easy to find
-      </p>
-      <div class="add-word-row">
-        <input type="text" id="my-word-input" placeholder="Add a word..." maxlength="30"
-               autocomplete="off" spellcheck="false">
-        <button class="btn btn-purple" onclick="addMyWord()">+ Add</button>
-      </div>
-      <div class="my-words">
-        <h3>My saved words</h3>
-        <div id="my-words-list"></div>
-        <p id="my-words-empty" style="font-size:13px;color:var(--muted);font-weight:600">
-          No words yet — add some above!
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PANEL 4: WRITE ─────────────────────────────── -->
-  <div class="panel" id="panel-write">
-    <div class="card">
-      <div class="card-title" style="color:var(--purple)">✍️ Story frames — pick a starter</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
-        Stuck on how to start? Click a frame to drop it into your writing pad
-      </p>
-      <div class="frames-grid" id="frames-grid"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title" style="color:var(--purple)">✏️ Your story</div>
-      <div class="write-toolbar" id="starter-toolbar"></div>
-      <textarea id="story-area" placeholder="Start writing here... your ideas are brilliant — don't let spelling stop you! 🚀"
-                oninput="updateStats();checkBD()"></textarea>
-      <div class="bd-warning-bar" id="bd-warning">
-        👀 b/d check — remember: say "bed" — <strong>b</strong> at the start, <strong>d</strong> at the end
-      </div>
-      <div class="write-stats">
-        <div>Words: <span id="word-count">0</span></div>
-        <div>Sentences: <span id="sent-count">0</span></div>
-      </div>
-      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-purple btn-sm" onclick="speakStory()">🔊 Read my story back</button>
-        <button class="btn btn-ghost btn-sm" onclick="clearStory()">🗑️ Clear</button>
-        <button class="btn btn-ghost btn-sm" onclick="copyStory()">📋 Copy</button>
-      </div>
-      <div class="stars">
-        <span class="star" onclick="rateStar(1)">⭐</span>
-        <span class="star" onclick="rateStar(2)">⭐</span>
-        <span class="star" onclick="rateStar(3)">⭐</span>
-        <span class="star" onclick="rateStar(4)">⭐</span>
-        <span class="star" onclick="rateStar(5)">⭐</span>
-        <span class="stars-label" id="stars-label">How are you feeling about your writing today?</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PANEL 5: READ BACK ─────────────────────────── -->
-  <div class="panel" id="panel-read">
-    <div class="card">
-      <div class="card-title" style="color:var(--rose)">🔊 Read back — does it sound right?</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:16px;font-weight:600">
-        Paste or type any text — then hit play to hear it read aloud. Ask yourself: <em style="color:var(--rose)">does it make sense? does it sound right?</em>
-      </p>
-      <div class="read-controls">
-        <select class="speed-select" id="speed-select">
-          <option value="0.7">🐢 Slow</option>
-          <option value="1.0" selected>🚶 Normal</option>
-          <option value="1.3">🚀 Fast</option>
-        </select>
-        <button class="btn btn-rose" onclick="startReading()" id="read-btn">▶ Play</button>
-        <button class="btn btn-ghost btn-sm" onclick="stopReading()" id="stop-btn" style="display:none">⏹ Stop</button>
-        <button class="btn btn-ghost btn-sm" onclick="copyFromStory()">📋 Copy from my story</button>
-      </div>
-      <textarea id="read-area" placeholder="Paste text here to hear it read back to you..."></textarea>
-    </div>
-
-    <div class="card" style="background:rgba(255,107,107,0.05)">
-      <div class="card-title" style="color:var(--rose)">💡 Reading check questions</div>
-      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;font-weight:600">
-        After listening, ask yourself these three questions:
-      </p>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2)">
-          <span style="font-size:24px">🤔</span>
-          <div>
-            <div style="font-weight:800;color:var(--rose)">Does it make sense?</div>
-            <div style="font-size:13px;color:var(--muted)">If not, re-read that bit and think about what it should say</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2)">
-          <span style="font-size:24px">👂</span>
-          <div>
-            <div style="font-weight:800;color:var(--rose)">Does it sound right?</div>
-            <div style="font-size:13px;color:var(--muted)">Read it the way you'd say it — does that sound like normal talking?</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2)">
-          <span style="font-size:24px">👁️</span>
-          <div>
-            <div style="font-weight:800;color:var(--rose)">Does it look right?</div>
-            <div style="font-size:13px;color:var(--muted)">Check the spelling — does it look like the word you meant?</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <a href="https://helpset.uk">← Helpset</a> · Free visual tools for SEND families · Nothing uploaded · Always free
   </div>
 </div>
+
+<main class="main">
+
+  <!-- STEP 1 -->
+  <div class="panel active" id="panel1">
+    <div class="panel-title">Choose a scenario</div>
+    <div class="panel-sub">Pick the situation your child is preparing for. Each one comes with a carefully written social story you can personalise.</div>
+    <div class="scenario-grid" id="scenarioGrid"></div>
+    <div class="nav-row">
+      <div></div>
+      <button class="btn btn-primary" id="step1Next">Next: Personalise &rarr;</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="panel" id="panel2">
+    <div class="panel-title">Personalise the story</div>
+    <div class="panel-sub">Fill in the details below. Fields marked optional can be left blank — a sensible default will be used.</div>
+
+    <div class="form-card">
+      <h3>&#128106; About your child</h3>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" for="childName">Child's name <span style="color:var(--rose)">*</span></label>
+          <input type="text" id="childName" class="field-input" placeholder="e.g. Jamie" maxlength="40" autocomplete="off">
+        </div>
+        <div class="field">
+          <label class="field-label">Pronouns</label>
+          <div class="chip-row" id="pronounChips">
+            <div class="chip sel-teal" data-val="he">He / Him</div>
+            <div class="chip" data-val="she">She / Her</div>
+            <div class="chip" data-val="they">They / Them</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card" id="dynamicFields">
+      <!-- injected per scenario -->
+    </div>
+
+    <div class="form-card">
+      <h3>&#9998; Your own sentences <span style="font-size:0.75rem;font-weight:600;color:var(--muted)">(optional)</span></h3>
+      <p style="font-size:0.82rem;color:var(--ink2);font-weight:600;margin-bottom:14px;line-height:1.55">Add anything specific to your child — a comfort object, someone who will be there, or a phrase that helps them feel calm.</p>
+      <div class="custom-list" id="customList"></div>
+      <button class="add-btn" id="addSentenceBtn">&#＋; Add a sentence</button>
+      <div class="field" style="margin-top:16px">
+        <label class="field-label">Where to place your sentences</label>
+        <div class="chip-row" id="placementChips">
+          <div class="chip sel-sun" data-val="end">At the end</div>
+          <div class="chip" data-val="middle">In the middle</div>
+          <div class="chip" data-val="start">Near the start</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="step2Back">&larr; Back</button>
+      <button class="btn btn-primary" id="step2Next">Build the story &rarr;</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="panel" id="panel3">
+    <div class="panel-title">Your social story</div>
+    <div class="panel-sub">Read through the story with your child. Tip: print it, cut into pages, and laminate them so you can use them again and again!</div>
+    <div class="print-tip">&#128424; <span><strong>Printing tip:</strong> Enable "Print background colours" in your browser settings for the best result. Or save as PDF to share digitally.</span></div>
+    <div class="preview-shell">
+      <div class="preview-toolbar">
+        <div class="preview-toolbar-title" id="previewTitle">Your story</div>
+        <div class="toolbar-btns">
+          <button class="btn btn-ghost btn-sm" id="step3Back">&larr; Edit</button>
+          <button class="btn btn-sun btn-sm" id="printBtn">&#128424; Print</button>
+        </div>
+      </div>
+      <div class="story-body" id="storyBody"></div>
+    </div>
+  </div>
+
+</main>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────
-
-const TRICKY_WORDS = [
-  {w:'because',syl:'be-cause'},{w:'friend',syl:'friend'},
-  {w:'their',syl:'their'},{w:'there',syl:'there'},
-  {w:'they\'re',syl:'they\'re'},{w:'said',syl:'said'},
-  {w:'people',syl:'peo-ple'},{w:'water',syl:'wa-ter'},
-  {w:'where',syl:'where'},{w:'again',syl:'a-gain'},
-  {w:'different',syl:'dif-fer-ent'},{w:'beautiful',syl:'beau-ti-ful'},
-  {w:'would',syl:'would'},{w:'should',syl:'should'},
-  {w:'could',syl:'could'},{w:'really',syl:'real-ly'},
-  {w:'suddenly',syl:'sud-den-ly'},{w:'through',syl:'through'},
-  {w:'thought',syl:'thought'},{w:'brought',syl:'brought'},
+// ═══════════════════════════════════════════════════
+// SCENARIO LIBRARY
+// ═══════════════════════════════════════════════════
+const SCENARIOS = [
+  {
+    id:'doctor', name:'Visiting the Doctor', emoji:'🩺',
+    accent:'var(--teal)', bg:'var(--teal-l)', sub:'Check-ups, feeling unwell',
+    fields:[
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'doctorName', label:"Doctor's name", ph:'e.g. Dr Smith', opt:true},
+      {id:'reason', label:'Why are they going?', ph:'e.g. a check-up, a sore throat', opt:true},
+    ],
+    pages: d => [
+      {e:'🏥', t:`Sometimes ${d.n} needs to visit the doctor. Going to the doctor is a normal part of staying healthy.`},
+      {e:'🚗', t:`${d.n} will go with ${d.companion}. ${C(d.p.s)} will not leave ${d.n} alone.`},
+      {e:'🪑', t:`When they arrive, ${d.n} will wait in the waiting room. There might be chairs, magazines, and perhaps some toys.`},
+      {e:'🩺', t:`${d.doctorName || 'A doctor or nurse'} will call ${d.n}'s name when it is time. Then ${d.p.s} will go into a room.`},
+      {e:'💬', t:`The doctor might ask ${d.n} some questions about how ${d.p.s} is feeling${d.reason ? ' — today the visit is because of ' + d.reason : ''}. It is okay to let ${d.companion} help answer.`},
+      {e:'🤗', t:`The doctor's job is to help ${d.n} feel well. They will be kind and careful.`},
+      {e:'⭐', t:`When the visit is finished, ${d.n} will leave with ${d.companion}. ${C(d.p.s)} did a really brave thing today!`},
+    ]
+  },
+  {
+    id:'haircut', name:'Getting a Haircut', emoji:'✂️',
+    accent:'var(--rose)', bg:'var(--rose-l)', sub:'Barber, salon, or at home',
+    fields:[
+      {id:'companion', label:'Who will be with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'location', label:'Where does the haircut happen?', ph:'e.g. the barber, at home', def:'the hairdresser'},
+      {id:'cutterName', label:"Hairdresser's name", ph:'e.g. Maria', opt:true},
+    ],
+    pages: d => [
+      {e:'💈', t:`Today ${d.n} is going to get a haircut at ${d.location}. A haircut means having some hair trimmed to look neat and tidy.`},
+      {e:'🚗', t:`${d.n} will go with ${d.companion}. ${C(d.p.s)} will stay close the whole time.`},
+      {e:'🪑', t:`${d.n} will sit in a special chair. There will be a mirror to look in. A cape might be put over ${d.p.poss} shoulders to keep ${d.p.poss} clothes clean.`},
+      {e:'✂️', t:`${d.cutterName || 'The hairdresser'} will use scissors or clippers near ${d.n}'s head. This will not hurt. The sound or feeling might be a little strange at first — that is normal.`},
+      {e:'💧', t:`If anything feels uncomfortable, ${d.n} can say so. ${C(d.companion)} is right there to help.`},
+      {e:'🌟', t:`When the haircut is done, ${d.n} will look in the mirror and see ${d.p.poss} new hair. What a great job — all done!`},
+    ]
+  },
+  {
+    id:'party', name:'Going to a Party', emoji:'🎉',
+    accent:'var(--lavender)', bg:'var(--lavender-l)', sub:'Birthday parties, celebrations',
+    fields:[
+      {id:'partyPerson', label:"Whose party is it?", ph:"e.g. Ella's, a classmate's", def:"a friend's"},
+      {id:'location', label:'Where is the party?', ph:"e.g. a soft play centre, Ella's house", def:'the party venue'},
+      {id:'companion', label:'Who will be with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'comfortThing', label:'Comfort item they might bring', ph:'e.g. their fidget toy', opt:true},
+    ],
+    pages: d => [
+      {e:'🎂', t:`${d.n} has been invited to ${d.partyPerson} party! A party is when people come together to celebrate something special.`},
+      {e:'🚗', t:`${d.n} will go to ${d.location} with ${d.companion}. Feeling excited or a little nervous is completely normal.`},
+      {e:'👋', t:`When ${d.n} arrives, there might be lots of people and some noise. ${C(d.p.s)} can take ${d.p.poss} time walking in and does not have to join in with everything at once.`},
+      {e:'🎈', t:`At the party there might be games, music, and food. ${d.n} can join in with what ${d.p.s} wants to, or watch first if ${d.p.s} prefers.`},
+      {e:'🤫', t:`If things feel too loud or busy, ${d.n} can tell ${d.companion} straight away${d.comfortThing ? '. ' + C(d.n) + ' can also use ' + d.p.poss + ' ' + d.comfortThing : ''}. They will find a quieter spot together.`},
+      {e:'🏠', t:`When the party is over, ${d.n} will go home with ${d.companion}. Parties always have an ending — and then it is time to go home. ${C(d.n)} should feel very proud for coming!`},
+    ]
+  },
+  {
+    id:'school_trip', name:'School Trip', emoji:'🚌',
+    accent:'var(--sun)', bg:'var(--sun-l)', sub:'Day trips, museums, visits',
+    fields:[
+      {id:'destination', label:'Where is the trip to?', ph:'e.g. the science museum', def:'a special place'},
+      {id:'teacher', label:'Teacher or adult in charge', ph:'e.g. Mrs Jones', def:'a teacher'},
+      {id:'travel', label:'How will they travel?', ph:'e.g. by coach, by train', def:'by coach'},
+    ],
+    pages: d => [
+      {e:'📋', t:`${d.n}'s class is going on a school trip to ${d.destination}! A school trip means going somewhere new with ${d.p.poss} class instead of a normal school day.`},
+      {e:'🚌', t:`${d.n} will travel ${d.travel} with ${d.p.poss} class and ${d.teacher}. ${C(d.teacher)} will be there to help at all times.`},
+      {e:'🎒', t:`${d.n} will need to bring ${d.p.poss} packed lunch and anything on the list. ${C(d.p.s)} should stay with the group at all times.`},
+      {e:'🗺️', t:`At ${d.destination} there will be new sights and sounds. ${d.n} can take ${d.p.poss} time and look around slowly. There is no rush.`},
+      {e:'🙋', t:`If ${d.n} feels worried or needs anything, ${d.p.s} can go to ${d.teacher} straight away. It is always okay to ask for help.`},
+      {e:'🏠', t:`At the end of the day everyone will travel back. ${d.n} will return to school and then go home. The trip will be finished.`},
+    ]
+  },
+  {
+    id:'hospital', name:'Going to Hospital', emoji:'🏥',
+    accent:'var(--sky)', bg:'var(--sky-l)', sub:'Appointments, scans, procedures',
+    fields:[
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a parent'},
+      {id:'reason', label:'What is the visit for?', ph:'e.g. a scan, an appointment', def:'an appointment'},
+      {id:'ward', label:'Ward or department', ph:"e.g. children's ward", opt:true},
+    ],
+    pages: d => [
+      {e:'🏥', t:`${d.n} is going to hospital for ${d.reason}. Hospitals are places that help people feel better and keep their body healthy.`},
+      {e:'🚗', t:`${d.companion} will go with ${d.n}. ${C(d.p.s)} will not be alone at any point during the visit.`},
+      {e:'🪑', t:`When they arrive, ${d.n} may need to wait${d.ward ? ' in the ' + d.ward : ''}. The hospital might smell different and feel busy. This is normal.`},
+      {e:'👩‍⚕️', t:`Doctors and nurses wear uniforms and name badges. Their job is to help. They will tell ${d.n} what they are doing before they do it.`},
+      {e:'💬', t:`${d.n} can ask questions at any time. ${C(d.companion)} can help explain what is happening too. It is always okay to speak up.`},
+      {e:'⭐', t:`When the visit is over, ${d.n} will go home with ${d.companion}. ${C(d.n)} was so brave coming to hospital today!`},
+    ]
+  },
+  {
+    id:'dentist', name:'Visiting the Dentist', emoji:'🦷',
+    accent:'var(--mint)', bg:'var(--mint-l)', sub:'Check-ups and treatments',
+    fields:[
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'dentistName', label:"Dentist's name", ph:'e.g. Dr Lee', opt:true},
+      {id:'reason', label:'What is the visit for?', ph:'e.g. a check-up', def:'a check-up'},
+    ],
+    pages: d => [
+      {e:'🦷', t:`${d.n} is going to the dentist for ${d.reason}. The dentist looks after our teeth and helps keep them clean and healthy.`},
+      {e:'🚗', t:`${d.companion} will take ${d.n}. ${C(d.p.s)} will be there the whole time and will not leave.`},
+      {e:'🪑', t:`At the dentist, ${d.n} will sit in a special chair that can lean back flat. There will be a bright light above so the dentist can see ${d.p.poss} teeth clearly.`},
+      {e:'🔍', t:`${d.dentistName || 'The dentist'} will look inside ${d.n}'s mouth using a small mirror and a tiny light. They might gently count ${d.p.poss} teeth.`},
+      {e:'🤚', t:`${d.n} can raise ${d.p.poss} hand any time ${d.p.s} needs a break. The dentist will stop and wait.`},
+      {e:'⭐', t:`When it is over, ${d.n} will leave with ${d.companion}. Looking after teeth is important — and ${d.n} did it brilliantly!`},
+    ]
+  },
+  {
+    id:'new_school', name:'Starting New School', emoji:'🏫',
+    accent:'var(--teal)', bg:'var(--teal-l)', sub:'First day, transitions, new class',
+    fields:[
+      {id:'schoolName', label:'Name of the school', ph:'e.g. Oakfield Primary', def:'the new school'},
+      {id:'companion', label:'Who will take them?', ph:'e.g. Mum, Dad', def:'a parent'},
+      {id:'teacherName', label:"Teacher's name", ph:'e.g. Mr Ahmed', opt:true},
+    ],
+    pages: d => [
+      {e:'🏫', t:`${d.n} is going to start at ${d.schoolName}. Starting somewhere new can feel exciting and a little wobbly at the same time — both feelings are perfectly okay.`},
+      {e:'🚗', t:`${d.companion} will take ${d.n} on the first day and help ${d.p.o} find ${d.p.poss} way around.`},
+      {e:'🎒', t:`${d.n} will have ${d.p.poss} bag with everything ${d.p.s} needs. Being prepared helps things feel more settled.`},
+      {e:'👋', t:`${d.teacherName ? d.n + ' will meet ' + d.teacherName + ', who will be ' + d.p.poss + ' teacher.' : d.n + ' will meet a new teacher.'} Teachers are there to help and to make sure everyone is safe.`},
+      {e:'💬', t:`If ${d.n} feels worried at any point, ${d.p.s} can tell a teacher or talk to ${d.companion} later. There is no need to manage feelings alone.`},
+      {e:'🌟', t:`After a few days, ${d.schoolName} will start to feel much more familiar. ${d.n} is doing something really big — and really brave!`},
+    ]
+  },
+  {
+    id:'supermarket', name:'At the Supermarket', emoji:'🛒',
+    accent:'var(--mint)', bg:'var(--mint-l)', sub:'Shopping trips, busy places',
+    fields:[
+      {id:'shopName', label:'Name of the shop', ph:'e.g. Tesco, the supermarket', def:'the supermarket'},
+      {id:'companion', label:'Who is going with them?', ph:'e.g. Mum, Dad', def:'a grown-up they trust'},
+      {id:'reward', label:'Something to look forward to after', ph:'e.g. choosing a treat', opt:true},
+    ],
+    pages: d => [
+      {e:'🛒', t:`${d.n} is going to ${d.shopName} with ${d.companion}. Supermarkets are large shops where families buy food and other things they need.`},
+      {e:'🔊', t:`Supermarkets can be bright and noisy with lots of people. This is normal. ${d.n} can stay close to ${d.companion} at all times.`},
+      {e:'📋', t:`${C(d.companion)} will have a list of things to find. ${d.n} might be able to help spot things on the shelves — that can make it more interesting.`},
+      {e:'⏱️', t:`Shopping does not last forever. When everything on the list is found, they will go to the checkout and then it will be time to leave.`},
+      {e:'😤', t:`If ${d.n} feels overwhelmed, ${d.p.s} can tell ${d.companion} straight away. They can take a break or find a quieter spot together.`},
+      {e:'✅', t:`When the shopping is done, ${d.n} will leave with ${d.companion}${d.reward ? ' and look forward to ' + d.reward : ''}. All finished — well done!`},
+    ]
+  },
+  {
+    id:'sleepover', name:'Staying Overnight', emoji:'🌙',
+    accent:'var(--lavender)', bg:'var(--lavender-l)', sub:'Sleepovers, relatives, respite',
+    fields:[
+      {id:'hostName', label:'Who are they staying with?', ph:"e.g. Grandma, a friend", def:'a trusted person'},
+      {id:'location', label:"Where will they stay?", ph:"e.g. Grandma's house", def:'a familiar place'},
+      {id:'comfortThing', label:'Comfort item they will bring', ph:'e.g. their teddy, their blanket', opt:true},
+    ],
+    pages: d => [
+      {e:'🌙', t:`${d.n} is going to stay overnight at ${d.location} with ${d.hostName}. This means sleeping somewhere other than ${d.p.poss} own home — just for one night.`},
+      {e:'🎒', t:`${d.n} will pack a bag with ${d.p.poss} pyjamas, toothbrush, and anything else ${d.p.s} needs${d.comfortThing ? ' — including ' + d.p.poss + ' ' + d.comfortThing : ''}.`},
+      {e:'🏠', t:`${d.location} might feel a little different from home. The sounds and smells might be different. That is okay — it is still a safe and caring place.`},
+      {e:'🍽️', t:`${d.hostName} will make sure ${d.n} has everything ${d.p.s} needs — food, a comfortable place to sleep, and someone nearby.`},
+      {e:'😴', t:`At bedtime, ${d.n} will get into ${d.p.poss} bed${d.comfortThing ? ' with ' + d.p.poss + ' ' + d.comfortThing : ''}. If ${d.p.s} cannot sleep, ${d.p.s} can tell ${d.hostName}.`},
+      {e:'☀️', t:`In the morning, ${d.n} will wake up and the sleepover will be over. ${C(d.n)} will go home soon — and should feel very proud of ${d.p.refl}!`},
+    ]
+  },
+  {
+    id:'aeroplane', name:'Going on an Aeroplane', emoji:'✈️',
+    accent:'var(--sky)', bg:'var(--sky-l)', sub:'First flights, airports, holidays',
+    fields:[
+      {id:'destination', label:'Where are they flying to?', ph:"e.g. Spain, Grandma's country", def:'a new place'},
+      {id:'companion', label:'Who is going with them?', ph:'e.g. the whole family', def:'family'},
+      {id:'flightTime', label:'How long is the flight?', ph:'e.g. about 2 hours', opt:true},
+    ],
+    pages: d => [
+      {e:'✈️', t:`${d.n} is going on an aeroplane to ${d.destination}! An aeroplane is a very large vehicle that flies high up in the sky.`},
+      {e:'🏢', t:`First, ${d.n} will go to the airport with ${d.companion}. The airport is a big building with lots of signs, queues, and people. ${C(d.companion)} will know exactly what to do.`},
+      {e:'🎒', t:`${d.n}'s bag will go on a conveyor belt to be checked. This is completely normal — the bag will be returned at the other end of the journey.`},
+      {e:'🚶', t:`${d.n} will walk through a security gate that might beep or make a noise. This is to keep everyone on the plane safe — it is nothing to worry about.`},
+      {e:'💺', t:`On the aeroplane, ${d.n} will sit in a seat with a seatbelt${d.flightTime ? '. The flight takes ' + d.flightTime : ''}. ${C(d.companion)} will be sitting right next to ${d.p.o}.`},
+      {e:'🌍', t:`The plane might feel wobbly during take-off and landing — this is completely normal. When the plane lands, ${d.n} will have arrived at ${d.destination}. The adventure begins!`},
+    ]
+  },
 ];
 
-const WORD_BANKS = {
-  'Skateboarding 🛹': [
-    {w:'skateboard',s:'skate-board'},{w:'kickflip',s:'kick-flip'},{w:'halfpipe',s:'half-pipe'},
-    {w:'ramp',s:'ramp'},{w:'trick',s:'trick'},{w:'grind',s:'grind'},
-    {w:'balance',s:'bal-ance'},{w:'wheels',s:'wheels'},{w:'helmet',s:'hel-met'},
-    {w:'concrete',s:'con-crete'},{w:'ollie',s:'ol-lie'},{w:'sliding',s:'slid-ing'},
-  ],
-  'Adventure 🗺️': [
-    {w:'adventure',s:'ad-ven-ture'},{w:'dangerous',s:'dan-ger-ous'},{w:'mysterious',s:'mys-ter-ious'},
-    {w:'discovered',s:'dis-cov-ered'},{w:'treasure',s:'treas-ure'},{w:'escape',s:'es-cape'},
-    {w:'terrified',s:'ter-ri-fied'},{w:'suddenly',s:'sud-den-ly'},{w:'immediately',s:'im-med-iate-ly'},
-    {w:'enormous',s:'e-nor-mous'},{w:'whispered',s:'whis-pered'},{w:'scrambled',s:'scram-bled'},
-  ],
-  'Animals 🐾': [
-    {w:'ferocious',s:'fe-ro-cious'},{w:'creature',s:'crea-ture'},{w:'prowling',s:'prowl-ing'},
-    {w:'camouflage',s:'cam-ou-flage'},{w:'hibernate',s:'hi-ber-nate'},{w:'predator',s:'pred-a-tor'},
-    {w:'territory',s:'ter-ri-to-ry'},{w:'nocturnal',s:'noc-tur-nal'},{w:'scurried',s:'scur-ried'},
-    {w:'feathers',s:'feath-ers'},{w:'enormous',s:'e-nor-mous'},{w:'burrowed',s:'bur-rowed'},
-  ],
-  'School 🏫': [
-    {w:'library',s:'li-brar-y'},{w:'homework',s:'home-work'},{w:'calculator',s:'cal-cu-la-tor'},
-    {w:'experiment',s:'ex-per-i-ment'},{w:'remember',s:'re-mem-ber'},{w:'understand',s:'un-der-stand'},
-    {w:'paragraph',s:'par-a-graph'},{w:'question',s:'ques-tion'},{w:'answered',s:'an-swered'},
-    {w:'scissors',s:'scis-sors'},{w:'dictionary',s:'dic-tion-ar-y'},{w:'sentence',s:'sen-tence'},
-  ],
-  'Feelings 💛': [
-    {w:'excited',s:'ex-cit-ed'},{w:'nervous',s:'nerv-ous'},{w:'frustrated',s:'frus-trat-ed'},
-    {w:'confident',s:'con-fi-dent'},{w:'worried',s:'wor-ried'},{w:'relieved',s:'re-lieved'},
-    {w:'embarrassed',s:'em-bar-rassed'},{w:'furious',s:'fu-ri-ous'},{w:'surprised',s:'sur-prised'},
-    {w:'exhausted',s:'ex-haust-ed'},{w:'determined',s:'de-ter-mined'},{w:'proud',s:'proud'},
-  ],
-  'Story words ✨': [
-    {w:'meanwhile',s:'mean-while'},{w:'suddenly',s:'sud-den-ly'},{w:'eventually',s:'e-ven-tu-al-ly'},
-    {w:'however',s:'how-ev-er'},{w:'although',s:'al-though'},{w:'therefore',s:'there-fore'},
-    {w:'fortunately',s:'for-tu-nate-ly'},{w:'unfortunately',s:'un-for-tu-nate-ly'},
-    {w:'described',s:'de-scribed'},{w:'whispered',s:'whis-pered'},{w:'shouted',s:'shout-ed'},
-    {w:'atmosphere',s:'at-mos-phere'},
-  ],
+// ═══════════════════════════════════════════════════
+// PRONOUNS
+// ═══════════════════════════════════════════════════
+const PRONOUNS = {
+  he:  {s:'he',  o:'him', poss:'his',  refl:'himself'},
+  she: {s:'she', o:'her', poss:'her',  refl:'herself'},
+  they:{s:'they',o:'them',poss:'their',refl:'themselves'},
 };
+function C(str){ return str ? str.charAt(0).toUpperCase() + str.slice(1) : '' }
 
-const WRITING_FRAMES = [
-  { icon:'🛹', title:'Action story', parts:['One day, ', ' decided to try the most dangerous trick ever.\n\nEveryone watched as ', ' took a deep breath and...\n\nSuddenly, '] },
-  { icon:'🌙', title:'Night adventure', parts:['It was the middle of the night when I heard a strange noise.\n\nI crept out of bed and looked out of the window. What I saw made me...'] },
-  { icon:'🐺', title:'Animal encounter', parts:['Deep in the forest, there lived a ', ' that nobody had ever seen before.\n\nOne morning, '] },
-  { icon:'🔍', title:'Mystery', parts:['Nobody knew what had happened to the ', '.\n\nThere were three suspects:\n1. \n2. \n3. \n\nThe clue was...'] },
-  { icon:'⚡', title:'Superpower', parts:['I woke up one morning and immediately knew something was different.\n\nWhen I looked in the mirror, I could see that I had somehow gained the power to...'] },
-  { icon:'🤣', title:'Funny story', parts:['I will never forget the day that ', ' walked into school wearing ', '.\n\nEveryone stopped and stared. ', ' went bright red because...'] },
-];
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let chosen = null;
 
-const SENTENCE_STARTERS = [
-  'Suddenly,', 'Meanwhile,', 'Without warning,', 'After that,',
-  'Even though', 'Unfortunately,', 'To his amazement,', 'Before long,',
-];
-
-// Simple phonetic spelling map for common dyslexic misspellings
-const PHONETIC_MAP = {
-  'skatbord':'skateboard','skatboard':'skateboard','skateboard':'skateboard',
-  'frends':'friends','frend':'friend',
-  'waching':'watching','wachng':'watching',
-  'becaus':'because','becoz':'because','becuase':'because',
-  'peeple':'people','pepel':'people','peple':'people',
-  'sed':'said','siad':'said',
-  'ther':'there','thier':'there',
-  'thay':'they','tey':'they',
-  'wos':'was','wuz':'was',
-  'wen':'when','whn':'when',
-  'hav':'have','hve':'have',
-  'wat':'what','wt':'what',
-  'cud':'could','coud':'could',
-  'wud':'would','woud':'would',
-  'shud':'should','shoud':'should',
-  'realy':'really','relly':'really',
-  'befor':'before',
-  'agian':'again','agan':'again',
-  'difrent':'different','diffrent':'different',
-  'buetiful':'beautiful','beutiful':'beautiful',
-  'sumthing':'something','somthing':'something',
-  'evry':'every','evryone':'everyone',
-  'togther':'together','togehter':'together',
-  'anser':'answer','answr':'answer',
-  'writting':'writing','riting':'writing',
-  'runing':'running',
-  'jumpping':'jumping','juming':'jumping',
-  'rabit':'rabbit','rabitt':'rabbit','RaBit':'rabbit',
-  'plaing':'playing','palying':'playing',
-  'frends':'friends',
-};
-
-// ── STATE ──────────────────────────────────────────────────────────
-let myWords = JSON.parse(localStorage.getItem('sw-mywords') || '[]');
-let currentTopic = Object.keys(WORD_BANKS)[0];
-let beatCount = 0;
-let beatTimer = null;
-let speaking = false;
-let utterance = null;
-
-// ── INIT ──────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // Tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+// ═══════════════════════════════════════════════════
+// STEP 1 — SCENARIO GRID
+// ═══════════════════════════════════════════════════
+const grid = document.getElementById('scenarioGrid');
+SCENARIOS.forEach(sc => {
+  const card = document.createElement('div');
+  card.className = 'sc-card';
+  card.style.setProperty('--sc-accent', sc.accent);
+  card.style.setProperty('--sc-bg', sc.bg);
+  card.innerHTML = `<span class="sc-emoji">${sc.emoji}</span><div class="sc-name">${sc.name}</div><div class="sc-sub">${sc.sub}</div>`;
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.sc-card').forEach(c => c.classList.remove('sel'));
+    card.classList.add('sel');
+    chosen = sc;
   });
+  grid.appendChild(card);
+});
 
-  // Tricky words
-  const tw = document.getElementById('tricky-words');
-  TRICKY_WORDS.forEach(({w,syl}) => {
-    const btn = document.createElement('button');
-    btn.className = 'topic-btn';
-    btn.textContent = w;
-    btn.onclick = () => { document.getElementById('spell-input').value = w; doSpell(); };
-    tw.appendChild(btn);
-  });
+document.getElementById('step1Next').addEventListener('click', () => {
+  if (!chosen) { toast('Please choose a scenario first'); return; }
+  buildDynamicFields(chosen);
+  goTo(2);
+});
 
-  // Topic buttons
-  const topicRow = document.getElementById('topic-row');
-  Object.keys(WORD_BANKS).forEach((topic, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'topic-btn' + (i===0?' active':'');
-    btn.textContent = topic;
-    btn.onclick = () => {
-      document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentTopic = topic;
-      renderWordGrid();
-    };
-    topicRow.appendChild(btn);
+// ═══════════════════════════════════════════════════
+// STEP 2 — PERSONALISE
+// ═══════════════════════════════════════════════════
+function buildDynamicFields(sc) {
+  const wrap = document.getElementById('dynamicFields');
+  wrap.innerHTML = `<h3>${sc.emoji} About this ${sc.name.toLowerCase()}</h3>`;
+  sc.fields.forEach(f => {
+    const d = document.createElement('div');
+    d.className = 'field';
+    d.innerHTML = `
+      <label class="field-label" for="f_${f.id}">
+        ${f.label}
+        ${f.opt
+          ? '<span class="opt-label"> (optional)</span>'
+          : '<span style="color:var(--rose)"> *</span>'}
+      </label>
+      <input type="text" id="f_${f.id}" class="field-input" placeholder="${f.ph}" maxlength="100" autocomplete="off">`;
+    wrap.appendChild(d);
   });
-  renderWordGrid();
-  renderMyWords();
+}
 
-  // Writing frames
-  const fg = document.getElementById('frames-grid');
-  WRITING_FRAMES.forEach(f => {
-    const el = document.createElement('div');
-    el.className = 'frame-card';
-    el.innerHTML = `<div class="frame-title">${f.icon} ${f.title}</div>
-                    <div class="frame-preview">"${f.parts[0].substring(0,50)}..."</div>`;
-    el.onclick = () => insertFrame(f);
-    fg.appendChild(el);
-  });
-
-  // Sentence starters toolbar
-  const tb = document.getElementById('starter-toolbar');
-  SENTENCE_STARTERS.forEach(s => {
-    const btn = document.createElement('button');
-    btn.className = 'starter-btn';
-    btn.textContent = s;
-    btn.onclick = () => insertStarter(s);
-    tb.appendChild(btn);
-  });
-
-  // Enter key on inputs
-  document.getElementById('spell-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doSpell();
-  });
-  document.getElementById('syl-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doSyllable();
-  });
-  document.getElementById('my-word-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addMyWord();
+// Pronoun chips
+document.querySelectorAll('#pronounChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#pronounChips .chip').forEach(x => x.className = 'chip');
+    c.classList.add('sel-teal');
   });
 });
 
-// ── TABS ──────────────────────────────────────────────────────────
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab===name));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+name));
-}
-
-// ── SPELL IT ──────────────────────────────────────────────────────
-function doSpell() {
-  const raw = document.getElementById('spell-input').value.trim().toLowerCase();
-  if (!raw) return;
-
-  // Try phonetic map first, then just use the word as-is
-  const word = PHONETIC_MAP[raw] || PHONETIC_MAP[raw.toLowerCase()] || raw;
-  const correct = word !== raw ? word : trySpell(raw);
-
-  document.getElementById('spell-result').classList.add('show');
-  document.getElementById('spell-word').textContent = correct;
-
-  // Break into syllables
-  const syls = syllabify(correct);
-  const breakdown = document.getElementById('spell-breakdown');
-  breakdown.innerHTML = '';
-  syls.forEach((s, i) => {
-    if (i > 0) {
-      const dot = document.createElement('span');
-      dot.className = 'spell-divider';
-      dot.textContent = '·';
-      breakdown.appendChild(dot);
-    }
-    const chunk = document.createElement('div');
-    chunk.className = 'spell-chunk';
-    chunk.style.animationDelay = (i * 0.08) + 's';
-    chunk.textContent = s;
-    chunk.onclick = () => speak(s);
-    breakdown.appendChild(chunk);
+// Placement chips
+document.querySelectorAll('#placementChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#placementChips .chip').forEach(x => x.className = 'chip');
+    c.classList.add('sel-sun');
   });
+});
 
-  // b/d check
-  const hasBD = /[bd]/.test(correct);
-  document.getElementById('bd-alert').style.display = hasBD ? 'flex' : 'none';
-
-  // Tip
-  const tips = [
-    `Say it in beats: <strong>${syls.join(' — ')}</strong>`,
-    `There are <strong>${syls.length} beat${syls.length!==1?'s':''}</strong> in this word`,
-    `Try spelling it out loud one sound at a time`,
-  ];
-  document.getElementById('spell-tip').innerHTML = '💡 ' + tips[Math.floor(Math.random()*tips.length)];
+// Custom sentences
+document.getElementById('addSentenceBtn').addEventListener('click', () => addCustomRow());
+function addCustomRow(val='') {
+  const row = document.createElement('div');
+  row.className = 'custom-row';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'field-input';
+  inp.placeholder = 'e.g. Jamie can bring his fidget toy to help him feel calm.';
+  inp.value = val;
+  inp.maxLength = 250;
+  const btn = document.createElement('button');
+  btn.className = 'rm-btn';
+  btn.innerHTML = '&#10005;';
+  btn.title = 'Remove';
+  btn.addEventListener('click', () => row.remove());
+  row.appendChild(inp);
+  row.appendChild(btn);
+  document.getElementById('customList').appendChild(row);
+  inp.focus();
 }
 
-function trySpell(word) {
-  // Basic phonetic normalisation — just return cleaned version
-  return word.replace(/ck$/,'ck').replace(/bb/,'b').replace(/tt/,'t');
+function getCustoms() {
+  return [...document.querySelectorAll('#customList .field-input')]
+    .map(i => i.value.trim()).filter(Boolean);
+}
+function getPlacement() {
+  return document.querySelector('#placementChips .chip.sel-sun')?.dataset.val || 'end';
+}
+function getPronouns() {
+  return PRONOUNS[document.querySelector('#pronounChips .chip.sel-teal')?.dataset.val || 'he'];
 }
 
-function speakWord() {
-  const w = document.getElementById('spell-word').textContent;
-  if (w) speak(w);
-}
-
-function copyWord() {
-  const w = document.getElementById('spell-word').textContent;
-  if (w) { navigator.clipboard.writeText(w).catch(()=>{}); toast('Copied: ' + w); }
-}
-
-// ── SYLLABLE SPLITTER ─────────────────────────────────────────────
-function doSyllable() {
-  const word = document.getElementById('syl-input').value.trim();
-  if (!word) return;
-
-  const syls = syllabify(word.toLowerCase());
-  const colours = ['c1','c2','c3','c4'];
-
-  const display = document.getElementById('syl-display');
-  display.innerHTML = '';
-  syls.forEach((s, i) => {
-    if (i > 0) {
-      const dot = document.createElement('div');
-      dot.className = 'syl-dot';
-      display.appendChild(dot);
-    }
-    const el = document.createElement('div');
-    el.className = 'syl ' + colours[i % colours.length];
-    el.style.animationDelay = (i * 0.12) + 's';
-    el.textContent = s;
-    el.onclick = () => speak(s);
-    display.appendChild(el);
-  });
-
-  document.getElementById('syl-count').innerHTML =
-    `<span>${syls.length}</span> beat${syls.length!==1?'s':''} — tap the drum pad while you say the word`;
-  document.getElementById('syl-result').classList.add('show');
-  resetBeats();
-}
-
-// Beat tap
-function tapBeat() {
-  beatCount++;
-  document.getElementById('beat-count').textContent = beatCount;
-  clearTimeout(beatTimer);
-  beatTimer = setTimeout(() => {}, 1500);
-
-  // Pulse animation
-  const area = document.getElementById('beat-area');
-  area.style.background = 'rgba(245,166,35,0.22)';
-  setTimeout(() => { area.style.background = ''; }, 150);
-}
-
-function resetBeats() {
-  beatCount = 0;
-  document.getElementById('beat-count').textContent = '0';
-}
-
-// ── SYLLABIFIER ───────────────────────────────────────────────────
-function syllabify(word) {
-  // Pre-set common words for accuracy
-  const preset = {
-    'skateboard':['skate','board'],'because':['be','cause'],'friend':['friend'],
-    'beautiful':['beau','ti','ful'],'different':['dif','fer','ent'],
-    'adventure':['ad','ven','ture'],'remember':['re','mem','ber'],
-    'together':['to','geth','er'],'important':['im','por','tant'],
-    'interesting':['in','ter','est','ing'],'understand':['un','der','stand'],
-    'yesterday':['yes','ter','day'],'tomorrow':['to','mor','row'],
-    'suddenly':['sud','den','ly'],'everything':['eve','ry','thing'],
-    'something':['some','thing'],'everyone':['eve','ry','one'],
-    'watching':['watch','ing'],'playing':['play','ing'],
-    'running':['run','ning'],'jumping':['jump','ing'],
-    'friends':['friends'],'rabbit':['rab','bit'],
-    'writing':['writ','ing'],'reading':['read','ing'],
-    'people':['peo','ple'],'water':['wa','ter'],
-    'really':['real','ly'],'little':['lit','tle'],
-    'middle':['mid','dle'],'bottle':['bot','tle'],
-    'animal':['an','i','mal'],'family':['fam','i','ly'],
-    'history':['his','to','ry'],'library':['li','brar','y'],
-    'homework':['home','work'],'computer':['com','put','er'],
-    'dangerous':['dan','ger','ous'],'mysterious':['mys','ter','ious'],
-    'terrified':['ter','ri','fied'],'enormous':['e','nor','mous'],
-    'atmosphere':['at','mos','phere'],'paragraph':['par','a','graph'],
-    'calculator':['cal','cu','la','tor'],'excited':['ex','cit','ed'],
-    'nervous':['nerv','ous'],'confident':['con','fi','dent'],
-    'frustrated':['frus','trat','ed'],'exhausted':['ex','haust','ed'],
-    'determined':['de','ter','mined'],'meanwhile':['mean','while'],
-    'however':['how','ev','er'],'although':['al','though'],
-    'unfortunately':['un','for','tu','nate','ly'],
-    'fortunately':['for','tu','nate','ly'],
-    'eventually':['e','ven','tu','al','ly'],
-    'immediately':['im','med','iate','ly'],
-  };
-
-  const w = word.toLowerCase();
-  if (preset[w]) return preset[w];
-
-  // Algorithmic fallback: find vowel clusters
-  const vowels = 'aeiouy';
-  const result = [];
-  let syl = '';
-  let lastWasVowel = false;
-
-  for (let i = 0; i < word.length; i++) {
-    const ch = word[i].toLowerCase();
-    const isVowel = vowels.includes(ch);
-    const next = word[i+1] ? word[i+1].toLowerCase() : '';
-    const nextIsVowel = vowels.includes(next);
-
-    syl += word[i];
-
-    if (isVowel && !nextIsVowel && syl.length > 1 && i < word.length - 2) {
-      // Consonant after vowel — good split point
-      if (!vowels.includes(next) && word[i+2] && vowels.includes(word[i+2].toLowerCase())) {
-        result.push(syl);
-        syl = '';
-      }
+document.getElementById('step2Back').addEventListener('click', () => goTo(1));
+document.getElementById('step2Next').addEventListener('click', () => {
+  const name = document.getElementById('childName').value.trim();
+  if (!name) { document.getElementById('childName').focus(); toast("Please enter your child's name"); return; }
+  for (const f of chosen.fields) {
+    if (!f.opt) {
+      const val = document.getElementById('f_'+f.id)?.value.trim();
+      if (!val) { document.getElementById('f_'+f.id)?.focus(); toast('Please fill in: ' + f.label); return; }
     }
   }
-  if (syl) result.push(syl);
+  buildStory();
+  goTo(3);
+});
 
-  // Ensure at least one syllable
-  return result.length > 0 ? result : [word];
-}
-
-// ── WORD BANK ─────────────────────────────────────────────────────
-function renderWordGrid() {
-  const grid = document.getElementById('word-grid');
-  grid.innerHTML = '';
-  (WORD_BANKS[currentTopic] || []).forEach(({w,s}) => {
-    const card = document.createElement('div');
-    card.className = 'word-card';
-    card.innerHTML = `<span class="w-word">${w}</span><span class="w-syl">${s}</span>`;
-    card.onclick = () => {
-      navigator.clipboard.writeText(w).catch(()=>{});
-      card.classList.add('copied');
-      setTimeout(() => card.classList.remove('copied'), 1200);
-      toast('Copied: ' + w);
-    };
-    grid.appendChild(card);
+// ═══════════════════════════════════════════════════
+// STEP 3 — BUILD & RENDER STORY
+// ═══════════════════════════════════════════════════
+function gatherData() {
+  const p = getPronouns();
+  const name = document.getElementById('childName').value.trim();
+  const data = { n: name, p };
+  chosen.fields.forEach(f => {
+    const el = document.getElementById('f_'+f.id);
+    data[f.id] = el?.value.trim() || f.def || '';
   });
+  return data;
 }
 
-function addMyWord() {
-  const input = document.getElementById('my-word-input');
-  const w = input.value.trim();
-  if (!w) return;
-  if (!myWords.includes(w)) {
-    myWords.push(w);
-    localStorage.setItem('sw-mywords', JSON.stringify(myWords));
+function buildStory() {
+  const sc = chosen;
+  const data = gatherData();
+  let pages = sc.pages(data);
+  const customs = getCustoms();
+  const placement = getPlacement();
+
+  if (customs.length) {
+    const extras = customs.map(t => ({e:'💛', t, custom:true}));
+    if (placement === 'start') pages = [...extras, ...pages];
+    else if (placement === 'middle') {
+      const mid = Math.floor(pages.length / 2);
+      pages = [...pages.slice(0,mid), ...extras, ...pages.slice(mid)];
+    } else {
+      pages = [...pages, ...extras];
+    }
   }
-  input.value = '';
-  renderMyWords();
-}
 
-function renderMyWords() {
-  const list = document.getElementById('my-words-list');
-  const empty = document.getElementById('my-words-empty');
-  list.innerHTML = '';
-  empty.style.display = myWords.length ? 'none' : 'block';
-  myWords.forEach(w => {
-    const tag = document.createElement('span');
-    tag.className = 'my-word-tag';
-    tag.innerHTML = `${w} <span class="del" onclick="removeMyWord('${w}',event)">✕</span>`;
-    tag.onclick = () => {
-      navigator.clipboard.writeText(w).catch(()=>{});
-      toast('Copied: ' + w);
-    };
-    list.appendChild(tag);
+  document.getElementById('previewTitle').textContent = sc.name + ' — ' + data.n + "'s story";
+
+  const body = document.getElementById('storyBody');
+  body.innerHTML = '';
+  body.style.setProperty('--sc-accent', sc.accent);
+  body.style.setProperty('--sc-bg', sc.bg);
+
+  // Cover page
+  const dotColors = ['var(--teal)','var(--sun)','var(--rose)','var(--mint)','var(--lavender)','var(--sky)'];
+  const cover = document.createElement('div');
+  cover.className = 'story-cover';
+  cover.innerHTML =
+    '<span class="cover-emoji">' + sc.emoji + '</span>' +
+    '<div class="cover-title"><em>' + esc(data.n) + "'s</em> story about<br>" + esc(sc.name) + '</div>' +
+    '<div class="cover-sub">A social story made just for ' + esc(data.n) + '</div>' +
+    '<div class="cover-dots">' + dotColors.map(c => '<div class="cover-dot" style="background:'+c+'"></div>').join('') + '</div>';
+  body.appendChild(cover);
+
+  // Story pages
+  const list = document.createElement('div');
+  list.className = 'story-pages-list';
+  pages.forEach((pg, i) => {
+    const div = document.createElement('div');
+    div.className = 'story-page' + (i % 2 === 1 ? ' rev' : '');
+
+    const illus = document.createElement('div');
+    illus.className = 'illus-box';
+    illus.innerHTML = '<div class="illus-emoji">' + pg.e + '</div><div class="illus-label">illustration</div>';
+
+    const textCol = document.createElement('div');
+    textCol.className = 'text-col';
+    textCol.innerHTML =
+      '<div class="page-num">Page ' + (i+1) + '</div>' +
+      '<div class="page-text">' + renderText(pg.t, data.n) +
+      (pg.custom ? '<span class="custom-badge">your sentence</span>' : '') +
+      '</div>';
+
+    div.appendChild(illus);
+    div.appendChild(textCol);
+    list.appendChild(div);
   });
+  body.appendChild(list);
 }
 
-function removeMyWord(w, e) {
-  e.stopPropagation();
-  myWords = myWords.filter(x => x !== w);
-  localStorage.setItem('sw-mywords', JSON.stringify(myWords));
-  renderMyWords();
+function renderText(text, name) {
+  let s = esc(text);
+  s = s.replace(new RegExp('\\b' + escRx(name) + '\\b', 'g'), '<strong>' + name + '</strong>');
+  s = s.replace(/\b(worried|scared|nervous|excited|happy|proud|brave|calm|overwhelmed|uncomfortable|wobbly)\b/gi, m => '<em>' + m + '</em>');
+  return s;
 }
 
-// ── WRITING PAD ───────────────────────────────────────────────────
-function insertFrame(f) {
-  switchTab('write');
-  const ta = document.getElementById('story-area');
-  const text = f.parts.join('');
-  ta.value = text;
-  ta.focus();
-  updateStats();
-  toast('Frame loaded — start writing! ✏️');
-}
+// ═══════════════════════════════════════════════════
+// PRINT
+// ═══════════════════════════════════════════════════
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('step3Back').addEventListener('click', () => goTo(2));
 
-function insertStarter(s) {
-  const ta = document.getElementById('story-area');
-  const pos = ta.selectionStart;
-  const val = ta.value;
-  const before = val.substring(0, pos);
-  const after = val.substring(pos);
-  const insert = (before.length && !before.endsWith('\n') && !before.endsWith(' ')) ? ' ' + s + ' ' : s + ' ';
-  ta.value = before + insert + after;
-  ta.focus();
-  ta.selectionStart = ta.selectionEnd = pos + insert.length;
-  updateStats();
-}
-
-function updateStats() {
-  const text = document.getElementById('story-area').value;
-  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-  const sents = (text.match(/[.!?]+/g) || []).length;
-  document.getElementById('word-count').textContent = words;
-  document.getElementById('sent-count').textContent = sents;
-}
-
-function checkBD() {
-  // Show b/d reminder occasionally when those letters are typed
-  const text = document.getElementById('story-area').value;
-  const hasBD = /[bd]/.test(text.slice(-3));
-  const bar = document.getElementById('bd-warning');
-  if (hasBD && Math.random() < 0.1) {
-    bar.classList.add('show');
-    setTimeout(() => bar.classList.remove('show'), 3000);
-  }
-}
-
-function speakStory() {
-  const text = document.getElementById('story-area').value;
-  if (text.trim()) speak(text);
-}
-
-function clearStory() {
-  if (confirm('Clear your story? This can\'t be undone.')) {
-    document.getElementById('story-area').value = '';
-    updateStats();
-  }
-}
-
-function copyStory() {
-  const text = document.getElementById('story-area').value;
-  navigator.clipboard.writeText(text).catch(()=>{});
-  toast('Story copied to clipboard!');
-}
-
-function rateStar(n) {
-  const msgs = ['','Keep going, you\'re doing great! 💪','Good effort today! ⭐','Nice work! 🌟','Really proud of that! 🎉','Amazing writing! 🚀🌟'];
-  document.getElementById('stars-label').textContent = msgs[n];
-  document.querySelectorAll('.star').forEach((s,i) => {
-    s.textContent = i < n ? '⭐' : '☆';
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function goTo(n) {
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i+1===n));
+  ['ws1','ws2','ws3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.className = 'wstep' + (i+1===n ? ' active' : i+1<n ? ' done' : '');
   });
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
-// ── READ BACK ─────────────────────────────────────────────────────
-function copyFromStory() {
-  const story = document.getElementById('story-area').value;
-  if (story) {
-    document.getElementById('read-area').value = story;
-    toast('Story copied to Read Back!');
-  }
-}
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function escRx(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') }
 
-function startReading() {
-  const text = document.getElementById('read-area').value.trim();
-  if (!text || !window.speechSynthesis) return;
-
-  stopReading();
-
-  const rate = parseFloat(document.getElementById('speed-select').value);
-  utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = rate;
-  utterance.lang = 'en-GB';
-
-  // Try to use a clear English voice
-  const voices = speechSynthesis.getVoices();
-  const gbVoice = voices.find(v => v.lang === 'en-GB' && v.name.includes('Female')) ||
-                  voices.find(v => v.lang === 'en-GB') ||
-                  voices.find(v => v.lang.startsWith('en'));
-  if (gbVoice) utterance.voice = gbVoice;
-
-  utterance.onstart = () => {
-    speaking = true;
-    document.getElementById('read-btn').style.display = 'none';
-    document.getElementById('stop-btn').style.display = 'inline-flex';
-  };
-  utterance.onend = utterance.onerror = () => {
-    speaking = false;
-    document.getElementById('read-btn').style.display = 'inline-flex';
-    document.getElementById('stop-btn').style.display = 'none';
-  };
-
-  speechSynthesis.speak(utterance);
-}
-
-function stopReading() {
-  speechSynthesis.cancel();
-  speaking = false;
-  document.getElementById('read-btn').style.display = 'inline-flex';
-  document.getElementById('stop-btn').style.display = 'none';
-}
-
-// ── SPEECH ───────────────────────────────────────────────────────
-function speak(text) {
-  if (!window.speechSynthesis) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-GB';
-  u.rate = 0.85;
-  const voices = speechSynthesis.getVoices();
-  const v = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en'));
-  if (v) u.voice = v;
-  speechSynthesis.speak(u);
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────
-function toast(msg) {
+let toastTimer;
+function toast(msg){
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2200);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
 }
 </script>
 
 <!-- SEO CONTENT -->
 <section style="max-width:680px;margin:0 auto;padding:2rem 1.5rem 3rem;font-family:'Nunito',sans-serif;line-height:1.75;font-size:0.95rem;">
 
-  <h2 style="font-size:1.5rem;color:#f0f4ff;margin-bottom:0.7rem;font-weight:800;">Why creative writing is hard for SEND children</h2>
-  <p style="color:#8892b0;margin-bottom:1rem;">Creative writing requires a child to simultaneously generate ideas, hold them in working memory, organise them into a sequence, translate them into sentences, manage spelling and punctuation, and produce legible text — all at the same time. For children with dyslexia, ADHD or autism, any one of those steps can become a bottleneck that stops everything else. The child who has a rich imagination and vivid ideas may produce almost nothing on the page because the physical and cognitive demands of writing overwhelm the creative part entirely.</p>
+  <h2 style="font-family:'Lora',serif;font-size:1.5rem;color:#2C1F0E;margin-bottom:0.7rem;font-weight:600;">What is a social story?</h2>
+  <p style="color:#5C4A2E;margin-bottom:1rem;">A social story is a short, personalised narrative written to help an autistic child understand a specific social situation, routine, or expected behaviour. Developed by Carol Gray in 1991, social stories describe a situation from the child's perspective — what is happening, why, what others might be thinking or feeling, and what the child can do. They are one of the most evidence-based and widely used strategies in autism support, used by parents, teachers and therapists worldwide.</p>
 
-  <h2 style="font-size:1.5rem;color:#f0f4ff;margin-bottom:0.7rem;font-weight:800;margin-top:1.8rem;">How structured prompts unlock creativity</h2>
-  <p style="color:#8892b0;margin-bottom:1rem;">Giving a child a starting point — a character, a setting, a problem to solve — removes the paralysis of the blank page. Many children with ADHD and autism are highly creative but need an external structure to channel that creativity. Story prompts do not constrain imagination; they provide the scaffolding that lets imagination work within a manageable framework. Once the child has a character and a problem, the story often flows naturally in a way it never would from "write a story about anything".</p>
+  <h2 style="font-family:'Lora',serif;font-size:1.5rem;color:#2C1F0E;margin-bottom:0.7rem;font-weight:600;margin-top:1.8rem;">When to use a social story</h2>
+  <p style="color:#5C4A2E;margin-bottom:1rem;">Social stories work best when introduced before a situation rather than during it. Common uses include preparing a child for a first dental appointment, explaining what happens at a birthday party, helping a child understand why they need to wait their turn, supporting a transition such as starting a new school, or explaining a change in routine like a supply teacher or a different bus. They can also address recurring challenges — like what to do when something feels unfair, or how to ask for help.</p>
 
-  <h2 style="font-size:1.5rem;color:#f0f4ff;margin-bottom:0.7rem;font-weight:800;margin-top:1.8rem;">How to use this tool</h2>
-  <p style="color:#8892b0;margin-bottom:1rem;">Use the character builder to create your hero, the setting picker to choose a world, and the plot helper to find a problem and a resolution. Then write in the distraction-free writing space — no alerts, no sidebars, just the story. For children who find typing difficult, dictate to a parent who types while the child composes aloud. The goal is to get the ideas out — editing comes later.</p>
-  <p style="color:#8892b0;">Free, private, no account needed. Works on any device. <a href="https://helpset.uk/" style="color:#2ecc87;">See all free Helpset tools →</a></p>
+  <h2 style="font-family:'Lora',serif;font-size:1.5rem;color:#2C1F0E;margin-bottom:0.7rem;font-weight:600;margin-top:1.8rem;">How to use the social story builder</h2>
+  <p style="color:#5C4A2E;margin-bottom:1rem;">Type the title and each sentence of the story in sequence. Carol Gray's original guidelines suggest a mix of descriptive sentences (what happens), perspective sentences (what others think or feel) and directive sentences (what the child can do). Keep language simple, positive and specific to your child. When the story is complete, print it out — ideally with pictures — and read it with your child several times before the situation occurs. Some children like to keep their story in a special folder they can return to when they feel anxious.</p>
+  <p style="color:#5C4A2E;">Free, private, no account needed. Works on any device. <a href="https://helpset.uk/" style="color:#0C7A69;">See all free Helpset tools →</a></p>
 
 </section>
 
+<a href="https://ko-fi.com/helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
 </div>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8b2be54baea34cbca7b4328465f1c2a0"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
