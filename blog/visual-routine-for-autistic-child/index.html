@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <title>How to Build a Visual Routine for an Autistic Child — Helpset</title>
   <meta name="description" content="How to build a visual routine for an autistic child — what they are, why they work, and a free tool to create one in under two minutes. No login needed.">
   <link rel="canonical" href="https://helpset.uk/blog/visual-routine-for-autistic-child/">
@@ -10,65 +13,103 @@
   <meta property="og:description" content="What visual routines are, why they work, and how to build one that fits your actual child — not a generic template.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://helpset.uk/blog/visual-routine-for-autistic-child/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
 <style>
-:root{--green:#2E7D52;--green-light:#E8F5EE;--green-mid:#4CAF78;--dark:#1A2E22;--text:#2C3E30;--muted:#6B7E70;--border:#D4E6DA;--bg:#FAFCFB;--white:#FFFFFF;--accent:#F0FAF4;--radius:10px;--max:720px}
+:root{
+  --cream:#FAF8F4;--ink:#181825;--ink2:#3A3A52;--muted:#5C5C78;
+  --border:#E4E0D8;--border2:#CEC9BE;--surface:#FFFFFF;
+  --green:#2ECC87;--green-d:#157A4C;--green-l:#E6F9F1;
+  --radius:18px;
+  --shadow:0 2px 16px rgba(24,24,37,0.07);--shadow-lg:0 10px 40px rgba(24,24,37,0.13);
+  --font-head:'Fraunces',Georgia,serif;--font-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+  --max:720px
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Georgia','Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:17px}
-.site-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:100}
-.site-nav a.logo{font-family:'Trebuchet MS',sans-serif;font-size:18px;font-weight:700;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:6px}
-.site-nav .sep{color:var(--border);margin:0 10px}
-.site-nav .blog-link{font-family:'Trebuchet MS',sans-serif;font-size:14px;color:var(--muted);text-decoration:none}
-.site-nav .blog-link:hover{color:var(--green)}
-.article-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--green) 100%);color:var(--white);padding:60px 24px 52px;text-align:center}
-.article-hero .tag{display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);font-family:'Trebuchet MS',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:20px}
-.article-hero h1{font-family:'Georgia',serif;font-size:clamp(24px,5vw,38px);font-weight:normal;line-height:1.25;max-width:680px;margin:0 auto 16px}
-.article-hero .meta{font-family:'Trebuchet MS',sans-serif;font-size:13px;color:rgba(255,255,255,0.65)}
-.article-wrap{max-width:var(--max);margin:0 auto;padding:52px 24px 80px}
-.article-wrap h2{font-family:'Georgia',serif;font-size:22px;font-weight:normal;color:var(--dark);margin:48px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-.article-wrap p{margin-bottom:22px;color:var(--text)}
-.article-wrap strong{color:var(--dark);font-weight:600}
+body{font-family:var(--font-body);background:var(--cream);color:var(--ink2);line-height:1.75;font-size:17px;
+  overflow-x:hidden;
+  background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.10),transparent 55%),
+    radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
+a{color:inherit}
+
+/* NAV (breadcrumb) */
+.site-nav{background:rgba(250,248,244,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
+  padding:0 24px;display:flex;align-items:center;gap:10px;height:56px;position:sticky;top:0;z-index:100}
+.site-nav a.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.site-nav .nbmark{width:30px;height:30px;background:var(--green);border-radius:8px;display:flex;
+  align-items:center;justify-content:center;font-size:.95rem}
+.site-nav .nbname{font-family:var(--font-head);font-size:1.12rem;font-weight:800;color:var(--ink)}
+.site-nav .sep{color:var(--border2)}
+.site-nav .blog-link{font-size:14px;font-weight:600;color:var(--muted);text-decoration:none}
+.site-nav .blog-link:hover{color:var(--green-d)}
+@media(max-width:560px){.site-nav .crumb-hide{display:none}}
+
+/* HERO (light, homepage style) */
+.article-hero{text-align:center;padding:52px 24px 30px;max-width:760px;margin:0 auto}
+.article-hero .tag{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);
+  color:var(--green-d);border:1.5px solid rgba(46,204,135,.28);font-size:12px;letter-spacing:.06em;
+  text-transform:uppercase;font-weight:700;padding:6px 14px;border-radius:100px;margin-bottom:20px}
+.article-hero h1{font-family:var(--font-head);font-size:clamp(26px,5vw,42px);font-weight:900;
+  line-height:1.14;letter-spacing:-.5px;color:var(--ink);max-width:680px;margin:0 auto 14px}
+.article-hero .meta{font-size:13px;font-weight:600;color:var(--muted)}
+
+/* ARTICLE */
+.article-wrap{max-width:var(--max);margin:0 auto;padding:20px 24px 80px}
+.article-wrap h2{font-family:var(--font-head);font-size:24px;font-weight:800;letter-spacing:-.3px;
+  color:var(--ink);margin:46px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.article-wrap p{margin-bottom:22px;color:var(--ink2)}
+.article-wrap strong{color:var(--ink);font-weight:700}
 .article-wrap ul,.article-wrap ol{padding-left:24px;margin-bottom:22px}
 .article-wrap li{margin-bottom:10px}
-.article-wrap a{color:var(--green);text-decoration:underline;text-underline-offset:3px}
-.article-wrap a:hover{color:var(--dark)}
-.cta-box{background:var(--green-light);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:var(--radius);padding:28px 32px;margin:40px 0}
+.article-wrap a{color:var(--green-d);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.article-wrap a:hover{color:var(--ink)}
+
+/* CTA */
+.cta-box{background:var(--green-l);border:1px solid var(--border);border-left:4px solid var(--green-d);
+  border-radius:var(--radius);padding:28px 32px;margin:40px 0;box-shadow:var(--shadow)}
 .cta-box p{margin-bottom:12px}
 .cta-box p:last-child{margin-bottom:0}
-.cta-box a.btn{display:inline-block;background:var(--green);color:var(--white);font-family:'Trebuchet MS',sans-serif;font-size:14px;font-weight:600;padding:10px 22px;border-radius:6px;text-decoration:none;margin-top:6px;transition:background 0.2s}
-.cta-box a.btn:hover{background:var(--dark)}
-.related-tools{background:var(--accent);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;margin:40px 0}
-.related-tools h3{font-family:'Trebuchet MS',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:16px}
+.cta-box p strong{font-family:var(--font-head);font-size:1.15rem;font-weight:800;color:var(--ink)}
+.cta-box a.btn{display:inline-block;background:var(--green-d);color:var(--white,#fff);font-size:14px;
+  font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none;margin-top:8px;
+  box-shadow:0 6px 20px rgba(21,122,76,.26);transition:all .16s}
+.cta-box a.btn:hover{background:#0f6a40;transform:translateY(-2px)}
+
+/* RELATED */
+.related-tools{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:26px 30px;margin:40px 0;box-shadow:var(--shadow)}
+.related-tools h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);margin-bottom:16px}
 .tool-links{display:flex;flex-direction:column;gap:10px}
-.tool-link{display:flex;align-items:center;gap:10px;font-family:'Trebuchet MS',sans-serif;font-size:14px;color:var(--green);text-decoration:none;font-weight:500}
-.tool-link:hover{color:var(--dark)}
+.tool-link{display:flex;align-items:center;gap:11px;font-size:14px;color:var(--ink2);
+  text-decoration:none;font-weight:600;padding:10px 14px;border:1px solid var(--border);
+  border-radius:12px;transition:all .14s}
+.tool-link:hover{border-color:var(--green);color:var(--green-d);transform:translateY(-1px)}
 .tool-link .icon{font-size:18px}
-.blog-index-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--green) 100%);color:var(--white);padding:60px 24px 52px;text-align:center}
-.blog-index-hero h1{font-family:'Georgia',serif;font-size:clamp(28px,5vw,42px);font-weight:normal;margin-bottom:12px}
-.blog-index-hero p{font-family:'Trebuchet MS',sans-serif;font-size:16px;color:rgba(255,255,255,0.75);max-width:500px;margin:0 auto}
-.blog-grid{max-width:900px;margin:0 auto;padding:52px 24px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
-.blog-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:box-shadow 0.2s,transform 0.2s}
-.blog-card:hover{box-shadow:0 6px 24px rgba(46,125,82,0.12);transform:translateY(-2px)}
-.blog-card-top{background:linear-gradient(135deg,var(--dark),var(--green));padding:28px 24px 22px;color:var(--white)}
-.blog-card-top .emoji{font-size:28px;margin-bottom:10px;display:block}
-.blog-card-top h2{font-family:'Georgia',serif;font-size:17px;font-weight:normal;line-height:1.35}
-.blog-card-body{padding:20px 24px 24px}
-.blog-card-body p{font-family:'Trebuchet MS',sans-serif;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px}
-.blog-card-body a{font-family:'Trebuchet MS',sans-serif;font-size:13px;font-weight:600;color:var(--green);text-decoration:none}
-.blog-card-body a:hover{color:var(--dark)}
-.site-footer{background:var(--dark);color:rgba(255,255,255,0.55);font-family:'Trebuchet MS',sans-serif;font-size:13px;text-align:center;padding:28px 24px;line-height:1.8}
-.site-footer a{color:rgba(255,255,255,0.6);text-decoration:none}
-.site-footer a:hover{color:var(--white)}
-@media(max-width:600px){.article-hero{padding:44px 20px 40px}.article-wrap{padding:36px 20px 60px}.cta-box,.related-tools{padding:22px 20px}}
+
+/* FOOTER */
+.site-footer{border-top:1px solid var(--border);background:rgba(255,255,255,.5);
+  font-size:13px;text-align:center;padding:28px 24px;line-height:1.9;color:var(--muted)}
+.site-footer a{color:var(--green-d);text-decoration:none;font-weight:600}
+.site-footer a:hover{color:var(--ink)}
+
+@media(max-width:600px){.article-hero{padding:40px 20px 24px}.article-wrap{padding:16px 20px 60px}.cta-box,.related-tools{padding:22px 20px}}
 </style>
 </head>
 <body>
 
 <nav class="site-nav">
-  <a href="https://helpset.uk/" class="logo">🌿 Helpset</a>
+  <a href="https://helpset.uk/" class="logo">
+    <span class="nbmark">🌱</span>
+    <span class="nbname">Helpset</span>
+  </a>
   <span class="sep">›</span>
   <a href="https://helpset.uk/blog/" class="blog-link">Blog</a>
-  <span class="sep">›</span>
-  <a href="https://helpset.uk/blog/visual-routine-for-autistic-child/" class="blog-link">Visual Routines</a>
+  <span class="sep crumb-hide">›</span>
+  <a href="https://helpset.uk/blog/visual-routine-for-autistic-child/" class="blog-link crumb-hide">Visual Routines</a>
 </nav>
 
 <header class="article-hero">
