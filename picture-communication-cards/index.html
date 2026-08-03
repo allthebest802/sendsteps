@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <title>Free Picture Communication Cards — Printable PECS-Style Symbols | Helpset</title>
 <meta name="description" content="Free printable picture communication cards for AAC and PECS-style picture exchange. 48 clear cards for autistic children and children with additional needs — download the PDF, print and cut out. No login, no cost.">
@@ -73,44 +76,141 @@
 }
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+
 <style>
-  :root { --ink:#1f2933; --mute:#5b6570; --accent:#2563a8; --line:#dfe4ea; --fill:#eef2f6; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-         color:var(--ink); line-height:1.6; }
-  main { max-width:720px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-  h1 { font-size:2rem; line-height:1.2; margin:.2em 0 .4em; }
-  h2 { font-size:1.35rem; margin:2em 0 .5em; }
-  p, li { font-size:1.05rem; }
-  .lede { font-size:1.15rem; color:var(--mute); }
-  a { color:var(--accent); }
-  .download { display:inline-block; background:var(--accent); color:#fff; text-decoration:none;
-              font-weight:600; padding:.85rem 1.4rem; border-radius:8px; margin:1rem 0; }
-  .download small { display:block; font-weight:400; opacity:.85; font-size:.8rem; }
-  .card { background:var(--fill); border:1px solid var(--line); border-radius:10px;
-          padding:1rem 1.25rem; margin:1.5rem 0; }
-  details { border-bottom:1px solid var(--line); padding:.75rem 0; }
-  summary { font-weight:600; cursor:pointer; }
-  details p { margin:.6rem 0 0; color:var(--mute); }
-  .related a { display:block; padding:.4rem 0; }
-  .note { font-size:.9rem; color:var(--mute); }
-  .credit { font-size:.85rem; color:var(--mute); border-top:1px solid var(--line); margin-top:2.5rem; padding-top:1rem; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF8F4;--ink:#181825;--ink2:#3A3A52;--muted:#5C5C78;
+  --border:#E4E0D8;--border2:#CEC9BE;--surface:#FFFFFF;
+  --green:#2ECC87;--green-d:#157A4C;--green-l:#E6F9F1;
+  --amber:#9A6200;--amber-l:#FFFBEB;
+  --blue:#1D5EC4;--blue-l:#EFF6FF;
+  --radius:18px;
+  --shadow:0 2px 16px rgba(24,24,37,0.07);
+  --shadow-lg:0 10px 40px rgba(24,24,37,0.13);
+  --font-head:'Fraunces',Georgia,serif;
+  --font-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--cream);color:var(--ink);line-height:1.65;
+  overflow-x:hidden;
+  background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.10),transparent 55%),
+    radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;
+  justify-content:space-between;gap:14px}
+.nbrand{display:flex;align-items:center;gap:9px}
+.nbmark{width:32px;height:32px;background:var(--green);border-radius:9px;display:flex;
+  align-items:center;justify-content:center;font-size:1rem}
+.nbname{font-family:var(--font-head);font-size:1.18rem;font-weight:800;color:var(--ink)}
+.nlinks{display:flex;gap:4px;align-items:center}
+.nlink{font-size:.82rem;font-weight:600;color:var(--ink2);padding:7px 12px;border-radius:100px;transition:all .14s}
+.nlink:hover{background:var(--green-l);color:var(--green-d)}
+.npill{background:#147a4c;color:white;padding:8px 18px;border-radius:100px;font-size:.83rem;font-weight:700;transition:all .15s}
+.npill:hover{background:#0f6a40;transform:translateY(-1px)}
+@media(max-width:560px){.nlinks .nlink{display:none}}
+
+/* LAYOUT */
+main{max-width:760px;margin:0 auto;padding:20px 24px 72px}
+.crumb{font-size:.8rem;color:var(--muted);font-weight:600;margin:6px 0 22px}
+.crumb a:hover{color:var(--green-d)}
+
+/* HERO */
+.hero{text-align:center;padding:14px 0 8px}
+.hpill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);
+  color:var(--green-d);border:1.5px solid rgba(46,204,135,.28);padding:6px 14px;
+  border-radius:100px;font-size:.77rem;font-weight:700;margin-bottom:18px}
+h1{font-family:var(--font-head);font-size:2.6rem;font-weight:900;line-height:1.12;
+  letter-spacing:-.5px;margin-bottom:14px}
+@media(max-width:640px){h1{font-size:2.05rem}}
+.lede{font-size:1.18rem;color:var(--muted);max-width:620px;margin:0 auto}
+
+/* DOWNLOAD CTA */
+.download{display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  background:var(--green-d);color:#fff;font-weight:800;font-size:1.02rem;
+  padding:15px 30px;border-radius:100px;margin:26px 0 6px;
+  box-shadow:0 8px 26px rgba(21,122,76,.28);transition:all .16s}
+.download:hover{background:#0f6a40;transform:translateY(-2px);box-shadow:0 12px 32px rgba(21,122,76,.34)}
+.download small{font-weight:500;opacity:.9;font-size:.78rem}
+
+/* SECTIONS */
+h2{font-family:var(--font-head);font-size:1.55rem;font-weight:800;letter-spacing:-.3px;
+  margin:2.4em 0 .5em}
+p,li{font-size:1.05rem}
+main p{margin-bottom:1rem;color:var(--ink2)}
+ol{margin:0 0 1rem 1.3rem}
+ol li{margin-bottom:.5rem;color:var(--ink2);padding-left:.2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.4rem 1.6rem;margin:1.3rem 0;box-shadow:var(--shadow)}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.card li{position:relative;padding-left:1.5rem;color:var(--ink2)}
+.card li::before{content:'';position:absolute;left:0;top:.55em;width:9px;height:9px;
+  border-radius:50%;background:var(--green)}
+.card li strong{color:var(--ink)}
+.note{font-size:.95rem;color:var(--muted)}
+
+/* FAQ */
+details{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:.9rem 1.2rem;margin:.6rem 0;box-shadow:var(--shadow)}
+summary{font-weight:700;cursor:pointer;color:var(--ink);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';float:right;color:var(--green-d);font-weight:800;font-size:1.2rem;line-height:1}
+details[open] summary::after{content:'–'}
+details p{margin:.7rem 0 0;color:var(--muted)}
+
+/* RELATED */
+.related{display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem}
+.related a{display:flex;align-items:center;gap:10px;background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;padding:.8rem 1.1rem;
+  font-weight:600;color:var(--ink2);transition:all .14s;box-shadow:var(--shadow)}
+.related a:hover{border-color:var(--green);color:var(--green-d);transform:translateY(-1px)}
+.related a::before{content:'→';color:var(--green-d);font-weight:800}
+
+.credit{font-size:.86rem;color:var(--muted);border-top:1px solid var(--border);
+  margin-top:2.6rem;padding-top:1.2rem;line-height:1.7}
+.credit a{color:var(--green-d);font-weight:600}
+
+footer{border-top:1px solid var(--border);background:rgba(255,255,255,.5);
+  text-align:center;padding:26px 20px;font-size:.85rem;color:var(--muted)}
+footer a{color:var(--green-d);font-weight:600}
 </style>
 </head>
 
 <body>
-<!-- TODO: insert your Helpset site header / nav here -->
+
+<nav>
+  <a class="nbrand" href="/">
+    <span class="nbmark">🌱</span>
+    <span class="nbname">Helpset</span>
+  </a>
+  <div class="nlinks">
+    <a class="nlink" href="/apps/">Apps</a>
+    <a class="nlink" href="/blog/">Blog</a>
+    <a class="npill" href="/">All free tools</a>
+  </div>
+</nav>
+
 <main>
 
-  <p class="note"><a href="/">Home</a> › <a href="/resources/">Resources</a> › Picture Communication Cards</p>
+  <p class="crumb"><a href="/">Home</a> › <a href="/apps/">Tools</a> › Picture Communication Cards</p>
 
-  <h1>Free Picture Communication Cards (Printable)</h1>
-  <p class="lede">A set of 48 clear picture and word cards for AAC and PECS-style picture exchange — for autistic children and children with additional needs. Download, print and cut out.</p>
+  <div class="hero">
+    <span class="hpill">🖨️ Free printable · no login · no cost</span>
+    <h1>Free Picture Communication Cards</h1>
+    <p class="lede">A set of 48 clear picture and word cards for AAC and PECS-style picture exchange — for autistic children and children with additional needs. Download, print and cut out.</p>
 
-  <a class="download" href="helpset-communication-cards.pdf" download>
-    Download the free printable (PDF)
-    <small>A4 · 48 cards · 6 pages · ready to print and cut out</small>
-  </a>
+    <a class="download" href="helpset-communication-cards.pdf" download>
+      Download the free printable (PDF)
+      <small>A4 · 48 cards · 6 pages · ready to print and cut out</small>
+    </a>
+  </div>
 
   <p>Picture communication cards give a child who finds speech difficult a way to make requests, answer questions and share how they feel — by handing over or pointing to a card. This free set covers the everyday vocabulary most families start with, so you can begin straight away without buying anything.</p>
 
@@ -155,7 +255,7 @@
 
   <details>
     <summary>Can I get more cards or different words?</summary>
-    <p>This is a starter set of everyday vocabulary. If you'd like a digital version you can use on a phone or tablet, try the Helpset Communication Cards app, linked below.</p>
+    <p>This is a starter set of everyday vocabulary. If you'd like a digital version you can use on a phone or tablet, or need a word these cards don't cover, try the Helpset Communication Cards app, linked below.</p>
   </details>
 
   <h2>More free resources from Helpset</h2>
@@ -174,6 +274,11 @@
   </p>
 
 </main>
-<!-- TODO: insert your Helpset site footer here -->
+
+<footer>
+  Helpset.uk — free tools for SEND families &nbsp;·&nbsp;
+  <a href="/">Home</a> &nbsp;·&nbsp; <a href="/apps/">All tools</a> &nbsp;·&nbsp; <a href="/privacy/">Privacy</a>
+</footer>
+
 </body>
 </html>
