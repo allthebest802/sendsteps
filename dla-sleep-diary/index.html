@@ -1,181 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- ============ SEO: primary keywords in title + description ============ -->
-<title>Free DLA Sleep Diary — Printable PDF for a Child's Claim | Helpset</title>
-<meta name="description" content="A free printable DLA sleep diary to record your child's night-time care and wakings as evidence for a Disability Living Allowance claim. Designed for autistic children and children with additional needs. Download the PDF.">
+<title>Free DLA Sleep Diary for Children – Printable Template | Helpset</title>
+<meta name="description" content="Free printable DLA sleep diary for children. Record night-time care, wakings, supervision and support, including sleep difficulties for autistic children.">
 <link rel="canonical" href="https://helpset.uk/dla-sleep-diary/">
-
-<!-- Open Graph / social -->
-<meta property="og:type" content="article">
-<meta property="og:title" content="Free DLA Sleep Diary (Printable PDF)">
-<meta property="og:description" content="Record your child's night-time care and wakings as evidence for a DLA claim. Free printable PDF.">
-<meta property="og:url" content="https://helpset.uk/dla-sleep-diary/">
-<meta property="og:site_name" content="Helpset">
-
-<!-- ============ Structured data: CreativeWork (the printable) ============ -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "DLA Sleep Diary (Printable)",
-  "description": "A free printable sleep diary for recording a child's night-time care and wakings as evidence for a Disability Living Allowance (DLA) claim.",
-  "url": "https://helpset.uk/dla-sleep-diary/",
-  "author": { "@type": "Organization", "name": "Helpset", "url": "https://helpset.uk/" },
-  "publisher": { "@type": "Organization", "name": "Helpset", "url": "https://helpset.uk/" },
-  "inLanguage": "en-GB",
-  "isAccessibleForFree": true,
-  "encodingFormat": "application/pdf",
-  "learningResourceType": "printable template",
-  "keywords": "DLA sleep diary, sleep diary for DLA, printable sleep diary, autistic child sleep diary"
-}
-</script>
-
-<!-- ============ Structured data: FAQ (targets the long-tail queries) ============ -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is a DLA sleep diary?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A DLA sleep diary is a night-by-night record of the care and supervision a child needs overnight. It helps show whether a child needs substantially more attention at night than a child of the same age without a disability, which is part of how the night-time care component of Disability Living Allowance is assessed."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How do I use a sleep diary for an autistic child's DLA claim?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Complete one daily sheet for each night for at least one to two weeks. Record the time of each waking, how long it lasted, and the specific care or supervision you gave, such as resettling, comforting, changing, or keeping your child safe. Focus on the care you provide, not only that your child woke, and attach the completed sheets to your claim."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is the sleep diary free to download?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. The printable PDF is completely free to download and print. You can share it freely with other parents and with professionals supporting your claim."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How many nights should I record?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Aim for at least one to two weeks so a clear pattern is visible. Assessors look for how often you are up at night and how long the care takes, so consistency across several nights is more persuasive than a single bad night."
-      }
-    }
-  ]
-}
-</script>
-
-<!-- ============ Minimal, mergeable styling ============
-     Kept intentionally plain and system-font based so it inherits your
-     Helpset CSS. Replace / wrap with your site header, nav and footer,
-     and delete this <style> block once the page uses your stylesheet. -->
 <style>
-  :root { --ink:#1f2933; --mute:#5b6570; --accent:#2563a8; --line:#dfe4ea; --fill:#eef2f6; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-         color:var(--ink); line-height:1.6; }
-  main { max-width:720px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-  h1 { font-size:2rem; line-height:1.2; margin:.2em 0 .4em; }
-  h2 { font-size:1.35rem; margin:2em 0 .5em; }
-  p, li { font-size:1.05rem; }
-  .lede { font-size:1.15rem; color:var(--mute); }
-  a { color:var(--accent); }
-  .download { display:inline-block; background:var(--accent); color:#fff; text-decoration:none;
-              font-weight:600; padding:.85rem 1.4rem; border-radius:8px; margin:1rem 0; }
-  .download small { display:block; font-weight:400; opacity:.85; font-size:.8rem; }
-  .card { background:var(--fill); border:1px solid var(--line); border-radius:10px;
-          padding:1rem 1.25rem; margin:1.5rem 0; }
-  details { border-bottom:1px solid var(--line); padding:.75rem 0; }
-  summary { font-weight:600; cursor:pointer; }
-  details p { margin:.6rem 0 0; color:var(--mute); }
-  .related a { display:block; padding:.4rem 0; }
-  .note { font-size:.9rem; color:var(--mute); }
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --cream:#FAF8F4;--ink:#181825;--ink2:#3A3A52;--muted:#5C5C78;
+  --border:#E4E0D8;--border2:#CEC9BE;--surface:#FFFFFF;
+  --green:#2ECC87;--green-d:#157A4C;--green-l:#E6F9F1;
+  --blue:#1D5EC4;--blue-l:#EFF6FF;--teal:#0A7268;--teal-l:#F0FDFA;
+  --radius:18px;--shadow:0 2px 16px rgba(24,24,37,.07);
+  --shadow-lg:0 10px 40px rgba(24,24,37,.13);
+}
+html{font-size:16px}
+body{
+  margin:0;background:var(--cream);color:var(--ink2);
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.7;
+}
+body:before{
+  content:'';display:block;height:6px;
+  background:linear-gradient(90deg,#2ECC87,#1D5EC4,#7C3AED,#C8103A);
+}
+body>p:first-child{
+  max-width:900px;margin:24px auto 0;padding:0 24px;
+  font-size:.88rem;color:var(--muted);
+}
+body>p:first-child a{color:var(--green-d);font-weight:700;text-decoration:none}
+body>p:first-child a:hover{text-decoration:underline}
+h1,h2,h3{font-family:'Fraunces',Georgia,'Times New Roman',serif;color:var(--ink);line-height:1.2}
+h1{font-size:clamp(2rem,5vw,3rem);margin:18px auto 18px;max-width:900px;padding:0 24px}
+h2{font-size:1.55rem;margin:2.5rem auto 1rem;max-width:900px;padding:0 24px}
+p,ul,ol,.note{
+  max-width:900px;margin-left:auto;margin-right:auto;padding-left:24px;padding-right:24px;
+}
+a{color:var(--blue);font-weight:600}
+.download{
+  display:block;max-width:900px;margin:24px auto;padding:18px 24px;
+  background:var(--green);color:#07351f;text-decoration:none;
+  border-radius:var(--radius);font-weight:800;
+  box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;
+}
+.download:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.note{
+  background:var(--green-l);border:1px solid #BFEFD8;border-left:5px solid var(--green-d);
+  border-radius:12px;padding-top:16px;padding-bottom:16px;
+}
+.small{color:var(--muted);font-size:.9rem}
+li{margin:.45rem 0}
+@media(max-width:650px){
+  body>p:first-child,h1,h2,p,ul,ol,.note{padding-left:18px;padding-right:18px}
+  .download{margin-left:18px;margin-right:18px}
+  h1{font-size:2.1rem}
+}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
-<!-- TODO: insert your Helpset site header / nav here -->
-<main>
 
-  <p class="note"><a href="/">Home</a> › <a href="/resources/">Resources</a> › DLA Sleep Diary</p>
+<p><a href="https://helpset.uk/">Home</a> › <a href="https://helpset.uk/resources/">Resources</a> › DLA Sleep Diary</p>
 
-  <h1>Free DLA Sleep Diary (Printable)</h1>
-  <p class="lede">A simple, printable diary for recording your child's night-time care and wakings — designed to support a Disability Living Allowance (DLA) claim.</p>
+<h1>Free DLA Sleep Diary for Children – Printable Template</h1>
 
-  <a class="download" href="helpset-dla-sleep-diary.pdf" download>
-    Download the free printable (PDF)
-    <small>A4 · 9 pages · print as many daily sheets as you need</small>
-  </a>
+<p>A simple, printable diary for recording your child's night-time care, wakings and supervision — designed to help you keep a clear record when preparing a Disability Living Allowance (DLA) claim.</p>
 
-  <p>If you're claiming DLA for a child who wakes and needs care overnight, a sleep diary is one of the most useful pieces of evidence you can provide. This free <strong>sleep diary for DLA</strong> gives you a clear place to record what happens each night and — most importantly — the care and supervision you give. It works well for autistic children and children with a wide range of additional needs.</p>
+<a class="download" href="https://helpset.uk/dla-sleep-diary/helpset-dla-sleep-diary.pdf">Download the free printable (PDF)<br>A4 · 9 pages · print as many daily sheets as you need</a>
 
-  <h2>Why a sleep diary helps a DLA claim</h2>
-  <p>The night-time care part of DLA looks at whether a child needs substantially more attention or watching over at night than a child of the same age without a disability. A one-off note that your child "sleeps badly" rarely captures that. A diary kept over a week or two shows the <em>pattern</em>: how often you're up, how long each time takes, and what your child needs from you to stay safe and settled.</p>
+<p>If you're claiming DLA for a child who needs extra care or supervision overnight, a sleep diary can help you keep a clear record of what happens each night. This free <strong>sleep diary for DLA</strong> gives you a place to record the times your child wakes, how long they are awake and — most importantly — the care and supervision you provide.</p>
 
-  <div class="card">
-    <strong>What this diary records</strong>
-    <ul>
-      <li>Settling at bedtime and how long it takes</li>
-      <li>Each night waking — the time, how long, and the care you gave</li>
-      <li>Whether your child could be left safely, or needed supervision</li>
-      <li>Early waking and the effect on the following day</li>
-      <li>A weekly overview so patterns are easy to see at a glance</li>
-    </ul>
-  </div>
+<p>It can be particularly useful for parents of <strong>autistic children</strong>, as well as children with other disabilities or additional needs where sleep difficulties, night-time care or supervision are an important part of everyday life.</p>
 
-  <h2>How to use it for your claim</h2>
-  <ol>
-    <li>Print one <strong>daily sheet</strong> for each night — aim for at least one to two weeks.</li>
-    <li>Write down what you actually did: getting up, resettling, changing, comforting, checking, supervising — and roughly how long each took.</li>
-    <li>Record the time and number of wakings. Frequency and duration are what assessors focus on.</li>
-    <li>Be specific. "Up 4 times, 20–40 minutes each, needed resettling and supervision to stay safe" is far stronger than "bad night".</li>
-    <li>Attach the completed sheets to your claim, or summarise them on the weekly overview page.</li>
-  </ol>
+<h2>Why a sleep diary can help with a DLA claim</h2>
 
-  <p class="note">This diary is evidence you gather yourself — it isn't a medical assessment or a guarantee of any award. It works best alongside letters from professionals such as your GP, paediatrician, health visitor or your child's school.</p>
+<p>DLA for children looks at the extra care or supervision a child needs compared with a child of the same age who does not have a disability. GOV.UK says the care component can include situations where a child needs frequent help or continual supervision during the day, or supervision at night. citeturn0search0</p>
 
-  <h2>Frequently asked questions</h2>
+<p>A sleep diary cannot prove entitlement on its own, but it can provide a clear record of the pattern of night-time care you provide. Recording what actually happens can make it easier to explain the frequency, duration and nature of the support your child needs.</p>
 
-  <details open>
-    <summary>What is a DLA sleep diary?</summary>
-    <p>It's a night-by-night record of the care and supervision your child needs overnight. It helps show whether they need substantially more attention at night than a child of the same age without a disability — part of how the night-time care component of DLA is assessed.</p>
-  </details>
+<h2>What this DLA sleep diary records</h2>
+<ul>
+<li>Settling at bedtime and how long it takes</li>
+<li>Each night waking — the time, duration and care you provided</li>
+<li>Whether your child could safely be left alone or needed supervision</li>
+<li>Reassurance, resettling, comforting, changing or other practical help</li>
+<li>Early waking and any relevant effect on the following day</li>
+<li>A weekly overview so patterns are easier to see at a glance</li>
+</ul>
 
-  <details>
-    <summary>How do I use a sleep diary for an autistic child's DLA claim?</summary>
-    <p>Complete one daily sheet per night for at least one to two weeks. Record each waking, how long it lasted, and the specific care you gave — resettling, comforting, changing, or keeping your child safe. Focus on the care you provide, not only that your child woke, then attach the sheets to your claim.</p>
-  </details>
+<h2>Sleep diary for an autistic child's DLA claim</h2>
 
-  <details>
-    <summary>Is it free to download?</summary>
-    <p>Yes — the printable PDF is completely free. Please share it with other parents and with professionals supporting your claim.</p>
-  </details>
+<p>Sleep difficulties can be an important part of a child's overall care needs. If your autistic child wakes repeatedly, stays awake for long periods, needs reassurance or supervision, or cannot safely be left alone at night, record what actually happens rather than simply writing that they have “poor sleep”.</p>
 
-  <details>
-    <summary>How many nights should I record?</summary>
-    <p>Aim for at least one to two weeks so a clear pattern is visible. How often you're up and how long the care takes matters more than any single night.</p>
-  </details>
+<p>For example, an entry could explain that your child woke at 2:00am, remained awake for 35 minutes, needed repeated reassurance and resettling, and required supervision because they could not safely be left alone. The important point is to record the <strong>care and supervision you actually provide</strong>.</p>
 
-  <h2>More free resources from Helpset</h2>
-  <nav class="related">
-    <a href="/blog/pip-dla-evidence-tools/">Tools &amp; evidence for a PIP or DLA claim</a>
-    <a href="/sleep-logger/">Sleep logger — free app (track sleep on your phone)</a>
-    <a href="/now-next-board/">Now &amp; Next board — free app</a>
-    <a href="/apps/">All Helpset apps</a>
-  </nav>
+<p>There is no need to make your diary sound medical. Clear, factual notes about what happened, how often it happened and how long you spent providing care are more useful than trying to use technical language.</p>
 
-</main>
-<!-- TODO: insert your Helpset site footer here -->
+<h2>What should I record in a DLA sleep diary?</h2>
+
+<ul>
+<li><strong>When your child went to bed</strong> and how long it took them to settle.</li>
+<li><strong>When they woke</strong> during the night.</li>
+<li><strong>How long each waking lasted.</strong></li>
+<li><strong>What you did</strong> — for example, resettling, comforting, changing, prompting or supervising.</li>
+<li><strong>Whether your child could safely be left alone.</strong></li>
+<li><strong>How often the same support was needed.</strong></li>
+<li><strong>Anything unusual</strong> that affected the amount of care required.</li>
+</ul>
+
+<p>Focus on the support your child needed rather than just the fact that they woke. For example, “woke at 3am” gives less information than “woke at 3am, stayed awake for 40 minutes and needed a parent to remain with them and resettle them”.</p>
+
+<h2>How to use the sleep diary for your claim</h2>
+
+<ol>
+<li>Print one <strong>daily sheet</strong> for each night you want to record.</li>
+<li>Write down what actually happened, including the care, attention or supervision you provided.</li>
+<li>Record the time and duration of each waking or period of night-time care where possible.</li>
+<li>Be specific about what you did rather than simply describing the night as “bad”.</li>
+<li>Use the weekly overview to identify patterns across several nights.</li>
+<li>Keep the completed diary with the other information you use to support your claim.</li>
+</ol>
+
+<p>The current DLA1 child claim form itself asks about help needed to settle in bed and asks how often that help is needed and how many minutes it takes each time. citeturn0search12</p>
+
+<div class="note"><strong>Important:</strong> This diary is a record you gather yourself. It is not a medical assessment and it cannot guarantee that a DLA claim will be successful. DLA decisions are based on how a child's disability or health condition affects their everyday care and supervision needs. citeturn0search0turn0search12</div>
+
+<h2>How many nights should I record?</h2>
+
+<p>There is no particular number of nights on this page that guarantees a useful diary. Recording over one or two weeks can help you identify a pattern, but the most important thing is to keep accurate records of what actually happens rather than trying to create a particular result.</p>
+
+<h2>Can I use this as a DLA diary template?</h2>
+
+<p>Yes. The free PDF is designed as a printable <strong>DLA diary template</strong> that you can use to record night-time care and sleep difficulties. You can print additional daily sheets if you need to continue recording for longer.</p>
+
+<h2>Is this suitable for a child with autism?</h2>
+
+<p>Yes. The diary can be used for an autistic child or for a child with another disability or additional need. The important thing is to record the child's actual care and supervision needs rather than assuming that a particular diagnosis automatically means they will qualify for DLA.</p>
+
+<h2>Can a sleep diary guarantee DLA?</h2>
+
+<p>No. A sleep diary is supporting information, not a guarantee of an award. GOV.UK explains that DLA for children is based on the extra care or supervision a child needs compared with a child of the same age without a disability. citeturn0search0</p>
+
+<h2>Is the DLA sleep diary free?</h2>
+
+<p>Yes. The printable PDF is free to download and you can print as many daily sheets as you need.</p>
+
+<h2>More free resources from Helpset</h2>
+
+<p><a href="https://helpset.uk/blog/pip-dla-evidence-tools/">Tools &amp; evidence for a PIP or DLA claim</a></p>
+<p><a href="https://helpset.uk/sleep-logger/">Sleep logger — free app (track sleep on your phone)</a></p>
+<p><a href="https://helpset.uk/now-next-board/">Now &amp; Next board — free app</a></p>
+<p><a href="https://helpset.uk/apps/">All Helpset apps</a></p>
+
+<p class="small">Information on this page is intended to help you keep a clear record of care needs. For current DLA eligibility and claiming information, check the official GOV.UK guidance.</p>
+
 </body>
 </html>
