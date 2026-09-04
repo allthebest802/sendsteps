@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Helpset: SEND Toolkit</title>
+  <meta name="description" content="A calm set of offline-first tools for children with additional needs — timers, now &amp; next boards, choice boards and more, in one place." />
+
+  <!-- One manifest for the whole toolkit -> one TWA -> one Amazon listing -->
+  <link rel="manifest" href="/app/manifest.webmanifest" />
+  <meta name="theme-color" content="#2f5d50" />
+  <link rel="icon" href="/app/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/app/icons/icon-192.png" />
+
+  <!-- Fonts. For TRUE offline you'll want to self-host these and precache them
+       in sw.js (see README). Google Fonts is fine to start. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/app/shared/ui.css" />
+</head>
+<body>
+  <a class="skip-link" href="#app">Skip to content</a>
+
+  <header class="app-bar">
+    <a class="app-bar__home" href="#/" aria-label="Helpset home">
+      <span class="app-bar__mark" aria-hidden="true">🌿</span>
+      <span class="app-bar__name">Helpset</span>
+    </a>
+    <!-- The back-to-tools link only shows when you're inside a tool (see router.js) -->
+    <a class="app-bar__back" href="#/" hidden>‹ All tools</a>
+  </header>
+
+  <main id="app" tabindex="-1"><!-- tools + hub render in here --></main>
+
+  <!-- Router is a module; it lazy-loads each tool only when opened -->
+  <script type="module" src="/app/shared/router.js"></script>
+
+  <!-- One service worker for the whole app, scoped to /app/ -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/app/sw.js', { scope: '/app/' })
+          .catch(err => console.warn('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+/* =========================================================================
+   Helpset design tokens.
+   These are SENSIBLE cream/green defaults — swap the hex values for your
+   real site values so the app matches helpset.uk exactly. Change them here,
+   in one place, and the whole app updates.
+   ========================================================================= */
+:root {
+  --cream:      #f6f3ea;   /* page background        */
+  --cream-card: #fffdf7;   /* raised surfaces        */
+  --ink:        #26302b;   /* primary text           */
+  --ink-soft:   #5c675f;   /* secondary text         */
+  --green:      #2f5d50;   /* primary / brand        */
+  --green-deep: #22463c;   /* pressed / headings     */
+  --sage:       #cfe0d6;   /* soft fills, borders    */
+  --amber:      #e0a458;   /* warm accent (timers)   */
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body:    "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --radius: 18px;
+  --shadow: 0 6px 20px rgba(34, 70, 60, 0.08);
+  --gap: clamp(12px, 3vw, 20px);
+  --maxw: 640px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cream: #1a211d; --cream-card: #222b26; --ink: #eef2ee;
+    --ink-soft: #a9b5ad; --sage: #33443b; --shadow: none;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+.skip-link {
+  position: absolute; left: -999px; top: 0;
+  background: var(--green); color: #fff; padding: 10px 14px; z-index: 20;
+}
+.skip-link:focus { left: 8px; top: 8px; border-radius: 8px; }
+
+/* ---- app bar ---- */
+.app-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px clamp(14px, 4vw, 24px);
+  padding-top: max(14px, env(safe-area-inset-top));
+  background: var(--cream);
+  position: sticky; top: 0; z-index: 10;
+  border-bottom: 1px solid var(--sage);
+}
+.app-bar__home { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); }
+.app-bar__mark { color: var(--green); font-size: 1.3rem; }
+.app-bar__name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.app-bar__back { margin-left: auto; text-decoration: none; color: var(--green); font-weight: 600; }
+
+/* ---- layout ---- */
+#app { max-width: var(--maxw); margin: 0 auto; padding: clamp(16px, 4vw, 28px); }
+#app:focus { outline: none; }
+
+/* ---- hub / home screen ---- */
+.hub__lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  line-height: 1.15; margin: 6px 0 4px;
+}
+.hub__sub { color: var(--ink-soft); margin: 0 0 var(--gap); max-width: 46ch; }
+
+.hub__grid {
+  display: grid; gap: var(--gap);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.tile {
+  display: flex; flex-direction: column; gap: 6px;
+  text-align: left; text-decoration: none;
+  background: var(--cream-card); color: var(--ink);
+  border: 1px solid var(--sage); border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow);
+  min-height: 120px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.tile:active { transform: scale(.98); }
+.tile:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+.tile__icon { font-size: 1.6rem; }
+.tile__name { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.tile__blurb { color: var(--ink-soft); font-size: .9rem; }
+.tile[aria-disabled="true"] { opacity: .55; pointer-events: none; }
+.tile__soon { margin-top: auto; font-size: .75rem; color: var(--green); font-weight: 600; }
+
+/* ---- shared building blocks tools can reuse ---- */
+.btn {
+  font: inherit; font-weight: 600; cursor: pointer;
+  border: none; border-radius: 999px; padding: 12px 22px;
+  background: var(--green); color: #fff; box-shadow: var(--shadow);
+}
+.btn:active { background: var(--green-deep); }
+.btn--ghost { background: transparent; color: var(--green); border: 1.5px solid var(--sage); box-shadow: none; }
+.btn:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
