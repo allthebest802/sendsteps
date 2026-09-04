@@ -19,8 +19,6 @@ const CORE = [
   '/app/shared/ui.css',
   '/app/shared/router.js',
   '/app/tools/timer.js',
-  '/app/icons/icon-192.png',
-  '/app/icons/icon-512.png',
 ];
 
 self.addEventListener('install', event => {

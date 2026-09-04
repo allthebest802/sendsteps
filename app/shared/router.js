@@ -14,52 +14,34 @@
 
 const TOOLS = [
   {
-    id: 'now-next',
-    name: 'Now & Next',
+    id: 'now-next', name: 'Now & Next', accent: 'teal', icon: '🔜',
     blurb: 'See what’s happening now and what comes next.',
-    icon: '🔜',
-    ready: false,
-    load: () => import('/app/tools/now-next.js'),
+    ready: false, load: () => import('/app/tools/now-next.js'),
   },
   {
-    id: 'timer',
-    name: 'Visual Timer',
+    id: 'timer', name: 'Visual Timer', accent: 'green', icon: '⏱️',
     blurb: 'A coloured disc that shrinks as time passes.',
-    icon: '⏱️',
-    ready: true,
-    load: () => import('/app/tools/timer.js'),
+    ready: true, load: () => import('/app/tools/timer.js'),
   },
   {
-    id: 'choice',
-    name: 'Choice Board',
+    id: 'choice', name: 'Choice Board', accent: 'amber', icon: '✅',
     blurb: 'Tap to choose between two, three or four pictures.',
-    icon: '✅',
-    ready: false,
-    load: () => import('/app/tools/choice.js'),
+    ready: false, load: () => import('/app/tools/choice.js'),
   },
   {
-    id: 'comm-cards',
-    name: 'Communication Cards',
+    id: 'comm-cards', name: 'Communication Cards', accent: 'purple', icon: '🗣️',
     blurb: 'Tap a card and the phone says it out loud.',
-    icon: '🗣️',
-    ready: false,
-    load: () => import('/app/tools/comm-cards.js'),
+    ready: false, load: () => import('/app/tools/comm-cards.js'),
   },
   {
-    id: 'brain-battery',
-    name: 'Brain Battery',
+    id: 'brain-battery', name: 'Brain Battery', accent: 'blue', icon: '🔋',
     blurb: 'An energy check-in your child can show you.',
-    icon: '🔋',
-    ready: false,
-    load: () => import('/app/tools/brain-battery.js'),
+    ready: false, load: () => import('/app/tools/brain-battery.js'),
   },
   {
-    id: 'token-board',
-    name: 'Token Board',
+    id: 'token-board', name: 'Token Board', accent: 'green', icon: '⭐',
     blurb: 'A visual reward chart when motivation needs a boost.',
-    icon: '⭐',
-    ready: false,
-    load: () => import('/app/tools/token-board.js'),
+    ready: false, load: () => import('/app/tools/token-board.js'),
   },
 ];
 
@@ -112,7 +94,7 @@ function renderHub() {
     const soon = t.ready ? '' : `<span class="tile__soon">Coming soon</span>`;
     return `
       <a class="tile" ${href} ${disabled}>
-        <span class="tile__icon" aria-hidden="true">${t.icon}</span>
+        <span class="tile__icon tile__icon--${t.accent}" aria-hidden="true">${t.icon}</span>
         <span class="tile__name">${t.name}</span>
         <span class="tile__blurb">${t.blurb}</span>
         ${soon}

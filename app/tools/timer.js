@@ -19,16 +19,16 @@ let intervalId = null;
 export function mount(el) {
   el.innerHTML = `
     <section style="text-align:center">
-      <h1 style="font-family:var(--font-display);font-size:1.6rem;margin:.2em 0">Visual Timer</h1>
-      <p style="color:var(--ink-soft);margin-top:0">Tap a length. Watch the ring empty.</p>
+      <h1 style="font-family:var(--font-head);font-size:1.6rem;margin:.2em 0">Visual Timer</h1>
+      <p style="color:var(--ink2);margin-top:0">Tap a length. Watch the ring empty.</p>
 
       <svg viewBox="0 0 120 120" width="240" height="240" role="img"
            aria-label="Time remaining" style="max-width:70vw;height:auto">
-        <circle cx="60" cy="60" r="54" fill="none" stroke="var(--sage)" stroke-width="12"/>
-        <circle id="ring" cx="60" cy="60" r="54" fill="none" stroke="var(--amber)"
+        <circle cx="60" cy="60" r="54" fill="none" stroke="var(--green-l)" stroke-width="12"/>
+        <circle id="ring" cx="60" cy="60" r="54" fill="none" stroke="var(--green)"
                 stroke-width="12" stroke-linecap="round" transform="rotate(-90 60 60)"/>
         <text id="label" x="60" y="66" text-anchor="middle"
-              font-size="20" font-family="var(--font-display)" fill="var(--ink)">0:00</text>
+              font-size="20" font-family="var(--font-head)" fill="var(--ink)">0:00</text>
       </svg>
 
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0">
