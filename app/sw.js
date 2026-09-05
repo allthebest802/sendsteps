@@ -6,10 +6,14 @@
    install; anything else (lazy-loaded tools, card assets) is cached the
    first time it's fetched, so it works offline from then on.
 
+   Updates: a new worker installs in the background and then WAITS. The page
+   detects it and shows an "Update" banner; when the user taps it, the page
+   posts SKIP_WAITING, the new worker activates, and the page reloads once.
+
    TO SHIP AN UPDATE: bump CACHE_VERSION. Old caches are cleared on activate.
    ========================================================================= */
 
-const CACHE_VERSION = 'helpset-app-v1';
+const CACHE_VERSION = 'helpset-app-v2';
 
 // The shell that must be available offline immediately.
 const CORE = [
@@ -29,14 +33,29 @@ const CORE = [
   '/app/tools/comm-cards.app.html',
   '/app/tools/token-board.js',
   '/app/tools/token-board.app.html',
+  // Self-hosted fonts — precached so first paint is on-brand even offline
+  '/app/fonts/fonts.css',
+  '/app/fonts/fraunces-latin-700-normal.woff2',
+  '/app/fonts/fraunces-latin-800-normal.woff2',
+  '/app/fonts/fraunces-latin-900-normal.woff2',
+  '/app/fonts/plus-jakarta-sans-latin-400-normal.woff2',
+  '/app/fonts/plus-jakarta-sans-latin-600-normal.woff2',
+  '/app/fonts/plus-jakarta-sans-latin-700-normal.woff2',
+  '/app/fonts/plus-jakarta-sans-latin-800-normal.woff2',
 ];
 
 self.addEventListener('install', event => {
+  // Note: no skipWaiting() here — the new worker waits until the user taps
+  // "Update" (which posts SKIP_WAITING below), so we never swap versions
+  // out from under someone mid-task.
   event.waitUntil(
-    caches.open(CACHE_VERSION)
-      .then(cache => cache.addAll(CORE))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_VERSION).then(cache => cache.addAll(CORE))
   );
+});
+
+// The page sends this when the user taps the "Update" banner.
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
