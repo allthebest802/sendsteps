@@ -35,53 +35,13 @@
   <!-- Router is a module; it lazy-loads each tool only when opened -->
   <script type="module" src="/app/shared/router.js"></script>
 
-  <!-- Update banner: shown when a new version has been cached and is waiting -->
-  <div id="updateBar" class="update-bar" hidden role="status">
-    <span>A new version of Helpset is ready.</span>
-    <button id="updateBtn" type="button">Update</button>
-  </div>
-
-  <!-- One service worker for the whole app, scoped to /app/ -->
+  <!-- One service worker for the whole app, scoped to /app/.
+       Updates apply on the next app launch — no in-app banner. -->
   <script>
     if ('serviceWorker' in navigator) {
-      let reloading = false;
-
-      // When the new worker takes control, reload once to show the fresh version.
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (reloading) return;
-        reloading = true;
-        window.location.reload();
-      });
-
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' })
-          .then(reg => {
-            const bar = document.getElementById('updateBar');
-            const btn = document.getElementById('updateBtn');
-
-            // A worker is already waiting (updated in a previous visit).
-            if (reg.waiting && navigator.serviceWorker.controller) showBar(reg.waiting);
-
-            // A new worker was found and is installing.
-            reg.addEventListener('updatefound', () => {
-              const nw = reg.installing;
-              if (!nw) return;
-              nw.addEventListener('statechange', () => {
-                // Installed + an existing controller => this is an UPDATE, not first install.
-                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                  showBar(nw);
-                }
-              });
-            });
-
-            function showBar(worker) {
-              bar.hidden = false;
-              btn.onclick = () => {
-                bar.hidden = true;
-                worker.postMessage({ type: 'SKIP_WAITING' }); // triggers controllerchange -> reload
-              };
-            }
-          })
+        navigator.serviceWorker
+          .register('/app/sw.js', { scope: '/app/' })
           .catch(err => console.warn('SW registration failed:', err));
       });
     }

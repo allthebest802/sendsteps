@@ -6,14 +6,13 @@
    install; anything else (lazy-loaded tools, card assets) is cached the
    first time it's fetched, so it works offline from then on.
 
-   Updates: a new worker installs in the background and then WAITS. The page
-   detects it and shows an "Update" banner; when the user taps it, the page
-   posts SKIP_WAITING, the new worker activates, and the page reloads once.
+   Updates: a new version installs in the background and takes over on the
+   next app launch (skipWaiting + claim). No in-app banner.
 
    TO SHIP AN UPDATE: bump CACHE_VERSION. Old caches are cleared on activate.
    ========================================================================= */
 
-const CACHE_VERSION = 'helpset-app-v2';
+const CACHE_VERSION = 'helpset-app-v3';
 
 // The shell that must be available offline immediately.
 const CORE = [
@@ -45,17 +44,11 @@ const CORE = [
 ];
 
 self.addEventListener('install', event => {
-  // Note: no skipWaiting() here — the new worker waits until the user taps
-  // "Update" (which posts SKIP_WAITING below), so we never swap versions
-  // out from under someone mid-task.
   event.waitUntil(
-    caches.open(CACHE_VERSION).then(cache => cache.addAll(CORE))
+    caches.open(CACHE_VERSION)
+      .then(cache => cache.addAll(CORE))
+      .then(() => self.skipWaiting())
   );
-});
-
-// The page sends this when the user taps the "Update" banner.
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
