@@ -14,7 +14,7 @@
 
 const TOOLS = [
   {
-    id: 'now-next', name: 'Now & Next', accent: 'teal', icon: '🔜',
+    id: 'now-next', name: 'Now & Next', accent: 'teal', icon: '➡️',
     blurb: 'See what’s happening now and what comes next.',
     ready: true, load: () => import('/app/tools/now-next.js'),
   },

@@ -1,0 +1,16 @@
+/* Self-hosted Helpset fonts — bundled so the app is fully offline.
+   Subset: Latin. Weights match what the shell UI uses. */
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:700;font-display:swap;
+  src:url('/app/fonts/fraunces-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:800;font-display:swap;
+  src:url('/app/fonts/fraunces-latin-800-normal.woff2') format('woff2')}
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:900;font-display:swap;
+  src:url('/app/fonts/fraunces-latin-900-normal.woff2') format('woff2')}
+@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:400;font-display:swap;
+  src:url('/app/fonts/plus-jakarta-sans-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:600;font-display:swap;
+  src:url('/app/fonts/plus-jakarta-sans-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:700;font-display:swap;
+  src:url('/app/fonts/plus-jakarta-sans-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:800;font-display:swap;
+  src:url('/app/fonts/plus-jakarta-sans-latin-800-normal.woff2') format('woff2')}
