@@ -13,8 +13,11 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <!-- Self-hosted fonts (bundled + precached) so the app is fully offline -->
-  <link rel="stylesheet" href="/app/fonts/fonts.css" />
+  <!-- Fonts. For TRUE offline you'll want to self-host these and precache them
+       in sw.js (see README). Google Fonts is fine to start. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/app/shared/ui.css" />
 </head>
@@ -35,53 +38,12 @@
   <!-- Router is a module; it lazy-loads each tool only when opened -->
   <script type="module" src="/app/shared/router.js"></script>
 
-  <!-- Update banner: shown when a new version has been cached and is waiting -->
-  <div id="updateBar" class="update-bar" hidden role="status">
-    <span>A new version of Helpset is ready.</span>
-    <button id="updateBtn" type="button">Update</button>
-  </div>
-
   <!-- One service worker for the whole app, scoped to /app/ -->
   <script>
     if ('serviceWorker' in navigator) {
-      let reloading = false;
-
-      // When the new worker takes control, reload once to show the fresh version.
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (reloading) return;
-        reloading = true;
-        window.location.reload();
-      });
-
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' })
-          .then(reg => {
-            const bar = document.getElementById('updateBar');
-            const btn = document.getElementById('updateBtn');
-
-            // A worker is already waiting (updated in a previous visit).
-            if (reg.waiting && navigator.serviceWorker.controller) showBar(reg.waiting);
-
-            // A new worker was found and is installing.
-            reg.addEventListener('updatefound', () => {
-              const nw = reg.installing;
-              if (!nw) return;
-              nw.addEventListener('statechange', () => {
-                // Installed + an existing controller => this is an UPDATE, not first install.
-                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                  showBar(nw);
-                }
-              });
-            });
-
-            function showBar(worker) {
-              bar.hidden = false;
-              btn.onclick = () => {
-                bar.hidden = true;
-                worker.postMessage({ type: 'SKIP_WAITING' }); // triggers controllerchange -> reload
-              };
-            }
-          })
+        navigator.serviceWorker
+          .register('/app/sw.js', { scope: '/app/' })
           .catch(err => console.warn('SW registration failed:', err));
       });
     }

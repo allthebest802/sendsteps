@@ -17,7 +17,6 @@
   ],
   "screenshots": [
     { "src": "/app/screenshots/hub.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" },
-    { "src": "/app/screenshots/timer.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" },
-    { "src": "/app/screenshots/settings.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" }
+    { "src": "/app/screenshots/timer.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow" }
   ]
 }
