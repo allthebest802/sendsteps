@@ -19,6 +19,8 @@ const CORE = [
   '/app/shared/ui.css',
   '/app/shared/router.js',
   '/app/tools/timer.js',
+  '/app/tools/now-next.js',
+  '/app/tools/now-next.app.html',
 ];
 
 self.addEventListener('install', event => {

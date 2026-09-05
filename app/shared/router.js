@@ -16,7 +16,7 @@ const TOOLS = [
   {
     id: 'now-next', name: 'Now & Next', accent: 'teal', icon: '🔜',
     blurb: 'See what’s happening now and what comes next.',
-    ready: false, load: () => import('/app/tools/now-next.js'),
+    ready: true, load: () => import('/app/tools/now-next.js'),
   },
   {
     id: 'timer', name: 'Visual Timer', accent: 'green', icon: '⏱️',
