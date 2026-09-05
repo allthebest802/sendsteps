@@ -26,22 +26,22 @@ const TOOLS = [
   {
     id: 'choice', name: 'Choice Board', accent: 'amber', icon: '✅',
     blurb: 'Tap to choose between two, three or four pictures.',
-    ready: false, load: () => import('/app/tools/choice.js'),
+    ready: true, load: () => import('/app/tools/choice.js'),
   },
   {
     id: 'comm-cards', name: 'Communication Cards', accent: 'purple', icon: '🗣️',
     blurb: 'Tap a card and the phone says it out loud.',
-    ready: false, load: () => import('/app/tools/comm-cards.js'),
+    ready: true, load: () => import('/app/tools/comm-cards.js'),
   },
   {
     id: 'brain-battery', name: 'Brain Battery', accent: 'blue', icon: '🔋',
     blurb: 'An energy check-in your child can show you.',
-    ready: false, load: () => import('/app/tools/brain-battery.js'),
+    ready: true, load: () => import('/app/tools/brain-battery.js'),
   },
   {
     id: 'token-board', name: 'Token Board', accent: 'green', icon: '⭐',
     blurb: 'A visual reward chart when motivation needs a boost.',
-    ready: false, load: () => import('/app/tools/token-board.js'),
+    ready: true, load: () => import('/app/tools/token-board.js'),
   },
 ];
 

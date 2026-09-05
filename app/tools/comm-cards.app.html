@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Communication Cards — Helpset</title>
+<meta name="description" content="Tap-to-speak communication cards for children. A free AAC-style board that says what your child needs out loud. Offline, no ads. From helpset.uk" />
+
+<!-- ============================================================
+  COMMUNICATION CARDS — offline-first PWA (Helpset)
+  Same template as the rest of the suite.
+  Deploy: cards.helpset.uk. Update: bump CACHE_VERSION in sw.js.
+
+  Flow:
+  - TALK mode (default): tap a card → it highlights and the phone
+    speaks the phrase aloud (offline text-to-speech).
+  - EDIT mode (parent): tap a card to replace it, ✕ to remove,
+    + tile to add. Cards come from a dedicated "I need / I feel"
+    group (with proper spoken sentences), the shared activity
+    library, or photo cards.
+  - Child lock: locked = talk only; edit and settings are hidden.
+
+  The spoken phrase is separate from the card label: the card
+  shows "Drink", the phone says "I would like a drink, please."
+============================================================ -->
+
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --ink: #26333a;
+    --ink-soft: #5b6a72;
+    --teal: #266e6e;
+    --teal-dark: #1c5555;
+    --accent: #f0a64a;
+    --radius: 20px;
+    --shadow: 0 2px 10px rgba(38, 51, 58, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 6px; }
+
+  header { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; }
+  .app-title { font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--teal-dark); flex: 1; }
+
+  .icon-btn {
+    min-width: 48px; min-height: 48px;
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    font-size: 1.35rem; line-height: 1;
+    display: grid; place-items: center;
+  }
+  .icon-btn[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  main {
+    flex: 1;
+    padding: 0.3rem 0.9rem calc(1rem + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .mode-banner {
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--teal-dark);
+    background: #dcebe9;
+    border-radius: 12px;
+    padding: 0.5rem;
+  }
+  .mode-banner.hidden { display: none; }
+
+  .tabs {
+    display: flex;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding: 0.15rem 0.1rem 0.35rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    border: none;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    font-weight: 800;
+    font-size: 0.92rem;
+    padding: 0.55rem 1rem;
+    min-height: 44px;
+    white-space: nowrap;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .tab[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  .grid {
+    flex: 1;
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  body.big-cards .grid { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 700px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+    body.big-cards .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .cc {
+    position: relative;
+    border: none;
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.9rem 0.4rem;
+    min-height: 108px;
+  }
+  body.big-cards .cc { min-height: 140px; }
+
+  .cc .emoji { font-size: clamp(2.2rem, 9vw, 3.4rem); line-height: 1.1; }
+  body.big-cards .cc .emoji { font-size: clamp(3rem, 13vw, 4.5rem); }
+  .cc img { width: 60%; max-width: 110px; aspect-ratio: 1; object-fit: cover; border-radius: 12px; }
+  .cc .lbl {
+    font-size: clamp(0.85rem, 3.4vw, 1.05rem);
+    font-weight: 800;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .cc.speaking { background: #fdeeda; outline: 4px solid var(--accent); }
+
+  .cc .remove {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 34px; height: 34px;
+    border: none; border-radius: 10px;
+    background: #f3dedd; color: #7a2721;
+    font-size: 1rem; line-height: 1;
+    display: grid; place-items: center;
+  }
+
+  .cc.add-tile {
+    background: transparent;
+    border: 3px dashed rgba(38, 51, 58, 0.25);
+    box-shadow: none;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+
+  .footer-bar { display: flex; gap: 0.7rem; justify-content: center; }
+
+  .bar-btn {
+    border: none; border-radius: 16px;
+    background: #fff; box-shadow: var(--shadow);
+    font-weight: 800; font-size: 1rem;
+    padding: 0.8rem 1.4rem; min-height: 54px;
+  }
+  .bar-btn.primary { background: var(--teal); color: #fff; }
+
+  .hidden { display: none !important; }
+
+  /* ---------- Dialogs (template) ---------- */
+  dialog {
+    border: none; border-radius: var(--radius);
+    box-shadow: 0 10px 40px rgba(38, 51, 58, 0.3);
+    padding: 1.2rem;
+    width: min(560px, calc(100vw - 2rem));
+    max-height: 85dvh;
+    background: var(--bg); color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(38, 51, 58, 0.45); }
+
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .modal-head h2 { margin: 0; font-size: 1.2rem; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.6rem; }
+
+  .pick-card {
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    padding: 0.6rem 0.3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    min-height: 96px;
+  }
+  .pick-card .emoji { font-size: 2.2rem; }
+  .pick-card img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; }
+  .pick-card span.lbl { font-size: 0.78rem; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+
+  .section-title {
+    font-size: 0.85rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); margin: 1rem 0 0.5rem;
+  }
+
+  .wide-btn {
+    width: 100%; border: none; border-radius: 14px;
+    background: var(--teal); color: #fff;
+    font-weight: 700; padding: 0.8rem; min-height: 52px; margin-top: 0.6rem;
+  }
+  .wide-btn.secondary { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .wide-btn.danger { background: #b3453f; }
+
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow);
+    padding: 0.8rem 1rem; margin-bottom: 0.6rem;
+  }
+  .setting-row label { font-weight: 600; }
+  .setting-row input[type="checkbox"] { width: 26px; height: 26px; accent-color: var(--teal); }
+
+  .manage-card {
+    display: flex; align-items: center; gap: 0.7rem;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow);
+    padding: 0.5rem 0.7rem; margin-bottom: 0.5rem;
+  }
+  .manage-card img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+  .manage-card .lbl { flex: 1; font-weight: 600; overflow-wrap: anywhere; }
+  .manage-card button {
+    border: none; background: #f3dedd; color: #7a2721;
+    border-radius: 10px; min-width: 44px; min-height: 44px; font-size: 1.1rem;
+  }
+
+  .footer-note { text-align: center; font-size: 0.85rem; color: var(--ink-soft); margin-top: 1rem; }
+  .footer-note a { color: var(--teal-dark); font-weight: 700; }
+
+  #lockBtn { position: relative; }
+  #lockBtn .hold-ring { position: absolute; inset: 4px; border-radius: 10px; border: 3px solid transparent; }
+  #lockBtn.holding .hold-ring { border-color: #fff; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--ink); color: #fff;
+    padding: 0.6rem 1.1rem; border-radius: 999px;
+    font-weight: 600; font-size: 0.9rem;
+    opacity: 0; pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .toast { transition: opacity 0.25s ease; }
+    .cc { transition: outline-color 0.15s ease, background 0.15s ease; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="app-title">Communication Cards</h1>
+  <button id="lockBtn" class="icon-btn" aria-pressed="false"
+          aria-label="Child lock. Tap to lock. Press and hold for two seconds to unlock.">
+    <span id="lockIcon" aria-hidden="true">🔓</span>
+    <span class="hold-ring" aria-hidden="true"></span>
+  </button>
+  <button id="settingsBtn" class="icon-btn" aria-label="Settings">
+    <span aria-hidden="true">⚙️</span>
+  </button>
+</header>
+
+<main>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Card categories"></div>
+  <div class="mode-banner hidden" id="editBanner">Editing — tap a card to change it, ✕ to remove</div>
+  <div class="grid" id="grid" role="group" aria-label="Communication cards"></div>
+  <div class="footer-bar">
+    <button class="bar-btn" id="editBtn">✎ Edit cards</button>
+    <button class="bar-btn primary hidden" id="doneEditBtn">Done</button>
+  </div>
+</main>
+
+<!-- Card picker -->
+<dialog id="picker" aria-labelledby="pickerTitle">
+  <div class="modal-head">
+    <h2 id="pickerTitle">Choose a card</h2>
+    <button class="icon-btn" data-close="picker" aria-label="Close">✕</button>
+  </div>
+  <div id="builtinGroups"></div>
+  <div class="section-title">My photo cards</div>
+  <div id="customGrid" class="card-grid"></div>
+  <button id="addPhotoBtn" class="wide-btn secondary">📷 Add a photo card</button>
+  <input id="photoInput" type="file" accept="image/*" hidden />
+</dialog>
+
+<!-- Settings -->
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <div class="modal-head">
+    <h2 id="settingsTitle">Settings</h2>
+    <button class="icon-btn" data-close="settings" aria-label="Close">✕</button>
+  </div>
+
+  <div class="setting-row">
+    <label for="speakToggle">Speak when a card is tapped</label>
+    <input type="checkbox" id="speakToggle" checked />
+  </div>
+  <div class="setting-row">
+    <label for="bigToggle">Bigger cards (fewer per row)</label>
+    <input type="checkbox" id="bigToggle" />
+  </div>
+
+  <button id="installBtn" class="wide-btn" hidden>⬇️ Install this app</button>
+
+  <div class="section-title">My photo cards</div>
+  <div id="manageCards"></div>
+  <p id="noCustomNote" class="footer-note">No photo cards yet — add one while editing the board.</p>
+
+  <button id="resetBoardBtn" class="wide-btn secondary">Reset board to starter cards</button>
+  <button id="resetBtn" class="wide-btn danger">Delete all photo cards</button>
+
+  <p class="footer-note">
+    Free from <a href="https://helpset.uk" rel="noopener">helpset.uk</a> —
+    more visual support tools for families.<br />
+    Works fully offline. Nothing you add ever leaves this device.<br />
+    Tip: if the voice sounds robotic, updating "Speech Services by Google" in the Play Store usually improves it.
+  </p>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   "I need / I feel" cards — first-class communication cards
+   with proper spoken sentences (say ≠ label).
+============================================================ */
+const NEEDS_GROUP = {
+  title: "I need / I feel",
+  cards: [
+    ["help", "🙋", "Help", "I need help, please."],
+    ["toilet2", "🚽", "Toilet", "I need the toilet."],
+    ["drink2", "🥤", "Drink", "I would like a drink, please."],
+    ["hungry", "🍽️", "Hungry", "I am hungry."],
+    ["hurts", "🤕", "It hurts", "Something hurts."],
+    ["tooloud", "🙉", "Too loud", "It is too loud for me."],
+    ["break2", "⏸️", "Break", "I need a break, please."],
+    ["finished2", "✅", "Finished", "I am finished."],
+    ["yes", "👍", "Yes", "Yes."],
+    ["no", "👎", "No", "No."],
+    ["more", "➕", "More", "More, please."],
+    ["stop", "✋", "Stop", "Stop, please."],
+    ["tired", "😴", "Tired", "I am tired."],
+    ["scared", "😟", "Scared", "I feel scared."],
+    ["happy", "😊", "Happy", "I feel happy."],
+    ["sad", "😢", "Sad", "I feel sad."],
+    ["angry", "😠", "Angry", "I feel angry."],
+    ["home2", "🏠", "Home", "I want to go home."],
+    ["cuddle2", "🤗", "Cuddle", "I would like a cuddle."],
+    ["dontknow", "🤷", "Don't know", "I don't know."],
+    ["wait2", "⏳", "Wait", "I am waiting."],
+    ["quiet2", "🤫", "Quiet place", "I need somewhere quiet."]
+  ].map(([id, emoji, label, say]) => ({ id: "n:" + id, emoji, label, say }))
+};
+
+const CARD_GROUPS = [
+  ["Daily routine", [
+    ["wake", "☀️", "Wake up"],
+    ["breakfast", "🥣", "Breakfast"],
+    ["teeth", "🪥", "Brush teeth"],
+    ["dressed", "👕", "Get dressed"],
+    ["shoes", "👟", "Shoes on"],
+    ["coat", "🧥", "Coat on"],
+    ["bag", "🎒", "Pack bag"],
+    ["medicine", "💊", "Medicine"],
+    ["toilet", "🚽", "Toilet"],
+    ["wash", "🧼", "Wash hands"],
+    ["bath", "🛁", "Bath"],
+    ["shower", "🚿", "Shower"],
+    ["pyjamas", "🌙", "Pyjamas on"],
+    ["reading", "📖", "Story"],
+    ["bed", "🛏️", "Bed"],
+    ["sleep", "😴", "Sleep"]
+  ]],
+  ["Food & drink", [
+    ["snack", "🍎", "Snack"],
+    ["lunch", "🥪", "Lunch"],
+    ["dinner", "🍽️", "Dinner"],
+    ["drink", "🥤", "Drink"],
+    ["milk", "🥛", "Milk"],
+    ["fruit", "🍌", "Fruit"],
+    ["icecream", "🍦", "Ice cream"],
+    ["baking", "🧁", "Baking"]
+  ]],
+  ["Going out", [
+    ["car", "🚗", "Car"],
+    ["bus", "🚌", "Bus"],
+    ["train", "🚆", "Train"],
+    ["bike", "🚲", "Bike"],
+    ["scooter", "🛴", "Scooter"],
+    ["walk", "🚶", "Walk"],
+    ["school", "🏫", "School"],
+    ["home", "🏠", "Home"],
+    ["park", "🛝", "Park"],
+    ["shop", "🛒", "Shopping"],
+    ["library", "📚", "Library"],
+    ["swim", "🏊", "Swimming"],
+    ["beach", "🏖️", "Beach"],
+    ["holiday", "🧳", "Holiday"],
+    ["doctor", "🩺", "Doctor"],
+    ["dentist", "🦷", "Dentist"],
+    ["haircut", "💇", "Haircut"]
+  ]],
+  ["People & pets", [
+    ["mum", "👩", "Mum"],
+    ["dad", "👨", "Dad"],
+    ["grandma", "👵", "Grandma"],
+    ["grandpa", "👴", "Grandpa"],
+    ["baby", "👶", "Baby"],
+    ["friends", "🧑‍🤝‍🧑", "Friends"],
+    ["teacher", "🧑‍🏫", "Teacher"],
+    ["dog", "🐶", "Dog"],
+    ["cat", "🐱", "Cat"]
+  ]],
+  ["Play & activities", [
+    ["play", "🧸", "Play"],
+    ["tv", "📺", "TV"],
+    ["tablet", "📱", "Tablet"],
+    ["games", "🎮", "Video games"],
+    ["drawing", "🖍️", "Drawing"],
+    ["painting", "🎨", "Painting"],
+    ["music", "🎵", "Music"],
+    ["singing", "🎤", "Singing"],
+    ["dancing", "💃", "Dancing"],
+    ["building", "🧱", "Building"],
+    ["puzzle", "🧩", "Puzzle"],
+    ["football", "⚽", "Football"],
+    ["garden", "🌻", "Garden"],
+    ["craft", "✂️", "Craft"],
+    ["bubbles", "🫧", "Bubbles"],
+    ["party", "🎉", "Party"],
+    ["birthday", "🎂", "Birthday"],
+    ["present", "🎁", "Present"]
+  ]],
+  ["School & home", [
+    ["homework", "✏️", "Homework"],
+    ["tidy", "🧹", "Tidy up"],
+    ["help", "🤝", "Helping"]
+  ]],
+  ["Calm & waiting", [
+    ["quiet", "🤫", "Quiet time"],
+    ["cuddle", "🤗", "Cuddle"],
+    ["headphones", "🎧", "Headphones"],
+    ["breathe", "😮‍💨", "Deep breaths"],
+    ["breaktime", "⏸️", "Break"],
+    ["wait", "⏳", "Waiting"],
+    ["finished", "✅", "Finished"]
+  ]]
+].map(([title, cards]) => ({
+  title,
+  cards: cards.map(([id, emoji, label]) => ({ id: "b:" + id, emoji, label }))
+}));
+
+const BUILTIN_CARDS = CARD_GROUPS.flatMap((g) => g.cards);
+
+// Picker shows needs first, then the shared activity library
+const PICKER_GROUPS = [NEEDS_GROUP].concat(CARD_GROUPS);
+const ALL_BUILTIN = NEEDS_GROUP.cards.concat(BUILTIN_CARDS);
+
+// Starter board: the twelve most-needed cards
+const DEFAULT_BOARD = ["n:help", "n:toilet2", "n:drink2", "n:hungry", "n:hurts", "n:tooloud",
+                       "n:break2", "n:finished2", "n:yes", "n:no", "n:more", "n:stop"];
+
+/* ============================================================
+   State
+============================================================ */
+const STORE_KEY = "cc-state-v1";
+
+let state = {
+  cards: DEFAULT_BOARD.slice(),
+  speak: true,
+  big: false,
+  locked: false,
+  tab: "mine" // "mine" | group title | "photos"
+};
+let editing = false;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch (e) { /* start fresh */ }
+}
+function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+/* ============================================================
+   IndexedDB — photo cards (template)
+============================================================ */
+const DB_NAME = "cc-photos";
+let customCards = [];
+
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("photos", { keyPath: "id" });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbAll() {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction("photos").objectStore("photos").getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbPut(record) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").put(record);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function idbDelete(id) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function loadCustomCards() {
+  const records = await idbAll();
+  customCards = records.map((r) => ({ id: r.id, label: r.label, say: r.label, url: URL.createObjectURL(r.blob) }));
+}
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("resize failed")), "image/jpeg", 0.85);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function findCard(id) {
+  if (!id) return null;
+  return ALL_BUILTIN.find((c) => c.id === id) || customCards.find((c) => c.id === id) || null;
+}
+
+/* ============================================================
+   Speech — offline text-to-speech
+============================================================ */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-GB";
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* silently skip */ }
+}
+
+/* ============================================================
+   Board rendering
+============================================================ */
+const grid = document.getElementById("grid");
+const editBanner = document.getElementById("editBanner");
+const editBtn = document.getElementById("editBtn");
+const doneEditBtn = document.getElementById("doneEditBtn");
+
+function cardVisual(card) {
+  const frag = document.createDocumentFragment();
+  if (card.url) {
+    const img = document.createElement("img");
+    img.src = card.url; img.alt = "";
+    frag.appendChild(img);
+  } else {
+    const em = document.createElement("span");
+    em.className = "emoji";
+    em.setAttribute("aria-hidden", "true");
+    em.textContent = card.emoji;
+    frag.appendChild(em);
+  }
+  const lbl = document.createElement("span");
+  lbl.className = "lbl";
+  lbl.textContent = card.label;
+  frag.appendChild(lbl);
+  return frag;
+}
+
+function tabList() {
+  const tabs = [{ key: "mine", label: "⭐ My cards" }];
+  PICKER_GROUPS.forEach((g) => tabs.push({ key: g.title, label: g.title }));
+  if (customCards.length) tabs.push({ key: "photos", label: "📷 My photos" });
+  return tabs;
+}
+
+function cardsForTab() {
+  if (state.tab === "mine") return state.cards.map(findCard).filter(Boolean);
+  if (state.tab === "photos") return customCards;
+  const group = PICKER_GROUPS.find((g) => g.title === state.tab);
+  return group ? group.cards : [];
+}
+
+function render() {
+  document.body.classList.toggle("big-cards", state.big);
+
+  // Tabs — always available, including when locked (browsing is the point)
+  const tabsEl = document.getElementById("tabs");
+  const tabs = tabList();
+  if (!tabs.some((t) => t.key === state.tab)) state.tab = "mine";
+  tabsEl.innerHTML = "";
+  tabs.forEach((t) => {
+    const b = document.createElement("button");
+    b.className = "tab";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-pressed", String(state.tab === t.key));
+    b.textContent = t.label;
+    b.addEventListener("click", () => {
+      state.tab = t.key;
+      if (t.key !== "mine") editing = false;
+      saveState();
+      render();
+    });
+    tabsEl.appendChild(b);
+  });
+
+  const onMine = state.tab === "mine";
+  editBanner.classList.toggle("hidden", !editing);
+  editBtn.classList.toggle("hidden", editing || state.locked || !onMine);
+  doneEditBtn.classList.toggle("hidden", !editing);
+
+  grid.innerHTML = "";
+  const cards = cardsForTab();
+  cards.forEach((card, index) => {
+    const btn = document.createElement("button");
+    btn.className = "cc";
+    btn.setAttribute("aria-label", editing ? "Change card: " + card.label : card.say || card.label);
+    btn.appendChild(cardVisual(card));
+
+    if (editing && onMine) {
+      btn.addEventListener("click", () => openPicker(index));
+      const rm = document.createElement("span");
+      rm.className = "remove";
+      rm.setAttribute("role", "button");
+      rm.setAttribute("aria-label", "Remove card: " + card.label);
+      rm.textContent = "✕";
+      rm.addEventListener("click", (e) => {
+        e.stopPropagation();
+        state.cards.splice(index, 1);
+        saveState();
+        render();
+      });
+      btn.appendChild(rm);
+    } else {
+      btn.addEventListener("click", () => tapCard(btn, card));
+    }
+    grid.appendChild(btn);
+  });
+
+  if (editing && onMine && state.cards.length < 24) {
+    const add = document.createElement("button");
+    add.className = "cc add-tile";
+    add.setAttribute("aria-label", "Add a card");
+    add.innerHTML = '<span class="emoji" aria-hidden="true">＋</span><span class="lbl">Add card</span>';
+    add.addEventListener("click", () => openPicker(state.cards.length));
+    grid.appendChild(add);
+  }
+}
+
+let speakTimer = null;
+function tapCard(btn, card) {
+  document.querySelectorAll(".cc.speaking").forEach((el) => el.classList.remove("speaking"));
+  btn.classList.add("speaking");
+  if (state.speak) speak(card.say || card.label);
+  if (speakTimer) clearTimeout(speakTimer);
+  speakTimer = setTimeout(() => btn.classList.remove("speaking"), 1800);
+}
+
+editBtn.addEventListener("click", () => {
+  if (state.locked) return;
+  state.tab = "mine";
+  editing = true;
+  render();
+});
+doneEditBtn.addEventListener("click", () => {
+  editing = false;
+  render();
+});
+
+/* ============================================================
+   Card picker
+============================================================ */
+const picker = document.getElementById("picker");
+const builtinGroups = document.getElementById("builtinGroups");
+const customGrid = document.getElementById("customGrid");
+let pickerIndex = null;
+
+function makePickEl(card) {
+  const btn = document.createElement("button");
+  btn.className = "pick-card";
+  btn.setAttribute("aria-label", card.label);
+  btn.appendChild(cardVisual(card));
+  btn.querySelector(".lbl") && btn.querySelector(".lbl").classList.add("lbl");
+  btn.addEventListener("click", () => {
+    state.cards[pickerIndex] = card.id;
+    saveState();
+    picker.close();
+    render();
+  });
+  return btn;
+}
+
+function renderPickerGrids() {
+  builtinGroups.innerHTML = "";
+  PICKER_GROUPS.forEach((group) => {
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = group.title;
+    builtinGroups.appendChild(title);
+    const g = document.createElement("div");
+    g.className = "card-grid";
+    group.cards.forEach((c) => g.appendChild(makePickEl(c)));
+    builtinGroups.appendChild(g);
+  });
+  customGrid.innerHTML = "";
+  customCards.forEach((c) => customGrid.appendChild(makePickEl(c)));
+  if (!customCards.length) {
+    const none = document.createElement("p");
+    none.className = "footer-note";
+    none.style.gridColumn = "1 / -1";
+    none.textContent = "Add photos of real things — your child's actual cup, blanket or headphones often work best.";
+    customGrid.appendChild(none);
+  }
+}
+
+function openPicker(index) {
+  pickerIndex = index;
+  document.getElementById("pickerTitle").textContent =
+    index >= state.cards.length ? "Add a card" : "Change this card";
+  renderPickerGrids();
+  picker.showModal();
+}
+
+const photoInput = document.getElementById("photoInput");
+document.getElementById("addPhotoBtn").addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", async () => {
+  const file = photoInput.files[0];
+  photoInput.value = "";
+  if (!file) return;
+  let label = prompt("What should this card say? (e.g. “My blanket”)");
+  if (label === null) return;
+  label = label.trim().slice(0, 40) || "My card";
+  try {
+    const blob = await resizeImage(file);
+    const id = "c:" + Date.now();
+    await idbPut({ id, label, blob });
+    customCards.push({ id, label, say: label, url: URL.createObjectURL(blob) });
+    renderPickerGrids();
+    toast("Photo card added");
+  } catch (e) {
+    toast("Sorry, that photo couldn’t be added");
+  }
+});
+
+/* ============================================================
+   Settings
+============================================================ */
+const settings = document.getElementById("settings");
+const speakToggle = document.getElementById("speakToggle");
+const bigToggle = document.getElementById("bigToggle");
+const manageCards = document.getElementById("manageCards");
+const noCustomNote = document.getElementById("noCustomNote");
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  if (state.locked) { toast("Locked — hold the padlock to unlock"); return; }
+  speakToggle.checked = state.speak;
+  bigToggle.checked = state.big;
+  renderManageList();
+  settings.showModal();
+});
+
+speakToggle.addEventListener("change", () => { state.speak = speakToggle.checked; saveState(); });
+bigToggle.addEventListener("change", () => { state.big = bigToggle.checked; saveState(); render(); });
+
+function renderManageList() {
+  manageCards.innerHTML = "";
+  noCustomNote.hidden = customCards.length > 0;
+  customCards.forEach((c) => {
+    const row = document.createElement("div");
+    row.className = "manage-card";
+    const img = document.createElement("img");
+    img.src = c.url; img.alt = "";
+    const lbl = document.createElement("span");
+    lbl.className = "lbl"; lbl.textContent = c.label;
+    const del = document.createElement("button");
+    del.setAttribute("aria-label", "Delete card: " + c.label);
+    del.textContent = "🗑";
+    del.addEventListener("click", async () => {
+      await idbDelete(c.id);
+      URL.revokeObjectURL(c.url);
+      customCards = customCards.filter((x) => x.id !== c.id);
+      state.cards = state.cards.filter((id) => id !== c.id);
+      saveState();
+      renderManageList();
+      render();
+    });
+    row.append(img, lbl, del);
+    manageCards.appendChild(row);
+  });
+}
+
+document.getElementById("resetBoardBtn").addEventListener("click", () => {
+  if (!confirm("Reset the board to the twelve starter cards?")) return;
+  state.cards = DEFAULT_BOARD.slice();
+  saveState();
+  settings.close();
+  render();
+});
+
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  if (!confirm("Delete ALL photo cards? This can’t be undone.")) return;
+  for (const c of customCards) { await idbDelete(c.id); URL.revokeObjectURL(c.url); }
+  customCards = [];
+  state.cards = state.cards.filter((id) => !id.startsWith("c:"));
+  saveState();
+  renderManageList();
+  render();
+});
+
+document.querySelectorAll("[data-close]").forEach((btn) => {
+  btn.addEventListener("click", () => document.getElementById(btn.dataset.close).close());
+});
+
+/* ============================================================
+   Child lock (template)
+============================================================ */
+const lockBtn = document.getElementById("lockBtn");
+const lockIcon = document.getElementById("lockIcon");
+let holdTimer = null;
+
+function setLocked(v) {
+  state.locked = v;
+  if (v && editing) editing = false;
+  saveState();
+  lockIcon.textContent = v ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(v));
+  render();
+  toast(v ? "Locked — hold the padlock for 2 seconds to unlock" : "Unlocked");
+}
+
+lockBtn.addEventListener("click", () => { if (!state.locked) setLocked(true); });
+
+function startHold() {
+  if (!state.locked) return;
+  lockBtn.classList.add("holding");
+  holdTimer = setTimeout(() => { lockBtn.classList.remove("holding"); setLocked(false); }, 2000);
+}
+function cancelHold() {
+  lockBtn.classList.remove("holding");
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+}
+lockBtn.addEventListener("pointerdown", startHold);
+lockBtn.addEventListener("pointerup", cancelHold);
+lockBtn.addEventListener("pointerleave", cancelHold);
+lockBtn.addEventListener("keydown", (e) => {
+  if (state.locked && (e.key === "Enter" || e.key === " ")) {
+    e.preventDefault();
+    if (!holdTimer) startHold();
+  }
+});
+lockBtn.addEventListener("keyup", cancelHold);
+
+/* ============================================================
+   Toast, install, service worker (template)
+============================================================ */
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+}
+
+let deferredInstall = null;
+const installBtn = document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  installBtn.hidden = false;
+});
+installBtn.addEventListener("click", async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  installBtn.hidden = true;
+});
+
+/* service worker handled by the combined app shell */
+
+/* ============================================================
+   Boot
+============================================================ */
+(async function init() {
+  loadState();
+  try { await loadCustomCards(); } catch (e) { customCards = []; }
+  state.cards = state.cards.filter((id) => findCard(id));
+  if (!state.cards.length) state.cards = DEFAULT_BOARD.slice();
+  lockIcon.textContent = state.locked ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(state.locked));
+  render();
+})();
+</script>
+</body>
+</html>

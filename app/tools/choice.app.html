@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Choice Board — Helpset</title>
+<meta name="description" content="A simple visual choice board for children. Offer 2–4 options as pictures and let your child tap to choose. Free, offline, no ads. From helpset.uk" />
+
+<!-- ============================================================
+  CHOICE BOARD — offline-first PWA (Helpset)
+  Same template as Now & Next / Visual Timer.
+  Deploy: choice.helpset.uk (or cards.helpset.uk if preferred).
+  To ship an update: bump CACHE_VERSION in sw.js.
+
+  Flow:
+  - SETUP (parent): pick 2–4 cards, optionally edit the question,
+    then "Ask" switches to the choosing view.
+  - CHOOSE (child): big cards; tapping one confirms the choice,
+    optionally speaks it aloud (offline text-to-speech).
+  - Child lock: while locked, the child can choose but cannot
+    leave the choosing view or change the options.
+============================================================ -->
+
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --ink: #26333a;
+    --ink-soft: #5b6a72;
+    --teal: #266e6e;
+    --teal-dark: #1c5555;
+    --accent: #f0a64a;
+    --card: #ffffff;
+    --radius: 20px;
+    --shadow: 0 2px 10px rgba(38, 51, 58, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 6px; }
+
+  header { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; }
+  .app-title { font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--teal-dark); flex: 1; }
+
+  .icon-btn {
+    min-width: 48px; min-height: 48px;
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    font-size: 1.35rem; line-height: 1;
+    display: grid; place-items: center;
+  }
+  .icon-btn[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.4rem 1rem calc(1.2rem + env(safe-area-inset-bottom));
+    width: 100%;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ---------- Setup view ---------- */
+  #setupView { display: flex; flex-direction: column; gap: 1rem; align-items: center; width: min(100%, 560px); }
+
+  .count-row { display: flex; gap: 0.5rem; align-items: center; }
+  .count-row .lbl { font-weight: 700; margin-right: 0.3rem; }
+  .count-btn {
+    border: none; border-radius: 12px;
+    background: #fff; box-shadow: var(--shadow);
+    min-width: 52px; min-height: 52px;
+    font-size: 1.2rem; font-weight: 800;
+  }
+  .count-btn[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  .question-row { width: 100%; }
+  .question-row input {
+    width: 100%;
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    padding: 0.85rem 1rem;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .setup-slots {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  .setup-slot {
+    border: none;
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: var(--shadow);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.7rem;
+  }
+
+  .setup-slot.empty {
+    background: transparent;
+    border: 3px dashed rgba(38, 51, 58, 0.25);
+    box-shadow: none;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  .setup-slot .emoji { font-size: 2.6rem; }
+  .setup-slot img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; }
+  .setup-slot .card-label { font-weight: 700; text-align: center; overflow-wrap: anywhere; }
+
+  .big-btn {
+    border: none; border-radius: 18px;
+    background: var(--teal); color: #fff;
+    font-size: 1.3rem; font-weight: 800;
+    padding: 1rem 2.4rem; min-height: 60px;
+    box-shadow: var(--shadow);
+  }
+  .big-btn:active { transform: scale(0.98); }
+  .big-btn:disabled { opacity: 0.4; cursor: default; }
+  .big-btn.secondary { background: #fff; color: var(--ink); }
+
+  /* ---------- Choose view ---------- */
+  #chooseView { display: flex; flex-direction: column; gap: 1rem; align-items: center; width: 100%; flex: 1; }
+
+  .question {
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    margin: 0;
+  }
+
+  .choices {
+    display: grid;
+    gap: 0.9rem;
+    width: min(100%, 720px);
+    flex: 1;
+    align-content: stretch;
+  }
+  .choices[data-count="2"] { grid-template-columns: 1fr; }
+  .choices[data-count="3"] { grid-template-columns: 1fr; }
+  .choices[data-count="4"] { grid-template-columns: 1fr 1fr; }
+
+  @media (min-width: 700px) {
+    .choices[data-count="2"] { grid-template-columns: 1fr 1fr; }
+    .choices[data-count="3"] { grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  .choice {
+    border: none;
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    min-height: 140px;
+  }
+
+  .choice:active { transform: scale(0.98); }
+  .choice .emoji { font-size: clamp(3rem, 12vw, 5.5rem); line-height: 1.1; }
+  .choice img { width: min(45%, 150px); aspect-ratio: 1; object-fit: cover; border-radius: 14px; }
+  .choice .card-label { font-size: clamp(1.1rem, 4.5vw, 1.6rem); font-weight: 800; text-align: center; overflow-wrap: anywhere; }
+
+  /* ---------- Confirm view ---------- */
+  #confirmView {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: grid; place-items: center;
+    z-index: 40;
+  }
+  #confirmView .inner { text-align: center; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+  #confirmView .chosen-visual .emoji { font-size: clamp(5rem, 28vw, 10rem); line-height: 1.1; }
+  #confirmView .chosen-visual img { width: min(60vw, 280px); aspect-ratio: 1; object-fit: cover; border-radius: 22px; box-shadow: var(--shadow); }
+  #confirmView h2 { font-size: clamp(1.8rem, 8vw, 2.8rem); margin: 0; }
+  #confirmView .tickline { font-size: clamp(2.2rem, 10vw, 3.6rem); }
+  #confirmView .btn-row { display: flex; gap: 0.8rem; margin-top: 0.6rem; flex-wrap: wrap; justify-content: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #confirmView .tickline { animation: pop 0.5s ease; display: inline-block; }
+    @keyframes pop {
+      0% { transform: scale(0.3); }
+      60% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+  }
+
+  /* ---------- Picker + settings dialogs (template) ---------- */
+  dialog {
+    border: none; border-radius: var(--radius);
+    box-shadow: 0 10px 40px rgba(38, 51, 58, 0.3);
+    padding: 1.2rem;
+    width: min(560px, calc(100vw - 2rem));
+    max-height: 85dvh;
+    background: var(--bg); color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(38, 51, 58, 0.45); }
+
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .modal-head h2 { margin: 0; font-size: 1.2rem; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.6rem; }
+
+  .pick-card {
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    padding: 0.6rem 0.3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    min-height: 96px;
+  }
+  .pick-card .emoji { font-size: 2.2rem; }
+  .pick-card img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; }
+  .pick-card span.lbl { font-size: 0.78rem; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+
+  .section-title {
+    font-size: 0.85rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); margin: 1rem 0 0.5rem;
+  }
+
+  .wide-btn {
+    width: 100%; border: none; border-radius: 14px;
+    background: var(--teal); color: #fff;
+    font-weight: 700; padding: 0.8rem; min-height: 52px; margin-top: 0.6rem;
+  }
+  .wide-btn.secondary { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .wide-btn.danger { background: #b3453f; }
+
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow);
+    padding: 0.8rem 1rem; margin-bottom: 0.6rem;
+  }
+  .setting-row label { font-weight: 600; }
+  .setting-row input[type="checkbox"] { width: 26px; height: 26px; accent-color: var(--teal); }
+
+  .manage-card {
+    display: flex; align-items: center; gap: 0.7rem;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow);
+    padding: 0.5rem 0.7rem; margin-bottom: 0.5rem;
+  }
+  .manage-card img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+  .manage-card .lbl { flex: 1; font-weight: 600; overflow-wrap: anywhere; }
+  .manage-card button {
+    border: none; background: #f3dedd; color: #7a2721;
+    border-radius: 10px; min-width: 44px; min-height: 44px; font-size: 1.1rem;
+  }
+
+  .footer-note { text-align: center; font-size: 0.85rem; color: var(--ink-soft); margin-top: 1rem; }
+  .footer-note a { color: var(--teal-dark); font-weight: 700; }
+
+  #lockBtn { position: relative; }
+  #lockBtn .hold-ring { position: absolute; inset: 4px; border-radius: 10px; border: 3px solid transparent; }
+  #lockBtn.holding .hold-ring { border-color: #fff; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--ink); color: #fff;
+    padding: 0.6rem 1.1rem; border-radius: 999px;
+    font-weight: 600; font-size: 0.9rem;
+    opacity: 0; pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) { .toast { transition: opacity 0.25s ease; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="app-title">Choice Board</h1>
+  <button id="lockBtn" class="icon-btn" aria-pressed="false"
+          aria-label="Child lock. Tap to lock. Press and hold for two seconds to unlock.">
+    <span id="lockIcon" aria-hidden="true">🔓</span>
+    <span class="hold-ring" aria-hidden="true"></span>
+  </button>
+  <button id="settingsBtn" class="icon-btn" aria-label="Settings">
+    <span aria-hidden="true">⚙️</span>
+  </button>
+</header>
+
+<main>
+  <!-- Setup view (parent) -->
+  <div id="setupView">
+    <div class="count-row" role="group" aria-label="Number of choices">
+      <span class="lbl">Choices:</span>
+      <button class="count-btn" data-count="2">2</button>
+      <button class="count-btn" data-count="3">3</button>
+      <button class="count-btn" data-count="4">4</button>
+    </div>
+    <div class="question-row">
+      <label for="questionInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">The question to show</label>
+      <input id="questionInput" type="text" maxlength="60" placeholder="Which one?" />
+    </div>
+    <div class="setup-slots" id="setupSlots"></div>
+    <button class="big-btn" id="askBtn">Ask →</button>
+  </div>
+
+  <!-- Choose view (child) -->
+  <div id="chooseView" class="hidden">
+    <h2 class="question" id="questionText">Which one?</h2>
+    <div class="choices" id="choices" data-count="2"></div>
+    <button class="big-btn secondary" id="editBtn">✎ Change the choices</button>
+  </div>
+</main>
+
+<!-- Confirm view -->
+<div id="confirmView" class="hidden">
+  <div class="inner">
+    <span class="tickline" aria-hidden="true">✅</span>
+    <div class="chosen-visual" id="chosenVisual"></div>
+    <h2 id="chosenLabel"></h2>
+    <div class="btn-row">
+      <button class="big-btn" id="againBtn">Ask again</button>
+      <button class="big-btn secondary" id="newBtn">New choice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Card picker -->
+<dialog id="picker" aria-labelledby="pickerTitle">
+  <div class="modal-head">
+    <h2 id="pickerTitle">Choose a card</h2>
+    <button class="icon-btn" data-close="picker" aria-label="Close">✕</button>
+  </div>
+  <div id="builtinGroups"></div>
+  <div class="section-title">My photo cards</div>
+  <div id="customGrid" class="card-grid"></div>
+  <button id="addPhotoBtn" class="wide-btn secondary">📷 Add a photo card</button>
+  <button class="wide-btn secondary" data-clear-slot>Clear this space</button>
+  <input id="photoInput" type="file" accept="image/*" hidden />
+</dialog>
+
+<!-- Settings -->
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <div class="modal-head">
+    <h2 id="settingsTitle">Settings</h2>
+    <button class="icon-btn" data-close="settings" aria-label="Close">✕</button>
+  </div>
+
+  <div class="setting-row">
+    <label for="speakToggle">Speak the choice out loud</label>
+    <input type="checkbox" id="speakToggle" checked />
+  </div>
+
+  <button id="installBtn" class="wide-btn" hidden>⬇️ Install this app</button>
+
+  <div class="section-title">My photo cards</div>
+  <div id="manageCards"></div>
+  <p id="noCustomNote" class="footer-note">No photo cards yet — add one from the card picker.</p>
+
+  <button id="resetBtn" class="wide-btn danger">Delete all photo cards</button>
+
+  <p class="footer-note">
+    Free from <a href="https://helpset.uk" rel="noopener">helpset.uk</a> —
+    more visual support tools for families.<br />
+    Works fully offline. Nothing you add ever leaves this device.
+  </p>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const CARD_GROUPS = [
+  ["Daily routine", [
+    ["wake", "☀️", "Wake up"],
+    ["breakfast", "🥣", "Breakfast"],
+    ["teeth", "🪥", "Brush teeth"],
+    ["dressed", "👕", "Get dressed"],
+    ["shoes", "👟", "Shoes on"],
+    ["coat", "🧥", "Coat on"],
+    ["bag", "🎒", "Pack bag"],
+    ["medicine", "💊", "Medicine"],
+    ["toilet", "🚽", "Toilet"],
+    ["wash", "🧼", "Wash hands"],
+    ["bath", "🛁", "Bath"],
+    ["shower", "🚿", "Shower"],
+    ["pyjamas", "🌙", "Pyjamas on"],
+    ["reading", "📖", "Story"],
+    ["bed", "🛏️", "Bed"],
+    ["sleep", "😴", "Sleep"]
+  ]],
+  ["Food & drink", [
+    ["snack", "🍎", "Snack"],
+    ["lunch", "🥪", "Lunch"],
+    ["dinner", "🍽️", "Dinner"],
+    ["drink", "🥤", "Drink"],
+    ["milk", "🥛", "Milk"],
+    ["fruit", "🍌", "Fruit"],
+    ["icecream", "🍦", "Ice cream"],
+    ["baking", "🧁", "Baking"]
+  ]],
+  ["Going out", [
+    ["car", "🚗", "Car"],
+    ["bus", "🚌", "Bus"],
+    ["train", "🚆", "Train"],
+    ["bike", "🚲", "Bike"],
+    ["scooter", "🛴", "Scooter"],
+    ["walk", "🚶", "Walk"],
+    ["school", "🏫", "School"],
+    ["home", "🏠", "Home"],
+    ["park", "🛝", "Park"],
+    ["shop", "🛒", "Shopping"],
+    ["library", "📚", "Library"],
+    ["swim", "🏊", "Swimming"],
+    ["beach", "🏖️", "Beach"],
+    ["holiday", "🧳", "Holiday"],
+    ["doctor", "🩺", "Doctor"],
+    ["dentist", "🦷", "Dentist"],
+    ["haircut", "💇", "Haircut"]
+  ]],
+  ["People & pets", [
+    ["mum", "👩", "Mum"],
+    ["dad", "👨", "Dad"],
+    ["grandma", "👵", "Grandma"],
+    ["grandpa", "👴", "Grandpa"],
+    ["baby", "👶", "Baby"],
+    ["friends", "🧑‍🤝‍🧑", "Friends"],
+    ["teacher", "🧑‍🏫", "Teacher"],
+    ["dog", "🐶", "Dog"],
+    ["cat", "🐱", "Cat"]
+  ]],
+  ["Play & activities", [
+    ["play", "🧸", "Play"],
+    ["tv", "📺", "TV"],
+    ["tablet", "📱", "Tablet"],
+    ["games", "🎮", "Video games"],
+    ["drawing", "🖍️", "Drawing"],
+    ["painting", "🎨", "Painting"],
+    ["music", "🎵", "Music"],
+    ["singing", "🎤", "Singing"],
+    ["dancing", "💃", "Dancing"],
+    ["building", "🧱", "Building"],
+    ["puzzle", "🧩", "Puzzle"],
+    ["football", "⚽", "Football"],
+    ["garden", "🌻", "Garden"],
+    ["craft", "✂️", "Craft"],
+    ["bubbles", "🫧", "Bubbles"],
+    ["party", "🎉", "Party"],
+    ["birthday", "🎂", "Birthday"],
+    ["present", "🎁", "Present"]
+  ]],
+  ["School & home", [
+    ["homework", "✏️", "Homework"],
+    ["tidy", "🧹", "Tidy up"],
+    ["help", "🤝", "Helping"]
+  ]],
+  ["Calm & waiting", [
+    ["quiet", "🤫", "Quiet time"],
+    ["cuddle", "🤗", "Cuddle"],
+    ["headphones", "🎧", "Headphones"],
+    ["breathe", "😮‍💨", "Deep breaths"],
+    ["breaktime", "⏸️", "Break"],
+    ["wait", "⏳", "Waiting"],
+    ["finished", "✅", "Finished"]
+  ]]
+].map(([title, cards]) => ({
+  title,
+  cards: cards.map(([id, emoji, label]) => ({ id: "b:" + id, emoji, label }))
+}));
+
+const BUILTIN_CARDS = CARD_GROUPS.flatMap((g) => g.cards);
+
+/* ============================================================
+   State
+============================================================ */
+const STORE_KEY = "cb-state-v1";
+
+let state = {
+  count: 2,
+  slots: [null, null, null, null],
+  question: "Which one?",
+  speak: true,
+  locked: false,
+  view: "setup" // "setup" | "choose"
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch (e) { /* start fresh */ }
+}
+function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+/* ============================================================
+   IndexedDB — custom photo cards (template pattern)
+============================================================ */
+const DB_NAME = "cb-photos";
+let customCards = [];
+
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("photos", { keyPath: "id" });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbAll() {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction("photos").objectStore("photos").getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbPut(record) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").put(record);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function idbDelete(id) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function loadCustomCards() {
+  const records = await idbAll();
+  customCards = records.map((r) => ({ id: r.id, label: r.label, url: URL.createObjectURL(r.blob) }));
+}
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("resize failed")), "image/jpeg", 0.85);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function findCard(id) {
+  if (!id) return null;
+  return BUILTIN_CARDS.find((c) => c.id === id) || customCards.find((c) => c.id === id) || null;
+}
+
+/* ============================================================
+   Card visual helper
+============================================================ */
+function cardVisual(card, cls) {
+  const frag = document.createDocumentFragment();
+  if (card.url) {
+    const img = document.createElement("img");
+    img.src = card.url; img.alt = "";
+    frag.appendChild(img);
+  } else {
+    const em = document.createElement("span");
+    em.className = "emoji";
+    em.setAttribute("aria-hidden", "true");
+    em.textContent = card.emoji;
+    frag.appendChild(em);
+  }
+  const lbl = document.createElement("span");
+  lbl.className = cls || "card-label";
+  lbl.textContent = card.label;
+  frag.appendChild(lbl);
+  return frag;
+}
+
+/* ============================================================
+   Views
+============================================================ */
+const setupView = document.getElementById("setupView");
+const chooseView = document.getElementById("chooseView");
+const confirmView = document.getElementById("confirmView");
+const setupSlots = document.getElementById("setupSlots");
+const choicesEl = document.getElementById("choices");
+const questionInput = document.getElementById("questionInput");
+const questionText = document.getElementById("questionText");
+const askBtn = document.getElementById("askBtn");
+const editBtn = document.getElementById("editBtn");
+
+function activeSlots() { return state.slots.slice(0, state.count); }
+function allFilled() { return activeSlots().every((id) => findCard(id)); }
+
+function render() {
+  confirmView.classList.add("hidden");
+  if (state.view === "choose" && allFilled()) {
+    setupView.classList.add("hidden");
+    chooseView.classList.remove("hidden");
+    renderChoose();
+  } else {
+    state.view = "setup";
+    chooseView.classList.add("hidden");
+    setupView.classList.remove("hidden");
+    renderSetup();
+  }
+  applyLockUI();
+}
+
+function renderSetup() {
+  document.querySelectorAll(".count-btn").forEach((b) =>
+    b.setAttribute("aria-pressed", String(Number(b.dataset.count) === state.count)));
+  questionInput.value = state.question === "Which one?" ? "" : state.question;
+
+  setupSlots.innerHTML = "";
+  for (let i = 0; i < state.count; i++) {
+    const card = findCard(state.slots[i]);
+    const slot = document.createElement("button");
+    slot.className = "setup-slot" + (card ? "" : " empty");
+    slot.setAttribute("aria-label", card ? "Choice " + (i + 1) + ": " + card.label + ". Tap to change."
+                                         : "Choice " + (i + 1) + ", empty. Tap to choose a card.");
+    if (card) {
+      slot.appendChild(cardVisual(card));
+    } else {
+      const plus = document.createElement("span");
+      plus.className = "emoji"; plus.setAttribute("aria-hidden", "true"); plus.textContent = "＋";
+      slot.appendChild(plus);
+      const hint = document.createElement("span");
+      hint.textContent = "Tap to choose";
+      slot.appendChild(hint);
+    }
+    slot.addEventListener("click", () => openPicker(i));
+    setupSlots.appendChild(slot);
+  }
+  askBtn.disabled = !allFilled();
+}
+
+function renderChoose() {
+  questionText.textContent = state.question || "Which one?";
+  choicesEl.dataset.count = String(state.count);
+  choicesEl.innerHTML = "";
+  activeSlots().forEach((id) => {
+    const card = findCard(id);
+    if (!card) return;
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.setAttribute("aria-label", "Choose " + card.label);
+    btn.appendChild(cardVisual(card));
+    btn.addEventListener("click", () => choose(card));
+    choicesEl.appendChild(btn);
+  });
+}
+
+function choose(card) {
+  const visual = document.getElementById("chosenVisual");
+  visual.innerHTML = "";
+  if (card.url) {
+    const img = document.createElement("img");
+    img.src = card.url; img.alt = "";
+    visual.appendChild(img);
+  } else {
+    const em = document.createElement("span");
+    em.className = "emoji"; em.setAttribute("aria-hidden", "true"); em.textContent = card.emoji;
+    visual.appendChild(em);
+  }
+  document.getElementById("chosenLabel").textContent = card.label + "!";
+  confirmView.classList.remove("hidden");
+  if (state.speak) speak(card.label);
+}
+
+document.getElementById("againBtn").addEventListener("click", () => {
+  confirmView.classList.add("hidden");
+});
+document.getElementById("newBtn").addEventListener("click", () => {
+  if (state.locked) { toast("Locked — hold the padlock to unlock"); return; }
+  state.view = "setup";
+  saveState();
+  render();
+});
+
+askBtn.addEventListener("click", () => {
+  state.question = questionInput.value.trim() || "Which one?";
+  state.view = "choose";
+  saveState();
+  render();
+});
+
+editBtn.addEventListener("click", () => {
+  if (state.locked) { toast("Locked — hold the padlock to unlock"); return; }
+  state.view = "setup";
+  saveState();
+  render();
+});
+
+document.querySelectorAll(".count-btn").forEach((b) => {
+  b.addEventListener("click", () => {
+    state.count = Number(b.dataset.count);
+    saveState();
+    renderSetup();
+  });
+});
+
+questionInput.addEventListener("change", () => {
+  state.question = questionInput.value.trim() || "Which one?";
+  saveState();
+});
+
+/* ============================================================
+   Speech — offline text-to-speech via the built-in voices
+============================================================ */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-GB";
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* speech unavailable — silently skip */ }
+}
+
+/* ============================================================
+   Card picker (template)
+============================================================ */
+const picker = document.getElementById("picker");
+const builtinGroups = document.getElementById("builtinGroups");
+const customGrid = document.getElementById("customGrid");
+let pickerSlot = null;
+
+function makePickEl(card) {
+  const btn = document.createElement("button");
+  btn.className = "pick-card";
+  btn.setAttribute("aria-label", card.label);
+  btn.appendChild(cardVisual(card, "lbl"));
+  btn.addEventListener("click", () => {
+    state.slots[pickerSlot] = card.id;
+    saveState();
+    picker.close();
+    render();
+  });
+  return btn;
+}
+
+function renderPickerGrids() {
+  builtinGroups.innerHTML = "";
+  CARD_GROUPS.forEach((group) => {
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = group.title;
+    builtinGroups.appendChild(title);
+    const grid = document.createElement("div");
+    grid.className = "card-grid";
+    group.cards.forEach((c) => grid.appendChild(makePickEl(c)));
+    builtinGroups.appendChild(grid);
+  });
+  customGrid.innerHTML = "";
+  customCards.forEach((c) => customGrid.appendChild(makePickEl(c)));
+  if (!customCards.length) {
+    const none = document.createElement("p");
+    none.className = "footer-note";
+    none.style.gridColumn = "1 / -1";
+    none.textContent = "Add a photo of a real thing — “red cup or blue cup?” works best with your actual cups.";
+    customGrid.appendChild(none);
+  }
+}
+
+function openPicker(slotIndex) {
+  pickerSlot = slotIndex;
+  document.getElementById("pickerTitle").textContent = "Choice " + (slotIndex + 1);
+  renderPickerGrids();
+  picker.showModal();
+}
+
+document.querySelector("[data-clear-slot]").addEventListener("click", () => {
+  state.slots[pickerSlot] = null;
+  saveState();
+  picker.close();
+  render();
+});
+
+const photoInput = document.getElementById("photoInput");
+document.getElementById("addPhotoBtn").addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", async () => {
+  const file = photoInput.files[0];
+  photoInput.value = "";
+  if (!file) return;
+  let label = prompt("What should this card be called? (e.g. “Red cup”)");
+  if (label === null) return;
+  label = label.trim().slice(0, 40) || "My card";
+  try {
+    const blob = await resizeImage(file);
+    const id = "c:" + Date.now();
+    await idbPut({ id, label, blob });
+    customCards.push({ id, label, url: URL.createObjectURL(blob) });
+    renderPickerGrids();
+    toast("Photo card added");
+  } catch (e) {
+    toast("Sorry, that photo couldn’t be added");
+  }
+});
+
+/* ============================================================
+   Settings (template)
+============================================================ */
+const settings = document.getElementById("settings");
+const speakToggle = document.getElementById("speakToggle");
+const manageCards = document.getElementById("manageCards");
+const noCustomNote = document.getElementById("noCustomNote");
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  if (state.locked) { toast("Locked — hold the padlock to unlock"); return; }
+  speakToggle.checked = state.speak;
+  renderManageList();
+  settings.showModal();
+});
+
+speakToggle.addEventListener("change", () => { state.speak = speakToggle.checked; saveState(); });
+
+function renderManageList() {
+  manageCards.innerHTML = "";
+  noCustomNote.hidden = customCards.length > 0;
+  customCards.forEach((c) => {
+    const row = document.createElement("div");
+    row.className = "manage-card";
+    const img = document.createElement("img");
+    img.src = c.url; img.alt = "";
+    const lbl = document.createElement("span");
+    lbl.className = "lbl"; lbl.textContent = c.label;
+    const del = document.createElement("button");
+    del.setAttribute("aria-label", "Delete card: " + c.label);
+    del.textContent = "🗑";
+    del.addEventListener("click", async () => {
+      await idbDelete(c.id);
+      URL.revokeObjectURL(c.url);
+      customCards = customCards.filter((x) => x.id !== c.id);
+      state.slots = state.slots.map((id) => (id === c.id ? null : id));
+      saveState();
+      renderManageList();
+      render();
+    });
+    row.append(img, lbl, del);
+    manageCards.appendChild(row);
+  });
+}
+
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  if (!confirm("Delete ALL photo cards? This can’t be undone.")) return;
+  for (const c of customCards) { await idbDelete(c.id); URL.revokeObjectURL(c.url); }
+  customCards = [];
+  state.slots = state.slots.map((id) => (id && id.startsWith("c:") ? null : id));
+  saveState();
+  renderManageList();
+  render();
+});
+
+document.querySelectorAll("[data-close]").forEach((btn) => {
+  btn.addEventListener("click", () => document.getElementById(btn.dataset.close).close());
+});
+
+/* ============================================================
+   Child lock (template) — tap to lock; hold 2s to unlock
+============================================================ */
+const lockBtn = document.getElementById("lockBtn");
+const lockIcon = document.getElementById("lockIcon");
+let holdTimer = null;
+
+function applyLockUI() {
+  lockIcon.textContent = state.locked ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(state.locked));
+  editBtn.style.visibility = state.locked ? "hidden" : "visible";
+  document.getElementById("newBtn").style.visibility = state.locked ? "hidden" : "visible";
+}
+
+function setLocked(v) {
+  state.locked = v;
+  saveState();
+  applyLockUI();
+  toast(v ? "Locked — hold the padlock for 2 seconds to unlock" : "Unlocked");
+}
+
+lockBtn.addEventListener("click", () => { if (!state.locked) setLocked(true); });
+
+function startHold() {
+  if (!state.locked) return;
+  lockBtn.classList.add("holding");
+  holdTimer = setTimeout(() => { lockBtn.classList.remove("holding"); setLocked(false); }, 2000);
+}
+function cancelHold() {
+  lockBtn.classList.remove("holding");
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+}
+lockBtn.addEventListener("pointerdown", startHold);
+lockBtn.addEventListener("pointerup", cancelHold);
+lockBtn.addEventListener("pointerleave", cancelHold);
+lockBtn.addEventListener("keydown", (e) => {
+  if (state.locked && (e.key === "Enter" || e.key === " ")) {
+    e.preventDefault();
+    if (!holdTimer) startHold();
+  }
+});
+lockBtn.addEventListener("keyup", cancelHold);
+
+/* ============================================================
+   Toast, install prompt, service worker (template)
+============================================================ */
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+}
+
+let deferredInstall = null;
+const installBtn = document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  installBtn.hidden = false;
+});
+installBtn.addEventListener("click", async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  installBtn.hidden = true;
+});
+
+/* service worker handled by the combined app shell */
+
+/* ============================================================
+   Boot
+============================================================ */
+(async function init() {
+  loadState();
+  try { await loadCustomCards(); } catch (e) { customCards = []; }
+  state.slots = state.slots.map((id) => (id && !findCard(id) ? null : id));
+  render();
+})();
+</script>
+</body>
+</html>

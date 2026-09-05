@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Token Board — Helpset</title>
+<meta name="description" content="A visual reward chart for children. Pick what you're working for, earn tokens, celebrate when the board is full. Free, offline. From helpset.uk" />
+
+<!-- ============================================================
+  TOKEN BOARD — offline-first PWA (Helpset)
+  Same template as the rest of the suite.
+  Deploy: token.helpset.uk. Update: bump CACHE_VERSION in sw.js.
+
+  Flow: pick a goal card ("I'm working for..."), choose 3/5/10
+  tokens, then award tokens by tapping empty slots. Full board =
+  celebration screen with optional speech.
+
+  Lock inversion: unlike the other apps, the LOCK here protects
+  the tokens — awarding is the adult's job, so locked mode lets
+  the child see progress but not change it.
+============================================================ -->
+
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --ink: #26333a;
+    --ink-soft: #5b6a72;
+    --teal: #266e6e;
+    --teal-dark: #1c5555;
+    --amber: #f0a64a;
+    --radius: 20px;
+    --shadow: 0 2px 10px rgba(38, 51, 58, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 6px; }
+
+  header { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; }
+  .app-title { font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--teal-dark); flex: 1; }
+
+  .icon-btn {
+    min-width: 48px; min-height: 48px;
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    font-size: 1.35rem; line-height: 1;
+    display: grid; place-items: center;
+  }
+  .icon-btn[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.3rem 1rem calc(1.2rem + env(safe-area-inset-bottom));
+    width: 100%;
+  }
+
+  .working-for {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .goal-card {
+    border: none;
+    border-radius: var(--radius);
+    background: #fff;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 1rem 1.6rem;
+    min-width: min(70vw, 300px);
+    min-height: 150px;
+  }
+  .goal-card.empty {
+    background: transparent;
+    border: 3px dashed rgba(38, 51, 58, 0.25);
+    box-shadow: none;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .goal-card .emoji { font-size: clamp(3rem, 14vw, 5rem); line-height: 1.1; }
+  .goal-card img { width: min(40vw, 150px); aspect-ratio: 1; object-fit: cover; border-radius: 14px; }
+  .goal-card .lbl { font-size: clamp(1.1rem, 5vw, 1.5rem); font-weight: 800; text-align: center; overflow-wrap: anywhere; }
+
+  .tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    justify-content: center;
+    max-width: 520px;
+  }
+
+  .slot {
+    width: clamp(58px, 15vw, 78px);
+    height: clamp(58px, 15vw, 78px);
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: var(--shadow);
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    line-height: 1;
+    display: grid;
+    place-items: center;
+  }
+  .slot.empty {
+    background: transparent;
+    border: 3px dashed rgba(38, 51, 58, 0.3);
+    box-shadow: none;
+  }
+  .slot.locked { cursor: default; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .slot.just-earned span { animation: pop 0.45s ease; display: inline-block; }
+    @keyframes pop {
+      0% { transform: scale(0.2); }
+      60% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+  }
+
+  .progress-text {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--ink-soft);
+  }
+
+  .hint {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-align: center;
+    max-width: 40ch;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ---------- Celebration ---------- */
+  #doneView {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: grid;
+    place-items: center;
+    z-index: 40;
+    overflow: hidden;
+  }
+  #doneView .inner { text-align: center; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.7rem; position: relative; z-index: 2; }
+  #doneView .tokens-line { font-size: clamp(2rem, 10vw, 3.2rem); letter-spacing: 0.1em; }
+  #doneView h2 { font-size: clamp(2rem, 9vw, 3rem); margin: 0; }
+  #doneView .chosen-visual .emoji { font-size: clamp(4.5rem, 24vw, 8rem); line-height: 1.1; }
+  #doneView .chosen-visual img { width: min(55vw, 260px); aspect-ratio: 1; object-fit: cover; border-radius: 22px; box-shadow: var(--shadow); }
+  #doneView .goal-lbl { font-size: clamp(1.3rem, 6vw, 2rem); font-weight: 800; }
+  #doneView .btn-row { display: flex; gap: 0.8rem; margin-top: 0.8rem; flex-wrap: wrap; justify-content: center; }
+
+  .big-btn {
+    border: none; border-radius: 18px;
+    background: var(--teal); color: #fff;
+    font-size: 1.2rem; font-weight: 800;
+    padding: 0.9rem 1.9rem; min-height: 58px;
+    box-shadow: var(--shadow);
+  }
+  .big-btn:active { transform: scale(0.98); }
+  .big-btn.secondary { background: #fff; color: var(--ink); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #doneView .tokens-line span { display: inline-block; animation: bounce 1s ease infinite; }
+    #doneView .tokens-line span:nth-child(2n) { animation-delay: 0.15s; }
+    #doneView .tokens-line span:nth-child(3n) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+  }
+
+  /* ---------- Dialogs (template) ---------- */
+  dialog {
+    border: none; border-radius: var(--radius);
+    box-shadow: 0 10px 40px rgba(38, 51, 58, 0.3);
+    padding: 1.2rem;
+    width: min(560px, calc(100vw - 2rem));
+    max-height: 85dvh;
+    background: var(--bg); color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(38, 51, 58, 0.45); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .modal-head h2 { margin: 0; font-size: 1.2rem; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.6rem; }
+  .pick-card {
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    padding: 0.6rem 0.3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    min-height: 96px;
+  }
+  .pick-card .emoji { font-size: 2.2rem; }
+  .pick-card img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; }
+  .pick-card .lbl { font-size: 0.78rem; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+
+  .section-title {
+    font-size: 0.85rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); margin: 1rem 0 0.5rem;
+  }
+
+  .wide-btn {
+    width: 100%; border: none; border-radius: 14px;
+    background: var(--teal); color: #fff;
+    font-weight: 700; padding: 0.8rem; min-height: 52px; margin-top: 0.6rem;
+  }
+  .wide-btn.secondary { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .wide-btn.danger { background: #b3453f; }
+
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow);
+    padding: 0.8rem 1rem; margin-bottom: 0.6rem;
+  }
+  .setting-row .rowlbl { font-weight: 600; }
+  .setting-row input[type="checkbox"] { width: 26px; height: 26px; accent-color: var(--teal); }
+
+  .seg-group { display: flex; gap: 0.4rem; }
+  .seg-btn {
+    border: none; border-radius: 10px;
+    background: var(--bg);
+    min-width: 46px; min-height: 46px;
+    font-weight: 800; font-size: 1rem;
+  }
+  .seg-btn[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  .token-choices { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .token-choice {
+    border: none; border-radius: 12px;
+    background: var(--bg);
+    min-width: 48px; min-height: 48px;
+    font-size: 1.5rem;
+  }
+  .token-choice[aria-pressed="true"] { background: var(--teal); }
+
+  .footer-note { text-align: center; font-size: 0.85rem; color: var(--ink-soft); margin-top: 1rem; }
+  .footer-note a { color: var(--teal-dark); font-weight: 700; }
+
+  #lockBtn { position: relative; }
+  #lockBtn .hold-ring { position: absolute; inset: 4px; border-radius: 10px; border: 3px solid transparent; }
+  #lockBtn.holding .hold-ring { border-color: #fff; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--ink); color: #fff;
+    padding: 0.6rem 1.1rem; border-radius: 999px;
+    font-weight: 600; font-size: 0.9rem;
+    opacity: 0; pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) { .toast { transition: opacity 0.25s ease; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="app-title">Token Board</h1>
+  <button id="lockBtn" class="icon-btn" aria-pressed="false"
+          aria-label="Child lock. Tap to lock so tokens can only be seen, not changed. Press and hold for two seconds to unlock.">
+    <span id="lockIcon" aria-hidden="true">🔓</span>
+    <span class="hold-ring" aria-hidden="true"></span>
+  </button>
+  <button id="settingsBtn" class="icon-btn" aria-label="Settings">
+    <span aria-hidden="true">⚙️</span>
+  </button>
+</header>
+
+<main>
+  <p class="working-for">I'm working for…</p>
+  <button class="goal-card empty" id="goalCard" aria-label="Choose what you're working for"></button>
+  <div class="tokens" id="tokens" role="group" aria-label="Token slots"></div>
+  <p class="progress-text" id="progressText"></p>
+  <p class="hint" id="hintText"></p>
+</main>
+
+<!-- Celebration -->
+<div id="doneView" class="hidden">
+  <div class="inner">
+    <div class="tokens-line" id="tokensLine" aria-hidden="true"></div>
+    <h2>You did it!</h2>
+    <div class="chosen-visual" id="doneVisual"></div>
+    <div class="goal-lbl" id="doneLabel"></div>
+    <div class="btn-row">
+      <button class="big-btn" id="againBtn">Same goal again</button>
+      <button class="big-btn secondary" id="newGoalBtn">New goal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Card picker -->
+<dialog id="picker" aria-labelledby="pickerTitle">
+  <div class="modal-head">
+    <h2 id="pickerTitle">What are you working for?</h2>
+    <button class="icon-btn" data-close="picker" aria-label="Close">✕</button>
+  </div>
+  <div id="builtinGroups"></div>
+  <div class="section-title">My photo cards</div>
+  <div id="customGrid" class="card-grid"></div>
+  <button id="addPhotoBtn" class="wide-btn secondary">📷 Add a photo card</button>
+  <input id="photoInput" type="file" accept="image/*" hidden />
+</dialog>
+
+<!-- Settings -->
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <div class="modal-head">
+    <h2 id="settingsTitle">Settings</h2>
+    <button class="icon-btn" data-close="settings" aria-label="Close">✕</button>
+  </div>
+
+  <div class="setting-row">
+    <span class="rowlbl">Number of tokens</span>
+    <div class="seg-group" role="group" aria-label="Number of tokens">
+      <button class="seg-btn" data-total="3">3</button>
+      <button class="seg-btn" data-total="5">5</button>
+      <button class="seg-btn" data-total="10">10</button>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <span class="rowlbl">Token style</span>
+    <div class="token-choices" role="group" aria-label="Token style">
+      <button class="token-choice" data-token="⭐">⭐</button>
+      <button class="token-choice" data-token="❤️">❤️</button>
+      <button class="token-choice" data-token="🚀">🚀</button>
+      <button class="token-choice" data-token="🦖">🦖</button>
+      <button class="token-choice" data-token="⚽">⚽</button>
+      <button class="token-choice" data-token="🌈">🌈</button>
+    </div>
+  </div>
+
+  <div class="setting-row">
+    <label class="rowlbl" for="speakToggle">Speak encouragement out loud</label>
+    <input type="checkbox" id="speakToggle" checked />
+  </div>
+
+  <button id="installBtn" class="wide-btn" hidden>⬇️ Install this app</button>
+
+  <button id="resetTokensBtn" class="wide-btn secondary">Clear earned tokens</button>
+  <button id="resetBtn" class="wide-btn danger">Delete all photo cards</button>
+
+  <p class="footer-note">
+    Free from <a href="https://helpset.uk" rel="noopener">helpset.uk</a> —
+    more visual support tools for families.<br />
+    Works fully offline. Nothing you add ever leaves this device.
+  </p>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const CARD_GROUPS = [
+  ["Daily routine", [
+    ["wake", "☀️", "Wake up"],
+    ["breakfast", "🥣", "Breakfast"],
+    ["teeth", "🪥", "Brush teeth"],
+    ["dressed", "👕", "Get dressed"],
+    ["shoes", "👟", "Shoes on"],
+    ["coat", "🧥", "Coat on"],
+    ["bag", "🎒", "Pack bag"],
+    ["medicine", "💊", "Medicine"],
+    ["toilet", "🚽", "Toilet"],
+    ["wash", "🧼", "Wash hands"],
+    ["bath", "🛁", "Bath"],
+    ["shower", "🚿", "Shower"],
+    ["pyjamas", "🌙", "Pyjamas on"],
+    ["reading", "📖", "Story"],
+    ["bed", "🛏️", "Bed"],
+    ["sleep", "😴", "Sleep"]
+  ]],
+  ["Food & drink", [
+    ["snack", "🍎", "Snack"],
+    ["lunch", "🥪", "Lunch"],
+    ["dinner", "🍽️", "Dinner"],
+    ["drink", "🥤", "Drink"],
+    ["milk", "🥛", "Milk"],
+    ["fruit", "🍌", "Fruit"],
+    ["icecream", "🍦", "Ice cream"],
+    ["baking", "🧁", "Baking"]
+  ]],
+  ["Going out", [
+    ["car", "🚗", "Car"],
+    ["bus", "🚌", "Bus"],
+    ["train", "🚆", "Train"],
+    ["bike", "🚲", "Bike"],
+    ["scooter", "🛴", "Scooter"],
+    ["walk", "🚶", "Walk"],
+    ["school", "🏫", "School"],
+    ["home", "🏠", "Home"],
+    ["park", "🛝", "Park"],
+    ["shop", "🛒", "Shopping"],
+    ["library", "📚", "Library"],
+    ["swim", "🏊", "Swimming"],
+    ["beach", "🏖️", "Beach"],
+    ["holiday", "🧳", "Holiday"],
+    ["doctor", "🩺", "Doctor"],
+    ["dentist", "🦷", "Dentist"],
+    ["haircut", "💇", "Haircut"]
+  ]],
+  ["People & pets", [
+    ["mum", "👩", "Mum"],
+    ["dad", "👨", "Dad"],
+    ["grandma", "👵", "Grandma"],
+    ["grandpa", "👴", "Grandpa"],
+    ["baby", "👶", "Baby"],
+    ["friends", "🧑‍🤝‍🧑", "Friends"],
+    ["teacher", "🧑‍🏫", "Teacher"],
+    ["dog", "🐶", "Dog"],
+    ["cat", "🐱", "Cat"]
+  ]],
+  ["Play & activities", [
+    ["play", "🧸", "Play"],
+    ["tv", "📺", "TV"],
+    ["tablet", "📱", "Tablet"],
+    ["games", "🎮", "Video games"],
+    ["drawing", "🖍️", "Drawing"],
+    ["painting", "🎨", "Painting"],
+    ["music", "🎵", "Music"],
+    ["singing", "🎤", "Singing"],
+    ["dancing", "💃", "Dancing"],
+    ["building", "🧱", "Building"],
+    ["puzzle", "🧩", "Puzzle"],
+    ["football", "⚽", "Football"],
+    ["garden", "🌻", "Garden"],
+    ["craft", "✂️", "Craft"],
+    ["bubbles", "🫧", "Bubbles"],
+    ["party", "🎉", "Party"],
+    ["birthday", "🎂", "Birthday"],
+    ["present", "🎁", "Present"]
+  ]],
+  ["School & home", [
+    ["homework", "✏️", "Homework"],
+    ["tidy", "🧹", "Tidy up"],
+    ["help", "🤝", "Helping"]
+  ]],
+  ["Calm & waiting", [
+    ["quiet", "🤫", "Quiet time"],
+    ["cuddle", "🤗", "Cuddle"],
+    ["headphones", "🎧", "Headphones"],
+    ["breathe", "😮‍💨", "Deep breaths"],
+    ["breaktime", "⏸️", "Break"],
+    ["wait", "⏳", "Waiting"],
+    ["finished", "✅", "Finished"]
+  ]]
+].map(([title, cards]) => ({
+  title,
+  cards: cards.map(([id, emoji, label]) => ({ id: "b:" + id, emoji, label }))
+}));
+
+const BUILTIN_CARDS = CARD_GROUPS.flatMap((g) => g.cards);
+
+/* ============================================================
+   State
+============================================================ */
+const STORE_KEY = "tb-state-v1";
+
+let state = {
+  goal: null,      // card id
+  total: 5,        // 3 | 5 | 10
+  earned: 0,
+  token: "⭐",
+  speak: true,
+  locked: false
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch (e) { /* start fresh */ }
+}
+function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+/* ============================================================
+   IndexedDB — photo cards (template)
+============================================================ */
+const DB_NAME = "tb-photos";
+let customCards = [];
+
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("photos", { keyPath: "id" });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbAll() {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction("photos").objectStore("photos").getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbPut(record) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").put(record);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function idbDelete(id) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function loadCustomCards() {
+  const records = await idbAll();
+  customCards = records.map((r) => ({ id: r.id, label: r.label, url: URL.createObjectURL(r.blob) }));
+}
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("resize failed")), "image/jpeg", 0.85);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+function findCard(id) {
+  if (!id) return null;
+  return BUILTIN_CARDS.find((c) => c.id === id) || customCards.find((c) => c.id === id) || null;
+}
+
+/* ============================================================
+   Speech
+============================================================ */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-GB";
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* skip */ }
+}
+
+/* ============================================================
+   Board rendering
+============================================================ */
+const goalCard = document.getElementById("goalCard");
+const tokensEl = document.getElementById("tokens");
+const progressText = document.getElementById("progressText");
+const hintText = document.getElementById("hintText");
+const doneView = document.getElementById("doneView");
+
+function cardVisual(card) {
+  const frag = document.createDocumentFragment();
+  if (card.url) {
+    const img = document.createElement("img");
+    img.src = card.url; img.alt = "";
+    frag.appendChild(img);
+  } else {
+    const em = document.createElement("span");
+    em.className = "emoji"; em.setAttribute("aria-hidden", "true"); em.textContent = card.emoji;
+    frag.appendChild(em);
+  }
+  const lbl = document.createElement("span");
+  lbl.className = "lbl"; lbl.textContent = card.label;
+  frag.appendChild(lbl);
+  return frag;
+}
+
+function render(justEarnedIndex) {
+  const card = findCard(state.goal);
+
+  // goal card
+  goalCard.innerHTML = "";
+  goalCard.className = "goal-card" + (card ? "" : " empty");
+  if (card) {
+    goalCard.appendChild(cardVisual(card));
+    goalCard.setAttribute("aria-label", "Working for: " + card.label + (state.locked ? "" : ". Tap to change."));
+  } else {
+    const plus = document.createElement("span");
+    plus.className = "emoji"; plus.setAttribute("aria-hidden", "true"); plus.textContent = "＋";
+    goalCard.appendChild(plus);
+    const hint = document.createElement("span");
+    hint.textContent = "Tap to choose";
+    goalCard.appendChild(hint);
+    goalCard.setAttribute("aria-label", "Choose what you're working for");
+  }
+
+  // tokens
+  tokensEl.innerHTML = "";
+  for (let i = 0; i < state.total; i++) {
+    const filled = i < state.earned;
+    const slot = document.createElement("button");
+    slot.className = "slot" + (filled ? "" : " empty") + (state.locked ? " locked" : "");
+    if (i === justEarnedIndex) slot.classList.add("just-earned");
+    slot.setAttribute("aria-label",
+      filled ? "Token " + (i + 1) + " earned" + (state.locked ? "" : ". Tap to take back.")
+             : "Token slot " + (i + 1) + ", empty" + (state.locked ? "" : ". Tap to award."));
+    const span = document.createElement("span");
+    span.setAttribute("aria-hidden", "true");
+    span.textContent = filled ? state.token : "";
+    slot.appendChild(span);
+    if (!state.locked) {
+      slot.addEventListener("click", () => filled ? unaward() : award());
+    }
+    tokensEl.appendChild(slot);
+  }
+
+  progressText.textContent = state.earned + " of " + state.total;
+  hintText.textContent = state.locked
+    ? ""
+    : (card ? "Tap an empty circle to award a token." : "Choose a goal first, then award tokens.");
+}
+
+goalCard.addEventListener("click", () => {
+  if (state.locked) return;
+  openPicker();
+});
+
+/* ---------- Award / take back ---------- */
+function award() {
+  if (state.earned >= state.total) return;
+  state.earned += 1;
+  saveState();
+  if (state.earned >= state.total) {
+    render();
+    celebrate();
+  } else {
+    render(state.earned - 1);
+    if (state.speak) {
+      const left = state.total - state.earned;
+      speak(state.earned === 1 ? "One token! Well done!"
+            : left === 1 ? state.earned + " tokens! Only one more to go!"
+            : state.earned + " tokens! Keep going!");
+    }
+  }
+}
+
+function unaward() {
+  if (state.earned <= 0) return;
+  state.earned -= 1;
+  saveState();
+  render();
+}
+
+/* ---------- Celebration ---------- */
+function celebrate() {
+  const card = findCard(state.goal);
+  const line = document.getElementById("tokensLine");
+  line.innerHTML = "";
+  for (let i = 0; i < state.total; i++) {
+    const s = document.createElement("span");
+    s.textContent = state.token;
+    line.appendChild(s);
+  }
+  const visual = document.getElementById("doneVisual");
+  visual.innerHTML = "";
+  const lbl = document.getElementById("doneLabel");
+  if (card) {
+    if (card.url) {
+      const img = document.createElement("img");
+      img.src = card.url; img.alt = "";
+      visual.appendChild(img);
+    } else {
+      const em = document.createElement("span");
+      em.className = "emoji"; em.setAttribute("aria-hidden", "true"); em.textContent = card.emoji;
+      visual.appendChild(em);
+    }
+    lbl.textContent = card.label + " time!";
+  } else {
+    lbl.textContent = "";
+  }
+  doneView.classList.remove("hidden");
+  if (state.speak) speak("You did it! Well done!" + (card ? " Time for " + card.label + "!" : ""));
+  if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+}
+
+document.getElementById("againBtn").addEventListener("click", () => {
+  state.earned = 0;
+  saveState();
+  doneView.classList.add("hidden");
+  render();
+});
+document.getElementById("newGoalBtn").addEventListener("click", () => {
+  state.earned = 0;
+  state.goal = null;
+  saveState();
+  doneView.classList.add("hidden");
+  render();
+  openPicker();
+});
+
+/* ============================================================
+   Card picker (template)
+============================================================ */
+const picker = document.getElementById("picker");
+const builtinGroups = document.getElementById("builtinGroups");
+const customGrid = document.getElementById("customGrid");
+
+function makePickEl(card) {
+  const btn = document.createElement("button");
+  btn.className = "pick-card";
+  btn.setAttribute("aria-label", card.label);
+  btn.appendChild(cardVisual(card));
+  btn.addEventListener("click", () => {
+    state.goal = card.id;
+    state.earned = 0;
+    saveState();
+    picker.close();
+    render();
+  });
+  return btn;
+}
+
+function renderPickerGrids() {
+  builtinGroups.innerHTML = "";
+  CARD_GROUPS.forEach((group) => {
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = group.title;
+    builtinGroups.appendChild(title);
+    const g = document.createElement("div");
+    g.className = "card-grid";
+    group.cards.forEach((c) => g.appendChild(makePickEl(c)));
+    builtinGroups.appendChild(g);
+  });
+  customGrid.innerHTML = "";
+  customCards.forEach((c) => customGrid.appendChild(makePickEl(c)));
+  if (!customCards.length) {
+    const none = document.createElement("p");
+    none.className = "footer-note";
+    none.style.gridColumn = "1 / -1";
+    none.textContent = "A photo of the actual reward works best — their real scooter beats any symbol.";
+    customGrid.appendChild(none);
+  }
+}
+
+function openPicker() {
+  renderPickerGrids();
+  picker.showModal();
+}
+
+const photoInput = document.getElementById("photoInput");
+document.getElementById("addPhotoBtn").addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", async () => {
+  const file = photoInput.files[0];
+  photoInput.value = "";
+  if (!file) return;
+  let label = prompt("What should this card be called? (e.g. “Scooter time”)");
+  if (label === null) return;
+  label = label.trim().slice(0, 40) || "My card";
+  try {
+    const blob = await resizeImage(file);
+    const id = "c:" + Date.now();
+    await idbPut({ id, label, blob });
+    customCards.push({ id, label, url: URL.createObjectURL(blob) });
+    renderPickerGrids();
+    toast("Photo card added");
+  } catch (e) {
+    toast("Sorry, that photo couldn’t be added");
+  }
+});
+
+/* ============================================================
+   Settings
+============================================================ */
+const settings = document.getElementById("settings");
+const speakToggle = document.getElementById("speakToggle");
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  if (state.locked) { toast("Locked — hold the padlock to unlock"); return; }
+  speakToggle.checked = state.speak;
+  syncSettingButtons();
+  settings.showModal();
+});
+
+function syncSettingButtons() {
+  document.querySelectorAll(".seg-btn").forEach((b) =>
+    b.setAttribute("aria-pressed", String(Number(b.dataset.total) === state.total)));
+  document.querySelectorAll(".token-choice").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.token === state.token)));
+}
+
+document.querySelectorAll(".seg-btn").forEach((b) => {
+  b.addEventListener("click", () => {
+    state.total = Number(b.dataset.total);
+    if (state.earned > state.total) state.earned = state.total;
+    saveState();
+    syncSettingButtons();
+    render();
+  });
+});
+
+document.querySelectorAll(".token-choice").forEach((b) => {
+  b.addEventListener("click", () => {
+    state.token = b.dataset.token;
+    saveState();
+    syncSettingButtons();
+    render();
+  });
+});
+
+speakToggle.addEventListener("change", () => { state.speak = speakToggle.checked; saveState(); });
+
+document.getElementById("resetTokensBtn").addEventListener("click", () => {
+  state.earned = 0;
+  saveState();
+  settings.close();
+  render();
+  toast("Tokens cleared");
+});
+
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  if (!confirm("Delete ALL photo cards? This can’t be undone.")) return;
+  for (const c of customCards) { await idbDelete(c.id); URL.revokeObjectURL(c.url); }
+  customCards = [];
+  if (state.goal && state.goal.startsWith("c:")) { state.goal = null; state.earned = 0; }
+  saveState();
+  render();
+});
+
+document.querySelectorAll("[data-close]").forEach((btn) => {
+  btn.addEventListener("click", () => document.getElementById(btn.dataset.close).close());
+});
+
+/* ============================================================
+   Child lock — protects the tokens: locked = view only
+============================================================ */
+const lockBtn = document.getElementById("lockBtn");
+const lockIcon = document.getElementById("lockIcon");
+let holdTimer = null;
+
+function setLocked(v) {
+  state.locked = v;
+  saveState();
+  lockIcon.textContent = v ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(v));
+  render();
+  toast(v ? "Locked — the board can be seen but not changed" : "Unlocked");
+}
+lockBtn.addEventListener("click", () => { if (!state.locked) setLocked(true); });
+function startHold() {
+  if (!state.locked) return;
+  lockBtn.classList.add("holding");
+  holdTimer = setTimeout(() => { lockBtn.classList.remove("holding"); setLocked(false); }, 2000);
+}
+function cancelHold() {
+  lockBtn.classList.remove("holding");
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+}
+lockBtn.addEventListener("pointerdown", startHold);
+lockBtn.addEventListener("pointerup", cancelHold);
+lockBtn.addEventListener("pointerleave", cancelHold);
+lockBtn.addEventListener("keydown", (e) => {
+  if (state.locked && (e.key === "Enter" || e.key === " ")) {
+    e.preventDefault();
+    if (!holdTimer) startHold();
+  }
+});
+lockBtn.addEventListener("keyup", cancelHold);
+
+/* ============================================================
+   Toast, install, service worker (template)
+============================================================ */
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+}
+
+let deferredInstall = null;
+const installBtn = document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  installBtn.hidden = false;
+});
+installBtn.addEventListener("click", async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  installBtn.hidden = true;
+});
+
+/* service worker handled by the combined app shell */
+
+/* ============================================================
+   Boot
+============================================================ */
+(async function init() {
+  loadState();
+  try { await loadCustomCards(); } catch (e) { customCards = []; }
+  if (state.goal && !findCard(state.goal)) { state.goal = null; state.earned = 0; }
+  lockIcon.textContent = state.locked ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(state.locked));
+  render();
+})();
+</script>
+</body>
+</html>

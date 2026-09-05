@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Brain Battery — Helpset</title>
+<meta name="description" content="A visual energy check-in for children. Show how full your battery is, let the phone say it aloud, and see what helps you recharge. Free, offline. From helpset.uk" />
+
+<!-- ============================================================
+  BRAIN BATTERY — offline-first PWA (Helpset)
+  Same template as the rest of the suite.
+  Deploy: battery.helpset.uk. Update: bump CACHE_VERSION in sw.js.
+
+  What it is: spoon theory made child-friendly. The child (or
+  parent) sets a battery level; "Tell someone" speaks it aloud
+  ("My battery is low. I need a break, please.") and logs the
+  check-in. A second tab shows the child's own recharge cards.
+
+  The check-in log matters: "battery at 20% at school pickup,
+  every day" is exactly the pattern evidence families gather
+  for EHCP reviews.
+============================================================ -->
+
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --ink: #26333a;
+    --ink-soft: #5b6a72;
+    --teal: #266e6e;
+    --teal-dark: #1c5555;
+    --green: #57a773;
+    --amber: #f0a64a;
+    --red: #e05a4e;
+    --seg-empty: #e7e1d4;
+    --radius: 20px;
+    --shadow: 0 2px 10px rgba(38, 51, 58, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 6px; }
+
+  header { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem; }
+  .app-title { font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--teal-dark); flex: 1; }
+
+  .icon-btn {
+    min-width: 48px; min-height: 48px;
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    font-size: 1.35rem; line-height: 1;
+    display: grid; place-items: center;
+  }
+  .icon-btn[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  main {
+    flex: 1;
+    padding: 0.2rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+    width: 100%;
+  }
+
+  .tabs { display: flex; gap: 0.5rem; }
+  .tab {
+    border: none; border-radius: 999px;
+    background: #fff; box-shadow: var(--shadow);
+    font-weight: 800; font-size: 0.95rem;
+    padding: 0.6rem 1.2rem; min-height: 46px;
+    color: var(--ink-soft);
+  }
+  .tab[aria-pressed="true"] { background: var(--teal); color: #fff; }
+
+  .hidden { display: none !important; }
+
+  /* ---------- Battery view ---------- */
+  #batteryView { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; width: 100%; }
+
+  .battery-row {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    justify-content: center;
+  }
+
+  .step-btn {
+    border: none; border-radius: 16px;
+    background: #fff; box-shadow: var(--shadow);
+    min-width: 60px; min-height: 60px;
+    font-size: 1.8rem; font-weight: 800;
+  }
+
+  #batterySvg { width: min(46vw, 26dvh, 190px); height: auto; display: block; }
+  #batterySvg .seg { cursor: pointer; }
+
+  .status {
+    text-align: center;
+  }
+  .status .pct {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .status .word {
+    font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+    font-weight: 800;
+  }
+
+  .big-btn {
+    border: none; border-radius: 18px;
+    background: var(--teal); color: #fff;
+    font-size: 1.25rem; font-weight: 800;
+    padding: 0.95rem 2.2rem; min-height: 60px;
+    box-shadow: var(--shadow);
+  }
+  .big-btn:active { transform: scale(0.98); }
+
+  .log {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 480px;
+  }
+  .log-chip {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .log-title { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
+
+  /* ---------- Recharge view ---------- */
+  #helpsView { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; max-width: 640px; }
+
+  .mode-banner {
+    text-align: center; font-weight: 800; font-size: 0.95rem;
+    color: var(--teal-dark); background: #dcebe9;
+    border-radius: 12px; padding: 0.5rem;
+  }
+
+  .helps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+  }
+  @media (min-width: 700px) { .helps-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .hc {
+    position: relative;
+    border: none; border-radius: var(--radius);
+    background: #fff; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.35rem; padding: 0.9rem 0.4rem; min-height: 110px;
+  }
+  .hc .emoji { font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: 1.1; }
+  .hc img { width: 60%; max-width: 100px; aspect-ratio: 1; object-fit: cover; border-radius: 12px; }
+  .hc .lbl { font-size: clamp(0.85rem, 3.4vw, 1rem); font-weight: 800; text-align: center; overflow-wrap: anywhere; }
+  .hc.speaking { background: #fdeeda; outline: 4px solid var(--amber); }
+  .hc .remove {
+    position: absolute; top: 6px; right: 6px;
+    width: 34px; height: 34px;
+    border: none; border-radius: 10px;
+    background: #f3dedd; color: #7a2721;
+    font-size: 1rem; display: grid; place-items: center;
+  }
+  .hc.add-tile {
+    background: transparent;
+    border: 3px dashed rgba(38, 51, 58, 0.25);
+    box-shadow: none; color: var(--ink-soft); font-weight: 700;
+  }
+
+  .footer-bar { display: flex; gap: 0.7rem; justify-content: center; }
+  .bar-btn {
+    border: none; border-radius: 16px;
+    background: #fff; box-shadow: var(--shadow);
+    font-weight: 800; font-size: 1rem;
+    padding: 0.75rem 1.3rem; min-height: 52px;
+  }
+  .bar-btn.primary { background: var(--teal); color: #fff; }
+
+  /* ---------- Dialogs (template) ---------- */
+  dialog {
+    border: none; border-radius: var(--radius);
+    box-shadow: 0 10px 40px rgba(38, 51, 58, 0.3);
+    padding: 1.2rem;
+    width: min(560px, calc(100vw - 2rem));
+    max-height: 85dvh;
+    background: var(--bg); color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(38, 51, 58, 0.45); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .modal-head h2 { margin: 0; font-size: 1.2rem; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.6rem; }
+  .pick-card {
+    border: none; border-radius: 14px;
+    background: #fff; box-shadow: var(--shadow);
+    padding: 0.6rem 0.3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+    min-height: 96px;
+  }
+  .pick-card .emoji { font-size: 2.2rem; }
+  .pick-card img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; }
+  .pick-card .lbl { font-size: 0.78rem; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+
+  .section-title {
+    font-size: 0.85rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-soft); margin: 1rem 0 0.5rem;
+  }
+
+  .wide-btn {
+    width: 100%; border: none; border-radius: 14px;
+    background: var(--teal); color: #fff;
+    font-weight: 700; padding: 0.8rem; min-height: 52px; margin-top: 0.6rem;
+  }
+  .wide-btn.secondary { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .wide-btn.danger { background: #b3453f; }
+
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow);
+    padding: 0.8rem 1rem; margin-bottom: 0.6rem;
+  }
+  .setting-row label { font-weight: 600; }
+  .setting-row input[type="checkbox"] { width: 26px; height: 26px; accent-color: var(--teal); }
+
+  .footer-note { text-align: center; font-size: 0.85rem; color: var(--ink-soft); margin-top: 1rem; }
+  .footer-note a { color: var(--teal-dark); font-weight: 700; }
+
+  #lockBtn { position: relative; }
+  #lockBtn .hold-ring { position: absolute; inset: 4px; border-radius: 10px; border: 3px solid transparent; }
+  #lockBtn.holding .hold-ring { border-color: #fff; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    background: var(--ink); color: #fff;
+    padding: 0.6rem 1.1rem; border-radius: 999px;
+    font-weight: 600; font-size: 0.9rem;
+    opacity: 0; pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .toast { transition: opacity 0.25s ease; }
+    #batterySvg .seg { transition: fill 0.2s ease; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="app-title">Brain Battery</h1>
+  <button id="lockBtn" class="icon-btn" aria-pressed="false"
+          aria-label="Child lock. Tap to lock. Press and hold for two seconds to unlock.">
+    <span id="lockIcon" aria-hidden="true">🔓</span>
+    <span class="hold-ring" aria-hidden="true"></span>
+  </button>
+  <button id="settingsBtn" class="icon-btn" aria-label="Settings">
+    <span aria-hidden="true">⚙️</span>
+  </button>
+</header>
+
+<main>
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" id="tabBattery" aria-pressed="true">🔋 My battery</button>
+    <button class="tab" id="tabHelps" aria-pressed="false">⚡ What helps</button>
+  </div>
+
+  <!-- Battery view -->
+  <div id="batteryView">
+    <div class="status" aria-live="polite">
+      <div class="pct" id="pctText">70%</div>
+      <div class="word" id="wordText">Okay</div>
+    </div>
+
+    <div class="battery-row">
+      <button class="step-btn" id="minusBtn" aria-label="Battery down by ten percent">−</button>
+      <svg id="batterySvg" viewBox="0 0 120 230" role="img" aria-label="Battery level display. Tap a segment to set the level.">
+        <rect x="42" y="2" width="36" height="14" rx="5" fill="#c9c2b2"/>
+        <rect x="8" y="16" width="104" height="210" rx="18" fill="#ffffff" stroke="#c9c2b2" stroke-width="3"/>
+        <g id="segs"></g>
+      </svg>
+      <button class="step-btn" id="plusBtn" aria-label="Battery up by ten percent">+</button>
+    </div>
+
+    <button class="big-btn" id="tellBtn">🗣️ Tell someone</button>
+
+    <div class="log-title" id="logTitle" hidden>Today's check-ins</div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <!-- Recharge view -->
+  <div id="helpsView" class="hidden">
+    <div class="mode-banner hidden" id="editBanner">Editing — tap a card to change it, ✕ to remove</div>
+    <div class="helps-grid" id="helpsGrid"></div>
+    <div class="footer-bar">
+      <button class="bar-btn" id="editBtn">✎ Edit cards</button>
+      <button class="bar-btn primary hidden" id="doneEditBtn">Done</button>
+    </div>
+  </div>
+</main>
+
+<!-- Card picker -->
+<dialog id="picker" aria-labelledby="pickerTitle">
+  <div class="modal-head">
+    <h2 id="pickerTitle">Choose a card</h2>
+    <button class="icon-btn" data-close="picker" aria-label="Close">✕</button>
+  </div>
+  <div id="builtinGroups"></div>
+  <div class="section-title">My photo cards</div>
+  <div id="customGrid" class="card-grid"></div>
+  <button id="addPhotoBtn" class="wide-btn secondary">📷 Add a photo card</button>
+  <input id="photoInput" type="file" accept="image/*" hidden />
+</dialog>
+
+<!-- Settings -->
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <div class="modal-head">
+    <h2 id="settingsTitle">Settings</h2>
+    <button class="icon-btn" data-close="settings" aria-label="Close">✕</button>
+  </div>
+
+  <div class="setting-row">
+    <label for="speakToggle">Speak out loud</label>
+    <input type="checkbox" id="speakToggle" checked />
+  </div>
+
+  <button id="installBtn" class="wide-btn" hidden>⬇️ Install this app</button>
+
+  <button id="clearLogBtn" class="wide-btn secondary">Clear today's check-ins</button>
+  <button id="resetBtn" class="wide-btn danger">Delete all photo cards</button>
+
+  <p class="footer-note">
+    Free from <a href="https://helpset.uk" rel="noopener">helpset.uk</a> —
+    more visual support tools for families.<br />
+    Works fully offline. Nothing you add ever leaves this device.
+  </p>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const CARD_GROUPS = [
+  ["Daily routine", [
+    ["wake", "☀️", "Wake up"],
+    ["breakfast", "🥣", "Breakfast"],
+    ["teeth", "🪥", "Brush teeth"],
+    ["dressed", "👕", "Get dressed"],
+    ["shoes", "👟", "Shoes on"],
+    ["coat", "🧥", "Coat on"],
+    ["bag", "🎒", "Pack bag"],
+    ["medicine", "💊", "Medicine"],
+    ["toilet", "🚽", "Toilet"],
+    ["wash", "🧼", "Wash hands"],
+    ["bath", "🛁", "Bath"],
+    ["shower", "🚿", "Shower"],
+    ["pyjamas", "🌙", "Pyjamas on"],
+    ["reading", "📖", "Story"],
+    ["bed", "🛏️", "Bed"],
+    ["sleep", "😴", "Sleep"]
+  ]],
+  ["Food & drink", [
+    ["snack", "🍎", "Snack"],
+    ["lunch", "🥪", "Lunch"],
+    ["dinner", "🍽️", "Dinner"],
+    ["drink", "🥤", "Drink"],
+    ["milk", "🥛", "Milk"],
+    ["fruit", "🍌", "Fruit"],
+    ["icecream", "🍦", "Ice cream"],
+    ["baking", "🧁", "Baking"]
+  ]],
+  ["Going out", [
+    ["car", "🚗", "Car"],
+    ["bus", "🚌", "Bus"],
+    ["train", "🚆", "Train"],
+    ["bike", "🚲", "Bike"],
+    ["scooter", "🛴", "Scooter"],
+    ["walk", "🚶", "Walk"],
+    ["school", "🏫", "School"],
+    ["home", "🏠", "Home"],
+    ["park", "🛝", "Park"],
+    ["shop", "🛒", "Shopping"],
+    ["library", "📚", "Library"],
+    ["swim", "🏊", "Swimming"],
+    ["beach", "🏖️", "Beach"],
+    ["holiday", "🧳", "Holiday"],
+    ["doctor", "🩺", "Doctor"],
+    ["dentist", "🦷", "Dentist"],
+    ["haircut", "💇", "Haircut"]
+  ]],
+  ["People & pets", [
+    ["mum", "👩", "Mum"],
+    ["dad", "👨", "Dad"],
+    ["grandma", "👵", "Grandma"],
+    ["grandpa", "👴", "Grandpa"],
+    ["baby", "👶", "Baby"],
+    ["friends", "🧑‍🤝‍🧑", "Friends"],
+    ["teacher", "🧑‍🏫", "Teacher"],
+    ["dog", "🐶", "Dog"],
+    ["cat", "🐱", "Cat"]
+  ]],
+  ["Play & activities", [
+    ["play", "🧸", "Play"],
+    ["tv", "📺", "TV"],
+    ["tablet", "📱", "Tablet"],
+    ["games", "🎮", "Video games"],
+    ["drawing", "🖍️", "Drawing"],
+    ["painting", "🎨", "Painting"],
+    ["music", "🎵", "Music"],
+    ["singing", "🎤", "Singing"],
+    ["dancing", "💃", "Dancing"],
+    ["building", "🧱", "Building"],
+    ["puzzle", "🧩", "Puzzle"],
+    ["football", "⚽", "Football"],
+    ["garden", "🌻", "Garden"],
+    ["craft", "✂️", "Craft"],
+    ["bubbles", "🫧", "Bubbles"],
+    ["party", "🎉", "Party"],
+    ["birthday", "🎂", "Birthday"],
+    ["present", "🎁", "Present"]
+  ]],
+  ["School & home", [
+    ["homework", "✏️", "Homework"],
+    ["tidy", "🧹", "Tidy up"],
+    ["help", "🤝", "Helping"]
+  ]],
+  ["Calm & waiting", [
+    ["quiet", "🤫", "Quiet time"],
+    ["cuddle", "🤗", "Cuddle"],
+    ["headphones", "🎧", "Headphones"],
+    ["breathe", "😮‍💨", "Deep breaths"],
+    ["breaktime", "⏸️", "Break"],
+    ["wait", "⏳", "Waiting"],
+    ["finished", "✅", "Finished"]
+  ]]
+].map(([title, cards]) => ({
+  title,
+  cards: cards.map(([id, emoji, label]) => ({ id: "b:" + id, emoji, label }))
+}));
+
+const BUILTIN_CARDS = CARD_GROUPS.flatMap((g) => g.cards);
+
+/* ============================================================
+   Recharge & sensory — cards specific to this app, with
+   tailored spoken phrases ("Maybe a big squeeze would help.")
+============================================================ */
+const RECHARGE_GROUP = {
+  title: "Recharge & sensory",
+  cards: [
+    ["squeeze", "\u{1FAC2}", "Big squeeze", "Maybe a big squeeze would help."],
+    ["den", "\u{1F6CC}", "Blanket den", "Maybe my blanket den would help."],
+    ["sofa", "\u{1F6CB}\uFE0F", "Sofa time", "Maybe some sofa time would help."],
+    ["fidget", "\u{1FA80}", "Fidget toy", "Maybe my fidget toy would help."],
+    ["bounce", "\u{1F938}", "Bouncing", "Maybe some bouncing would help."],
+    ["run", "\u{1F3C3}", "Run around", "Maybe running around would help."],
+    ["stretch", "\u{1F9D8}", "Stretching", "Maybe some stretching would help."],
+    ["freshair", "\u{1F343}", "Fresh air", "Maybe some fresh air would help."],
+    ["water", "\u{1F4A7}", "Water play", "Maybe water play would help."],
+    ["warmdrink", "\u2615", "Warm drink", "Maybe a warm drink would help."],
+    ["darkquiet", "\u{1F56F}\uFE0F", "Dim and quiet", "Maybe somewhere dim and quiet would help."],
+    ["squish", "\u{1F9F8}", "Soft toy", "Maybe my soft toy would help."]
+  ].map(([id, emoji, label, say]) => ({ id: "r:" + id, emoji, label, say }))
+};
+const PICKER_GROUPS = [RECHARGE_GROUP].concat(CARD_GROUPS);
+const ALL_CARDS = RECHARGE_GROUP.cards.concat(BUILTIN_CARDS);
+
+/* ============================================================
+   Zones — colour, word, and what "Tell someone" says
+============================================================ */
+const ZONES = [
+  { min: 80, word: "Full",        color: "var(--green)", hex: "#57a773", say: "My battery is full. I am feeling good." },
+  { min: 50, word: "Okay",        color: "var(--green)", hex: "#57a773", say: "My battery is okay. I am using some energy." },
+  { min: 30, word: "Getting low", color: "var(--amber)", hex: "#f0a64a", say: "My battery is getting low. I might need a break soon." },
+  { min: 10, word: "Low",         color: "var(--red)",   hex: "#e05a4e", say: "My battery is low. I need a break, please." },
+  { min: 0,  word: "Empty",       color: "var(--red)",   hex: "#e05a4e", say: "My battery is empty. I need a break right now, please." }
+];
+function zoneFor(level) { return ZONES.find((z) => level >= z.min); }
+
+/* ============================================================
+   State
+============================================================ */
+const STORE_KEY = "bb-state-v1";
+
+let state = {
+  level: 70,
+  speak: true,
+  locked: false,
+  helps: ["b:headphones", "b:quiet", "b:cuddle", "b:breathe", "r:squeeze", "r:den", "r:fidget", "r:freshair", "b:drink", "b:play"],
+  log: [] // { t: epoch ms, level }
+};
+let editing = false;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch (e) { /* start fresh */ }
+}
+function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+/* ============================================================
+   IndexedDB — photo cards (template)
+============================================================ */
+const DB_NAME = "bb-photos";
+let customCards = [];
+
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("photos", { keyPath: "id" });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbAll() {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction("photos").objectStore("photos").getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbPut(record) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").put(record);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function idbDelete(id) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("photos", "readwrite");
+    tx.objectStore("photos").delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function loadCustomCards() {
+  const records = await idbAll();
+  customCards = records.map((r) => ({ id: r.id, label: r.label, url: URL.createObjectURL(r.blob) }));
+}
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("resize failed")), "image/jpeg", 0.85);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+function findCard(id) {
+  if (!id) return null;
+  return ALL_CARDS.find((c) => c.id === id) || customCards.find((c) => c.id === id) || null;
+}
+
+/* ============================================================
+   Speech
+============================================================ */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-GB";
+    u.rate = 0.95;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* skip */ }
+}
+
+/* ============================================================
+   Battery rendering — 10 tappable segments, bottom-up
+============================================================ */
+const segsG = document.getElementById("segs");
+const pctText = document.getElementById("pctText");
+const wordText = document.getElementById("wordText");
+
+function buildSegments() {
+  let html = "";
+  // segment i (0 = bottom) covers levels (i*10, (i+1)*10]
+  const x = 16, w = 88, top = 24, bottom = 218, gap = 4;
+  const h = (bottom - top - 9 * gap) / 10;
+  for (let i = 0; i < 10; i++) {
+    const y = bottom - (i + 1) * h - i * gap;
+    html += `<rect class="seg" data-seg="${i}" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"
+              role="button" aria-label="Set battery to ${(i + 1) * 10} percent" tabindex="0"/>`;
+  }
+  segsG.innerHTML = html;
+  segsG.querySelectorAll(".seg").forEach((r) => {
+    const set = () => setLevel((Number(r.dataset.seg) + 1) * 10);
+    r.addEventListener("click", set);
+    r.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); set(); } });
+  });
+}
+
+function renderBattery() {
+  const zone = zoneFor(state.level);
+  segsG.querySelectorAll(".seg").forEach((r) => {
+    const segTop = (Number(r.dataset.seg) + 1) * 10;
+    r.setAttribute("fill", segTop <= state.level ? zone.hex : "#e7e1d4");
+  });
+  pctText.textContent = state.level + "%";
+  pctText.style.color = zone.hex;
+  wordText.textContent = zone.word;
+  wordText.style.color = zone.hex;
+}
+
+function setLevel(v) {
+  state.level = Math.max(0, Math.min(100, v));
+  saveState();
+  renderBattery();
+}
+
+document.getElementById("minusBtn").addEventListener("click", () => setLevel(state.level - 10));
+document.getElementById("plusBtn").addEventListener("click", () => setLevel(state.level + 10));
+
+/* ---------- Tell someone: speak + log the check-in ---------- */
+const logEl = document.getElementById("log");
+const logTitle = document.getElementById("logTitle");
+
+document.getElementById("tellBtn").addEventListener("click", () => {
+  const zone = zoneFor(state.level);
+  if (state.speak) speak(zone.say);
+  state.log.push({ t: Date.now(), level: state.level });
+  pruneLog();
+  saveState();
+  renderLog();
+  if (!state.speak) toast(zone.say);
+});
+
+function pruneLog() {
+  const cutoff = Date.now() - 48 * 3600 * 1000;
+  state.log = state.log.filter((e) => e.t > cutoff).slice(-30);
+}
+
+function renderLog() {
+  const today = new Date().toDateString();
+  const entries = state.log.filter((e) => new Date(e.t).toDateString() === today);
+  logTitle.hidden = entries.length === 0;
+  logEl.innerHTML = "";
+  entries.forEach((e) => {
+    const chip = document.createElement("span");
+    chip.className = "log-chip";
+    chip.style.background = zoneFor(e.level).hex;
+    const d = new Date(e.t);
+    chip.textContent = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0") + " · " + e.level + "%";
+    logEl.appendChild(chip);
+  });
+}
+
+/* ============================================================
+   Tabs
+============================================================ */
+const batteryView = document.getElementById("batteryView");
+const helpsView = document.getElementById("helpsView");
+const tabBattery = document.getElementById("tabBattery");
+const tabHelps = document.getElementById("tabHelps");
+
+function showTab(which) {
+  const battery = which === "battery";
+  batteryView.classList.toggle("hidden", !battery);
+  helpsView.classList.toggle("hidden", battery);
+  tabBattery.setAttribute("aria-pressed", String(battery));
+  tabHelps.setAttribute("aria-pressed", String(!battery));
+  if (battery) editing = false;
+  renderHelps();
+}
+tabBattery.addEventListener("click", () => showTab("battery"));
+tabHelps.addEventListener("click", () => showTab("helps"));
+
+/* ============================================================
+   Recharge cards
+============================================================ */
+const helpsGrid = document.getElementById("helpsGrid");
+const editBanner = document.getElementById("editBanner");
+const editBtn = document.getElementById("editBtn");
+const doneEditBtn = document.getElementById("doneEditBtn");
+
+function cardVisual(card) {
+  const frag = document.createDocumentFragment();
+  if (card.url) {
+    const img = document.createElement("img");
+    img.src = card.url; img.alt = "";
+    frag.appendChild(img);
+  } else {
+    const em = document.createElement("span");
+    em.className = "emoji"; em.setAttribute("aria-hidden", "true"); em.textContent = card.emoji;
+    frag.appendChild(em);
+  }
+  const lbl = document.createElement("span");
+  lbl.className = "lbl"; lbl.textContent = card.label;
+  frag.appendChild(lbl);
+  return frag;
+}
+
+let speakTimer = null;
+function renderHelps() {
+  editBanner.classList.toggle("hidden", !editing);
+  editBtn.classList.toggle("hidden", editing || state.locked);
+  doneEditBtn.classList.toggle("hidden", !editing);
+
+  helpsGrid.innerHTML = "";
+  state.helps.forEach((id, index) => {
+    const card = findCard(id);
+    if (!card) return;
+    const btn = document.createElement("button");
+    btn.className = "hc";
+    btn.setAttribute("aria-label", editing ? "Change card: " + card.label : "Maybe " + card.label + " would help");
+    btn.appendChild(cardVisual(card));
+
+    if (editing) {
+      btn.addEventListener("click", () => openPicker(index));
+      const rm = document.createElement("span");
+      rm.className = "remove";
+      rm.setAttribute("role", "button");
+      rm.setAttribute("aria-label", "Remove card: " + card.label);
+      rm.textContent = "✕";
+      rm.addEventListener("click", (e) => {
+        e.stopPropagation();
+        state.helps.splice(index, 1);
+        saveState();
+        renderHelps();
+      });
+      btn.appendChild(rm);
+    } else {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".hc.speaking").forEach((el) => el.classList.remove("speaking"));
+        btn.classList.add("speaking");
+        const phrase = card.say || ("Maybe " + card.label.toLowerCase() + " would help.");
+        if (state.speak) speak(phrase); else toast(phrase);
+        if (speakTimer) clearTimeout(speakTimer);
+        speakTimer = setTimeout(() => btn.classList.remove("speaking"), 1800);
+      });
+    }
+    helpsGrid.appendChild(btn);
+  });
+
+  if (editing && state.helps.length < 16) {
+    const add = document.createElement("button");
+    add.className = "hc add-tile";
+    add.setAttribute("aria-label", "Add a card");
+    add.innerHTML = '<span class="emoji" aria-hidden="true">＋</span><span class="lbl">Add card</span>';
+    add.addEventListener("click", () => openPicker(state.helps.length));
+    helpsGrid.appendChild(add);
+  }
+}
+
+editBtn.addEventListener("click", () => {
+  if (state.locked) return;
+  editing = true;
+  renderHelps();
+});
+doneEditBtn.addEventListener("click", () => { editing = false; renderHelps(); });
+
+/* ============================================================
+   Card picker (template)
+============================================================ */
+const picker = document.getElementById("picker");
+const builtinGroups = document.getElementById("builtinGroups");
+const customGrid = document.getElementById("customGrid");
+let pickerIndex = null;
+
+function makePickEl(card) {
+  const btn = document.createElement("button");
+  btn.className = "pick-card";
+  btn.setAttribute("aria-label", card.label);
+  btn.appendChild(cardVisual(card));
+  btn.addEventListener("click", () => {
+    state.helps[pickerIndex] = card.id;
+    saveState();
+    picker.close();
+    renderHelps();
+  });
+  return btn;
+}
+
+function renderPickerGrids() {
+  builtinGroups.innerHTML = "";
+  PICKER_GROUPS.forEach((group) => {
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = group.title;
+    builtinGroups.appendChild(title);
+    const g = document.createElement("div");
+    g.className = "card-grid";
+    group.cards.forEach((c) => g.appendChild(makePickEl(c)));
+    builtinGroups.appendChild(g);
+  });
+  customGrid.innerHTML = "";
+  customCards.forEach((c) => customGrid.appendChild(makePickEl(c)));
+  if (!customCards.length) {
+    const none = document.createElement("p");
+    none.className = "footer-note";
+    none.style.gridColumn = "1 / -1";
+    none.textContent = "Add photos of what really recharges them — their actual blanket, their dog, their favourite spot.";
+    customGrid.appendChild(none);
+  }
+}
+
+function openPicker(index) {
+  pickerIndex = index;
+  document.getElementById("pickerTitle").textContent =
+    index >= state.helps.length ? "Add a recharge card" : "Change this card";
+  renderPickerGrids();
+  picker.showModal();
+}
+
+const photoInput = document.getElementById("photoInput");
+document.getElementById("addPhotoBtn").addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", async () => {
+  const file = photoInput.files[0];
+  photoInput.value = "";
+  if (!file) return;
+  let label = prompt("What should this card be called? (e.g. “My blanket”)");
+  if (label === null) return;
+  label = label.trim().slice(0, 40) || "My card";
+  try {
+    const blob = await resizeImage(file);
+    const id = "c:" + Date.now();
+    await idbPut({ id, label, blob });
+    customCards.push({ id, label, url: URL.createObjectURL(blob) });
+    renderPickerGrids();
+    toast("Photo card added");
+  } catch (e) {
+    toast("Sorry, that photo couldn’t be added");
+  }
+});
+
+/* ============================================================
+   Settings + lock (template)
+============================================================ */
+const settings = document.getElementById("settings");
+const speakToggle = document.getElementById("speakToggle");
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  if (state.locked) { toast("Locked — hold the padlock to unlock"); return; }
+  speakToggle.checked = state.speak;
+  settings.showModal();
+});
+speakToggle.addEventListener("change", () => { state.speak = speakToggle.checked; saveState(); });
+
+document.getElementById("clearLogBtn").addEventListener("click", () => {
+  state.log = [];
+  saveState();
+  renderLog();
+  settings.close();
+  toast("Check-ins cleared");
+});
+
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  if (!confirm("Delete ALL photo cards? This can’t be undone.")) return;
+  for (const c of customCards) { await idbDelete(c.id); URL.revokeObjectURL(c.url); }
+  customCards = [];
+  state.helps = state.helps.filter((id) => !id.startsWith("c:"));
+  saveState();
+  renderHelps();
+});
+
+document.querySelectorAll("[data-close]").forEach((btn) => {
+  btn.addEventListener("click", () => document.getElementById(btn.dataset.close).close());
+});
+
+const lockBtn = document.getElementById("lockBtn");
+const lockIcon = document.getElementById("lockIcon");
+let holdTimer = null;
+
+function setLocked(v) {
+  state.locked = v;
+  if (v && editing) editing = false;
+  saveState();
+  lockIcon.textContent = v ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(v));
+  renderHelps();
+  toast(v ? "Locked — hold the padlock for 2 seconds to unlock" : "Unlocked");
+}
+lockBtn.addEventListener("click", () => { if (!state.locked) setLocked(true); });
+function startHold() {
+  if (!state.locked) return;
+  lockBtn.classList.add("holding");
+  holdTimer = setTimeout(() => { lockBtn.classList.remove("holding"); setLocked(false); }, 2000);
+}
+function cancelHold() {
+  lockBtn.classList.remove("holding");
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+}
+lockBtn.addEventListener("pointerdown", startHold);
+lockBtn.addEventListener("pointerup", cancelHold);
+lockBtn.addEventListener("pointerleave", cancelHold);
+lockBtn.addEventListener("keydown", (e) => {
+  if (state.locked && (e.key === "Enter" || e.key === " ")) {
+    e.preventDefault();
+    if (!holdTimer) startHold();
+  }
+});
+lockBtn.addEventListener("keyup", cancelHold);
+
+/* ============================================================
+   Toast, install, service worker (template)
+============================================================ */
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+}
+
+let deferredInstall = null;
+const installBtn = document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  installBtn.hidden = false;
+});
+installBtn.addEventListener("click", async () => {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  installBtn.hidden = true;
+});
+
+/* service worker handled by the combined app shell */
+
+/* ============================================================
+   Boot
+============================================================ */
+(async function init() {
+  loadState();
+  try { await loadCustomCards(); } catch (e) { customCards = []; }
+  state.helps = state.helps.filter((id) => findCard(id));
+  pruneLog();
+  lockIcon.textContent = state.locked ? "🔒" : "🔓";
+  lockBtn.setAttribute("aria-pressed", String(state.locked));
+  buildSegments();
+  renderBattery();
+  renderLog();
+  renderHelps();
+})();
+</script>
+</body>
+</html>

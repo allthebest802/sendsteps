@@ -21,6 +21,14 @@ const CORE = [
   '/app/tools/timer.js',
   '/app/tools/now-next.js',
   '/app/tools/now-next.app.html',
+  '/app/tools/brain-battery.js',
+  '/app/tools/brain-battery.app.html',
+  '/app/tools/choice.js',
+  '/app/tools/choice.app.html',
+  '/app/tools/comm-cards.js',
+  '/app/tools/comm-cards.app.html',
+  '/app/tools/token-board.js',
+  '/app/tools/token-board.app.html',
 ];
 
 self.addEventListener('install', event => {
