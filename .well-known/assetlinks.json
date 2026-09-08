@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "uk.helpset.toolkit",
+      "sha256_cert_fingerprints": [
+        "69:23:D3:45:A6:12:1E:56:43:53:1E:71:EE:DD:1C:4C:C2:A9:0D:55:2E:02:10:75:FA:5B:F7:D0:39:EE:8F:33"
+      ]
+    }
+  }
+]
