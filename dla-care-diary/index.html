@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+
+<title>Free DLA Care Diary — Daily Care &amp; Supervision Log | Helpset</title>
+<meta name="description" content="A free daily care diary to record your child's care and supervision needs for a DLA claim. Print it or fill it in on any device — no login, no account, private in your browser.">
+<link rel="canonical" href="https://helpset.uk/dla-care-diary/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Helpset">
+<meta property="og:title" content="Free DLA Care Diary — Daily Care &amp; Supervision Log">
+<meta property="og:description" content="Record your child's daily care and supervision needs for a DLA claim. Free, printable, private — no login.">
+<meta property="og:url" content="https://helpset.uk/dla-care-diary/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free DLA Care Diary | Helpset">
+<meta name="twitter:description" content="Record your child's daily care and supervision needs for a DLA claim. Free, printable, private — no login.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF8F4;--ink:#181825;--ink2:#3A3A52;--muted:#5C5C78;
+  --border:#E4E0D8;--border2:#CEC9BE;--surface:#FFFFFF;
+  --green:#2ECC87;--green-d:#157A4C;--green-l:#E6F9F1;
+  --amber:#9A6200;--amber-l:#FFFBEB;
+  --blue:#1D5EC4;--blue-l:#EFF6FF;
+  --rose:#C8103A;--rose-l:#FFF1F2;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --teal:#0A7268;--teal-l:#F0FDFA;
+  --radius:18px;
+  --shadow:0 2px 16px rgba(24,24,37,0.07);
+  --shadow-lg:0 10px 40px rgba(24,24,37,0.13);
+  --font-head:'Fraunces',Georgia,serif;--font-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden;
+  background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.1),transparent 55%),
+    radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
+a{text-decoration:none;color:inherit}
+
+/* NAV (matches site) */
+nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;
+  justify-content:space-between;gap:14px}
+.nbrand{display:flex;align-items:center;gap:9px}
+.nbmark{width:32px;height:32px;background:var(--green);border-radius:9px;display:flex;
+  align-items:center;justify-content:center;font-size:1rem}
+.nbname{font-family:var(--font-head);font-size:1.18rem;font-weight:800;color:var(--ink)}
+.nlinks{display:flex;gap:4px;align-items:center}
+.nlink{font-size:.82rem;font-weight:600;color:var(--ink2);padding:7px 12px;border-radius:100px;transition:all .14s}
+.nlink:hover{background:var(--green-l);color:var(--green-d)}
+.npill{background:#147a4c;color:white;padding:8px 20px;border-radius:100px;font-size:.83rem;font-weight:700;transition:all .15s}
+.npill:hover{background:#0f6a40;transform:translateY(-1px)}
+.nfree{font-size:.75rem;font-weight:700;color:var(--green-d);white-space:nowrap}
+@media(max-width:780px){.nfree{display:none}}
+@media(max-width:620px){.nlinks .nlink{display:none}}
+
+/* LAYOUT */
+main{max-width:880px;margin:0 auto;padding:0 22px}
+.wrap{max-width:880px;margin:0 auto}
+.hero{padding:40px 0 8px;text-align:center}
+.crumbs{font-size:.76rem;font-weight:600;color:var(--muted);margin-bottom:18px}
+.crumbs a:hover{color:var(--green-d)}
+.hpill{display:inline-flex;align-items:center;gap:8px;background:var(--green-l);
+  color:var(--green-d);border:1.5px solid rgba(46,204,135,.28);padding:6px 14px;
+  border-radius:100px;font-size:.77rem;font-weight:700;margin-bottom:18px}
+h1{font-family:var(--font-head);font-size:clamp(1.9rem,3.8vw,2.7rem);font-weight:900;
+  line-height:1.12;letter-spacing:-.5px;color:var(--ink);margin-bottom:14px}
+.hdesc{font-size:1.02rem;line-height:1.65;color:var(--ink2);max-width:60ch;margin:0 auto 6px}
+.trust{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:20px 0 4px;justify-content:center}
+.ti{font-size:.74rem;font-weight:700;color:var(--muted)}
+.ts{color:var(--border2)}
+
+/* TOOL CARD */
+.tool{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:22px;margin:26px 0}
+.tool-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.tool-title{font-family:var(--font-head);font-size:1.15rem;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px}
+.tool-actions{display:flex;gap:8px;flex-wrap:wrap}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-bottom:6px}
+@media(max-width:600px){.meta-grid{grid-template-columns:1fr 1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.field input,.field select,.field textarea{padding:10px 12px;border-radius:10px;border:1.5px solid var(--border2);
+  font-family:var(--font-body);font-size:.9rem;color:var(--ink);background:var(--cream);outline:none;transition:border-color .14s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);background:white}
+.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.field textarea{min-height:66px;resize:vertical}
+
+.divider{height:1px;background:var(--border);margin:18px 0}
+.addbox-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--green-d);margin-bottom:12px}
+.entry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.entry-grid .full{grid-column:1/-1}
+@media(max-width:600px){.entry-grid{grid-template-columns:1fr}}
+
+.chk-group{display:flex;flex-wrap:wrap;gap:7px}
+.chk{display:inline-flex;align-items:center;gap:6px;background:var(--cream);border:1.5px solid var(--border2);
+  border-radius:100px;padding:6px 12px;font-size:.8rem;font-weight:600;color:var(--ink2);cursor:pointer;transition:all .13s;user-select:none}
+.chk input{accent-color:var(--green);width:15px;height:15px;cursor:pointer}
+.chk:has(input:checked){background:var(--green-l);border-color:var(--green);color:var(--green-d)}
+.radio-row{display:flex;flex-wrap:wrap;gap:7px}
+
+.btn{font-family:var(--font-body);font-weight:700;border-radius:100px;cursor:pointer;transition:all .15s;border:none;font-size:.86rem}
+.btn-green{background:var(--green);color:white;padding:11px 22px}
+.btn-green:hover{background:var(--green-d);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface);color:var(--ink2);border:1.5px solid var(--border2);padding:8px 16px}
+.btn-ghost:hover{border-color:var(--green);color:var(--green-d)}
+.btn-sm{font-size:.78rem;padding:7px 14px}
+
+/* ENTRIES TABLE */
+.summary{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 14px}
+.stat{background:var(--green-l);border:1px solid rgba(46,204,135,.3);border-radius:12px;padding:10px 16px;flex:1;min-width:120px}
+.stat b{display:block;font-family:var(--font-head);font-size:1.4rem;font-weight:900;color:var(--green-d);line-height:1.1}
+.stat span{font-size:.72rem;font-weight:700;color:var(--ink2)}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.diary{width:100%;border-collapse:collapse;font-size:.83rem;min-width:640px}
+table.diary th{text-align:left;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--muted);padding:9px 10px;border-bottom:2px solid var(--border);white-space:nowrap}
+table.diary td{padding:10px;border-bottom:1px solid var(--border);color:var(--ink2);vertical-align:top}
+table.diary tr:last-child td{border-bottom:none}
+.tag{display:inline-block;background:var(--blue-l);color:#1D4ED8;border-radius:6px;padding:2px 7px;font-size:.7rem;font-weight:700;margin:1px 2px 1px 0}
+.pill-care{background:var(--amber-l);color:#92400E;border-radius:6px;padding:2px 7px;font-size:.7rem;font-weight:700}
+.pill-sup{background:var(--purple-l);color:#5B21B6;border-radius:6px;padding:2px 7px;font-size:.7rem;font-weight:700}
+.yes-peer{color:var(--green-d);font-weight:800}
+.del{background:none;border:none;color:var(--rose);cursor:pointer;font-size:.9rem;padding:4px;border-radius:6px}
+.del:hover{background:var(--rose-l)}
+.empty{text-align:center;color:var(--muted);font-size:.9rem;padding:26px 10px;line-height:1.6}
+
+/* PROSE / SEO CONTENT */
+.prose{margin:44px 0}
+.prose h2{font-family:var(--font-head);font-size:clamp(1.4rem,2.6vw,1.8rem);font-weight:800;color:var(--ink);
+  letter-spacing:-.3px;margin:34px 0 12px;line-height:1.2}
+.prose h3{font-family:var(--font-head);font-size:1.08rem;font-weight:800;color:var(--ink);margin:22px 0 8px}
+.prose p{font-size:.97rem;line-height:1.72;color:var(--ink2);margin-bottom:14px;max-width:68ch}
+.prose ul{margin:0 0 16px 2px;padding:0;list-style:none}
+.prose li{font-size:.97rem;line-height:1.65;color:var(--ink2);padding-left:26px;position:relative;margin-bottom:9px;max-width:66ch}
+.prose li::before{content:'✓';position:absolute;left:0;top:0;color:var(--green-d);font-weight:900}
+.prose strong{color:var(--ink);font-weight:700}
+
+/* WORKED EXAMPLE */
+.example{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin:16px 0}
+.example .ex-lbl{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--green-d);margin-bottom:10px}
+.example table{width:100%;border-collapse:collapse;font-size:.82rem}
+.example th{text-align:left;font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--muted);padding:7px 8px;border-bottom:2px solid var(--border)}
+.example td{padding:8px;border-bottom:1px solid var(--border);color:var(--ink2);vertical-align:top}
+
+/* OFFER BLOCK */
+.offer{background:linear-gradient(180deg,#0f3d2a,#0b2c1f);border-radius:var(--radius);
+  padding:30px 28px;margin:40px 0;color:white;text-align:center}
+.offer .o-eye{font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#5DEDB0;margin-bottom:10px}
+.offer h2{font-family:var(--font-head);font-size:1.5rem;font-weight:800;color:white;margin-bottom:10px;line-height:1.2}
+.offer p{font-size:.95rem;line-height:1.65;color:rgba(255,255,255,.78);max-width:52ch;margin:0 auto 20px}
+.offer .o-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px}
+.offer .o-item{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:100px;
+  padding:6px 14px;font-size:.8rem;font-weight:600;color:rgba(255,255,255,.9)}
+.offer .o-btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#08251a;
+  font-weight:800;font-size:.98rem;padding:14px 30px;border-radius:100px;transition:all .16s}
+.offer .o-btn:hover{background:#5DEDB0;transform:translateY(-2px)}
+.offer .o-note{font-size:.74rem;color:rgba(255,255,255,.55);margin-top:14px}
+
+/* FAQ */
+.faq{margin:40px 0}
+.faq h2{font-family:var(--font-head);font-size:clamp(1.4rem,2.6vw,1.8rem);font-weight:800;color:var(--ink);margin-bottom:16px}
+.faq details{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:4px 18px;margin-bottom:10px}
+.faq summary{font-weight:700;color:var(--ink);font-size:.96rem;padding:14px 0;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';font-size:1.3rem;color:var(--green-d);font-weight:400;transition:transform .18s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{font-size:.93rem;line-height:1.68;color:var(--ink2);padding:0 0 16px;max-width:68ch}
+
+.disclaimer{font-size:.8rem;line-height:1.6;color:var(--muted);background:var(--surface);
+  border:1px solid var(--border);border-left:3px solid var(--border2);border-radius:10px;padding:14px 16px;margin:30px 0;max-width:70ch}
+
+/* FOOTER (matches site) */
+footer{background:var(--ink);padding:38px 28px 28px;margin-top:50px}
+.fi{max-width:1120px;margin:0 auto}
+.ftop{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:18px}
+.fbrand{font-family:var(--font-head);font-size:1.1rem;font-weight:800;color:white;margin-bottom:7px}
+.fbrand span{color:var(--green)}
+.ftag{font-size:.77rem;color:rgba(255,255,255,.6);max-width:28ch;line-height:1.5}
+.flinks{display:flex;gap:4px;flex-wrap:wrap}
+.flink{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.6);padding:5px 9px;border-radius:6px;transition:color .13s}
+.flink:hover{color:white}
+.fcopy{font-size:.7rem;color:rgba(255,255,255,.6);text-align:center;line-height:1.65}
+
+/* A11y */
+.skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:var(--ink);color:var(--cream);font-size:.9rem;font-weight:700;padding:10px 18px;border-radius:8px;transition:top .15s}
+.skip-link:focus{top:16px}
+a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* PRINT — clean evidence printout */
+@media print{
+  nav,footer,.offer,.faq,.tool-actions,.addbox,.divider,.hpill,.trust,.crumbs,.disclaimer,.related,.prose h2,.prose h3,.prose p,.prose ul,.example,.skip-link{display:none !important}
+  body{background:white;color:black;background-image:none}
+  main{max-width:100%;padding:0}
+  .tool{border:none;box-shadow:none;padding:0;margin:0}
+  h1{font-size:1.4rem;text-align:left;margin-bottom:6px}
+  .print-head{display:block !important;margin-bottom:12px;font-size:.9rem}
+  .summary{margin:10px 0}
+  .stat{background:none;border:1px solid #ccc}
+  table.diary{min-width:0;font-size:.75rem}
+  table.diary th{color:#000}
+  .del{display:none !important}
+  .print-foot{display:block !important;margin-top:16px;font-size:.72rem;color:#444;border-top:1px solid #ccc;padding-top:8px}
+}
+.print-head,.print-foot{display:none}
+</style>
+</head>
+<body>
+<h1 class="sr-only">Free DLA Care Diary — Daily Care and Supervision Log for a DLA claim</h1>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<nav>
+  <a href="/" class="nbrand">
+    <div class="nbmark">🌿</div>
+    <span class="nbname">Helpset</span>
+  </a>
+  <div class="nlinks">
+    <a href="/#tools" class="nlink">Tools</a>
+    <a href="/apps/" class="nlink">Apps</a>
+    <a href="/blog/" class="nlink">Blog</a>
+    <a href="/contact/" class="nlink">Contact</a>
+    <span class="nfree">Free · No login · No subscription</span>
+    <a href="/#tools" class="npill">👀 See all tools</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › DLA Care Diary</nav>
+    <span class="hpill">📋 Free &amp; private · nothing leaves your device</span>
+    <h1>Free DLA Care Diary</h1>
+    <p class="hdesc">A simple daily log to record the care and supervision your child needs — the kind of everyday detail a DLA claim asks you to describe. Fill it in on your phone, tablet or computer, or print it blank to write by hand. It saves automatically on your device.</p>
+    <div class="trust">
+      <span class="ti">✓ Completely free</span><span class="ts">·</span>
+      <span class="ti">✓ No account or login</span><span class="ts">·</span>
+      <span class="ti">✓ Private — stays in your browser</span><span class="ts">·</span>
+      <span class="ti">✓ Print-ready</span>
+    </div>
+  </div>
+
+  <!-- ============ THE TOOL ============ -->
+  <section class="tool" id="main-content" tabindex="-1" aria-label="DLA care diary tool">
+    <div class="tool-head">
+      <div class="tool-title">📖 Your care diary</div>
+      <div class="tool-actions">
+        <button class="btn btn-ghost btn-sm" onclick="printDiary()">🖨️ Print / Save PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearAll()">↺ Clear all</button>
+      </div>
+    </div>
+
+    <!-- Printed header (only shows on paper) -->
+    <div class="print-head">
+      <strong>DLA Care Diary</strong> — <span id="phName"></span> <span id="phWeek"></span>
+    </div>
+
+    <div class="meta-grid">
+      <div class="field">
+        <label for="childName">Child's name or initials</label>
+        <input type="text" id="childName" placeholder="e.g. J.S." oninput="saveMeta()">
+      </div>
+      <div class="field">
+        <label for="childAge">Age</label>
+        <input type="text" id="childAge" placeholder="e.g. 7" oninput="saveMeta()">
+      </div>
+      <div class="field">
+        <label for="weekStart">Week beginning</label>
+        <input type="date" id="weekStart" oninput="saveMeta()">
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Add entry -->
+    <div class="addbox">
+      <div class="addbox-title">➕ Add a care moment</div>
+      <div class="entry-grid">
+        <div class="field">
+          <label for="eDate">Date</label>
+          <input type="date" id="eDate">
+        </div>
+        <div class="field">
+          <label for="eTime">Time of day</label>
+          <select id="eTime">
+            <option value="Morning">Morning</option>
+            <option value="Midday">Midday</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Evening">Evening</option>
+            <option value="Night">Night / overnight</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>What help was needed <span style="font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted)">(tick any that apply)</span></label>
+          <div class="chk-group" id="helpTypes">
+            <label class="chk"><input type="checkbox" value="Washing / bathing">Washing / bathing</label>
+            <label class="chk"><input type="checkbox" value="Dressing">Dressing</label>
+            <label class="chk"><input type="checkbox" value="Eating / drinking">Eating / drinking</label>
+            <label class="chk"><input type="checkbox" value="Toileting">Toileting</label>
+            <label class="chk"><input type="checkbox" value="Medication">Medication</label>
+            <label class="chk"><input type="checkbox" value="Moving around">Moving around</label>
+            <label class="chk"><input type="checkbox" value="Communication">Communication</label>
+            <label class="chk"><input type="checkbox" value="Behaviour / keeping safe">Behaviour / keeping safe</label>
+            <label class="chk"><input type="checkbox" value="Other">Other</label>
+          </div>
+        </div>
+        <div class="field full">
+          <label for="eWhat">What you had to do</label>
+          <textarea id="eWhat" placeholder="e.g. Had to stay with him the whole meal, cut food up, prompt every mouthful or he won't eat."></textarea>
+        </div>
+        <div class="field">
+          <label for="eMins">How long (minutes)</label>
+          <input type="number" id="eMins" min="0" placeholder="e.g. 25">
+        </div>
+        <div class="field">
+          <label for="eType">Care or supervision?</label>
+          <select id="eType">
+            <option value="Hands-on care">Hands-on care</option>
+            <option value="Supervision (watching to keep safe)">Supervision (watching to keep safe)</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label class="chk" style="align-self:flex-start"><input type="checkbox" id="ePeer">More help than a child the same age would usually need</label>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn btn-green" onclick="addEntry()">Add to diary</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Summary -->
+    <div class="summary" id="summary" style="display:none">
+      <div class="stat"><b id="sCount">0</b><span>care moments logged</span></div>
+      <div class="stat"><b id="sMins">0</b><span>minutes of care</span></div>
+      <div class="stat"><b id="sSup">0</b><span>needed supervision</span></div>
+      <div class="stat"><b id="sPeer">0</b><span>more than same-age peer</span></div>
+    </div>
+
+    <!-- Entries -->
+    <div class="table-scroll">
+      <table class="diary" id="diaryTable">
+        <thead>
+          <tr>
+            <th>Date</th><th>When</th><th>Help with</th><th>What you did</th><th>Mins</th><th>Type</th><th>More than peer?</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="diaryBody"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="emptyState">No entries yet. Add a care moment above, or print this page blank to fill in by hand.</div>
+
+    <div class="print-foot">
+      Kept as a personal record of care and supervision needs. Created with the free Helpset DLA Care Diary — helpset.uk/dla-care-diary
+    </div>
+  </section>
+
+  <!-- ============ SEO / SUPPORTING CONTENT ============ -->
+  <div class="prose">
+    <h2>How to use this as evidence for a DLA claim</h2>
+    <p>Disability Living Allowance for children is decided on how much <strong>extra care, attention and supervision</strong> your child needs compared with a child of the same age who doesn't have a disability or health condition. The claim form and any review ask you to describe a typical day — and it's easy to under-describe it, because when you do this care every day it just feels normal. A diary written at the time is far more convincing than trying to remember months later.</p>
+    <p>A few things that make a care diary genuinely useful:</p>
+    <ul>
+      <li><strong>Write it as it happens.</strong> A week or two of real, typical days carries more weight than a tidy summary. Include the ordinary days as well as the hard ones.</li>
+      <li><strong>Record supervision, not just hands-on help.</strong> Watching a child to keep them safe — because they might run off, hurt themselves, or not recognise danger — counts, and it's the single most under-reported thing on DLA claims.</li>
+      <li><strong>Compare to a child the same age.</strong> The test isn't "does my child need help" — it's "do they need <em>substantially more</em> help than other children their age". The diary prompts you to note this on every entry for exactly that reason.</li>
+      <li><strong>Include the night.</strong> Getting up repeatedly, settling, checking, or dealing with disturbed sleep all count as night-time care. Log these too, or use the companion sleep diary below.</li>
+      <li><strong>Say how long it takes.</strong> "Helped with dressing" says less than "20 minutes, every morning, prompting each step". Time and repetition are what show the level of need.</li>
+    </ul>
+
+    <h2>What the DLA care component looks at</h2>
+    <p>The care component has three levels, based on how much help your child needs through the day and night. In broad terms it considers:</p>
+    <h3>Daytime care and attention</h3>
+    <p>Frequent help throughout the day with things like washing, dressing, eating, toileting, medication or communication — more than would be usual for their age.</p>
+    <h3>Supervision to stay safe</h3>
+    <p>Needing someone watching over them to prevent harm to themselves or others — for example a child who has no sense of danger, bolts, or becomes distressed and unsafe without warning.</p>
+    <h3>Night-time needs</h3>
+    <p>Repeated attention during the night, or someone needing to be awake to keep them safe. This is where a sleep diary alongside this care diary strengthens a claim.</p>
+    <p>This tool doesn't decide anything or send anything anywhere — it just helps you gather the everyday detail in one place so you can describe it clearly on the form.</p>
+
+    <h2>A worked example</h2>
+    <p>Here's what a single well-recorded day might look like, so you can see the level of detail that helps:</p>
+    <div class="example">
+      <div class="ex-lbl">Example — one morning</div>
+      <table>
+        <thead><tr><th>When</th><th>Help with</th><th>What you did</th><th>Mins</th><th>More than peer?</th></tr></thead>
+        <tbody>
+          <tr><td>Morning</td><td>Dressing</td><td>Laid clothes out in order, prompted every step, helped with buttons and shoes — can't do it alone.</td><td>20</td><td>Yes</td></tr>
+          <tr><td>Morning</td><td>Eating / drinking</td><td>Sat with him the whole meal, cut food up, reminded every few mouthfuls or he stops eating.</td><td>30</td><td>Yes</td></tr>
+          <tr><td>Morning</td><td>Behaviour / keeping safe</td><td>Constant supervision getting ready — tried to leave the house twice, no awareness of the road.</td><td>—</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Notice it names the task, describes what the parent actually did, gives a time, and marks whether it's more than another child that age would need. That's the pattern the tool above helps you build.</p>
+  </div>
+
+  <!-- ============ OFFER ============ -->
+  <!-- TODO: replace o-btn href with your real Gumroad product URL once the pack is live -->
+  <section class="offer" aria-label="DLA Claim Evidence Pack">
+    <div class="o-eye">Preparing a full claim?</div>
+    <h2>The complete DLA Claim Evidence Pack</h2>
+    <p>This diary covers daytime care. The full pack brings together everything a claim asks you to evidence — in one place, formatted and ready to use.</p>
+    <div class="o-list">
+      <span class="o-item">Day care diary</span>
+      <span class="o-item">Night / sleep diary</span>
+      <span class="o-item">Behaviour log</span>
+      <span class="o-item">Symptom &amp; needs tracker</span>
+      <span class="o-item">A worked example</span>
+      <span class="o-item">Fillable + printable</span>
+    </div>
+    <a class="o-btn" href="https://helpsetuk.gumroad.com/l/dla-evidence-pack" target="_blank" rel="noopener">Get the Evidence Pack →</a>
+    <div class="o-note">Instant download · works on any device · one-off price, no subscription</div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq" aria-label="Frequently asked questions">
+    <h2>Common questions</h2>
+    <details>
+      <summary>Do I need a diary for a DLA claim?</summary>
+      <p>It isn't required, but it's one of the most useful things you can provide. A DLA claim is decided on how much extra care and supervision your child needs, and a diary written at the time shows that far more clearly than trying to summarise it from memory. It's especially helpful at review or if you appeal a decision.</p>
+    </details>
+    <details>
+      <summary>How many days should I record?</summary>
+      <p>A week or two of typical days is usually plenty. Aim to capture ordinary days as well as harder ones, so it reflects what care looks like most of the time rather than only the worst moments.</p>
+    </details>
+    <details>
+      <summary>What's the difference between care and supervision?</summary>
+      <p>Care is hands-on help — washing, dressing, feeding, giving medication and so on. Supervision is needing someone watching over your child to keep them (or others) safe, even if you're not doing something with your hands at that moment. Both count towards a DLA claim, and supervision is the one parents most often forget to mention.</p>
+    </details>
+    <details>
+      <summary>Can I use this for Child Disability Payment in Scotland, or PIP at 16?</summary>
+      <p>Yes. In Scotland, DLA for children has been replaced by Child Disability Payment, which looks at very similar care and mobility needs. When a young person turns 16 they usually move to Personal Independence Payment (or Adult Disability Payment in Scotland). The same kind of day-to-day record of needs is useful for all of them.</p>
+    </details>
+    <details>
+      <summary>Is this an official DWP form? Is my information safe?</summary>
+      <p>No — it's a free template to help you organise your own notes, not an official form, and Helpset isn't connected to the DWP or Social Security Scotland. Nothing you type is uploaded or sent anywhere. It's saved only in your own browser on your own device, and you can clear it any time with the "Clear all" button.</p>
+    </details>
+  </section>
+
+  <div class="related prose">
+    <h2>Related free tools</h2>
+    <ul>
+      <li><a href="/sleep-logger/" style="color:var(--green-d);font-weight:700">Sleep Pattern Logger</a> — record night-time wakings and disturbed sleep for the night-care side of a claim.</li>
+      <li><a href="/tracker/" style="color:var(--green-d);font-weight:700">Meltdown &amp; Trigger Tracker</a> — log behaviour, triggers and what helped, gently and without blame.</li>
+      <li><a href="/med-tracker/" style="color:var(--green-d);font-weight:700">Medication &amp; Appointments</a> — keep medication and appointments in one place.</li>
+    </ul>
+  </div>
+
+  <p class="disclaimer">Helpset provides free templates to help you organise your own evidence. We're not affiliated with the DWP or Social Security Scotland, and this is general information, not formal benefits advice. For advice on your specific claim, contact Citizens Advice or a local welfare rights service.</p>
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="ftop">
+      <div>
+        <div class="fbrand">Help<span>set</span></div>
+        <p class="ftag">Free visual tools for SEND children and families. Built from lived experience.</p>
+      </div>
+      <div class="flinks">
+        <a href="/#tools" class="flink">Tools</a>
+        <a href="/apps/" class="flink">Apps</a>
+        <a href="/blog/" class="flink">Blog</a>
+        <a href="/contact/" class="flink">Contact</a>
+        <a href="/privacy/" class="flink">Privacy</a>
+        <a href="/terms/" class="flink">Terms</a>
+      </div>
+    </div>
+    <p class="fcopy">© Helpset · Built for SEND families · Everything runs in your browser · No accounts · No ads</p>
+  </div>
+</footer>
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"DLA Care Diary",
+  "url":"https://helpset.uk/dla-care-diary/",
+  "applicationCategory":"HealthApplication",
+  "operatingSystem":"Any",
+  "description":"A free daily care and supervision diary to help parents record their child's care needs for a DLA claim. Private, printable, works offline.",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},
+  "publisher":{"@type":"Organization","name":"Helpset","url":"https://helpset.uk/"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://helpset.uk/"},
+    {"@type":"ListItem","position":2,"name":"DLA Care Diary","item":"https://helpset.uk/dla-care-diary/"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"Do I need a diary for a DLA claim?","acceptedAnswer":{"@type":"Answer","text":"It isn't required, but it's one of the most useful things you can provide. A DLA claim is decided on how much extra care and supervision your child needs, and a diary written at the time shows that more clearly than summarising from memory. It's especially helpful at review or appeal."}},
+    {"@type":"Question","name":"How many days should I record?","acceptedAnswer":{"@type":"Answer","text":"A week or two of typical days is usually plenty. Capture ordinary days as well as harder ones so it reflects what care looks like most of the time."}},
+    {"@type":"Question","name":"What's the difference between care and supervision?","acceptedAnswer":{"@type":"Answer","text":"Care is hands-on help such as washing, dressing, feeding and medication. Supervision is needing someone watching over your child to keep them or others safe. Both count towards a DLA claim, and supervision is the one parents most often forget to mention."}},
+    {"@type":"Question","name":"Can I use this for Child Disability Payment in Scotland or PIP at 16?","acceptedAnswer":{"@type":"Answer","text":"Yes. In Scotland, DLA for children has been replaced by Child Disability Payment, which looks at similar needs. At 16 a young person usually moves to Personal Independence Payment, or Adult Disability Payment in Scotland. The same record of daily needs is useful for all of them."}},
+    {"@type":"Question","name":"Is this an official DWP form and is my information safe?","acceptedAnswer":{"@type":"Answer","text":"No, it's a free template to organise your own notes, not an official form, and Helpset isn't connected to the DWP or Social Security Scotland. Nothing is uploaded — it's saved only in your own browser and you can clear it any time."}}
+  ]
+}
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var META_KEY = 'helpset_dla_care_meta';
+  var DATA_KEY = 'helpset_dla_care_entries';
+  var entries = [];
+
+  function load(){
+    try {
+      var m = JSON.parse(localStorage.getItem(META_KEY) || '{}');
+      if(m.name)  document.getElementById('childName').value = m.name;
+      if(m.age)   document.getElementById('childAge').value  = m.age;
+      if(m.week)  document.getElementById('weekStart').value = m.week;
+      entries = JSON.parse(localStorage.getItem(DATA_KEY) || '[]');
+      if(!Array.isArray(entries)) entries = [];
+    } catch(e){ entries = []; }
+    render();
+  }
+
+  window.saveMeta = function(){
+    try {
+      localStorage.setItem(META_KEY, JSON.stringify({
+        name: document.getElementById('childName').value,
+        age:  document.getElementById('childAge').value,
+        week: document.getElementById('weekStart').value
+      }));
+    } catch(e){}
+  };
+
+  function saveEntries(){
+    try { localStorage.setItem(DATA_KEY, JSON.stringify(entries)); } catch(e){}
+  }
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function fmtDate(d){
+    if(!d) return '—';
+    var p = d.split('-'); if(p.length!==3) return esc(d);
+    return p[2]+'/'+p[1]+'/'+p[0].slice(2);
+  }
+
+  window.addEntry = function(){
+    var checks = document.querySelectorAll('#helpTypes input:checked');
+    var help = Array.prototype.map.call(checks, function(c){ return c.value; });
+    var what = document.getElementById('eWhat').value.trim();
+    if(help.length===0 && !what){
+      alert('Add what help was needed, or a short note of what you did.');
+      return;
+    }
+    entries.push({
+      date: document.getElementById('eDate').value,
+      time: document.getElementById('eTime').value,
+      help: help,
+      what: what,
+      mins: document.getElementById('eMins').value,
+      type: document.getElementById('eType').value,
+      peer: document.getElementById('ePeer').checked
+    });
+    saveEntries();
+    // reset entry fields (keep date + time of day for quick repeat)
+    document.querySelectorAll('#helpTypes input:checked').forEach(function(c){ c.checked=false; });
+    document.getElementById('eWhat').value='';
+    document.getElementById('eMins').value='';
+    document.getElementById('ePeer').checked=false;
+    render();
+  };
+
+  window.removeEntry = function(i){
+    entries.splice(i,1);
+    saveEntries();
+    render();
+  };
+
+  window.clearAll = function(){
+    if(!entries.length){ return; }
+    if(confirm('Clear all entries? This cannot be undone.')){
+      entries = [];
+      saveEntries();
+      render();
+    }
+  };
+
+  window.printDiary = function(){
+    document.getElementById('phName').textContent =
+      (document.getElementById('childName').value ? 'Child: '+document.getElementById('childName').value : '');
+    var w = document.getElementById('weekStart').value;
+    document.getElementById('phWeek').textContent = w ? '· Week beginning '+fmtDate(w) : '';
+    window.print();
+  };
+
+  function render(){
+    var body = document.getElementById('diaryBody');
+    var empty = document.getElementById('emptyState');
+    var summary = document.getElementById('summary');
+    body.innerHTML='';
+    if(!entries.length){
+      empty.style.display='block';
+      summary.style.display='none';
+      return;
+    }
+    empty.style.display='none';
+    summary.style.display='flex';
+
+    var mins=0, sup=0, peer=0;
+    entries.forEach(function(e,i){
+      var tr=document.createElement('tr');
+      var tags = (e.help||[]).map(function(h){ return '<span class="tag">'+esc(h)+'</span>'; }).join('');
+      var typeClass = /Supervision/.test(e.type) ? 'pill-sup' : (e.type==='Both' ? 'pill-sup' : 'pill-care');
+      tr.innerHTML =
+        '<td>'+fmtDate(e.date)+'</td>'+
+        '<td>'+esc(e.time)+'</td>'+
+        '<td>'+(tags||'—')+'</td>'+
+        '<td>'+(esc(e.what)||'—')+'</td>'+
+        '<td>'+(e.mins?esc(e.mins):'—')+'</td>'+
+        '<td><span class="'+typeClass+'">'+esc(e.type)+'</span></td>'+
+        '<td>'+(e.peer?'<span class="yes-peer">Yes</span>':'—')+'</td>'+
+        '<td><button class="del" onclick="removeEntry('+i+')" aria-label="Delete entry">✕</button></td>';
+      body.appendChild(tr);
+      if(e.mins) mins += parseInt(e.mins,10)||0;
+      if(/Supervision|Both/.test(e.type)) sup++;
+      if(e.peer) peer++;
+    });
+    document.getElementById('sCount').textContent = entries.length;
+    document.getElementById('sMins').textContent = mins;
+    document.getElementById('sSup').textContent = sup;
+    document.getElementById('sPeer').textContent = peer;
+  }
+
+  // default new-entry date to today
+  var today = new Date().toISOString().slice(0,10);
+  var ed = document.getElementById('eDate'); if(ed) ed.value = today;
+
+  load();
+})();
+</script>
+
+<!-- Service worker (matches site PWA/offline model) -->
+<script>
+window.addEventListener('load', function(){
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/service-worker.js', { scope:'/' })
+      .then(function(reg){ reg.update(); })
+      .catch(function(err){ console.warn('[SW] Registration failed:', err); });
+  }
+});
+</script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8b2be54baea34cbca7b4328465f1c2a0"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
