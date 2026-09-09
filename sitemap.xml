@@ -33,6 +33,9 @@
   <url><loc>https://helpset.uk/dla-sleep-diary/</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://helpset.uk/meltdown-tracker/</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://helpset.uk/picture-communication-cards/</loc><lastmod>2026-08-03</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://helpset.uk/dla-care-diary/</loc><lastmod>2026-09-09</lastmod><changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
 
   <!-- Blog index -->
   <url><loc>https://helpset.uk/blog/</loc><lastmod>2026-06-19</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
