@@ -1,14 +1,18 @@
 // ============================================================
-// Helpset Service Worker — v2.0
-// Handles offline caching so the app works without internet
+// Helpset Service Worker — v3
+// Offline support for the PWA, WITHOUT serving stale pages.
+// Pages = network-first (always latest online, cache offline).
+// Assets/fonts = cache-first / stale-while-revalidate.
 // ============================================================
 
-const CACHE_VERSION = 'helpset-v1';
+// Bumped version → old caches are cleared on activate, so existing
+// visitors self-heal on their next visit. Bump this on any deploy
+// where you want to force a clean cache.
+const CACHE_VERSION = 'helpset-v3';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 
-// ── Files to cache immediately on install ──
-// These are the core pages and assets needed for basic offline use
+// ── Files to pre-cache on install (used as the OFFLINE fallback) ──
 const STATIC_ASSETS = [
   '/',
   '/routine/',
@@ -45,73 +49,57 @@ const FONT_URLS = [
   'https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap',
   'https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;0,900;1,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap',
   'https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Lora:ital,wght@0,400;0,600;1,400;1,500&display=swap',
-  // OpenDyslexic — loaded from jsDelivr CDN, must be cached for PWA use
   'https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Regular.otf',
   'https://cdn.jsdelivr.net/npm/opendyslexic@0.91.12/fonts/OpenDyslexic-Bold.otf',
 ];
 
-// ── Install: cache all static assets ──
+// ── Install: pre-cache static assets + fonts ──
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then(cache => {
       console.log('[SW] Caching static assets');
-      // Cache each asset individually so one failure doesn't break the whole install
       return Promise.allSettled(
         STATIC_ASSETS.map(url =>
-          cache.add(url).catch(err =>
-            console.warn(`[SW] Failed to cache ${url}:`, err)
-          )
+          cache.add(url).catch(err => console.warn(`[SW] Failed to cache ${url}:`, err))
         )
       );
-    }).then(() => {
-      // Also pre-cache fonts
-      return caches.open(DYNAMIC_CACHE).then(cache => {
-        return Promise.allSettled(
-          FONT_URLS.map(url =>
-            fetch(url, { mode: 'cors' })
-              .then(res => cache.put(url, res))
-              .catch(err => console.warn(`[SW] Failed to cache font ${url}:`, err))
-          )
-        );
-      });
-    }).then(() => self.skipWaiting())
+    }).then(() => caches.open(DYNAMIC_CACHE).then(cache =>
+      Promise.allSettled(
+        FONT_URLS.map(url =>
+          fetch(url, { mode: 'cors' })
+            .then(res => cache.put(url, res))
+            .catch(err => console.warn(`[SW] Failed to cache font ${url}:`, err))
+        )
+      )
+    )).then(() => self.skipWaiting())
   );
 });
 
-// ── Activate: clean up old caches ──
+// ── Activate: delete old caches (self-heals stale pages on version bump) ──
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
+    caches.keys().then(keys =>
+      Promise.all(
         keys
           .filter(key => key.startsWith('helpset-') && key !== STATIC_CACHE && key !== DYNAMIC_CACHE)
-          .map(key => {
-            console.log('[SW] Deleting old cache:', key);
-            return caches.delete(key);
-          })
-      );
-    }).then(() => self.clients.claim())
+          .map(key => { console.log('[SW] Deleting old cache:', key); return caches.delete(key); })
+      )
+    ).then(() => self.clients.claim())
   );
 });
 
-// ── Fetch: serve from cache, fall back to network ──
+// ── Fetch ──
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests
   if (request.method !== 'GET') return;
-
-  // Skip chrome-extension and other non-http requests
   if (!url.protocol.startsWith('http')) return;
 
-  // ── ARASAAC pictogram API — network only (always needs live data) ──
+  // ── ARASAAC pictogram API — network only ──
   if (url.hostname === 'api.arasaac.org') {
     event.respondWith(
-      fetch(request).catch(() => new Response(
-        JSON.stringify([]),
-        { headers: { 'Content-Type': 'application/json' } }
-      ))
+      fetch(request).catch(() => new Response('[]', { headers: { 'Content-Type': 'application/json' } }))
     );
     return;
   }
@@ -120,84 +108,81 @@ self.addEventListener('fetch', event => {
   if (url.hostname === 'static.arasaac.org') {
     event.respondWith(
       caches.open(DYNAMIC_CACHE).then(cache =>
-        cache.match(request).then(cached => {
-          if (cached) return cached;
-          return fetch(request).then(response => {
+        cache.match(request).then(cached =>
+          cached || fetch(request).then(response => {
             if (response.ok) cache.put(request, response.clone());
             return response;
-          }).catch(() => cached);
-        })
+          }).catch(() => cached)
+        )
       )
     );
     return;
   }
 
-  // ── Google Fonts and jsDelivr CDN — cache first ──
+  // ── Google Fonts and jsDelivr CDN — cache first (versioned URLs, safe) ──
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com'
       || url.hostname === 'cdn.jsdelivr.net') {
     event.respondWith(
       caches.open(DYNAMIC_CACHE).then(cache =>
-        cache.match(request).then(cached => {
-          if (cached) return cached;
-          return fetch(request).then(response => {
+        cache.match(request).then(cached =>
+          cached || fetch(request).then(response => {
             if (response.ok) cache.put(request, response.clone());
             return response;
-          }).catch(() => cached || new Response('', { status: 503 }));
-        })
+          }).catch(() => cached || new Response('', { status: 503 }))
+        )
       )
     );
     return;
   }
 
-  // ── Helpset pages and assets — cache first, network fallback ──
+  // ── Helpset (same-origin) ──
   if (url.hostname === 'helpset.uk' || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+
+    // PAGE NAVIGATIONS → NETWORK-FIRST (always the latest page online; cache is offline fallback)
+    if (request.mode === 'navigate') {
+      event.respondWith(
+        fetch(request).then(response => {
+          const copy = response.clone();
+          caches.open(STATIC_CACHE).then(cache => cache.put(request, copy)); // keep offline copy fresh
+          return response;
+        }).catch(() =>
+          caches.match(request).then(cached =>
+            cached || caches.match('/').then(home =>
+              home || new Response(
+                '<h1>You are offline</h1><p>Please reconnect to use Helpset.</p>',
+                { headers: { 'Content-Type': 'text/html' } }
+              )
+            )
+          )
+        )
+      );
+      return;
+    }
+
+    // OTHER same-origin assets (images, manifest, etc.) → stale-while-revalidate
     event.respondWith(
       caches.match(request).then(cached => {
-        // Return cached version immediately
-        if (cached) {
-          // Refresh cache in background (stale-while-revalidate)
-          fetch(request).then(response => {
-            if (response.ok) {
-              caches.open(STATIC_CACHE).then(cache => cache.put(request, response));
-            }
-          }).catch(() => {});
-          return cached;
-        }
-
-        // Not cached — fetch from network and cache it
-        return fetch(request).then(response => {
-          if (!response.ok) return response;
-          const responseClone = response.clone();
-          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, responseClone));
+        const network = fetch(request).then(response => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, copy));
+          }
           return response;
-        }).catch(() => {
-          // Full offline fallback — return homepage if we have it
-          return caches.match('/').then(fallback =>
-            fallback || new Response(
-              '<h1>You are offline</h1><p>Please reconnect to use HelpSet.</p>',
-              { headers: { 'Content-Type': 'text/html' } }
-            )
-          );
-        });
+        }).catch(() => cached);
+        return cached || network;
       })
     );
     return;
   }
 
   // ── Everything else — network with cache fallback ──
-  event.respondWith(
-    fetch(request).catch(() => caches.match(request))
-  );
+  event.respondWith(fetch(request).catch(() => caches.match(request)));
 });
 
-// ── Message handler — allows pages to trigger cache refresh ──
+// ── Message handler ──
 self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
   if (event.data && event.data.type === 'CLEAR_CACHE') {
-    caches.keys().then(keys =>
-      Promise.all(keys.map(key => caches.delete(key)))
-    );
+    caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))));
   }
 });
