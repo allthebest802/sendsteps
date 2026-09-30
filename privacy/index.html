@@ -147,14 +147,59 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid 
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
 
 </style>
+<style>
+  /* Helpset shared chrome — matches site nav/footer (green #2ECC87 / Fraunces) */
+  .hsx-nav,.hsx-foot{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-sizing:border-box}
+  .hsx-nav *,.hsx-foot *{box-sizing:border-box}
+  .hsx-nav{background:#fff;border-bottom:1px solid #E4E0D8;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .hsx-nav a{text-decoration:none}
+  .hsx-brand{display:flex;align-items:center;gap:9px}
+  .hsx-mark{width:32px;height:32px;background:#2ECC87;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+  .hsx-name{font-family:'Fraunces',Georgia,serif;font-size:1.18rem;font-weight:800;color:#181825}
+  .hsx-nlinks{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+  .hsx-nlink{font-size:.82rem;font-weight:600;color:#3A3A52;padding:7px 12px;border-radius:8px;text-decoration:none}
+  .hsx-nlink:hover{background:#E6F9F1;color:#157A4C}
+  .hsx-foot{background:#fff;border-top:1px solid #E4E0D8;margin-top:40px}
+  .hsx-fi{max-width:720px;margin:0 auto;padding:30px 22px}
+  .hsx-ftop{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .hsx-fbrand{font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:1.15rem;color:#181825}
+  .hsx-fbrand span{color:#2ECC87}
+  .hsx-ftag{font-size:.85rem;color:#3A3A52;margin-top:6px;max-width:34ch;line-height:1.5}
+  .hsx-flinks{display:flex;gap:14px;flex-wrap:wrap;align-content:flex-start}
+  .hsx-flinks a{font-size:.82rem;font-weight:700;color:#3A3A52;text-decoration:none}
+  .hsx-flinks a:hover{color:#157A4C}
+  .hsx-fpop{margin:16px 0 8px;font-size:.82rem;color:#3A3A52;line-height:1.9;border-top:1px solid #E4E0D8;padding-top:14px}
+  .hsx-fpoplbl{display:block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#157A4C;margin-bottom:3px}
+  .hsx-fpop a{color:#3A3A52;text-decoration:none;font-weight:600}
+  .hsx-fpop a:hover{color:#157A4C}
+  .hsx-fcopy{font-size:.76rem;color:#5C5C78;margin-top:10px}
+  @media(max-width:620px){.hsx-nlinks{display:none}}
+  /* Related-tools block (kept, recoloured to site palette) */
+  .hs-rel{font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;box-sizing:border-box;max-width:720px;margin:2.2rem auto;padding:1.4rem 1.3rem;background:#F2F7F4;border:1px solid #E4E0D8;border-radius:16px}
+  .hs-rel *{box-sizing:border-box}
+  .hs-rel h2{margin:.1rem 0 1rem;font-size:1.15rem;color:#181825;font-family:'Fraunces',Georgia,serif;font-weight:800}
+  .hs-relgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.7rem}
+  .hs-card{display:block;padding:.85rem .95rem;background:#fff;border:1px solid #E4E0D8;border-radius:12px;text-decoration:none;transition:transform .12s,border-color .12s,box-shadow .12s}
+  .hs-card:hover{transform:translateY(-2px);border-color:#2ECC87;box-shadow:0 6px 18px rgba(21,122,76,.08)}
+  .hs-card b{display:block;color:#157A4C;font-size:1rem;margin-bottom:.15rem}
+  .hs-card span{display:block;color:#5C5C78;font-size:.86rem;line-height:1.35}
+  .hs-rel .hs-alllink{display:inline-block;margin-top:1rem;color:#157A4C;font-weight:700;text-decoration:none}
+  .hs-rel .hs-alllink:hover{text-decoration:underline}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800;9..144,900&display=swap" rel="stylesheet">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <header class="header">
-    <a href="/" class="header-back">← Helpset</a>
-    <span class="header-title">Help<span>set</span></span>
-  </header>
+  <nav class="hsx-nav" aria-label="Primary">
+  <a href="/" class="hsx-brand"><span class="hsx-mark">🌿</span><span class="hsx-name">Helpset</span></a>
+  <div class="hsx-nlinks">
+    <a href="/#tools" class="hsx-nlink">Tools</a>
+    <a href="/apps/" class="hsx-nlink">Apps</a>
+    <a href="/blog/" class="hsx-nlink">Blog</a>
+    <a href="/contact/" class="hsx-nlink">Contact</a>
+  </div>
+</nav>
 
   <main class="page" id="main-content">
 
@@ -229,10 +274,31 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid 
     </div>
   </main>
 
-  <footer class="footer">
-    © Helpset · Built for SEND families · Free tools and resources · No account required
-  </footer>
+  <footer class="hsx-foot">
+  <div class="hsx-fi">
+    <div class="hsx-ftop">
+      <div>
+        <div class="hsx-fbrand">Help<span>set</span></div>
+        <p class="hsx-ftag">Free visual tools for SEND children and families. Built from lived experience.</p>
+      </div>
+      <div class="hsx-flinks">
+        <a href="/#tools">Tools</a>
+        <a href="/apps/">Apps</a>
+        <a href="/blog/">Blog</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="hsx-fpop">
+      <span class="hsx-fpoplbl">Popular tools</span>
+      <a href="/reading-ruler/">Reading ruler</a> · <a href="/tracker/">Meltdown tracker</a> · <a href="/sleep-logger/">Sleep diary</a> · <a href="/dla-care-diary/">DLA care diary</a> · <a href="/now-next-board/">Now &amp; next board</a> · <a href="/visual-timer/">Visual timer</a> · <a href="/feelings/">Feelings check-in</a> · <a href="/comm-cards/">Communication cards</a>
+    </div>
+    <p class="hsx-fcopy">© Helpset · Built for SEND families · Everything runs on your device · No accounts required</p>
+  </div>
+</footer>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8b2be54baea34cbca7b4328465f1c2a0"}'></script><!-- End Cloudflare Web Analytics -->
-</body>
 <a href="https://ko-fi.com/helpsetuk" target="_blank" rel="noopener" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;background:#FF5E5B;color:#fff;font-family:system-ui,sans-serif;font-size:0.82rem;font-weight:700;padding:11px 18px;border-radius:100px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">☕ Support Helpset</a>
+</body>
+
 </html>
