@@ -112,17 +112,15 @@ body{font-family:var(--font-body);background:var(--cream);color:var(--ink);line-
   background-image:radial-gradient(ellipse 900px 600px at 80% -10%,rgba(46,204,135,0.10),transparent 55%),
     radial-gradient(ellipse 600px 500px at -10% 70%,rgba(59,130,246,0.07),transparent 55%)}
 a{text-decoration:none;color:inherit}
-nav{position:sticky;top:0;z-index:200;background:rgba(250,248,244,.93);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.nbrand{display:flex;align-items:center;gap:9px}
-.nbmark{width:32px;height:32px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem}
-.nbname{font-family:var(--font-head);font-size:1.18rem;font-weight:800;color:var(--ink)}
-.nlinks{display:flex;gap:4px;align-items:center}
-.nlink{font-size:.82rem;font-weight:600;color:var(--ink2);padding:7px 12px;border-radius:100px;transition:all .14s}
-.nlink:hover{background:var(--green-l);color:var(--green-d)}
-.npill{background:#147a4c;color:white;padding:8px 18px;border-radius:100px;font-size:.83rem;font-weight:700;transition:all .15s}
-.npill:hover{background:#0f6a40;transform:translateY(-1px)}
-@media(max-width:560px){.nlinks .nlink{display:none}}
+
+
+
+
+
+
+
+
+
 main{max-width:760px;margin:0 auto;padding:20px 24px 72px}
 .crumb{font-size:.8rem;color:var(--muted);font-weight:600;margin:6px 0 22px}
 .crumb a:hover{color:var(--green-d)}
@@ -172,25 +170,53 @@ details p{margin:.7rem 0 0;color:var(--muted)}
 .pv-lbl{font-family:var(--font-head);font-weight:800;font-size:1rem;color:var(--ink)}
 .pv-arrow{display:flex;align-items:center;padding:0 4px;color:var(--muted);font-weight:800;background:#F5F3EE}
 .preview figcaption{font-size:.78rem;color:var(--muted);margin-top:8px}
-footer{border-top:1px solid var(--border);background:rgba(255,255,255,.5);text-align:center;padding:26px 20px;font-size:.85rem;color:var(--muted)}
-footer a{color:var(--green-d);font-weight:600}
+  /* Helpset shared chrome — matches site nav/footer (green #2ECC87 / Fraunces) */
+  .hsx-nav,.hsx-foot{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-sizing:border-box}
+  .hsx-nav *,.hsx-foot *{box-sizing:border-box}
+  .hsx-nav{background:#fff;border-bottom:1px solid #E4E0D8;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .hsx-nav a{text-decoration:none}
+  .hsx-brand{display:flex;align-items:center;gap:9px}
+  .hsx-mark{width:32px;height:32px;background:#2ECC87;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+  .hsx-name{font-family:'Fraunces',Georgia,serif;font-size:1.18rem;font-weight:800;color:#181825}
+  .hsx-nlinks{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+  .hsx-nlink{font-size:.82rem;font-weight:600;color:#3A3A52;padding:7px 12px;border-radius:8px;text-decoration:none}
+  .hsx-nlink:hover{background:#E6F9F1;color:#157A4C}
+  .hsx-foot{background:#fff;border-top:1px solid #E4E0D8;margin-top:40px}
+  .hsx-fi{max-width:720px;margin:0 auto;padding:30px 22px}
+  .hsx-ftop{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .hsx-fbrand{font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:1.15rem;color:#181825}
+  .hsx-fbrand span{color:#2ECC87}
+  .hsx-ftag{font-size:.85rem;color:#3A3A52;margin-top:6px;max-width:34ch;line-height:1.5}
+  .hsx-flinks{display:flex;gap:14px;flex-wrap:wrap;align-content:flex-start}
+  .hsx-flinks a{font-size:.82rem;font-weight:700;color:#3A3A52;text-decoration:none}
+  .hsx-flinks a:hover{color:#157A4C}
+  .hsx-fpop{margin:16px 0 8px;font-size:.82rem;color:#3A3A52;line-height:1.9;border-top:1px solid #E4E0D8;padding-top:14px}
+  .hsx-fpoplbl{display:block;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#157A4C;margin-bottom:3px}
+  .hsx-fpop a{color:#3A3A52;text-decoration:none;font-weight:600}
+  .hsx-fpop a:hover{color:#157A4C}
+  .hsx-fcopy{font-size:.76rem;color:#5C5C78;margin-top:10px}
+  @media(max-width:620px){.hsx-nlinks{display:none}}
+  .skip-link{position:absolute;top:-100px;left:16px;z-index:10000;background:#181825;color:#FAF8F4;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none}
+  .skip-link:focus{top:16px}
 </style>
 </head>
 
 <body>
 
-<nav>
-  <a class="nbrand" href="/"><span class="nbmark">🌱</span><span class="nbname">Helpset</span></a>
-  <div class="nlinks">
-    <a class="nlink" href="/apps/">Apps</a>
-    <a class="nlink" href="/blog/">Blog</a>
-    <a class="npill" href="/">All free tools</a>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav class="hsx-nav" aria-label="Primary">
+  <a href="/" class="hsx-brand"><span class="hsx-mark">🌿</span><span class="hsx-name">Helpset</span></a>
+  <div class="hsx-nlinks">
+    <a href="/#tools" class="hsx-nlink">Tools</a>
+    <a href="/apps/" class="hsx-nlink">Apps</a>
+    <a href="/blog/" class="hsx-nlink">Blog</a>
+    <a href="/contact/" class="hsx-nlink">Contact</a>
   </div>
 </nav>
 
-<main>
+<main id="main-content" tabindex="-1" style="outline:none">
 
-  <p class="crumb"><a href="/">Home</a> › <a href="/apps/">Tools</a> › Now &amp; Next Board (Printable)</p>
+  <p class="crumb"><a href="/">Home</a> › <a href="/#printables">Free printables</a> › Now &amp; Next Board (Printable)</p>
 
   <div class="hero">
     <span class="hpill">🖨️ Free printable · no login · no cost</span>
@@ -298,10 +324,30 @@ footer a{color:var(--green-d);font-weight:600}
 
 </main>
 
-<footer>
-  Helpset.uk — free tools for SEND families &nbsp;·&nbsp;
-  <a href="/">Home</a> &nbsp;·&nbsp; <a href="/apps/">All tools</a> &nbsp;·&nbsp; <a href="/privacy/">Privacy</a>
+<footer class="hsx-foot">
+  <div class="hsx-fi">
+    <div class="hsx-ftop">
+      <div>
+        <div class="hsx-fbrand">Help<span>set</span></div>
+        <p class="hsx-ftag">Free visual tools for SEND children and families. Built from lived experience.</p>
+      </div>
+      <div class="hsx-flinks">
+        <a href="/#tools">Tools</a>
+        <a href="/apps/">Apps</a>
+        <a href="/blog/">Blog</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="hsx-fpop">
+      <span class="hsx-fpoplbl">Popular tools</span>
+      <a href="/reading-ruler/">Reading ruler</a> · <a href="/tracker/">Meltdown tracker</a> · <a href="/sleep-logger/">Sleep diary</a> · <a href="/dla-sleep-diary/">DLA sleep diary</a> · <a href="/dla-care-diary/">DLA care diary</a> · <a href="/now-next-board/">Now &amp; next board</a> · <a href="/visual-timer/">Visual timer</a> · <a href="/feelings/">Feelings check-in</a> · <a href="/comm-cards/">Communication cards</a>
+    </div>
+    <p class="hsx-fcopy">© Helpset · Built for SEND families · Everything runs on your device · No accounts required</p>
+  </div>
 </footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8b2be54baea34cbca7b4328465f1c2a0"}'></script><!-- End Cloudflare Web Analytics -->
 
 </body>
 </html>
