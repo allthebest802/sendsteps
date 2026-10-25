@@ -10,15 +10,15 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
-<title>Meltdown Tracker — Free Tool for Autistic & ADHD Children | Helpset</title>
-<meta name="description" content="Free meltdown tracker for parents of autistic and ADHD children. Log triggers, intensity and what helped — then spot patterns over time. Private, no signup, works offline.">
-<meta name="keywords" content="meltdown tracker, autism meltdown tracker, ADHD meltdown log, meltdown trigger tracker, SEN behaviour tracker, free meltdown tracker, autism trigger log, SEND meltdown patterns">
-<meta property="og:title" content="Free Meltdown Tracker for Autistic & ADHD Children">
-<meta property="og:description" content="Log meltdowns, spot triggers and find what helps. Free, private, no signup. Built for SEND families.">
+<title>Meltdown Tracker — Free Online Log &amp; Printable PDF for Autism &amp; ADHD | Helpset</title>
+<meta name="description" content="Free meltdown tracker for autistic and ADHD children. Log triggers, intensity and what helped online and see patterns — or download a printable meltdown log, ABC chart and weekly sheet (PDF). Private, no signup.">
+<meta name="keywords" content="meltdown tracker, printable meltdown tracker, meltdown log, ABC chart meltdowns, autism meltdown tracker, ADHD meltdown log, meltdown trigger tracker, SEN behaviour tracker, free meltdown tracker, autism trigger log, SEND meltdown patterns">
+<meta property="og:title" content="Free Meltdown Tracker — Online Log &amp; Printable PDF">
+<meta property="og:description" content="Log meltdowns online and spot patterns, or print a free meltdown log and ABC chart. Free, private, no signup.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://helpset.uk/tracker/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Meltdown Tracker — Helpset">
+<meta name="twitter:title" content="Free Meltdown Tracker — Online &amp; Printable | Helpset">
 <meta name="twitter:description" content="Log meltdowns, spot triggers and find what helps. Free, private, no signup.">
 <link rel="canonical" href="https://helpset.uk/tracker/">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -278,6 +278,28 @@ textarea.form-input{resize:vertical;min-height:70px;line-height:1.5}
 a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #307450;outline-offset:3px;border-radius:4px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
 
+.print-banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:860px;margin:14px auto 4px;padding:12px 18px;
+  background:#E6F3EC;border:1.5px solid #307450;border-radius:14px;text-decoration:none;color:#1E3228;font-family:'Nunito',sans-serif}
+@media(max-width:900px){.print-banner{margin:14px 16px 4px}}
+.pb-ico{font-size:1.5rem;line-height:1}
+.pb-txt{flex:1;min-width:200px;font-size:.9rem;font-weight:600}
+.pb-btn{background:#307450;color:#fff;font-weight:800;font-size:.82rem;padding:8px 16px;border-radius:100px;white-space:nowrap}
+.pr-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:520px;margin:6px 0 16px}
+.pr-sheet{background:#fff;border:1.5px solid #D4E6DC;border-radius:8px;padding:8px;aspect-ratio:3/4;display:flex;flex-direction:column;gap:5px;box-shadow:0 4px 14px rgba(30,50,40,.08)}
+.pr-sheet b{font-size:.68rem;color:#307450;line-height:1.2}
+.pr-sheet i{display:block;height:2px;background:#D4E6DC;margin-top:5px}
+.pr-ticks{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+.pr-ticks em{display:block;height:7px;border:1.5px solid #8FB8A2;border-radius:2px;width:7px}
+.pr-cols{display:grid;grid-template-columns:1fr 2fr 2fr;gap:3px;flex:1}
+.pr-cols em{display:block;background:#EEF8F2;border:1px solid #D4E6DC}
+.pr-grid{flex:1;background-image:linear-gradient(#D4E6DC 1px,transparent 1px),linear-gradient(90deg,#D4E6DC 1px,transparent 1px);background-size:100% 20%,14.28% 100%;border:1px solid #D4E6DC}
+a.pr-download{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:#307450;color:#fff!important;font-weight:800;
+  padding:14px 28px;border-radius:100px;text-decoration:none;box-shadow:0 8px 24px rgba(48,116,80,.28)}
+a.pr-download:hover{background:#255d40}
+.pr-download small{font-weight:600;font-size:.76rem;opacity:.92}
+a.pr-download{text-align:center;max-width:100%}
+@media(max-width:480px){a.pr-download{padding:12px 20px;font-size:.92rem}}
+@media print{.print-banner{display:none!important}}
 </style>
 <style>
   /* Helpset shared chrome — matches site nav/footer (green #2ECC87 / Fraunces) */
@@ -336,7 +358,7 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
 
 <div class="header">
   <div>
-    <h1>📊 Meltdown Tracker</h1>
+    <h1>📊 Meltdown Tracker — online &amp; printable</h1>
     <p>Track triggers, intensity and patterns — private &amp; judgement-free. Everything stays on your device.</p>
   </div>
   <div class="header-actions">
@@ -344,6 +366,12 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <button class="btn btn-ghost btn-sm" id="printBtn">🖨️ <span>Print</span></button>
   </div>
 </div>
+
+<a href="#printable" class="print-banner no-print">
+  <span class="pb-ico" aria-hidden="true">🖨️</span>
+  <span class="pb-txt"><strong>Prefer paper?</strong> Download the free printable meltdown tracker (PDF) — incident record, ABC log and weekly pattern sheet.</span>
+  <span class="pb-btn">Printable PDF ↓</span>
+</a>
 
 <nav class="nav" role="tablist">
   <button class="nav-tab active" data-tab="log" role="tab">Log Incident</button>
@@ -554,6 +582,24 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <p>Aim for two to four weeks of consistent logging before drawing strong conclusions. Single incidents tell you little; weeks of data tell you a lot.</p>
   </section>
 
+  <section id="printable" style="margin-bottom:36px">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#307450;margin-bottom:14px">Printable meltdown tracker (free PDF)</h2>
+    <p style="margin-bottom:14px">Not everyone wants to log on a phone — especially at school, in a shared care setting, or straight after a hard moment. The <strong>free printable meltdown tracker</strong> gives you the same structure on paper:</p>
+    <div class="pr-preview" aria-hidden="true">
+      <div class="pr-sheet"><b>Incident record</b><i></i><i></i><span class="pr-ticks"><em></em><em></em><em></em><em></em></span><i></i></div>
+      <div class="pr-sheet"><b>ABC log</b><span class="pr-cols"><em></em><em></em><em></em></span><span class="pr-cols"><em></em><em></em><em></em></span><span class="pr-cols"><em></em><em></em><em></em></span></div>
+      <div class="pr-sheet"><b>Weekly patterns</b><span class="pr-grid"></span></div>
+    </div>
+    <ul style="margin:0 0 14px 1.3rem">
+      <li style="margin-bottom:6px"><strong>Meltdown incident record</strong> — one page per incident, with tick-boxes for triggers, state beforehand, place, intensity (1–10), duration and what helped.</li>
+      <li style="margin-bottom:6px"><strong>ABC meltdown log</strong> — a quick table for several incidents: what happened before (Antecedent), the Behaviour, and what came after (Consequence).</li>
+      <li style="margin-bottom:6px"><strong>Weekly pattern sheet</strong> — tally meltdowns by day and time of day, so after-school or weekend clusters stand out.</li>
+      <li><strong>Review and summary</strong> — pull two to four weeks together before a school, GP, paediatrician or EHCP meeting.</li>
+    </ul>
+    <p style="text-align:center;margin:20px 0"><a class="pr-download" href="helpset-printable-meltdown-tracker.pdf" download>Download the printable meltdown tracker (PDF)<small>Free · A4 · 6 pages · photocopy as many as you need</small></a></p>
+    <p>The tick-box options match the online tracker, so you can keep paper records at school and log at home without the categories drifting apart.</p>
+  </section>
+
   <section style="margin-bottom:36px">
     <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#307450;margin-bottom:14px">Privacy and your data</h2>
     <p style="margin-bottom:14px">Everything you log stays on your device. Helpset does not collect, transmit, or store any of the information you enter. The tool uses your browser's local storage, which means:</p>
@@ -578,9 +624,90 @@ a:focus-visible,button:focus-visible,[tabindex]:focus-visible,input:focus-visibl
     <p><a href="/visual-timer/" style="color:#307450;font-weight:700;text-decoration:underline">Visual Timer</a> — for transitions, which are a common meltdown trigger.</p>
   </section>
 
+  <section style="margin-top:36px">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#307450;margin-bottom:14px">Frequently asked questions</h2>
+    <h3 style="font-size:1.05rem;color:#1E3228;margin:1.1rem 0 .3rem;font-weight:800">Is there a printable meltdown tracker?</h3>
+    <p style="margin-bottom:10px">Yes. The free printable PDF includes a one-page meltdown incident record with tick-boxes, an ABC meltdown log, a weekly pattern sheet and a review summary page. Print it at home and photocopy as many as you need.</p>
+    <h3 style="font-size:1.05rem;color:#1E3228;margin:1.1rem 0 .3rem;font-weight:800">What is an ABC chart for meltdowns?</h3>
+    <p style="margin-bottom:10px">ABC stands for Antecedent (what happened just before), Behaviour (what you saw) and Consequence (what happened afterwards, including what helped). It is a simple way of recording meltdowns that schools, SENCos and therapists use to understand what sits around them, rather than focusing on blame.</p>
+    <h3 style="font-size:1.05rem;color:#1E3228;margin:1.1rem 0 .3rem;font-weight:800">How long should I track meltdowns for?</h3>
+    <p style="margin-bottom:10px">Aim for two to four weeks of regular logging before drawing conclusions. Single incidents tell you little, but a few weeks of records usually show when and where meltdowns cluster and what helps.</p>
+    <h3 style="font-size:1.05rem;color:#1E3228;margin:1.1rem 0 .3rem;font-weight:800">Can meltdown logs be used as evidence for an EHCP or DLA?</h3>
+    <p style="margin-bottom:10px">Regular records showing how often meltdowns happen, how long they last, what triggers them and the support your child needs can form useful supporting evidence for an EHCP request or a DLA or PIP claim, and for conversations with school or a GP.</p>
+    <h3 style="font-size:1.05rem;color:#1E3228;margin:1.1rem 0 .3rem;font-weight:800">Is the meltdown tracker free and private?</h3>
+    <p style="margin-bottom:10px">Yes. The online tracker is free, needs no account, and keeps everything on your own device. The printable PDF is also free to download and print.</p>
+  </section>
+
 </article>
 
 <!-- ─── JSON-LD STRUCTURED DATA ─── -->
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Is there a printable meltdown tracker?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. The free printable PDF includes a one-page meltdown incident record with tick-boxes, an ABC meltdown log, a weekly pattern sheet and a review summary page. Print it at home and photocopy as many as you need."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What is an ABC chart for meltdowns?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "ABC stands for Antecedent (what happened just before), Behaviour (what you saw) and Consequence (what happened afterwards, including what helped). It is a simple way of recording meltdowns that schools, SENCos and therapists use to understand what sits around them, rather than focusing on blame."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How long should I track meltdowns for?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Aim for two to four weeks of regular logging before drawing conclusions. Single incidents tell you little, but a few weeks of records usually show when and where meltdowns cluster and what helps."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can meltdown logs be used as evidence for an EHCP or DLA?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Regular records showing how often meltdowns happen, how long they last, what triggers them and the support your child needs can form useful supporting evidence for an EHCP request or a DLA or PIP claim, and for conversations with school or a GP."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Is the meltdown tracker free and private?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. The online tracker is free, needs no account, and keeps everything on your own device. The printable PDF is also free to download and print."
+   }
+  }
+ ]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "CreativeWork",
+ "name": "Printable Meltdown Tracker and ABC Log (PDF)",
+ "description": "Free printable meltdown tracker: incident record, ABC meltdown log, weekly pattern sheet and review summary for autistic and ADHD children.",
+ "url": "https://helpset.uk/tracker/#printable",
+ "encodingFormat": "application/pdf",
+ "isAccessibleForFree": true,
+ "inLanguage": "en-GB",
+ "learningResourceType": "printable template",
+ "publisher": {
+  "@type": "Organization",
+  "name": "Helpset",
+  "url": "https://helpset.uk/"
+ },
+ "dateModified": "2026-10-25"
+}
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
